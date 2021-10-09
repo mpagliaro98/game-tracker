@@ -66,11 +66,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\IModuleAccess.cs" />
-    <Compile Include="Model\IncompleteScoreRangeException.cs" />
-    <Compile Include="Model\IPathController.cs" />
-    <Compile Include="Model\ISavable.cs" />
-    <Compile Include="Model\LoadSaveEngineCompletable.cs" />
+    <Compile Include="Model\Interfaces\IModuleAccess.cs" />
+    <Compile Include="Model\Exceptions\IncompleteScoreRangeException.cs" />
+    <Compile Include="Model\Interfaces\IPathController.cs" />
+    <Compile Include="Model\Interfaces\ISavable.cs" />
+    <Compile Include="Model\LoadSave\LoadSaveEngineCompletable.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -78,13 +78,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\CompletionStatus.cs" />
-    <Compile Include="Model\LoadSaveEngine.cs" />
-    <Compile Include="Model\LoadSaveEngineGame.cs" />
-    <Compile Include="Model\NameNotFoundException.cs" />
-    <Compile Include="Model\PathController.cs" />
-    <Compile Include="Model\PathControllerWPF.cs" />
+    <Compile Include="Model\LoadSave\LoadSaveEngine.cs" />
+    <Compile Include="Model\LoadSave\LoadSaveEngineGame.cs" />
+    <Compile Include="Model\Exceptions\NameNotFoundException.cs" />
+    <Compile Include="Model\Path Controller\PathController.cs" />
+    <Compile Include="Model\Path Controller\PathControllerWPF.cs" />
     <Compile Include="Model\RatingModuleGame.cs" />
-    <Compile Include="Model\LoadSaveEngineGameJson.cs" />
+    <Compile Include="Model\LoadSave\LoadSaveEngineGameJson.cs" />
     <Compile Include="Model\Platform.cs" />
     <Compile Include="Model\RatableGame.cs" />
     <Compile Include="Model\RatableObject.cs" />
@@ -95,12 +95,12 @@
     <Compile Include="Model\RatingCategoryWeighted.cs" />
     <Compile Include="Model\RatingModule.cs" />
     <Compile Include="Model\RatingModuleCompletable.cs" />
-    <Compile Include="Model\SavableRepresentation.cs" />
+    <Compile Include="Model\LoadSave\SavableRepresentation.cs" />
     <Compile Include="Model\ScoreRange.cs" />
-    <Compile Include="Model\ScoreRelationship.cs" />
-    <Compile Include="Model\ScoreRelationshipAbove.cs" />
-    <Compile Include="Model\ScoreRelationshipBelow.cs" />
-    <Compile Include="Model\ScoreRelationshipBetween.cs" />
+    <Compile Include="Model\Score Relationships\ScoreRelationship.cs" />
+    <Compile Include="Model\Score Relationships\ScoreRelationshipAbove.cs" />
+    <Compile Include="Model\Score Relationships\ScoreRelationshipBelow.cs" />
+    <Compile Include="Model\Score Relationships\ScoreRelationshipBetween.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -126,6 +126,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
