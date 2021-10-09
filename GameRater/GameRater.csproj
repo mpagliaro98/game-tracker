@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -63,12 +66,41 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Model\IModuleAccess.cs" />
+    <Compile Include="Model\IncompleteScoreRangeException.cs" />
+    <Compile Include="Model\IPathController.cs" />
+    <Compile Include="Model\ISavable.cs" />
+    <Compile Include="Model\LoadSaveEngineCompletable.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\CompletionStatus.cs" />
+    <Compile Include="Model\LoadSaveEngine.cs" />
+    <Compile Include="Model\LoadSaveEngineGame.cs" />
+    <Compile Include="Model\NameNotFoundException.cs" />
+    <Compile Include="Model\PathController.cs" />
+    <Compile Include="Model\PathControllerWPF.cs" />
+    <Compile Include="Model\RatingModuleGame.cs" />
+    <Compile Include="Model\LoadSaveEngineGameJson.cs" />
+    <Compile Include="Model\Platform.cs" />
+    <Compile Include="Model\RatableGame.cs" />
+    <Compile Include="Model\RatableObject.cs" />
+    <Compile Include="Model\RatableObjectCompletable.cs" />
+    <Compile Include="Model\RatingCategory.cs" />
+    <Compile Include="Model\RatingCategoryStatic.cs" />
+    <Compile Include="Model\RatingCategoryValue.cs" />
+    <Compile Include="Model\RatingCategoryWeighted.cs" />
+    <Compile Include="Model\RatingModule.cs" />
+    <Compile Include="Model\RatingModuleCompletable.cs" />
+    <Compile Include="Model\SavableRepresentation.cs" />
+    <Compile Include="Model\ScoreRange.cs" />
+    <Compile Include="Model\ScoreRelationship.cs" />
+    <Compile Include="Model\ScoreRelationshipAbove.cs" />
+    <Compile Include="Model\ScoreRelationshipBelow.cs" />
+    <Compile Include="Model\ScoreRelationshipBetween.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -86,6 +118,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GameRater.Model;
 
 namespace GameRater
 {
@@ -20,8 +21,12 @@ namespace GameRater
     /// </summary>
     public partial class MainWindow : Window
     {
+        private RatingModuleGame rm;
+
         public MainWindow()
         {
+            rm = new RatingModuleGame();
+            rm.Init();
             InitializeComponent();
         }
     }
