@@ -114,7 +114,7 @@ namespace GameRater.Model
         protected void SaveJSONToFile(string serialized, string filepath)
         {
             CreateFileIfDoesNotExist(filepath);
-            System.IO.File.WriteAllText(filepath, serialized);
+            PathController.WriteToFile(filepath, serialized);
         }
 
         protected virtual void SaveISavableList(IEnumerable<ISavable> list, string filepath)
@@ -150,7 +150,7 @@ namespace GameRater.Model
         protected string ReadJSONFromFile(string filepath)
         {
             CreateFileIfDoesNotExist(filepath);
-            return System.IO.File.ReadAllText(filepath);
+            return PathController.ReadFromFile(filepath);
         }
 
         protected IEnumerable<T> LoadJSONArrayIntoObjects<T>(string json) where T : ISavable, new()
@@ -254,10 +254,11 @@ namespace GameRater.Model
 
         protected void CreateFileIfDoesNotExist(string filepath)
         {
-            if (!System.IO.File.Exists(filepath))
+            if (!PathController.FileExists(filepath))
             {
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filepath));
-                System.IO.FileStream fs = System.IO.File.Create(filepath);
+                string directory = PathController.GetDirectoryFromFilename(filepath);
+                PathController.CreateDirectory(directory);
+                System.IO.FileStream fs = PathController.CreateFile(filepath);
                 fs.Close();
             }
         }

@@ -6,7 +6,29 @@
         xmlns:local="clr-namespace:GameRater"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <TabControl x:Name="TabsBase">
+            <TabItem Header="Games">
+                <DockPanel>
+                    <Grid x:Name="GamesTop" DockPanel.Dock="Top" >
+                        
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Platforms">
+                <DockPanel>
+                    <Grid x:Name="PlatformsTop" DockPanel.Dock="Top" >
+
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Settings">
+                <DockPanel>
+                    <Grid x:Name="SettingsTop" DockPanel.Dock="Top" >
+
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </Window>
