@@ -22,6 +22,10 @@ namespace GameRater.Model
         }
 
         private IEnumerable<RatingCategoryValue> categoryValues;
+        public IEnumerable<RatingCategoryValue> CategoryValues
+        {
+            get { return categoryValues; }
+        }
 
         private bool ignoreCategories = false;
         public bool IgnoreCategories
@@ -42,11 +46,12 @@ namespace GameRater.Model
                 else
                 {
                     double total = 0;
+                    double sumOfWeights = SumOfWeights();
                     foreach (RatingCategoryValue categoryValue in categoryValues)
                     {
-                        total += (GetParentModule().FindRatingCategory(categoryValue.RatingCategoryName).GetWeight() * categoryValue.PointValue);
+                        double categoryWeight = GetParentModule().FindRatingCategory(categoryValue.RatingCategoryName).GetWeight();
+                        total += (categoryWeight / sumOfWeights) * categoryValue.PointValue;
                     }
-                    // TODO: need to normalize total between min and max values
                     return total;
                 }
             }
@@ -103,6 +108,17 @@ namespace GameRater.Model
         public void SetParentModule(RatingModule parentModule)
         {
             this.parentModule = parentModule;
+        }
+
+        public double SumOfWeights()
+        {
+            double sum = 0;
+            foreach (RatingCategoryValue rcv in CategoryValues)
+            {
+                RatingCategory rc = GetParentModule().FindRatingCategory(rcv.RatingCategoryName);
+                sum += rc.GetWeight();
+            }
+            return sum;
         }
     }
 }

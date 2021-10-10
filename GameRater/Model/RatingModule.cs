@@ -86,5 +86,10 @@ namespace GameRater.Model
             }
             throw new NameNotFoundException("RatingModule FindScoreRelationship: could not find name of " + name);
         }
+
+        public Settings GetSettings()
+        {
+            return settings;
+        }
     }
 }
