@@ -68,7 +68,7 @@ namespace GameRater.Model
                         completionComment = sr.GetValue(key);
                         break;
                     default:
-                        Console.WriteLine("RatableObjectGame.cs RestoreFromRepresentation: unrecognized key " + key);
+                        Console.WriteLine("RatableGame.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

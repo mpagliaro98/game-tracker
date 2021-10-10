@@ -14,6 +14,7 @@ namespace GameRater.Model
         protected const string FILENAME_STATUSES = "completion_statuses.json";
         protected const string FILENAME_CATEGORIES = "rating_categories.json";
         protected const string FILENAME_RANGES = "score_ranges.json";
+        protected const string FILENAME_SETTINGS = "settings.json";
         protected const string DIRECTORY_SAVE = "savefiles";
         protected string saveDir = PathController.Combine(PathController.BaseDirectory(), DIRECTORY_SAVE);
 
@@ -25,6 +26,16 @@ namespace GameRater.Model
         public override void SavePlatforms(IEnumerable<Platform> platforms)
         {
             SaveISavableList(platforms, PathController.Combine(saveDir, FILENAME_PLATFORMS));
+        }
+
+        public override Settings LoadSettings(RatingModule parentModule)
+        {
+            return LoadISavable<Settings>(PathController.Combine(saveDir, FILENAME_SETTINGS), parentModule);
+        }
+
+        public override void SaveSettings(Settings settings)
+        {
+            SaveISavable(settings, PathController.Combine(saveDir, FILENAME_SETTINGS));
         }
 
         public override IEnumerable<CompletionStatus> LoadCompletionStatuses(RatingModule parentModule)
@@ -85,6 +96,10 @@ namespace GameRater.Model
             string json = "";
             foreach (string key in sr.GetAllSavedKeys())
             {
+                if (json != "")
+                {
+                    json += ",";
+                }
                 json += "\"" + FixSpecialChars(key) + "\":\"" + FixSpecialChars(sr.GetValue(key)) + "\"";
             }
             json = "{" + json + "}";
@@ -108,12 +123,28 @@ namespace GameRater.Model
             SaveJSONToFile(serialized, filepath);
         }
 
+        protected virtual void SaveISavable(ISavable obj, string filepath)
+        {
+            string serialized = CreateJSONObject(obj);
+            SaveJSONToFile(serialized, filepath);
+        }
+
         protected virtual IEnumerable<T> LoadISavableList<T>(string filepath, RatingModule parentModule) where T : ISavable, new()
         {
             string serialized = ReadJSONFromFile(filepath);
             IEnumerable<T> result = LoadJSONArrayIntoObjects<T>(serialized);
             SetParentModule(result, parentModule);
             return result;
+        }
+
+        protected virtual T LoadISavable<T>(string filepath, RatingModule parentModule) where T : ISavable, new()
+        {
+            string serialized = ReadJSONFromFile(filepath);
+            SavableRepresentation sr = LoadJSONIntoRepresentation<T>(serialized);
+            T t = new T();
+            t.RestoreFromRepresentation(sr);
+            SetParentModule(t, parentModule);
+            return t;
         }
 
         protected string ReadJSONFromFile(string filepath)
@@ -124,6 +155,10 @@ namespace GameRater.Model
 
         protected IEnumerable<T> LoadJSONArrayIntoObjects<T>(string json) where T : ISavable, new()
         {
+            if (json == "")
+            {
+                return new LinkedList<T>();
+            }
             if (!IsValidJSONArray(json))
             {
                 throw new Exception("LoadSaveEngineGameJson LoadJSONArrayIntoObjects: object is not valid json: " + json);
@@ -143,6 +178,10 @@ namespace GameRater.Model
 
         protected SavableRepresentation LoadJSONIntoRepresentation<T>(string json) where T : ISavable, new()
         {
+            if (json == "")
+            {
+                return new SavableRepresentation();
+            }
             if (!IsValidJSONObject(json))
             {
                 throw new Exception("LoadSaveEngineGameJson LoadJSONIntoRepresentation: object is not valid json: " + json);
@@ -201,10 +240,15 @@ namespace GameRater.Model
         {
             foreach (T obj in list)
             {
-                if (obj is IModuleAccess moduleAccess)
-                {
-                    moduleAccess.SetParentModule(parentModule);
-                }
+                SetParentModule(obj, parentModule);
+            }
+        }
+
+        protected void SetParentModule<T>(T obj, RatingModule parentModule)
+        {
+            if (obj is IModuleAccess moduleAccess)
+            {
+                moduleAccess.SetParentModule(parentModule);
             }
         }
 
@@ -214,9 +258,6 @@ namespace GameRater.Model
             {
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filepath));
                 System.IO.FileStream fs = System.IO.File.Create(filepath);
-                string defaultJson = "[]";
-                UTF8Encoding encoding = new UTF8Encoding();
-                fs.Write(encoding.GetBytes(defaultJson), 0, encoding.GetByteCount(defaultJson));
                 fs.Close();
             }
         }

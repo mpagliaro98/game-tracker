@@ -43,6 +43,11 @@ namespace GameRater.Model
             scoreRanges = loadSaveEngine.LoadScoreRanges(this);
         }
 
+        protected override void LoadSettings()
+        {
+            settings = loadSaveEngine.LoadSettings(this);
+        }
+
         public override void SaveCompletionStatuses()
         {
             loadSaveEngine.SaveCompletionStatuses(completionStatuses);
@@ -66,6 +71,11 @@ namespace GameRater.Model
         public override void SaveScoreRanges()
         {
             loadSaveEngine.SaveScoreRanges(scoreRanges);
+        }
+
+        public override void SaveSettings()
+        {
+            loadSaveEngine.SaveSettings(settings);
         }
 
         public Platform FindPlatform(string name)

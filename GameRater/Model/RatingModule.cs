@@ -12,6 +12,7 @@ namespace GameRater.Model
         protected IEnumerable<ScoreRange> scoreRanges;
         protected IEnumerable<RatingCategory> ratingCategories;
         protected IEnumerable<ScoreRelationship> scoreRelationships;
+        protected Settings settings;
 
         public RatingModule()
         {
@@ -23,17 +24,20 @@ namespace GameRater.Model
 
         public virtual void Init()
         {
-            LoadRatableObjects();
+            LoadSettings();
             LoadScoreRanges();
             LoadRatingCategories();
+            LoadRatableObjects();
         }
 
         protected abstract void LoadRatableObjects();
         protected abstract void LoadScoreRanges();
         protected abstract void LoadRatingCategories();
+        protected abstract void LoadSettings();
         public abstract void SaveRatableObjects();
         public abstract void SaveScoreRanges();
         public abstract void SaveRatingCategories();
+        public abstract void SaveSettings();
 
         public RatableObject FindRatableObject(string name)
         {
