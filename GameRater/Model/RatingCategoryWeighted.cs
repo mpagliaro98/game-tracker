@@ -17,6 +17,11 @@ namespace GameRater.Model
             return weight;
         }
 
+        public void SetWeight(double val)
+        {
+            weight = val;
+        }
+
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

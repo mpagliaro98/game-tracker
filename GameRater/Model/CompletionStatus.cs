@@ -16,9 +16,17 @@ namespace GameRater.Model
         }
 
         private bool useAsFinished = false;
-        public bool UseAsFinished {
+        public bool UseAsFinished 
+        {
             get { return useAsFinished;  }
             set { useAsFinished = value; }
+        }
+
+        private bool excludeFromStats = false;
+        public bool ExcludeFromStats
+        {
+            get { return excludeFromStats; }
+            set { excludeFromStats = value; }
         }
 
         public CompletionStatus() { }
@@ -28,6 +36,7 @@ namespace GameRater.Model
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("name", name);
             sr.SaveValue("useAsFinished", useAsFinished.ToString());
+            sr.SaveValue("excludeFromStats", excludeFromStats.ToString());
             return sr;
         }
 
@@ -42,6 +51,9 @@ namespace GameRater.Model
                         break;
                     case "useAsFinished":
                         useAsFinished = bool.Parse(sr.GetValue(key));
+                        break;
+                    case "excludeFromStats":
+                        excludeFromStats = bool.Parse(sr.GetValue(key));
                         break;
                     default:
                         Console.WriteLine("CompletionStatus.cs RestoreFromRepresentation: unrecognized key " + key);
