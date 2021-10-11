@@ -14,6 +14,31 @@ namespace GameRater.Model
         protected IEnumerable<ScoreRelationship> scoreRelationships;
         protected Settings settings;
 
+        public IEnumerable<RatableObject> RatableObjects
+        {
+            get { return ratableObjects; }
+        }
+
+        public IEnumerable<ScoreRange> ScoreRanges
+        {
+            get { return scoreRanges; }
+        }
+
+        public IEnumerable<RatingCategory> RatingCategories
+        {
+            get { return ratingCategories; }
+        }
+
+        public IEnumerable<ScoreRelationship> ScoreRelationships
+        {
+            get { return scoreRelationships; }
+        }
+
+        public Settings Settings 
+        {
+            get { return settings; }
+        }
+
         public RatingModule()
         {
             scoreRelationships = new List<ScoreRelationship>();

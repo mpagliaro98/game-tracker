@@ -7,25 +7,37 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel>
-        <TabControl x:Name="TabsBase">
-            <TabItem Header="Games">
+        <TabControl x:Name="TabsBase" SelectionChanged="TabsBase_SelectionChanged">
+            <TabItem x:Name="TabGames" Header="Games">
                 <DockPanel>
                     <Grid x:Name="GamesTop" DockPanel.Dock="Top" >
                         
                     </Grid>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Platforms">
+            <TabItem x:Name="TabPlatforms" Header="Platforms">
                 <DockPanel>
                     <Grid x:Name="PlatformsTop" DockPanel.Dock="Top" >
 
                     </Grid>
                 </DockPanel>
             </TabItem>
-            <TabItem Header="Settings">
+            <TabItem x:Name="TabSettings" Header="Settings">
                 <DockPanel>
                     <Grid x:Name="SettingsTop" DockPanel.Dock="Top" >
-
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width='1*' />
+                            <ColumnDefinition Width='1*' />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel x:Name="SettingsLayout">
+                            <Label x:Name="SettingsLabelMin" Content="Minimum Score" />
+                            <TextBox x:Name="SettingsTextboxMin" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                            <Label x:Name="SettingsLabelMax" Content="Maximum Score" />
+                            <TextBox x:Name="SettingsTextboxMax" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                            <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" />
+                            <Label x:Name="SettingsLabelError" Content="Values are formatted incorrectly" Foreground="Red" />
+                            <Label x:Name="SettingsLabelSuccess" Content="Settings successfully saved" Foreground="Lime" />
+                        </StackPanel>
                     </Grid>
                 </DockPanel>
             </TabItem>

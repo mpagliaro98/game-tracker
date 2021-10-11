@@ -10,6 +10,11 @@ namespace GameRater.Model
     {
         protected IEnumerable<CompletionStatus> completionStatuses;
 
+        public IEnumerable<CompletionStatus> CompletionStatuses
+        {
+            get { return completionStatuses; }
+        }
+
         public override void Init()
         {
             base.Init();

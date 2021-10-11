@@ -11,6 +11,11 @@ namespace GameRater.Model
         protected IEnumerable<Platform> platforms;
         protected LoadSaveEngineGame loadSaveEngine;
 
+        public IEnumerable<Platform> Platforms
+        {
+            get { return platforms; }
+        }
+
         public override void Init()
         {
             loadSaveEngine = new LoadSaveEngineGameJson();

@@ -8,15 +8,15 @@ namespace GameRater.Model
 {
     class Settings : ISavable
     {
-        private int minScore = 0;
-        public int MinScore
+        private double minScore = 0;
+        public double MinScore
         {
             get { return minScore; }
             set { minScore = value; }
         }
 
-        private int maxScore = 10;
-        public int MaxScore
+        private double maxScore = 10;
+        public double MaxScore
         {
             get { return maxScore; }
             set { maxScore = value; }
@@ -37,10 +37,10 @@ namespace GameRater.Model
                 switch (key)
                 {
                     case "minScore":
-                        minScore = int.Parse(sr.GetValue(key));
+                        minScore = double.Parse(sr.GetValue(key));
                         break;
                     case "maxScore":
-                        maxScore = int.Parse(sr.GetValue(key));
+                        maxScore = double.Parse(sr.GetValue(key));
                         break;
                     default:
                         Console.WriteLine("Settings.cs RestoreFromRepresentation: unrecognized key " + key);
