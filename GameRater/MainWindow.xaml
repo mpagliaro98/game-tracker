@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GameRater"
+        xmlns:local="clr-namespace:GameRater.UI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel>
@@ -44,39 +44,15 @@
                         </StackPanel>
                         <DockPanel x:Name="SettingsCompletionStatusesLayout" Grid.Column="1">
                             <Label x:Name="SettingsLabelCompletionStatuses" Content="Completion Statuses" DockPanel.Dock="Top" />
-                            <Border x:Name="HeightHelperCS" ScrollViewer.HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Bottom" Margin="5,2,5,5" >
-                                <ListBox x:Name="SettingsListboxCompletionStatuses" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="{Binding Path=ActualHeight, ElementName=HeightHelperCS}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                                    <ListBox.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
-                                            <Setter Property="Padding" Value="0"/>
-                                        </Style>
-                                    </ListBox.ItemContainerStyle>
-                                </ListBox>
-                            </Border>
+                            <local:ScalableListBox x:Name="SettingsListboxCompletionStatuses" DockPanel.Dock="Bottom" Margin="5,2,5,5" />
                         </DockPanel>
                         <DockPanel x:Name="SettingsScoreRangesLayout" Grid.Row="1">
                             <Label x:Name="SettingsLabelScoreRanges" Content="Score Ranges" DockPanel.Dock="Top" />
-                            <Border x:Name="HeightHelperSR" ScrollViewer.HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Bottom" Margin="5,2,5,5" >
-                                <ListBox x:Name="SettingsListboxScoreRanges" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="{Binding Path=ActualHeight, ElementName=HeightHelperSR}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                                    <ListBox.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
-                                            <Setter Property="Padding" Value="0"/>
-                                        </Style>
-                                    </ListBox.ItemContainerStyle>
-                                </ListBox>
-                            </Border>
+                            <local:ScalableListBox x:Name="SettingsListboxScoreRanges" DockPanel.Dock="Bottom" Margin="5,2,5,5" />
                         </DockPanel>
                         <DockPanel x:Name="SettingsRatingCategoriesLayout" Grid.Row="1" Grid.Column="1">
                             <Label x:Name="SettingsLabelRatingCategories" Content="Rating Categories" DockPanel.Dock="Top" />
-                            <Border x:Name="HeightHelperRC" ScrollViewer.HorizontalScrollBarVisibility="Disabled" DockPanel.Dock="Bottom" Margin="5,2,5,5" >
-                                <ListBox x:Name="SettingsListboxRatingCategories" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="{Binding Path=ActualHeight, ElementName=HeightHelperRC}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
-                                    <ListBox.ItemContainerStyle>
-                                        <Style TargetType="ListBoxItem">
-                                            <Setter Property="Padding" Value="0"/>
-                                        </Style>
-                                    </ListBox.ItemContainerStyle>
-                                </ListBox>
-                            </Border>
+                            <local:ScalableListBox x:Name="SettingsListboxRatingCategories" DockPanel.Dock="Bottom" Margin="5,2,5,5" />
                         </DockPanel>
                     </Grid>
                 </DockPanel>
