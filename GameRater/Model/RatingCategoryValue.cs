@@ -22,9 +22,10 @@ namespace GameRater.Model
             set { pointValue = value; }
         }
 
-        protected RatingModule parentModule;
+        private RatingModule parentModule;
 
         public RatingCategoryValue() { }
+
         public RatingCategoryValue(RatingCategory ratingCategory, double pointValue)
         {
             RatingCategoryName = ratingCategory.Name;

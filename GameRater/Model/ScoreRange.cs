@@ -24,7 +24,7 @@ namespace GameRater.Model
 
         private IEnumerable<int> valueList;
 
-        protected RatingModule parentModule;
+        private RatingModule parentModule;
         
         public ScoreRange() { }
 

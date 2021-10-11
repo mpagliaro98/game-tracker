@@ -57,7 +57,7 @@ namespace GameRater.Model
             }
         }
 
-        protected RatingModule parentModule;
+        private RatingModule parentModule;
 
         public RatableObject() { }
 
