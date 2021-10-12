@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
-        Title="New Rating Category" Height="300" Width="400">
+        Title="Rating Category" Height="300" Width="400">
     <StackPanel>
         <Label Content="Name" />
         <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />

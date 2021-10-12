@@ -38,6 +38,9 @@ namespace GameTracker.UI
                 case SubWindowMode.MODE_EDIT:
                     ButtonSave.Visibility = Visibility.Collapsed;
                     ButtonUpdate.Visibility = Visibility.Visible;
+                    TextboxName.Text = orig.Name;
+                    TextboxComment.Text = orig.Comment;
+                    TextboxWeight.Text = orig.Weight.ToString();
                     break;
                 default:
                     throw new Exception("Unhandled mode");

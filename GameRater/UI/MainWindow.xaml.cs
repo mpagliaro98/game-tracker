@@ -70,15 +70,15 @@ namespace GameTracker.UI
             SettingsListboxRatingCategories.ClearItems();
             foreach (RatingCategory rc in rm.RatingCategories)
             {
-                ListBoxItemRatingCategory item = new ListBoxItemRatingCategory();
-                item.SetContent(rc);
+                ListBoxItemRatingCategory item = new ListBoxItemRatingCategory(rc);
+                item.MouseDoubleClick += RatingCategoryEditWindow_Open;
                 SettingsListboxRatingCategories.AddItem(item);
 
                 ContextMenu cm = new ContextMenu();
                 item.ContextMenu = cm;
                 MenuItem mie = new MenuItem();
                 mie.Header = "Edit";
-                mie.Click += RatingCategoryContextMenuEdit_Click;
+                mie.Click += RatingCategoryEditWindow_Open;
                 cm.Items.Add(mie);
                 MenuItem mid = new MenuItem();
                 mid.Header = "Delete";
@@ -115,11 +115,18 @@ namespace GameTracker.UI
             OpenSubWindowRatingCategory(SubWindowMode.MODE_ADD);
         }
 
-        private void RatingCategoryContextMenuEdit_Click(object sender, RoutedEventArgs e)
+        private void RatingCategoryEditWindow_Open(object sender, RoutedEventArgs e)
         {
-            /*var lbi = (ListBoxItemRatingCategory)sender;
-            RatingCategory rc = rm.FindRatingCategory((string)lbi.GetKey());
-            OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, rc);*/
+            ListBoxItemRatingCategory lbi;
+            if (sender is MenuItem)
+            {
+                lbi = GetControlFromMenuItem<ListBoxItemRatingCategory>((MenuItem)sender);
+            }
+            else
+            {
+                lbi = (ListBoxItemRatingCategory)sender;
+            }
+            OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, lbi.RatingCategory);
         }
 
         private void OpenSubWindowRatingCategory(SubWindowMode mode, RatingCategory orig = null)
@@ -132,6 +139,19 @@ namespace GameTracker.UI
         private void RatingCategoryWindow_Closed(object sender, EventArgs e)
         {
             UpdateRatingCategoryUI();
+        }
+
+        private T GetControlFromMenuItem<T>(MenuItem menuItem) where T : UIElement
+        {
+            while (menuItem.Parent is MenuItem)
+            {
+                menuItem = (MenuItem)menuItem.Parent;
+            }
+            if (menuItem.Parent is ContextMenu menu)
+            {
+                return menu.PlacementTarget as T;
+            }
+            return null;
         }
     }
 }
