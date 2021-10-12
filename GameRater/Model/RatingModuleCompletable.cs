@@ -38,7 +38,12 @@ namespace GameRater.Model
 
         public void AddCompletionStatus(CompletionStatus obj)
         {
-            completionStatuses = completionStatuses.Append(obj);
+            AddToList(ref completionStatuses, obj);
+        }
+
+        public void UpdateCompletionStatus(CompletionStatus obj, CompletionStatus orig)
+        {
+            UpdateInList(ref completionStatuses, obj, orig);
         }
     }
 }

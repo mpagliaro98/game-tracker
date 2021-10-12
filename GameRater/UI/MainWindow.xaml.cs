@@ -101,7 +101,7 @@ namespace GameRater.UI
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
         {
-            var window = new SubWindowRatingCategoryNew(rm);
+            var window = new SubWindowRatingCategory(rm, SubWindowMode.MODE_ADD);
             window.Closed += RatingCategoryWindow_Closed;
             window.ShowDialog();
         }

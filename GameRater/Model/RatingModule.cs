@@ -112,24 +112,53 @@ namespace GameRater.Model
             throw new NameNotFoundException("RatingModule FindScoreRelationship: could not find name of " + name);
         }
 
-        public Settings GetSettings()
+        protected void AddToList<T>(ref IEnumerable<T> list, T obj)
         {
-            return settings;
+            list = list.Append(obj);
+        }
+
+        protected void UpdateInList<T>(ref IEnumerable<T> list, T obj, T orig)
+        {
+            List<T> temp = list.ToList();
+            int idx = temp.IndexOf(orig);
+            UpdateInList(ref list, obj, idx);
+        }
+
+        protected void UpdateInList<T>(ref IEnumerable<T> list, T obj, int idx)
+        {
+            List<T> temp = list.ToList();
+            temp[idx] = obj;
+            list = temp;
         }
 
         public void AddRatableObject(RatableObject obj)
         {
-            ratableObjects = ratableObjects.Append(obj);
+            AddToList(ref ratableObjects, obj);
         }
 
         public void AddScoreRange(ScoreRange obj)
         {
-            scoreRanges = scoreRanges.Append(obj);
+            AddToList(ref scoreRanges, obj);
         }
 
         public void AddRatingCategory(RatingCategory obj)
         {
-            ratingCategories = ratingCategories.Append(obj);
+            AddToList(ref ratingCategories, obj);
+        }
+
+        public void UpdateRatableObject(RatableObject obj, RatableObject orig)
+        {
+            UpdateInList(ref ratableObjects, obj, orig);
+        }
+
+        public void UpdateScoreRange(ScoreRange obj, ScoreRange orig)
+        {
+            UpdateInList(ref scoreRanges, obj, orig);
+        }
+
+        public void UpdateRatingCategory(RatingCategory obj, RatingCategory orig)
+        {
+            UpdateInList(ref ratingCategories, obj, orig);
         }
     }
 }

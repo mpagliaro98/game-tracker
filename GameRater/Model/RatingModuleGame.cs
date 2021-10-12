@@ -97,7 +97,12 @@ namespace GameRater.Model
 
         public void AddPlatform(Platform obj)
         {
-            platforms = platforms.Append(obj);
+            AddToList(ref platforms, obj);
+        }
+
+        public void UpdatePlatform(Platform obj, Platform orig)
+        {
+            UpdateInList(ref platforms, obj, orig);
         }
     }
 }

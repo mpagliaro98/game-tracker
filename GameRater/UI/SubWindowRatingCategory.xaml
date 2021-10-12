@@ -1,4 +1,4 @@
-﻿<Window x:Class="GameRater.UI.SubWindowRatingCategoryNew"
+﻿<Window x:Class="GameRater.UI.SubWindowRatingCategory"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -14,6 +14,7 @@
         <Label Content="Weight" />
         <TextBox x:Name="TextboxWeight" Margin="5,0" Width="150" HorizontalAlignment="Left" />
         <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />
+        <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
         <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" />
     </StackPanel>
 </Window>
