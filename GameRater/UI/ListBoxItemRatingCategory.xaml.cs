@@ -21,6 +21,8 @@ namespace GameTracker.UI
     /// </summary>
     public partial class ListBoxItemRatingCategory : UserControl
     {
+        private RatingCategory rc;
+
         public ListBoxItemRatingCategory()
         {
             InitializeComponent();
@@ -28,8 +30,14 @@ namespace GameTracker.UI
 
         public void SetContent(RatingCategory rc)
         {
+            this.rc = rc;
             LabelName.Content = rc.Name;
-            LabelWeight.Content = "Weight: " + rc.GetWeight().ToString();
+            LabelWeight.Content = "Weight: " + rc.Weight.ToString();
+        }
+
+        public object GetKey()
+        {
+            return rc.Name;
         }
     }
 }

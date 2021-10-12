@@ -112,7 +112,6 @@
     <Compile Include="Model\RatableObject.cs" />
     <Compile Include="Model\RatableObjectCompletable.cs" />
     <Compile Include="Model\RatingCategory.cs" />
-    <Compile Include="Model\RatingCategoryStatic.cs" />
     <Compile Include="Model\RatingCategoryValue.cs" />
     <Compile Include="Model\RatingCategoryWeighted.cs" />
     <Compile Include="Model\RatingModule.cs" />

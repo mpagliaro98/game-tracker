@@ -73,6 +73,16 @@ namespace GameTracker.UI
                 ListBoxItemRatingCategory item = new ListBoxItemRatingCategory();
                 item.SetContent(rc);
                 SettingsListboxRatingCategories.AddItem(item);
+
+                ContextMenu cm = new ContextMenu();
+                item.ContextMenu = cm;
+                MenuItem mie = new MenuItem();
+                mie.Header = "Edit";
+                mie.Click += RatingCategoryContextMenuEdit_Click;
+                cm.Items.Add(mie);
+                MenuItem mid = new MenuItem();
+                mid.Header = "Delete";
+                cm.Items.Add(mid);
             }
         }
 
@@ -102,7 +112,19 @@ namespace GameTracker.UI
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
         {
-            var window = new SubWindowRatingCategory(rm, SubWindowMode.MODE_ADD);
+            OpenSubWindowRatingCategory(SubWindowMode.MODE_ADD);
+        }
+
+        private void RatingCategoryContextMenuEdit_Click(object sender, RoutedEventArgs e)
+        {
+            /*var lbi = (ListBoxItemRatingCategory)sender;
+            RatingCategory rc = rm.FindRatingCategory((string)lbi.GetKey());
+            OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, rc);*/
+        }
+
+        private void OpenSubWindowRatingCategory(SubWindowMode mode, RatingCategory orig = null)
+        {
+            var window = new SubWindowRatingCategory(rm, mode, orig);
             window.Closed += RatingCategoryWindow_Closed;
             window.ShowDialog();
         }

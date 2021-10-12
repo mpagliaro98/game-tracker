@@ -49,7 +49,7 @@ namespace GameTracker.Model
                     double sumOfWeights = SumOfWeights();
                     foreach (RatingCategoryValue categoryValue in categoryValues)
                     {
-                        double categoryWeight = GetParentModule().FindRatingCategory(categoryValue.RatingCategoryName).GetWeight();
+                        double categoryWeight = GetParentModule().FindRatingCategory(categoryValue.RatingCategoryName).Weight;
                         total += (categoryWeight / sumOfWeights) * categoryValue.PointValue;
                     }
                     return total;
@@ -116,7 +116,7 @@ namespace GameTracker.Model
             foreach (RatingCategoryValue rcv in CategoryValues)
             {
                 RatingCategory rc = GetParentModule().FindRatingCategory(rcv.RatingCategoryName);
-                sum += rc.GetWeight();
+                sum += rc.Weight;
             }
             return sum;
         }

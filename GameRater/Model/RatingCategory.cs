@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameTracker.Model
 {
-    public abstract class RatingCategory : ISavable
+    public class RatingCategory : ISavable
     {
         private string name = "";
         public string Name
@@ -22,15 +22,26 @@ namespace GameTracker.Model
             set { comment = value; }
         }
 
+        protected double weight = 1.0;
+        public double Weight
+        {
+            get { return weight; }
+        }
+
         public RatingCategory() { }
 
-        public abstract double GetWeight();
+        public RatingCategory(string name, string comment)
+        {
+            Name = name;
+            Comment = comment;
+        }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("name", name);
             sr.SaveValue("comment", comment);
+            sr.SaveValue("weight", weight.ToString());
             return sr;
         }
 
@@ -45,6 +56,9 @@ namespace GameTracker.Model
                         break;
                     case "comment":
                         comment = sr.GetValue(key);
+                        break;
+                    case "weight":
+                        weight = double.Parse(sr.GetValue(key));
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("RatingCategory.cs RestoreFromRepresentation: unrecognized key " + key);
