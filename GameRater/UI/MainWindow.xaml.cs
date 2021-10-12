@@ -98,5 +98,17 @@ namespace GameRater.UI
             }
             e.Handled = true;
         }
+
+        private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new SubWindowRatingCategoryNew(rm);
+            window.Closed += RatingCategoryWindow_Closed;
+            window.ShowDialog();
+        }
+
+        private void RatingCategoryWindow_Closed(object sender, EventArgs e)
+        {
+            UpdateRatingCategoryUI();
+        }
     }
 }

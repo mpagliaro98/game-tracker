@@ -64,6 +64,9 @@
     <Compile Include="UI\ScalableListBox.xaml.cs">
       <DependentUpon>ScalableListBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SubWindowRatingCategoryNew.xaml.cs">
+      <DependentUpon>SubWindowRatingCategoryNew.xaml</DependentUpon>
+    </Compile>
     <Page Include="UI\ListBoxItemRatingCategory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -86,6 +89,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\ScalableListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SubWindowRatingCategoryNew.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

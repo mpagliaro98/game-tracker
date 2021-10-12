@@ -94,5 +94,10 @@ namespace GameRater.Model
             }
             throw new NameNotFoundException("RatingModuleGame FindPlatform: could not find name of " + name);
         }
+
+        public void AddPlatform(Platform obj)
+        {
+            platforms = platforms.Append(obj);
+        }
     }
 }

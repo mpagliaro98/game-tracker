@@ -35,5 +35,10 @@ namespace GameRater.Model
             }
             throw new NameNotFoundException("RatingModuleCompletable FindCompletionStatus: could not find name of " + name);
         }
+
+        public void AddCompletionStatus(CompletionStatus obj)
+        {
+            completionStatuses = completionStatuses.Append(obj);
+        }
     }
 }

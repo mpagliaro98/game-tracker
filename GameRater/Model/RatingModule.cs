@@ -116,5 +116,20 @@ namespace GameRater.Model
         {
             return settings;
         }
+
+        public void AddRatableObject(RatableObject obj)
+        {
+            ratableObjects = ratableObjects.Append(obj);
+        }
+
+        public void AddScoreRange(ScoreRange obj)
+        {
+            scoreRanges = scoreRanges.Append(obj);
+        }
+
+        public void AddRatingCategory(RatingCategory obj)
+        {
+            ratingCategories = ratingCategories.Append(obj);
+        }
     }
 }

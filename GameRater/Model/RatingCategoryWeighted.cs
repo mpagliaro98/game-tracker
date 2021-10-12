@@ -12,6 +12,13 @@ namespace GameRater.Model
 
         public RatingCategoryWeighted() { }
 
+        public RatingCategoryWeighted(string name, string comment, double weight)
+        {
+            Name = name;
+            Comment = comment;
+            SetWeight(weight);
+        }
+
         public override double GetWeight()
         {
             return weight;
