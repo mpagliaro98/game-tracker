@@ -53,7 +53,7 @@ namespace GameTracker.Model
                         pointValue = double.Parse(sr.GetValue(key));
                         break;
                     default:
-                        Console.WriteLine("RatingCategoryValue.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("RatingCategoryValue.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

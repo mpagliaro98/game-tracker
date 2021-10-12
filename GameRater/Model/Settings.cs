@@ -43,7 +43,7 @@ namespace GameTracker.Model
                         maxScore = double.Parse(sr.GetValue(key));
                         break;
                     default:
-                        Console.WriteLine("Settings.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("Settings.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

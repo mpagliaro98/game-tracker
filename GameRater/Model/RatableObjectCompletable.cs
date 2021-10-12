@@ -35,7 +35,7 @@ namespace GameTracker.Model
                         completionStatus = sr.GetISavable<CompletionStatus>(key);
                         break;
                     default:
-                        Console.WriteLine("RatableObjectCompletable.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("RatableObjectCompletable.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

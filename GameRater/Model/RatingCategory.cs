@@ -47,7 +47,7 @@ namespace GameTracker.Model
                         comment = sr.GetValue(key);
                         break;
                     default:
-                        Console.WriteLine("RatingCategory.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("RatingCategory.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

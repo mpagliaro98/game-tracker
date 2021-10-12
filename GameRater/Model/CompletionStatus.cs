@@ -56,7 +56,7 @@ namespace GameTracker.Model
                         excludeFromStats = bool.Parse(sr.GetValue(key));
                         break;
                     default:
-                        Console.WriteLine("CompletionStatus.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("CompletionStatus.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

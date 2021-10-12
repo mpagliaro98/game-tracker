@@ -32,7 +32,7 @@ namespace GameTracker.Model
                         name = sr.GetValue(key);
                         break;
                     default:
-                        Console.WriteLine("Platform.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("Platform.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

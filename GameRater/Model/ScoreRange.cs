@@ -53,7 +53,7 @@ namespace GameTracker.Model
                         valueList = sr.GetListOfType<int>(key);
                         break;
                     default:
-                        Console.WriteLine("ScoreRange.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("ScoreRange.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

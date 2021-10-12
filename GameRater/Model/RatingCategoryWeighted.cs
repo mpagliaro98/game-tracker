@@ -47,7 +47,7 @@ namespace GameTracker.Model
                         weight = double.Parse(sr.GetValue(key));
                         break;
                     default:
-                        Console.WriteLine("RatingCategoryWeighted.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("RatingCategoryWeighted.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

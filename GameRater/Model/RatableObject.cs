@@ -94,7 +94,7 @@ namespace GameTracker.Model
                         finalScoreManual = double.Parse(sr.GetValue(key));
                         break;
                     default:
-                        Console.WriteLine("RatableObject.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("RatableObject.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }
