@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class RatableObjectCompletable : RatableObject
+    public class RatableObjectCompletable : RatableObject
     {
         private CompletionStatus completionStatus;
         public CompletionStatus CompletionStatus

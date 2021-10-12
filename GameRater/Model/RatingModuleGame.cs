@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class RatingModuleGame : RatingModuleCompletable
+    public class RatingModuleGame : RatingModuleCompletable
     {
         protected IEnumerable<Platform> platforms;
         protected LoadSaveEngineGame loadSaveEngine;

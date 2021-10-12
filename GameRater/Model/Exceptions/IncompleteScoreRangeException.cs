@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class IncompleteScoreRangeException : Exception
+    public class IncompleteScoreRangeException : Exception
     {
         public IncompleteScoreRangeException()
         {

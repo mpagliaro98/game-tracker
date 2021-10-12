@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class SavableRepresentation
+    public class SavableRepresentation
     {
         private class ValueContainer
         {

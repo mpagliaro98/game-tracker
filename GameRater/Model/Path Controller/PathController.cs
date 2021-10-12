@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    static class PathController
+    public static class PathController
     {
         private static IPathController GetPCInstance()
         {

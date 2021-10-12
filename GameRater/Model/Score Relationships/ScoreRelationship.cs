@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    abstract class ScoreRelationship
+    public abstract class ScoreRelationship
     {
         public abstract string Name
         {

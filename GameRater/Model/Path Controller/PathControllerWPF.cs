@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class PathControllerWPF : IPathController
+    public class PathControllerWPF : IPathController
     {
         public string BaseDirectory()
         {

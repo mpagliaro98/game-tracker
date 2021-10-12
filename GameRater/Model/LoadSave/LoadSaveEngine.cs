@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    abstract class LoadSaveEngine
+    public abstract class LoadSaveEngine
     {
         public abstract IEnumerable<RatableObject> LoadRatableObjects(RatingModule parentModule);
         public abstract IEnumerable<ScoreRange> LoadScoreRanges(RatingModule parentModule);

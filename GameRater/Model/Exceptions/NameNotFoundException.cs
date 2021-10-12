@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class NameNotFoundException : Exception
+    public class NameNotFoundException : Exception
     {
         public NameNotFoundException()
         {

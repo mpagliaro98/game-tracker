@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    abstract class RatingCategory : ISavable
+    public abstract class RatingCategory : ISavable
     {
         private string name = "";
         public string Name

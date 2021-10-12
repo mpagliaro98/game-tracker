@@ -14,7 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GameRater.Model;
 
-namespace GameRater
+namespace GameRater.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -64,8 +64,23 @@ namespace GameRater
             SettingsLabelSuccess.Visibility = Visibility.Collapsed;
         }
 
+        private void UpdateRatingCategoryUI()
+        {
+            SettingsListboxRatingCategories.ClearItems();
+            foreach (RatingCategory rc in rm.RatingCategories)
+            {
+                ListBoxItemRatingCategory item = new ListBoxItemRatingCategory();
+                item.SetContent(rc);
+                SettingsListboxRatingCategories.AddItem(item);
+            }
+        }
+
         private void TabsBase_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (e.Source != TabsBase)
+            {
+                return;
+            }
             TabItem tab = (TabItem)TabsBase.SelectedItem;
             switch (tab.Name)
             {
@@ -76,6 +91,7 @@ namespace GameRater
                 case TAB_SETTINGS:
                     ResetSettingsLabels();
                     UpdateSettingsUI();
+                    UpdateRatingCategoryUI();
                     break;
                 default:
                     throw new Exception("Unhandled tab");

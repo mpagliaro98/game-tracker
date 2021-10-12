@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class RatingCategoryValue : ISavable, IModuleAccess
+    public class RatingCategoryValue : ISavable, IModuleAccess
     {
         private string ratingCategoryName = "";
         public string RatingCategoryName

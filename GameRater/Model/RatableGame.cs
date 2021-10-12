@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class RatableGame : RatableObjectCompletable
+    public class RatableGame : RatableObjectCompletable
     {
         private Platform platform;
         public Platform Platform

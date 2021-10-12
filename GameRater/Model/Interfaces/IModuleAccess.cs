@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    interface IModuleAccess
+    public interface IModuleAccess
     {
         RatingModule GetParentModule();
         void SetParentModule(RatingModule parentModule);

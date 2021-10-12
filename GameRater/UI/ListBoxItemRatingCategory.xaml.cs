@@ -12,32 +12,24 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using GameRater.Model;
 
 namespace GameRater.UI
 {
     /// <summary>
-    /// Interaction logic for ScalableListBox.xaml
+    /// Interaction logic for ListBoxItemRatingCategory.xaml
     /// </summary>
-    public partial class ScalableListBox : UserControl
+    public partial class ListBoxItemRatingCategory : UserControl
     {
-        public ScalableListBox()
+        public ListBoxItemRatingCategory()
         {
             InitializeComponent();
         }
 
-        public void ClearItems()
+        public void SetContent(RatingCategory rc)
         {
-            LB.Items.Clear();
-        }
-
-        public void AddItem(object c)
-        {
-            LB.Items.Add(c);
-        }
-
-        public void RemoveItem(object c)
-        {
-            LB.Items.Remove(c);
+            LabelName.Content = rc.Name;
+            LabelWeight.Content = "Weight: " + rc.GetWeight().ToString();
         }
     }
 }

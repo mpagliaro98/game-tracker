@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class CompletionStatus : ISavable
+    public class CompletionStatus : ISavable
     {
         private string name = "";
         public string Name

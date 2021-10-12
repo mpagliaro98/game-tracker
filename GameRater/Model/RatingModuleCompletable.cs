@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    abstract class RatingModuleCompletable : RatingModule
+    public abstract class RatingModuleCompletable : RatingModule
     {
         protected IEnumerable<CompletionStatus> completionStatuses;
 

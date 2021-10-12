@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    interface ISavable
+    public interface ISavable
     {
         SavableRepresentation LoadIntoRepresentation();
         void RestoreFromRepresentation(SavableRepresentation sr);

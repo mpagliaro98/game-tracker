@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    interface IPathController
+    public interface IPathController
     {
         string BaseDirectory();
         string Combine(string path1, string path2);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    abstract class LoadSaveEngineCompletable : LoadSaveEngine
+    public abstract class LoadSaveEngineCompletable : LoadSaveEngine
     {
         public abstract IEnumerable<CompletionStatus> LoadCompletionStatuses(RatingModule parentModule);
         public abstract void SaveCompletionStatuses(IEnumerable<CompletionStatus> completionStatuses);

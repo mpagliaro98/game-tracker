@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class RatingCategoryStatic : RatingCategory
+    public class RatingCategoryStatic : RatingCategory
     {
         private const double weight = 1.0;
 

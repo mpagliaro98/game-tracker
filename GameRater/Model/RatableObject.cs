@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class RatableObject : ISavable, IModuleAccess
+    public class RatableObject : ISavable, IModuleAccess
     {
         private string name = "";
         public string Name {

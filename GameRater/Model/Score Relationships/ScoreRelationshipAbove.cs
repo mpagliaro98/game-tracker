@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class ScoreRelationshipAbove : ScoreRelationship
+    public class ScoreRelationshipAbove : ScoreRelationship
     {
         public override string Name
         {

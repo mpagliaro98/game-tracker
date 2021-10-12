@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    abstract class RatingModule
+    public abstract class RatingModule
     {
         protected IEnumerable<RatableObject> ratableObjects;
         protected IEnumerable<ScoreRange> scoreRanges;

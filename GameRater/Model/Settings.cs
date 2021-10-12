@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class Settings : ISavable
+    public class Settings : ISavable
     {
         private double minScore = 0;
         public double MinScore

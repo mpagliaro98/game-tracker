@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameRater.Model
 {
-    class RatingCategoryWeighted : RatingCategory
+    public class RatingCategoryWeighted : RatingCategory
     {
         private double weight = 0;
 
