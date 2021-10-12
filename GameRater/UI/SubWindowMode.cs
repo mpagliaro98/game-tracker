@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameRater.UI
+namespace GameTracker.UI
 {
     public enum SubWindowMode
     {

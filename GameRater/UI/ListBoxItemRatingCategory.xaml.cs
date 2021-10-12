@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GameRater.Model;
+using GameTracker.Model;
 
-namespace GameRater.UI
+namespace GameTracker.UI
 {
     /// <summary>
     /// Interaction logic for ListBoxItemRatingCategory.xaml

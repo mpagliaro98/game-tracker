@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
-namespace GameRater.Model
+namespace GameTracker.Model
 {
     public class LoadSaveEngineGameJson : LoadSaveEngineGame
     {

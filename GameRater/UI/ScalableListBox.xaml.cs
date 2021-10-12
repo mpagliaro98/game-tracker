@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GameRater.UI
+namespace GameTracker.UI
 {
     /// <summary>
     /// Interaction logic for ScalableListBox.xaml

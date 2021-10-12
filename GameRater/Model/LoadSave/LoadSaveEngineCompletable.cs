@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameRater.Model
+namespace GameTracker.Model
 {
     public abstract class LoadSaveEngineCompletable : LoadSaveEngine
     {
