@@ -16,9 +16,13 @@ namespace GameTracker.Model
             get { return platforms; }
         }
 
+        public RatingModuleGame(LoadSaveEngineGame loadSaveEngine)
+        {
+            this.loadSaveEngine = loadSaveEngine;
+        }
+
         public override void Init()
         {
-            loadSaveEngine = new LoadSaveEngineGameJson();
             base.Init();
             LoadPlatforms();
         }

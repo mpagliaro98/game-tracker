@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GameTracker.Model
 {
-    public class PathControllerWPF : IPathController
+    public class PathControllerWindows : IPathController
     {
         public string BaseDirectory()
         {

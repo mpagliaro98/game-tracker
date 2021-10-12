@@ -104,7 +104,7 @@
     <Compile Include="Model\LoadSave\LoadSaveEngineGame.cs" />
     <Compile Include="Model\Exceptions\NameNotFoundException.cs" />
     <Compile Include="Model\Path Controller\PathController.cs" />
-    <Compile Include="Model\Path Controller\PathControllerWPF.cs" />
+    <Compile Include="Model\Path Controller\PathControllerWindows.cs" />
     <Compile Include="Model\RatingModuleGame.cs" />
     <Compile Include="Model\LoadSave\LoadSaveEngineGameJson.cs" />
     <Compile Include="Model\Platform.cs" />

@@ -29,7 +29,8 @@ namespace GameTracker.UI
 
         public MainWindow()
         {
-            rm = new RatingModuleGame();
+            PathController.PathControllerInstance = new PathControllerWindows();
+            rm = new RatingModuleGame(new LoadSaveEngineGameJson());
             rm.Init();
             InitializeComponent();
         }
