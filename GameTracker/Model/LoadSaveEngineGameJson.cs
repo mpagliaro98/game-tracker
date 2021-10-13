@@ -182,23 +182,7 @@ namespace GameTracker.Model
             }
             return sr;
         }
-
-        protected void SetParentModule<T>(IEnumerable<T> list, RatingModule parentModule)
-        {
-            foreach (T obj in list)
-            {
-                SetParentModule(obj, parentModule);
-            }
-        }
-
-        protected void SetParentModule<T>(T obj, RatingModule parentModule)
-        {
-            if (obj is IModuleAccess moduleAccess)
-            {
-                moduleAccess.SetParentModule(parentModule);
-            }
-        }
-
+        
         protected void CreateFileIfDoesNotExist(string filepath)
         {
             if (!PathController.FileExists(filepath))
