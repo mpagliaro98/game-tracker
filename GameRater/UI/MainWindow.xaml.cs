@@ -30,6 +30,7 @@ namespace GameTracker.UI
         public MainWindow()
         {
             PathController.PathControllerInstance = new PathControllerWindows();
+            GlobalSettings.Autosave = true;
             rm = new RatingModuleGame(new LoadSaveEngineGameJson());
             rm.Init();
             InitializeComponent();
@@ -54,8 +55,6 @@ namespace GameTracker.UI
 
             rm.Settings.MinScore = minScore;
             rm.Settings.MaxScore = maxScore;
-            rm.SaveSettings();
-            rm.SaveRatableObjects();
             UpdateSettingsUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
         }

@@ -52,7 +52,6 @@ namespace GameTracker.UI
             if (!ValidateInputs(out string name, out string comment, out double weight)) return;
             var cat = new RatingCategoryWeighted(name, comment, weight);
             rm.AddRatingCategory(cat);
-            rm.SaveRatingCategories();
             Close();
         }
 
@@ -61,7 +60,6 @@ namespace GameTracker.UI
             if (!ValidateInputs(out string name, out string comment, out double weight)) return;
             var cat = new RatingCategoryWeighted(name, comment, weight);
             rm.UpdateRatingCategory(cat, orig);
-            rm.SaveRatingCategories();
             Close();
         }
 

@@ -19,6 +19,11 @@ namespace GameTracker.Model
                 double oldMinScore = minScore;
                 minScore = value;
                 parentModule.RecalculateScores(oldMinScore, MaxScore, minScore, MaxScore);
+                if (GlobalSettings.Autosave)
+                {
+                    GetParentModule().SaveSettings();
+                    GetParentModule().SaveRatableObjects();
+                }
             }
         }
 
@@ -31,6 +36,11 @@ namespace GameTracker.Model
                 double oldMaxScore = maxScore;
                 maxScore = value;
                 parentModule.RecalculateScores(MinScore, oldMaxScore, MinScore, maxScore);
+                if (GlobalSettings.Autosave)
+                {
+                    GetParentModule().SaveSettings();
+                    GetParentModule().SaveRatableObjects();
+                }
             }
         }
 

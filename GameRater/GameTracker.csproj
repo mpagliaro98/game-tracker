@@ -58,6 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\GlobalSettings.cs" />
     <Compile Include="UI\ListBoxItemRatingCategory.xaml.cs">
       <DependentUpon>ListBoxItemRatingCategory.xaml</DependentUpon>
     </Compile>

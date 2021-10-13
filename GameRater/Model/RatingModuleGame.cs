@@ -101,12 +101,12 @@ namespace GameTracker.Model
 
         public void AddPlatform(Platform obj)
         {
-            AddToList(ref platforms, obj);
+            AddToList(ref platforms, SavePlatforms, obj);
         }
 
         public void UpdatePlatform(Platform obj, Platform orig)
         {
-            UpdateInList(ref platforms, obj, orig);
+            UpdateInList(ref platforms, SavePlatforms, obj, orig);
         }
     }
 }

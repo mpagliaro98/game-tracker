@@ -38,12 +38,12 @@ namespace GameTracker.Model
 
         public void AddCompletionStatus(CompletionStatus obj)
         {
-            AddToList(ref completionStatuses, obj);
+            AddToList(ref completionStatuses, SaveCompletionStatuses, obj);
         }
 
         public void UpdateCompletionStatus(CompletionStatus obj, CompletionStatus orig)
         {
-            UpdateInList(ref completionStatuses, obj, orig);
+            UpdateInList(ref completionStatuses, SaveCompletionStatuses, obj, orig);
         }
     }
 }
