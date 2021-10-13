@@ -36,7 +36,7 @@ namespace GameTracker.Model
         {
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("ratingCategoryName", ratingCategoryName);
-            sr.SaveValue("pointValue", pointValue.ToString());
+            sr.SaveValue("pointValue", pointValue);
             return sr;
         }
 
@@ -48,10 +48,10 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "ratingCategoryName":
-                        ratingCategoryName = sr.GetValue(key);
+                        ratingCategoryName = sr.GetString(key);
                         break;
                     case "pointValue":
-                        pointValue = double.Parse(sr.GetValue(key));
+                        pointValue = sr.GetDouble(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("RatingCategoryValue.cs RestoreFromRepresentation: unrecognized key " + key);

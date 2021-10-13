@@ -67,8 +67,8 @@ namespace GameTracker.Model
             sr.SaveValue("name", name);
             sr.SaveValue("comment", comment);
             sr.SaveList("categoryValues", categoryValues);
-            sr.SaveValue("ignoreCategories", ignoreCategories.ToString());
-            sr.SaveValue("finalScoreManual", finalScoreManual.ToString());
+            sr.SaveValue("ignoreCategories", ignoreCategories);
+            sr.SaveValue("finalScoreManual", finalScoreManual);
             return sr;
         }
 
@@ -80,19 +80,19 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "name":
-                        name = sr.GetValue(key);
+                        name = sr.GetString(key);
                         break;
                     case "comment":
-                        comment = sr.GetValue(key);
+                        comment = sr.GetString(key);
                         break;
                     case "categoryValues":
                         categoryValues = sr.GetListOfISavable<RatingCategoryValue>(key);
                         break;
                     case "ignoreCategories":
-                        ignoreCategories = bool.Parse(sr.GetValue(key));
+                        ignoreCategories = sr.GetBool(key);
                         break;
                     case "finalScoreManual":
-                        finalScoreManual = double.Parse(sr.GetValue(key));
+                        finalScoreManual = sr.GetDouble(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("RatableObject.cs RestoreFromRepresentation: unrecognized key " + key);

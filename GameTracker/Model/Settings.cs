@@ -47,8 +47,8 @@ namespace GameTracker.Model
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
-            sr.SaveValue("minScore", minScore.ToString());
-            sr.SaveValue("maxScore", maxScore.ToString());
+            sr.SaveValue("minScore", minScore);
+            sr.SaveValue("maxScore", maxScore);
             return sr;
         }
 
@@ -60,10 +60,10 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "minScore":
-                        minScore = double.Parse(sr.GetValue(key));
+                        minScore = sr.GetDouble(key);
                         break;
                     case "maxScore":
-                        maxScore = double.Parse(sr.GetValue(key));
+                        maxScore = sr.GetDouble(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("Settings.cs RestoreFromRepresentation: unrecognized key " + key);

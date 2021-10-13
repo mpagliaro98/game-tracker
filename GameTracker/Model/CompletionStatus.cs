@@ -35,8 +35,8 @@ namespace GameTracker.Model
         {
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("name", name);
-            sr.SaveValue("useAsFinished", useAsFinished.ToString());
-            sr.SaveValue("excludeFromStats", excludeFromStats.ToString());
+            sr.SaveValue("useAsFinished", useAsFinished);
+            sr.SaveValue("excludeFromStats", excludeFromStats);
             return sr;
         }
 
@@ -48,13 +48,13 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "name":
-                        name = sr.GetValue(key);
+                        name = sr.GetString(key);
                         break;
                     case "useAsFinished":
-                        useAsFinished = bool.Parse(sr.GetValue(key));
+                        useAsFinished = sr.GetBool(key);
                         break;
                     case "excludeFromStats":
-                        excludeFromStats = bool.Parse(sr.GetValue(key));
+                        excludeFromStats = sr.GetBool(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("CompletionStatus.cs RestoreFromRepresentation: unrecognized key " + key);

@@ -41,7 +41,7 @@ namespace GameTracker.Model
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("name", name);
             sr.SaveValue("comment", comment);
-            sr.SaveValue("weight", weight.ToString());
+            sr.SaveValue("weight", weight);
             return sr;
         }
 
@@ -53,13 +53,13 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "name":
-                        name = sr.GetValue(key);
+                        name = sr.GetString(key);
                         break;
                     case "comment":
-                        comment = sr.GetValue(key);
+                        comment = sr.GetString(key);
                         break;
                     case "weight":
-                        weight = double.Parse(sr.GetValue(key));
+                        weight = sr.GetDouble(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("RatingCategory.cs RestoreFromRepresentation: unrecognized key " + key);

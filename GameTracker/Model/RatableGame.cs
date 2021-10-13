@@ -63,10 +63,10 @@ namespace GameTracker.Model
                         platformPlayedOn = sr.GetISavable<Platform>(key);
                         break;
                     case "completionCriteria":
-                        completionCriteria = sr.GetValue(key);
+                        completionCriteria = sr.GetString(key);
                         break;
                     case "completionComment":
-                        completionComment = sr.GetValue(key);
+                        completionComment = sr.GetString(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("RatableGame.cs RestoreFromRepresentation: unrecognized key " + key);

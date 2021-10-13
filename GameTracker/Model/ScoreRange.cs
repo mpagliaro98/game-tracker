@@ -33,7 +33,7 @@ namespace GameTracker.Model
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("name", name);
             sr.SaveValue("scoreRelationshipName", scoreRelationshipName);
-            sr.SaveListGeneric("valueList", valueList);
+            sr.SaveList("valueList", valueList);
             return sr;
         }
 
@@ -45,10 +45,10 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "name":
-                        name = sr.GetValue(key);
+                        name = sr.GetString(key);
                         break;
                     case "scoreRelationshipName":
-                        scoreRelationshipName = sr.GetValue(key);
+                        scoreRelationshipName = sr.GetString(key);
                         break;
                     case "valueList":
                         valueList = sr.GetListOfType<int>(key);

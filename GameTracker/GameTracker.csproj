@@ -59,6 +59,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\GlobalSettings.cs" />
+    <Compile Include="Model\Interfaces\IValueContainerJSON.cs" />
+    <Compile Include="Model\LoadSave\SavableRepresentationJSON.cs" />
+    <Compile Include="Model\LoadSave\ValueContainer.cs" />
+    <Compile Include="Model\Interfaces\IValueContainer.cs" />
+    <Compile Include="Model\LoadSave\ValueContainerJSON.cs" />
+    <Compile Include="Model\Util.cs" />
+    <Compile Include="Model\UtilJSON.cs" />
     <Compile Include="UI\ListBoxItemRatingCategory.xaml.cs">
       <DependentUpon>ListBoxItemRatingCategory.xaml</DependentUpon>
     </Compile>

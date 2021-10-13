@@ -6,146 +6,153 @@ using System.Threading.Tasks;
 
 namespace GameTracker.Model
 {
-    public class SavableRepresentation
+    public partial class SavableRepresentation
     {
-        private class ValueContainer
-        {
-            public string valueString;
-            public SavableRepresentation valueSR;
-            public IEnumerable<string> valueStringList;
-            public IEnumerable<SavableRepresentation> valueSRList;
-        }
-
-        private IDictionary<string, ValueContainer> values;
+        private IDictionary<string, IValueContainer> values;
 
         public SavableRepresentation()
         {
-            values = new Dictionary<string, ValueContainer>();
+            values = new Dictionary<string, IValueContainer>();
         }
 
         public void SaveValue(string key, string value)
         {
-            ValueContainer vc = new ValueContainer();
-            vc.valueString = value;
+            IValueContainer vc = new ValueContainer(value);
+            values.Add(key, vc);
+        }
+
+        public void SaveValue(string key, int value)
+        {
+            IValueContainer vc = new ValueContainer(value.ToString());
+            values.Add(key, vc);
+        }
+
+        public void SaveValue(string key, bool value)
+        {
+            IValueContainer vc = new ValueContainer(value.ToString());
+            values.Add(key, vc);
+        }
+
+        public void SaveValue(string key, double value)
+        {
+            IValueContainer vc = new ValueContainer(value.ToString());
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, ISavable obj)
         {
-            SavableRepresentation sr = obj?.LoadIntoRepresentation();
-            ValueContainer vc = new ValueContainer();
-            vc.valueSR = sr;
+            IValueContainer vc = new ValueContainer(obj);
             values.Add(key, vc);
         }
 
-        public void SaveListGeneric<T>(string key, IEnumerable<T> values)
+        public void SaveValue(string key, SavableRepresentation sr)
         {
-            LinkedList<string> list = new LinkedList<string>();
-            foreach (T value in values)
-            {
-                list.AddLast(value.ToString());
-            }
-            ValueContainer vc = new ValueContainer();
-            vc.valueStringList = list;
+            IValueContainer vc = new ValueContainer(sr);
+            values.Add(key, vc);
+        }
+
+        public void SaveList(string key, IEnumerable<string> values)
+        {
+            IValueContainer vc = new ValueContainer(values);
+            this.values.Add(key, vc);
+        }
+
+        public void SaveList(string key, IEnumerable<int> values)
+        {
+            IEnumerable<string> list = Util.ConvertListToStringList(values);
+            IValueContainer vc = new ValueContainer(list);
+            this.values.Add(key, vc);
+        }
+
+        public void SaveList(string key, IEnumerable<double> values)
+        {
+            IEnumerable<string> list = Util.ConvertListToStringList(values);
+            IValueContainer vc = new ValueContainer(list);
             this.values.Add(key, vc);
         }
 
         public void SaveList(string key, IEnumerable<ISavable> values)
         {
-            LinkedList<SavableRepresentation> list = new LinkedList<SavableRepresentation>();
-            foreach (ISavable value in values)
-            {
-                list.AddLast(value.LoadIntoRepresentation());
-            }
-            ValueContainer vc = new ValueContainer();
-            vc.valueSRList = list;
+            IValueContainer vc = new ValueContainer(values);
             this.values.Add(key, vc);
         }
 
         public void SaveList(string key, IEnumerable<SavableRepresentation> values)
         {
-            ValueContainer vc = new ValueContainer();
-            vc.valueSRList = values;
+            IValueContainer vc = new ValueContainer(values);
             this.values.Add(key, vc);
         }
 
-        public string GetValue(string key)
+        public string GetString(string key)
         {
-            return values[key].valueString;
+            return values[key].GetContentString();
         }
 
-        public SavableRepresentation GetSRValue(string key)
+        public int GetInt(string key)
         {
-            return values[key].valueSR;
+            return int.Parse(values[key].GetContentString());
+        }
+
+        public bool GetBool(string key)
+        {
+            return bool.Parse(values[key].GetContentString());
+        }
+
+        public double GetDouble(string key)
+        {
+            return double.Parse(values[key].GetContentString());
         }
 
         public T GetISavable<T>(string key) where T : ISavable, new()
         {
-            SavableRepresentation sr = values[key].valueSR;
-            T t = new T();
-            t.RestoreFromRepresentation(sr);
-            return t;
+            return values[key].GetContentISavable<T>();
         }
 
-        public IEnumerable<string> GetList(string key)
+        public SavableRepresentation GetSavableRepresentation(string key)
         {
-            return values[key].valueStringList;
+            return values[key].GetContentSavableRepresentation();
         }
 
-        public IEnumerable<SavableRepresentation> GetSRList(string key)
+        public IEnumerable<string> GetStringList(string key)
         {
-            return values[key].valueSRList;
+            return values[key].GetContentStringList();
+        }
+
+        public IEnumerable<T> GetListOfISavable<T>(string key) where T : ISavable, new()
+        {
+            return values[key].GetContentISavableList<T>();
+        }
+
+        public IEnumerable<SavableRepresentation> GetSavableRepresentationList(string key)
+        {
+            return values[key].GetContentSavableRepresentationList();
+        }
+
+        public IEnumerable<T> GetListOfType<T>(string key)
+        {
+            List<T> result = new List<T>();
+            IEnumerable<object> list = GetStringList(key);
+            foreach (object obj in list)
+            {
+                T t = (T)obj;
+                result.Add(t);
+            }
+            return result;
+        }
+
+        public bool HasValue(string key)
+        {
+            return values.ContainsKey(key) && values[key].HasValue();
+        }
+
+        public bool IsValueAList(string key)
+        {
+            return values.ContainsKey(key) && values[key].HasValue() && values[key].IsValueAList();
         }
 
         public ICollection<string> GetAllSavedKeys()
         {
             return values.Keys;
-        }
-
-        public bool HasValue(string key)
-        {
-            return values[key].valueString != null || values[key].valueSR != null ||
-                values[key].valueStringList != null || values[key].valueSRList != null;
-        }
-
-        public bool IsValueAList(string key)
-        {
-            return values[key].valueStringList != null || values[key].valueSRList != null;
-        }
-
-        public bool IsValueObjectList(string key)
-        {
-            return values[key].valueSRList != null;
-        }
-
-        public bool IsValueObject(string key)
-        {
-            return values[key].valueSR != null;
-        }
-
-        public IEnumerable<T> GetListOfType<T>(string key)
-        {
-            IEnumerable<T> result = new List<T>();
-            IEnumerable<object> list = GetList(key);
-            foreach (object obj in list)
-            {
-                T t = (T)obj;
-                result = result.Append(t).ToList();
-            }
-            return result;
-        }
-
-        public IEnumerable<T> GetListOfISavable<T>(string key) where T : ISavable, new()
-        {
-            IEnumerable<T> result = new List<T>();
-            IEnumerable<SavableRepresentation> list = GetSRList(key);
-            foreach (SavableRepresentation sr in list)
-            {
-                T t = new T();
-                t.RestoreFromRepresentation(sr);
-                result = result.Append(t).ToList();
-            }
-            return result;
         }
     }
 }

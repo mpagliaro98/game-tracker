@@ -78,87 +78,6 @@ namespace GameTracker.Model
             SaveISavableList(ratingCategories, PathController.Combine(saveDir, FILENAME_CATEGORIES));
         }
 
-        protected string CreateJSONArray(IEnumerable<ISavable> objs)
-        {
-            IEnumerable<string> jsonObjs = new LinkedList<string>();
-            foreach (ISavable obj in objs)
-            {
-                string json = CreateJSONObject(obj);
-                jsonObjs = jsonObjs.Append(json).ToList();
-            }
-            string jsonArray = string.Join(",", jsonObjs);
-            return "[" + jsonArray + "]";
-        }
-
-        protected string CreateJSONArray(IEnumerable<SavableRepresentation> objs)
-        {
-            IEnumerable<string> jsonObjs = new LinkedList<string>();
-            foreach (SavableRepresentation obj in objs)
-            {
-                string json = CreateJSONObject(obj);
-                jsonObjs = jsonObjs.Append(json).ToList();
-            }
-            string jsonArray = string.Join(",", jsonObjs);
-            return "[" + jsonArray + "]";
-        }
-
-        protected string CreateJSONArray(IEnumerable<string> objs)
-        {
-            IEnumerable<string> jsonObjs = new LinkedList<string>();
-            foreach (string obj in objs)
-            {
-                string json = "\"" + FixSpecialChars(obj) + "\"";
-                jsonObjs = jsonObjs.Append(json).ToList();
-            }
-            string jsonArray = string.Join(",", jsonObjs);
-            return "[" + jsonArray + "]";
-        }
-
-        protected string CreateJSONObject(ISavable obj)
-        {
-            SavableRepresentation sr = obj.LoadIntoRepresentation();
-            return CreateJSONObject(sr);
-        }
-
-        protected string CreateJSONObject(SavableRepresentation sr)
-        {
-            string json = "";
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                if (json != "") json += ",";
-                string jsonObj = "\"" + FixSpecialChars(key) + "\":";
-                if (sr.HasValue(key))
-                {
-                    if (sr.IsValueAList(key))
-                    {
-                        if (sr.IsValueObjectList(key))
-                            jsonObj += CreateJSONArray(sr.GetSRList(key));
-                        else
-                            jsonObj += CreateJSONArray(sr.GetList(key));
-                    }
-                    else
-                    {
-                        if (sr.IsValueObject(key))
-                            jsonObj += CreateJSONObject(sr.GetSRValue(key));
-                        else
-                            jsonObj += "\"" + FixSpecialChars(sr.GetValue(key)) + "\"";
-                    }
-                }
-                else
-                {
-                    jsonObj += "\"\"";
-                }
-                json += jsonObj;
-            }
-            json = "{" + json + "}";
-            return json;
-        }
-
-        protected string FixSpecialChars(string str)
-        {
-            return str.Replace("\"", "\\\"");
-        }
-
         protected void SaveJSONToFile(string serialized, string filepath)
         {
             CreateFileIfDoesNotExist(filepath);
@@ -167,13 +86,14 @@ namespace GameTracker.Model
 
         protected virtual void SaveISavableList(IEnumerable<ISavable> list, string filepath)
         {
-            string serialized = CreateJSONArray(list);
+            string serialized = Util.CreateJSONArray(list);
             SaveJSONToFile(serialized, filepath);
         }
 
         protected virtual void SaveISavable(ISavable obj, string filepath)
         {
-            string serialized = CreateJSONObject(obj);
+            SavableRepresentation sr = obj.LoadIntoRepresentation();
+            string serialized = sr.ConvertToJSON();
             SaveJSONToFile(serialized, filepath);
         }
 

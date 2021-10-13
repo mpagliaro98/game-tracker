@@ -30,7 +30,7 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "name":
-                        name = sr.GetValue(key);
+                        name = sr.GetString(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("Platform.cs RestoreFromRepresentation: unrecognized key " + key);
