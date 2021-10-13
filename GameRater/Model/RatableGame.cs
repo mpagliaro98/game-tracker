@@ -50,6 +50,7 @@ namespace GameTracker.Model
 
         public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            if (sr == null) return;
             base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {

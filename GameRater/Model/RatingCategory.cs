@@ -47,6 +47,7 @@ namespace GameTracker.Model
 
         public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

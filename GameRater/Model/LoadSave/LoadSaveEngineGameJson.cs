@@ -126,27 +126,27 @@ namespace GameTracker.Model
             foreach (string key in sr.GetAllSavedKeys())
             {
                 if (json != "") json += ",";
-                string jsonObj;
+                string jsonObj = "\"" + FixSpecialChars(key) + "\":";
                 if (sr.HasValue(key))
                 {
                     if (sr.IsValueAList(key))
                     {
                         if (sr.IsValueObjectList(key))
-                            jsonObj = CreateJSONArray(sr.GetSRList(key));
+                            jsonObj += CreateJSONArray(sr.GetSRList(key));
                         else
-                            jsonObj = CreateJSONArray(sr.GetList(key));
+                            jsonObj += CreateJSONArray(sr.GetList(key));
                     }
                     else
                     {
                         if (sr.IsValueObject(key))
-                            jsonObj = CreateJSONObject(sr.GetSRValue(key));
+                            jsonObj += CreateJSONObject(sr.GetSRValue(key));
                         else
-                            jsonObj = "\"" + FixSpecialChars(key) + "\":\"" + FixSpecialChars(sr.GetValue(key)) + "\"";
+                            jsonObj += "\"" + FixSpecialChars(sr.GetValue(key)) + "\"";
                     }
                 }
                 else
                 {
-                    jsonObj = "\"" + FixSpecialChars(key) + "\":\"\"";
+                    jsonObj += "\"\"";
                 }
                 json += jsonObj;
             }

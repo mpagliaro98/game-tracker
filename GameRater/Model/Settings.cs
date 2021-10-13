@@ -6,20 +6,32 @@ using System.Threading.Tasks;
 
 namespace GameTracker.Model
 {
-    public class Settings : ISavable
+    public class Settings : ISavable, IModuleAccess
     {
+        private RatingModule parentModule;
+
         private double minScore = 0;
         public double MinScore
         {
             get { return minScore; }
-            set { minScore = value; }
+            set
+            {
+                double oldMinScore = minScore;
+                minScore = value;
+                parentModule.RecalculateScores(oldMinScore, MaxScore, minScore, MaxScore);
+            }
         }
 
         private double maxScore = 10;
         public double MaxScore
         {
             get { return maxScore; }
-            set { maxScore = value; }
+            set
+            {
+                double oldMaxScore = maxScore;
+                maxScore = value;
+                parentModule.RecalculateScores(MinScore, oldMaxScore, MinScore, maxScore);
+            }
         }
 
         public SavableRepresentation LoadIntoRepresentation()
@@ -32,6 +44,7 @@ namespace GameTracker.Model
 
         public void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)
@@ -47,6 +60,16 @@ namespace GameTracker.Model
                         break;
                 }
             }
+        }
+
+        public RatingModule GetParentModule()
+        {
+            return parentModule;
+        }
+
+        public void SetParentModule(RatingModule parentModule)
+        {
+            this.parentModule = parentModule;
         }
     }
 }

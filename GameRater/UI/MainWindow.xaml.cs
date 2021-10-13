@@ -52,7 +52,6 @@ namespace GameTracker.UI
                 if (mbr != MessageBoxResult.Yes) return;
             }
 
-            rm.RecalculateScores(rm.Settings.MinScore, rm.Settings.MaxScore, minScore, maxScore);
             rm.Settings.MinScore = minScore;
             rm.Settings.MaxScore = maxScore;
             rm.SaveSettings();
