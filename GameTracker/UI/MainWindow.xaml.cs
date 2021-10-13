@@ -83,15 +83,7 @@ namespace GameTracker.UI
                 item.MouseDoubleClick += RatingCategoryEditWindow_Open;
                 SettingsListboxRatingCategories.AddItem(item);
 
-                ContextMenu cm = new ContextMenu();
-                item.ContextMenu = cm;
-                MenuItem mie = new MenuItem();
-                mie.Header = "Edit";
-                mie.Click += RatingCategoryEditWindow_Open;
-                cm.Items.Add(mie);
-                MenuItem mid = new MenuItem();
-                mid.Header = "Delete";
-                cm.Items.Add(mid);
+                item.ContextMenu = EditDeleteContextMenu(RatingCategoryEditWindow_Open, null);
             }
         }
 
@@ -161,6 +153,20 @@ namespace GameTracker.UI
                 return menu.PlacementTarget as T;
             }
             return null;
+        }
+
+        private ContextMenu EditDeleteContextMenu(RoutedEventHandler editFunc, RoutedEventHandler deleteFunc)
+        {
+            ContextMenu cm = new ContextMenu();
+            MenuItem mie = new MenuItem();
+            mie.Header = "Edit";
+            if (editFunc != null) mie.Click += editFunc;
+            cm.Items.Add(mie);
+            MenuItem mid = new MenuItem();
+            mid.Header = "Delete";
+            if (deleteFunc != null) mid.Click += deleteFunc;
+            cm.Items.Add(mid);
+            return cm;
         }
     }
 }

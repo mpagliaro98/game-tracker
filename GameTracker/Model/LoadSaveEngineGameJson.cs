@@ -65,7 +65,7 @@ namespace GameTracker.Model
 
         public override IEnumerable<RatingCategory> LoadRatingCategories(RatingModule parentModule)
         {
-            return LoadISavableList<RatingCategory>(PathController.Combine(saveDir, FILENAME_CATEGORIES), parentModule);
+            return LoadISavableList<RatingCategoryWeighted>(PathController.Combine(saveDir, FILENAME_CATEGORIES), parentModule);
         }
 
         public override void SaveRatableObjects(IEnumerable<RatableObject> ratableObjects)
