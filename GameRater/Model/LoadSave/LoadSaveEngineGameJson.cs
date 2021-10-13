@@ -90,17 +90,65 @@ namespace GameTracker.Model
             return "[" + jsonArray + "]";
         }
 
+        protected string CreateJSONArray(IEnumerable<SavableRepresentation> objs)
+        {
+            IEnumerable<string> jsonObjs = new LinkedList<string>();
+            foreach (SavableRepresentation obj in objs)
+            {
+                string json = CreateJSONObject(obj);
+                jsonObjs = jsonObjs.Append(json).ToList();
+            }
+            string jsonArray = string.Join(",", jsonObjs);
+            return "[" + jsonArray + "]";
+        }
+
+        protected string CreateJSONArray(IEnumerable<string> objs)
+        {
+            IEnumerable<string> jsonObjs = new LinkedList<string>();
+            foreach (string obj in objs)
+            {
+                string json = "\"" + FixSpecialChars(obj) + "\"";
+                jsonObjs = jsonObjs.Append(json).ToList();
+            }
+            string jsonArray = string.Join(",", jsonObjs);
+            return "[" + jsonArray + "]";
+        }
+
         protected string CreateJSONObject(ISavable obj)
         {
             SavableRepresentation sr = obj.LoadIntoRepresentation();
+            return CreateJSONObject(sr);
+        }
+
+        protected string CreateJSONObject(SavableRepresentation sr)
+        {
             string json = "";
             foreach (string key in sr.GetAllSavedKeys())
             {
-                if (json != "")
+                if (json != "") json += ",";
+                string jsonObj;
+                if (sr.HasValue(key))
                 {
-                    json += ",";
+                    if (sr.IsValueAList(key))
+                    {
+                        if (sr.IsValueObjectList(key))
+                            jsonObj = CreateJSONArray(sr.GetSRList(key));
+                        else
+                            jsonObj = CreateJSONArray(sr.GetList(key));
+                    }
+                    else
+                    {
+                        if (sr.IsValueObject(key))
+                            jsonObj = CreateJSONObject(sr.GetSRValue(key));
+                        else
+                            jsonObj = "\"" + FixSpecialChars(key) + "\":\"" + FixSpecialChars(sr.GetValue(key)) + "\"";
+                    }
                 }
-                json += "\"" + FixSpecialChars(key) + "\":\"" + FixSpecialChars(sr.GetValue(key)) + "\"";
+                else
+                {
+                    jsonObj = "\"" + FixSpecialChars(key) + "\":\"\"";
+                }
+                json += jsonObj;
             }
             json = "{" + json + "}";
             return json;
@@ -193,7 +241,7 @@ namespace GameTracker.Model
                 if (node.Value is JArray)
                 {
                     IEnumerable<SavableRepresentation> srList = new LinkedList<SavableRepresentation>();
-                    var objects = JArray.Parse(json);
+                    var objects = node.Value;
                     foreach (JObject childRoot in objects)
                     {
                         string jsonObj = childRoot.ToString();

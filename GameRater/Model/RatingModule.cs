@@ -112,6 +112,34 @@ namespace GameTracker.Model
             throw new NameNotFoundException("RatingModule FindScoreRelationship: could not find name of " + name);
         }
 
+        public void RecalculateScores(double minRangeOld, double maxRangeOld, double minRangeNew, double maxRangeNew)
+        {
+            if (minRangeOld == minRangeNew && maxRangeOld == maxRangeNew) return;
+            double oldRange = maxRangeOld - minRangeOld;
+            double newRange = maxRangeNew - minRangeNew;
+
+            foreach (RatableObject ro in ratableObjects)
+            {
+                if (ro.IgnoreCategories)
+                {
+                    if (oldRange == 0)
+                        ro.SetManualFinalScore(minRangeNew);
+                    else
+                        ro.SetManualFinalScore(((ro.FinalScore - minRangeOld) * newRange / oldRange) + minRangeNew);
+                }
+                else
+                {
+                    foreach (RatingCategoryValue rcv in ro.CategoryValues)
+                    {
+                        if (oldRange == 0)
+                            rcv.PointValue = minRangeNew;
+                        else
+                            rcv.PointValue = ((rcv.PointValue - minRangeOld) * newRange / oldRange) + minRangeNew;
+                    }
+                }
+            }
+        }
+
         protected void AddToList<T>(ref IEnumerable<T> list, T obj)
         {
             list = list.Append(obj);

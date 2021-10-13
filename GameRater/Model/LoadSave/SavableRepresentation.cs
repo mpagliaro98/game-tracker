@@ -32,13 +32,13 @@ namespace GameTracker.Model
 
         public void SaveValue(string key, ISavable obj)
         {
-            SavableRepresentation sr = obj.LoadIntoRepresentation();
+            SavableRepresentation sr = obj?.LoadIntoRepresentation();
             ValueContainer vc = new ValueContainer();
             vc.valueSR = sr;
             values.Add(key, vc);
         }
 
-        public void SaveList<T>(string key, IEnumerable<T> values)
+        public void SaveListGeneric<T>(string key, IEnumerable<T> values)
         {
             LinkedList<string> list = new LinkedList<string>();
             foreach (T value in values)
@@ -74,6 +74,11 @@ namespace GameTracker.Model
             return values[key].valueString;
         }
 
+        public SavableRepresentation GetSRValue(string key)
+        {
+            return values[key].valueSR;
+        }
+
         public T GetISavable<T>(string key) where T : ISavable, new()
         {
             SavableRepresentation sr = values[key].valueSR;
@@ -97,9 +102,25 @@ namespace GameTracker.Model
             return values.Keys;
         }
 
+        public bool HasValue(string key)
+        {
+            return values[key].valueString != null || values[key].valueSR != null ||
+                values[key].valueStringList != null || values[key].valueSRList != null;
+        }
+
         public bool IsValueAList(string key)
         {
             return values[key].valueStringList != null || values[key].valueSRList != null;
+        }
+
+        public bool IsValueObjectList(string key)
+        {
+            return values[key].valueSRList != null;
+        }
+
+        public bool IsValueObject(string key)
+        {
+            return values[key].valueSR != null;
         }
 
         public IEnumerable<T> GetListOfType<T>(string key)

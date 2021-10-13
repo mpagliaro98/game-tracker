@@ -33,7 +33,7 @@ namespace GameTracker.Model
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("name", name);
             sr.SaveValue("scoreRelationshipName", scoreRelationshipName);
-            sr.SaveList("valueList", valueList);
+            sr.SaveListGeneric("valueList", valueList);
             return sr;
         }
 

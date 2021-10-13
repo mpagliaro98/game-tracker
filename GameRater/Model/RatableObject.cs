@@ -120,5 +120,10 @@ namespace GameTracker.Model
             }
             return sum;
         }
+
+        public void SetManualFinalScore(double val)
+        {
+            finalScoreManual = val;
+        }
     }
 }

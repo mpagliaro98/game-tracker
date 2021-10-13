@@ -40,15 +40,23 @@ namespace GameTracker.UI
             ResetSettingsLabels();
             string minScoreInput = SettingsTextboxMin.Text;
             string maxScoreInput = SettingsTextboxMax.Text;
-            double minScore, maxScore;
-            if (!(double.TryParse(minScoreInput, out minScore) && double.TryParse(maxScoreInput, out maxScore)))
+            if (!(double.TryParse(minScoreInput, out double minScore) && double.TryParse(maxScoreInput, out double maxScore)))
             {
                 SettingsLabelError.Visibility = Visibility.Visible;
                 return;
             }
+
+            if (minScore != rm.Settings.MinScore || maxScore != rm.Settings.MaxScore)
+            {
+                MessageBoxResult mbr = MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
+                if (mbr != MessageBoxResult.Yes) return;
+            }
+
+            rm.RecalculateScores(rm.Settings.MinScore, rm.Settings.MaxScore, minScore, maxScore);
             rm.Settings.MinScore = minScore;
             rm.Settings.MaxScore = maxScore;
             rm.SaveSettings();
+            rm.SaveRatableObjects();
             UpdateSettingsUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
         }
