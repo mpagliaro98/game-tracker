@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
 
-namespace GameTracker.Model
+namespace RatableTracker.Framework
 {
-    public class Platform : ISavable
+    public class CompletionStatus : ISavable
     {
         private string name = "";
         public string Name
@@ -17,10 +17,28 @@ namespace GameTracker.Model
             set { name = value; }
         }
 
+        private bool useAsFinished = false;
+        public bool UseAsFinished 
+        {
+            get { return useAsFinished;  }
+            set { useAsFinished = value; }
+        }
+
+        private bool excludeFromStats = false;
+        public bool ExcludeFromStats
+        {
+            get { return excludeFromStats; }
+            set { excludeFromStats = value; }
+        }
+
+        public CompletionStatus() { }
+
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("name", name);
+            sr.SaveValue("useAsFinished", useAsFinished);
+            sr.SaveValue("excludeFromStats", excludeFromStats);
             return sr;
         }
 
@@ -34,8 +52,14 @@ namespace GameTracker.Model
                     case "name":
                         name = sr.GetString(key);
                         break;
+                    case "useAsFinished":
+                        useAsFinished = sr.GetBool(key);
+                        break;
+                    case "excludeFromStats":
+                        excludeFromStats = sr.GetBool(key);
+                        break;
                     default:
-                        System.Diagnostics.Debug.WriteLine("Platform.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine("CompletionStatus.cs RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

@@ -58,14 +58,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Model\GlobalSettings.cs" />
-    <Compile Include="Model\Interfaces\IValueContainerJSON.cs" />
-    <Compile Include="Model\LoadSave\SavableRepresentationJSON.cs" />
-    <Compile Include="Model\LoadSave\ValueContainer.cs" />
-    <Compile Include="Model\Interfaces\IValueContainer.cs" />
-    <Compile Include="Model\LoadSave\ValueContainerJSON.cs" />
-    <Compile Include="Model\Util.cs" />
-    <Compile Include="Model\UtilJSON.cs" />
+    <Compile Include="Framework\Global\GlobalSettings.cs" />
+    <Compile Include="Model\Partial\IValueContainerJSON.cs" />
+    <Compile Include="Model\Partial\SavableRepresentationJSON.cs" />
+    <Compile Include="Framework\LoadSave\ValueContainer.cs" />
+    <Compile Include="Framework\Interfaces\IValueContainer.cs" />
+    <Compile Include="Model\Partial\ValueContainerJSON.cs" />
+    <Compile Include="Framework\Global\Util.cs" />
+    <Compile Include="Model\Partial\UtilJSON.cs" />
     <Compile Include="UI\ListBoxItemRatingCategory.xaml.cs">
       <DependentUpon>ListBoxItemRatingCategory.xaml</DependentUpon>
     </Compile>
@@ -88,11 +88,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Model\Interfaces\IModuleAccess.cs" />
-    <Compile Include="Model\Exceptions\IncompleteScoreRangeException.cs" />
-    <Compile Include="Model\Interfaces\IPathController.cs" />
-    <Compile Include="Model\Interfaces\ISavable.cs" />
-    <Compile Include="Model\LoadSave\LoadSaveEngineCompletable.cs" />
+    <Compile Include="Framework\Interfaces\IModuleAccess.cs" />
+    <Compile Include="Framework\Exceptions\IncompleteScoreRangeException.cs" />
+    <Compile Include="Framework\Interfaces\IPathController.cs" />
+    <Compile Include="Framework\Interfaces\ISavable.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveEngineCompletable.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -107,30 +107,30 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\CompletionStatus.cs" />
-    <Compile Include="Model\LoadSave\LoadSaveEngine.cs" />
-    <Compile Include="Model\LoadSave\LoadSaveEngineGame.cs" />
-    <Compile Include="Model\Exceptions\NameNotFoundException.cs" />
-    <Compile Include="Model\Path Controller\PathController.cs" />
-    <Compile Include="Model\Path Controller\PathControllerWindows.cs" />
+    <Compile Include="Framework\CompletionStatus.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveEngine.cs" />
+    <Compile Include="Model\LoadSaveEngineGame.cs" />
+    <Compile Include="Framework\Exceptions\NameNotFoundException.cs" />
+    <Compile Include="Framework\Path Controller\PathController.cs" />
+    <Compile Include="Framework\Path Controller\PathControllerWindows.cs" />
     <Compile Include="Model\RatingModuleGame.cs" />
-    <Compile Include="Model\LoadSave\LoadSaveEngineGameJson.cs" />
+    <Compile Include="Model\LoadSaveEngineGameJson.cs" />
     <Compile Include="Model\Platform.cs" />
     <Compile Include="Model\RatableGame.cs" />
-    <Compile Include="Model\RatableObject.cs" />
-    <Compile Include="Model\RatableObjectCompletable.cs" />
-    <Compile Include="Model\RatingCategory.cs" />
-    <Compile Include="Model\RatingCategoryValue.cs" />
-    <Compile Include="Model\RatingCategoryWeighted.cs" />
-    <Compile Include="Model\RatingModule.cs" />
-    <Compile Include="Model\RatingModuleCompletable.cs" />
-    <Compile Include="Model\LoadSave\SavableRepresentation.cs" />
-    <Compile Include="Model\ScoreRange.cs" />
-    <Compile Include="Model\Score Relationships\ScoreRelationship.cs" />
-    <Compile Include="Model\Score Relationships\ScoreRelationshipAbove.cs" />
-    <Compile Include="Model\Score Relationships\ScoreRelationshipBelow.cs" />
-    <Compile Include="Model\Score Relationships\ScoreRelationshipBetween.cs" />
-    <Compile Include="Model\Settings.cs" />
+    <Compile Include="Framework\RatableObject.cs" />
+    <Compile Include="Framework\RatableObjectCompletable.cs" />
+    <Compile Include="Framework\RatingCategory.cs" />
+    <Compile Include="Framework\RatingCategoryValue.cs" />
+    <Compile Include="Framework\RatingCategoryWeighted.cs" />
+    <Compile Include="Framework\RatingModule.cs" />
+    <Compile Include="Framework\RatingModuleCompletable.cs" />
+    <Compile Include="Framework\LoadSave\SavableRepresentation.cs" />
+    <Compile Include="Framework\ScoreRange.cs" />
+    <Compile Include="Framework\Score Relationships\ScoreRelationship.cs" />
+    <Compile Include="Framework\Score Relationships\ScoreRelationshipAbove.cs" />
+    <Compile Include="Framework\Score Relationships\ScoreRelationshipBelow.cs" />
+    <Compile Include="Framework\Score Relationships\ScoreRelationshipBetween.cs" />
+    <Compile Include="Framework\Settings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
