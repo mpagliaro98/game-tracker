@@ -7,7 +7,7 @@ using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.LoadSave
 {
-    internal partial class ValueContainer : IValueContainer
+    public partial class ValueContainer : IValueContainer
     {
         private string valueString = null;
         private SavableRepresentation valueSR = null;

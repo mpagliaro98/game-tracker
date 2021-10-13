@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework.Interfaces;
+using Newtonsoft.Json.Linq;
 
 namespace RatableTracker.Framework.Global
 {
@@ -50,6 +51,32 @@ namespace RatableTracker.Framework.Global
             }
             string jsonArray = string.Join(",", jsonObjs);
             return "[" + jsonArray + "]";
+        }
+
+        public static bool IsValidJSONObject(string json)
+        {
+            try
+            {
+                JToken root = JToken.Parse(json);
+                return root is JObject;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsValidJSONArray(string json)
+        {
+            try
+            {
+                JToken root = JToken.Parse(json);
+                return root is JArray;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
     }
 }

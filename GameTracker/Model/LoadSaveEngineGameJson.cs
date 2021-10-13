@@ -132,7 +132,7 @@ namespace GameTracker.Model
             {
                 return new LinkedList<T>();
             }
-            if (!IsValidJSONArray(json))
+            if (!Util.IsValidJSONArray(json))
             {
                 throw new Exception("LoadSaveEngineGameJson LoadJSONArrayIntoObjects: object is not valid json: " + json);
             }
@@ -155,7 +155,7 @@ namespace GameTracker.Model
             {
                 return new SavableRepresentation();
             }
-            if (!IsValidJSONObject(json))
+            if (!Util.IsValidJSONObject(json))
             {
                 throw new Exception("LoadSaveEngineGameJson LoadJSONIntoRepresentation: object is not valid json: " + json);
             }
@@ -181,32 +181,6 @@ namespace GameTracker.Model
                 }
             }
             return sr;
-        }
-
-        protected bool IsValidJSONObject(string json)
-        {
-            try
-            {
-                JToken root = JToken.Parse(json);
-                return root is JObject;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        protected bool IsValidJSONArray(string json)
-        {
-            try
-            {
-                JToken root = JToken.Parse(json);
-                return root is JArray;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
 
         protected void SetParentModule<T>(IEnumerable<T> list, RatingModule parentModule)

@@ -7,7 +7,7 @@ using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework.LoadSave
 {
-    internal partial class ValueContainer
+    public partial class ValueContainer
     {
         public string ConvertValueToJSON()
         {
