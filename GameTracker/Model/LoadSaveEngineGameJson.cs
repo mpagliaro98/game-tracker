@@ -21,109 +21,60 @@ namespace GameTracker.Model
         protected const string FILENAME_RANGES = "score_ranges.json";
         protected const string FILENAME_SETTINGS = "settings.json";
         protected const string DIRECTORY_SAVE = "savefiles";
-        protected string saveDir = PathController.Combine(PathController.BaseDirectory(), DIRECTORY_SAVE);
-
-        public override IEnumerable<Platform> LoadPlatforms(RatingModule parentModule)
+        protected static string SAVE_DIR = PathController.Combine(PathController.BaseDirectory(), DIRECTORY_SAVE);
+        protected readonly IDictionary<Type, string> filepathMap = new Dictionary<Type, string>()
         {
-            return LoadISavableList<Platform>(PathController.Combine(saveDir, FILENAME_PLATFORMS), parentModule);
-        }
+            { typeof(RatableGame), PathController.Combine(SAVE_DIR, FILENAME_GAMES) },
+            { typeof(Platform), PathController.Combine(SAVE_DIR, FILENAME_PLATFORMS) },
+            { typeof(CompletionStatus), PathController.Combine(SAVE_DIR, FILENAME_STATUSES) },
+            { typeof(RatingCategoryWeighted), PathController.Combine(SAVE_DIR, FILENAME_CATEGORIES) },
+            { typeof(ScoreRange), PathController.Combine(SAVE_DIR, FILENAME_RANGES) },
+            { typeof(Settings), PathController.Combine(SAVE_DIR, FILENAME_SETTINGS) }
+        };
 
-        public override void SavePlatforms(IEnumerable<Platform> platforms)
+        protected override IEnumerable<T> LoadISavableList<T>()
         {
-            SaveISavableList(platforms, PathController.Combine(saveDir, FILENAME_PLATFORMS));
-        }
-
-        public override Settings LoadSettings(RatingModule parentModule)
-        {
-            return LoadISavable<Settings>(PathController.Combine(saveDir, FILENAME_SETTINGS), parentModule);
-        }
-
-        public override void SaveSettings(Settings settings)
-        {
-            SaveISavable(settings, PathController.Combine(saveDir, FILENAME_SETTINGS));
-        }
-
-        public override IEnumerable<CompletionStatus> LoadCompletionStatuses(RatingModule parentModule)
-        {
-            return LoadISavableList<CompletionStatus>(PathController.Combine(saveDir, FILENAME_STATUSES), parentModule);
-        }
-
-        public override void SaveCompletionStatuses(IEnumerable<CompletionStatus> completionStatuses)
-        {
-            SaveISavableList(completionStatuses, PathController.Combine(saveDir, FILENAME_STATUSES));
-        }
-
-        public override IEnumerable<RatableObject> LoadRatableObjects(RatingModule parentModule)
-        {
-            return LoadISavableList<RatableGame>(PathController.Combine(saveDir, FILENAME_GAMES), parentModule);
-        }
-
-        public override IEnumerable<ScoreRange> LoadScoreRanges(RatingModule parentModule)
-        {
-            return LoadISavableList<ScoreRange>(PathController.Combine(saveDir, FILENAME_RANGES), parentModule);
-        }
-
-        public override IEnumerable<RatingCategory> LoadRatingCategories(RatingModule parentModule)
-        {
-            return LoadISavableList<RatingCategoryWeighted>(PathController.Combine(saveDir, FILENAME_CATEGORIES), parentModule);
-        }
-
-        public override void SaveRatableObjects(IEnumerable<RatableObject> ratableObjects)
-        {
-            SaveISavableList(ratableObjects, PathController.Combine(saveDir, FILENAME_GAMES));
-        }
-
-        public override void SaveScoreRanges(IEnumerable<ScoreRange> scoreRanges)
-        {
-            SaveISavableList(scoreRanges, PathController.Combine(saveDir, FILENAME_RANGES));
-        }
-
-        public override void SaveRatingCategories(IEnumerable<RatingCategory> ratingCategories)
-        {
-            SaveISavableList(ratingCategories, PathController.Combine(saveDir, FILENAME_CATEGORIES));
-        }
-
-        protected void SaveJSONToFile(string serialized, string filepath)
-        {
-            CreateFileIfDoesNotExist(filepath);
-            PathController.WriteToFile(filepath, serialized);
-        }
-
-        protected virtual void SaveISavableList(IEnumerable<ISavable> list, string filepath)
-        {
-            string serialized = Util.CreateJSONArray(list);
-            SaveJSONToFile(serialized, filepath);
-        }
-
-        protected virtual void SaveISavable(ISavable obj, string filepath)
-        {
-            SavableRepresentation sr = obj.LoadIntoRepresentation();
-            string serialized = sr.ConvertToJSON();
-            SaveJSONToFile(serialized, filepath);
-        }
-
-        protected virtual IEnumerable<T> LoadISavableList<T>(string filepath, RatingModule parentModule) where T : ISavable, new()
-        {
+            string filepath = GetFilenameForType(typeof(T));
             string serialized = ReadJSONFromFile(filepath);
             IEnumerable<T> result = LoadJSONArrayIntoObjects<T>(serialized);
-            SetParentModule(result, parentModule);
             return result;
         }
 
-        protected virtual T LoadISavable<T>(string filepath, RatingModule parentModule) where T : ISavable, new()
+        protected override T LoadISavable<T>()
         {
+            string filepath = GetFilenameForType(typeof(T));
             string serialized = ReadJSONFromFile(filepath);
-            SavableRepresentation sr = LoadJSONIntoRepresentation(serialized);
+            SavableRepresentation sr = SavableRepresentation.LoadFromJSON(serialized);
             T t = new T();
             t.RestoreFromRepresentation(sr);
-            SetParentModule(t, parentModule);
             return t;
+        }
+
+        protected override void SaveISavableList<T>(IEnumerable<T> list)
+        {
+            string filepath = GetFilenameForType(typeof(T));
+            string serialized = Util.CreateJSONArray(list.Cast<ISavable>());
+            SaveJSONToFile(serialized, filepath);
+        }
+
+        protected override void SaveISavable<T>(T obj)
+        {
+            string filepath = GetFilenameForType(typeof(T));
+            SavableRepresentation sr = obj.LoadIntoRepresentation();
+            string serialized = sr.ConvertToJSON();
+            SaveJSONToFile(serialized, filepath);
         }
 
         protected string ReadJSONFromFile(string filepath)
         {
             CreateFileIfDoesNotExist(filepath);
             return PathController.ReadFromFile(filepath);
+        }
+
+        protected void SaveJSONToFile(string serialized, string filepath)
+        {
+            CreateFileIfDoesNotExist(filepath);
+            PathController.WriteToFile(filepath, serialized);
         }
 
         protected IEnumerable<T> LoadJSONArrayIntoObjects<T>(string json) where T : ISavable, new()
@@ -141,50 +92,12 @@ namespace GameTracker.Model
             foreach (JObject root in objects)
             {
                 string jsonObj = root.ToString();
-                SavableRepresentation sr = LoadJSONIntoRepresentation(jsonObj);
+                SavableRepresentation sr = SavableRepresentation.LoadFromJSON(jsonObj);
                 T t = new T();
                 t.RestoreFromRepresentation(sr);
                 result = result.Append(t).ToList();
             }
             return result;
-        }
-
-        protected SavableRepresentation LoadJSONIntoRepresentation(string json)
-        {
-            if (json == "")
-            {
-                return new SavableRepresentation();
-            }
-            if (!Util.IsValidJSONObject(json))
-            {
-                throw new Exception("LoadSaveEngineGameJson LoadJSONIntoRepresentation: object is not valid json: " + json);
-            }
-            SavableRepresentation sr = new SavableRepresentation();
-            JObject root = JObject.Parse(json);
-            foreach (KeyValuePair<string, JToken> node in root)
-            {
-                if (node.Value is JArray)
-                {
-                    IEnumerable<SavableRepresentation> srList = new LinkedList<SavableRepresentation>();
-                    var objects = node.Value;
-                    foreach (JObject childRoot in objects)
-                    {
-                        string jsonObj = childRoot.ToString();
-                        SavableRepresentation srChild = LoadJSONIntoRepresentation(jsonObj);
-                        srList = srList.Append(srChild).ToList();
-                    }
-                    sr.SaveList(node.Key, srList);
-                }
-                else if (node.Value is JValue)
-                {
-                    sr.SaveValue(node.Key, node.Value.ToString());
-                }
-                else if (node.Value is JObject)
-                {
-                    sr.SaveValue(node.Key, LoadJSONIntoRepresentation(node.Value.ToString()));
-                }
-            }
-            return sr;
         }
         
         protected void CreateFileIfDoesNotExist(string filepath)
@@ -196,6 +109,15 @@ namespace GameTracker.Model
                 System.IO.FileStream fs = PathController.CreateFile(filepath);
                 fs.Close();
             }
+        }
+
+        protected string GetFilenameForType(Type type)
+        {
+            if (!filepathMap.ContainsKey(type))
+            {
+                throw new Exception("Attempting to get filename of type " + type.ToString() + ", which is not handled");
+            }
+            return filepathMap[type];
         }
     }
 }
