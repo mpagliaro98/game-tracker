@@ -14,7 +14,7 @@ namespace RatableTracker.Framework
         {
             get
             {
-                return completionStatus.HasReference() ? ((RatingModuleCompletable)GetParentModule()).FindCompletionStatus(completionStatus) : null;
+                return completionStatus.HasReference() ? ((RatingModuleCompletable)ParentModule).FindCompletionStatus(completionStatus) : null;
             }
             set { completionStatus.SetReference(value); }
         }

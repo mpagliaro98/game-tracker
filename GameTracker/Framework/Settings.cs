@@ -12,6 +12,11 @@ namespace RatableTracker.Framework
     public class Settings : ISavable, IModuleAccess
     {
         private RatingModule parentModule;
+        public RatingModule ParentModule
+        {
+            get { return parentModule; }
+            set { parentModule = value; }
+        }
 
         private double minScore = 0;
         public double MinScore
@@ -24,8 +29,8 @@ namespace RatableTracker.Framework
                 parentModule.RecalculateScores(oldMinScore, MaxScore, minScore, MaxScore);
                 if (GlobalSettings.Autosave)
                 {
-                    GetParentModule().SaveSettings();
-                    GetParentModule().SaveRatableObjects();
+                    ParentModule.SaveSettings();
+                    ParentModule.SaveRatableObjects();
                 }
             }
         }
@@ -41,8 +46,8 @@ namespace RatableTracker.Framework
                 parentModule.RecalculateScores(MinScore, oldMaxScore, MinScore, maxScore);
                 if (GlobalSettings.Autosave)
                 {
-                    GetParentModule().SaveSettings();
-                    GetParentModule().SaveRatableObjects();
+                    ParentModule.SaveSettings();
+                    ParentModule.SaveRatableObjects();
                 }
             }
         }
@@ -73,16 +78,6 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
-        }
-
-        public RatingModule GetParentModule()
-        {
-            return parentModule;
-        }
-
-        public void SetParentModule(RatingModule parentModule)
-        {
-            this.parentModule = parentModule;
         }
     }
 }

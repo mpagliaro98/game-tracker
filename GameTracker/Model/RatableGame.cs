@@ -15,7 +15,7 @@ namespace GameTracker.Model
         {
             get
             {
-                return platform.HasReference() ? ((RatingModuleGame)GetParentModule()).FindPlatform(platform) : null;
+                return platform.HasReference() ? ((RatingModuleGame)ParentModule).FindPlatform(platform) : null;
             }
             set { platform.SetReference(value); }
         }
@@ -25,7 +25,7 @@ namespace GameTracker.Model
         {
             get
             {
-                return platformPlayedOn.HasReference() ? ((RatingModuleGame)GetParentModule()).FindPlatform(platformPlayedOn) : null;
+                return platformPlayedOn.HasReference() ? ((RatingModuleGame)ParentModule).FindPlatform(platformPlayedOn) : null;
             }
             set { platform.SetReference(value); }
         }

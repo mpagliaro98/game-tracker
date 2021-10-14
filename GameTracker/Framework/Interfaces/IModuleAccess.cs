@@ -8,7 +8,6 @@ namespace RatableTracker.Framework.Interfaces
 {
     public interface IModuleAccess
     {
-        RatingModule GetParentModule();
-        void SetParentModule(RatingModule parentModule);
+        RatingModule ParentModule { get; set; }
     }
 }

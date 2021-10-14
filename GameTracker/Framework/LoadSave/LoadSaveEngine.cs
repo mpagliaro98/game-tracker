@@ -95,7 +95,7 @@ namespace RatableTracker.Framework.LoadSave
         {
             if (obj is IModuleAccess moduleAccess)
             {
-                moduleAccess.SetParentModule(parentModule);
+                moduleAccess.ParentModule = parentModule;
             }
         }
     }

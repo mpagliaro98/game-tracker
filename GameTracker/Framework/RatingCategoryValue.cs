@@ -27,6 +27,11 @@ namespace RatableTracker.Framework
         }
 
         private RatingModule parentModule;
+        public RatingModule ParentModule
+        {
+            get { return parentModule; }
+            set { parentModule = value; }
+        }
 
         public RatingCategoryValue() { }
 
@@ -62,16 +67,6 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
-        }
-
-        public RatingModule GetParentModule()
-        {
-            return parentModule;
-        }
-
-        public void SetParentModule(RatingModule parentModule)
-        {
-            this.parentModule = parentModule;
         }
     }
 }
