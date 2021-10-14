@@ -58,7 +58,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
+    <Compile Include="Framework\Interfaces\IReferable.cs" />
+    <Compile Include="Framework\ObjectReference.cs" />
     <Compile Include="Model\Partial\IValueContainer.cs" />
     <Compile Include="Model\Partial\SavableRepresentation.cs" />
     <Compile Include="Framework\LoadSave\ValueContainer.cs" />
@@ -110,7 +113,7 @@
     <Compile Include="Framework\CompletionStatus.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngine.cs" />
     <Compile Include="Model\LoadSaveEngineGame.cs" />
-    <Compile Include="Framework\Exceptions\NameNotFoundException.cs" />
+    <Compile Include="Framework\Exceptions\ReferenceNotFoundException.cs" />
     <Compile Include="Framework\Path Controller\PathController.cs" />
     <Compile Include="Framework\Path Controller\PathControllerWindows.cs" />
     <Compile Include="Model\RatingModuleGame.cs" />

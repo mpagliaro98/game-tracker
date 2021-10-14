@@ -22,9 +22,9 @@ namespace GameTracker.UI
     public partial class SubWindowRatingCategory : Window
     {
         private RatingModuleGame rm;
-        private RatingCategory orig;
+        private RatingCategoryWeighted orig;
 
-        public SubWindowRatingCategory(RatingModuleGame rm, SubWindowMode mode, RatingCategory orig = null)
+        public SubWindowRatingCategory(RatingModuleGame rm, SubWindowMode mode, RatingCategoryWeighted orig = null)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
@@ -59,8 +59,10 @@ namespace GameTracker.UI
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidateInputs(out string name, out string comment, out double weight)) return;
-            var cat = new RatingCategoryWeighted(name, comment, weight);
-            rm.UpdateRatingCategory(cat, orig);
+            orig.Name = name;
+            orig.Comment = comment;
+            orig.SetWeight(weight);
+            rm.SaveRatingCategories();
             Close();
         }
 

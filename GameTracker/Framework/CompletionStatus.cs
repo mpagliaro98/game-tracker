@@ -8,7 +8,7 @@ using RatableTracker.Framework.LoadSave;
 
 namespace RatableTracker.Framework
 {
-    public class CompletionStatus : ISavable
+    public class CompletionStatus : ISavable, IReferable
     {
         private string name = "";
         public string Name
@@ -31,11 +31,21 @@ namespace RatableTracker.Framework
             set { excludeFromStats = value; }
         }
 
-        public CompletionStatus() { }
+        private Guid referenceKey = Guid.NewGuid();
+        public Guid ReferenceKey
+        {
+            get { return referenceKey; }
+        }
+
+        public CompletionStatus()
+        {
+            referenceKey = Guid.NewGuid();
+        }
 
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
             sr.SaveValue("useAsFinished", useAsFinished);
             sr.SaveValue("excludeFromStats", excludeFromStats);
@@ -49,6 +59,9 @@ namespace RatableTracker.Framework
             {
                 switch (key)
                 {
+                    case "referenceKey":
+                        referenceKey = sr.GetGuid(key);
+                        break;
                     case "name":
                         name = sr.GetString(key);
                         break;

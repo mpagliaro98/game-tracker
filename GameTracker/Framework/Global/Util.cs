@@ -17,5 +17,18 @@ namespace RatableTracker.Framework.Global
             }
             return list;
         }
+
+        public static void UpdateInListOnCondition<T>(IEnumerable<T> list, Func<T, bool> where, Action<T> action)
+        {
+            List<T> temp = list.ToList();
+            temp.Where(where).ForEach(action);
+        }
+
+        public static void DeleteFromListOnCondition<T>(ref IEnumerable<T> list, Predicate<T> where)
+        {
+            List<T> temp = list.ToList();
+            temp.RemoveAll(where);
+            list = temp.AsEnumerable();
+        }
     }
 }

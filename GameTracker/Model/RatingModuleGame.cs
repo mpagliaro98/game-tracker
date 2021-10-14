@@ -89,16 +89,9 @@ namespace GameTracker.Model
             loadSaveEngine.SaveSettings(settings);
         }
 
-        public Platform FindPlatform(string name)
+        public Platform FindPlatform(ObjectReference objectKey)
         {
-            foreach (Platform p in platforms)
-            {
-                if (p.Name == name)
-                {
-                    return p;
-                }
-            }
-            throw new NameNotFoundException("RatingModuleGame FindPlatform: could not find name of " + name);
+            return FindObject(platforms, objectKey);
         }
 
         public void AddPlatform(Platform obj)
@@ -109,6 +102,11 @@ namespace GameTracker.Model
         public void UpdatePlatform(Platform obj, Platform orig)
         {
             UpdateInList(ref platforms, SavePlatforms, obj, orig);
+        }
+
+        public void DeletePlatform(Platform obj)
+        {
+            DeleteFromList(ref platforms, SavePlatforms, obj);
         }
     }
 }

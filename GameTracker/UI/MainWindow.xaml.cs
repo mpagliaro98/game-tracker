@@ -77,13 +77,13 @@ namespace GameTracker.UI
         private void UpdateRatingCategoryUI()
         {
             SettingsListboxRatingCategories.ClearItems();
-            foreach (RatingCategory rc in rm.RatingCategories)
+            foreach (RatingCategoryWeighted rc in rm.RatingCategories)
             {
                 ListBoxItemRatingCategory item = new ListBoxItemRatingCategory(rc);
-                item.MouseDoubleClick += RatingCategoryEditWindow_Open;
+                item.MouseDoubleClick += RatingCategoryEdit;
                 SettingsListboxRatingCategories.AddItem(item);
 
-                item.ContextMenu = EditDeleteContextMenu(RatingCategoryEditWindow_Open, null);
+                item.ContextMenu = EditDeleteContextMenu(RatingCategoryEdit, RatingCategoryDelete);
             }
         }
 
@@ -116,7 +116,7 @@ namespace GameTracker.UI
             OpenSubWindowRatingCategory(SubWindowMode.MODE_ADD);
         }
 
-        private void RatingCategoryEditWindow_Open(object sender, RoutedEventArgs e)
+        private void RatingCategoryEdit(object sender, RoutedEventArgs e)
         {
             ListBoxItemRatingCategory lbi;
             if (sender is MenuItem)
@@ -130,7 +130,19 @@ namespace GameTracker.UI
             OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, lbi.RatingCategory);
         }
 
-        private void OpenSubWindowRatingCategory(SubWindowMode mode, RatingCategory orig = null)
+        private void RatingCategoryDelete(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemRatingCategory lbi = GetControlFromMenuItem<ListBoxItemRatingCategory>((MenuItem)sender);
+
+            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this rating category and all data associated with it?", "Delete Rating Category Confirmation", MessageBoxButton.YesNo);
+            if (mbr != MessageBoxResult.Yes) return;
+
+            RatingCategory rc = lbi.RatingCategory;
+            rm.DeleteRatingCategory(rc);
+            UpdateRatingCategoryUI();
+        }
+
+        private void OpenSubWindowRatingCategory(SubWindowMode mode, RatingCategoryWeighted orig = null)
         {
             var window = new SubWindowRatingCategory(rm, mode, orig);
             window.Closed += RatingCategoryWindow_Closed;
@@ -152,7 +164,7 @@ namespace GameTracker.UI
             {
                 return menu.PlacementTarget as T;
             }
-            return null;
+            throw new Exception("Could not find parent control for menu item");
         }
 
         private ContextMenu EditDeleteContextMenu(RoutedEventHandler editFunc, RoutedEventHandler deleteFunc)

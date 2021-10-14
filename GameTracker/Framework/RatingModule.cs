@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RatableTracker.Framework.ScoreRelationships;
 using RatableTracker.Framework.Exceptions;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework
 {
@@ -67,40 +68,31 @@ namespace RatableTracker.Framework
         public abstract void SaveRatingCategories();
         public abstract void SaveSettings();
 
-        public RatableObject FindRatableObject(string name)
+        protected T FindObject<T>(IEnumerable<T> sourceList, ObjectReference objectKey) where T : IReferable
         {
-            foreach (RatableObject ro in ratableObjects)
+            foreach (IReferable obj in sourceList)
             {
-                if (ro.Name == name)
+                if (objectKey.IsReferencedObject(obj))
                 {
-                    return ro;
+                    return (T)obj;
                 }
             }
-            throw new NameNotFoundException("RatingModule FindRatableObject: could not find name of " + name);
+            throw new ReferenceNotFoundException("RatingModule: could not find object in " + sourceList.ToString() + " with key " + objectKey.ObjectKey.ToString());
         }
 
-        public ScoreRange FindScoreRange(string name)
+        public RatableObject FindRatableObject(ObjectReference objectKey)
         {
-            foreach (ScoreRange sr in scoreRanges)
-            {
-                if (sr.Name == name)
-                {
-                    return sr;
-                }
-            }
-            throw new NameNotFoundException("RatingModule FindScoreRange: could not find name of " + name);
+            return FindObject(ratableObjects, objectKey);
         }
 
-        public RatingCategory FindRatingCategory(string name)
+        public ScoreRange FindScoreRange(ObjectReference objectKey)
         {
-            foreach (RatingCategory rc in ratingCategories)
-            {
-                if (rc.Name == name)
-                {
-                    return rc;
-                }
-            }
-            throw new NameNotFoundException("RatingModule FindRatingCategory: could not find name of " + name);
+            return FindObject(scoreRanges, objectKey);
+        }
+
+        public RatingCategory FindRatingCategory(ObjectReference objectKey)
+        {
+            return FindObject(ratingCategories, objectKey);
         }
 
         public ScoreRelationship FindScoreRelationship(string name)
@@ -112,7 +104,7 @@ namespace RatableTracker.Framework
                     return sr;
                 }
             }
-            throw new NameNotFoundException("RatingModule FindScoreRelationship: could not find name of " + name);
+            throw new ReferenceNotFoundException("RatingModule FindScoreRelationship: could not find name of " + name);
         }
 
         public void RecalculateScores(double minRangeOld, double maxRangeOld, double minRangeNew, double maxRangeNew)
@@ -164,6 +156,14 @@ namespace RatableTracker.Framework
             if (GlobalSettings.Autosave) saveFunction();
         }
 
+        protected void DeleteFromList<T>(ref IEnumerable<T> list, Action saveFunction, T obj)
+        {
+            List<T> temp = list.ToList();
+            temp.Remove(obj);
+            list = temp;
+            if (GlobalSettings.Autosave) saveFunction();
+        }
+
         public void AddRatableObject(RatableObject obj)
         {
             AddToList(ref ratableObjects, SaveRatableObjects, obj);
@@ -192,6 +192,23 @@ namespace RatableTracker.Framework
         public void UpdateRatingCategory(RatingCategory obj, RatingCategory orig)
         {
             UpdateInList(ref ratingCategories, SaveRatingCategories, obj, orig);
+        }
+
+        public void DeleteRatableObject(RatableObject obj)
+        {
+            DeleteFromList(ref ratableObjects, SaveRatableObjects, obj);
+        }
+
+        public void DeleteScoreRange(ScoreRange obj)
+        {
+            DeleteFromList(ref scoreRanges, SaveScoreRanges, obj);
+        }
+
+        public void DeleteRatingCategory(RatingCategory obj)
+        {
+            DeleteFromList(ref ratingCategories, SaveRatingCategories, obj);
+            ratableObjects.ForEach(ro => ro.DeleteRatingCategoryValues(rcv => rcv.RatingCategory.IsReferencedObject(obj)));
+            if (GlobalSettings.Autosave) SaveRatableObjects();
         }
     }
 }

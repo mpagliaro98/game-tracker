@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework
 {
-    public class RatableObject : ISavable, IModuleAccess
+    public class RatableObject : ISavable, IModuleAccess, IReferable
     {
         private string name = "";
         public string Name {
@@ -51,7 +52,7 @@ namespace RatableTracker.Framework
                     double sumOfWeights = SumOfWeights();
                     foreach (RatingCategoryValue categoryValue in categoryValues)
                     {
-                        double categoryWeight = GetParentModule().FindRatingCategory(categoryValue.RatingCategoryName).Weight;
+                        double categoryWeight = GetParentModule().FindRatingCategory(categoryValue.RatingCategory).Weight;
                         total += (categoryWeight / sumOfWeights) * categoryValue.PointValue;
                     }
                     return total;
@@ -59,13 +60,23 @@ namespace RatableTracker.Framework
             }
         }
 
+        private Guid referenceKey = Guid.NewGuid();
+        public Guid ReferenceKey
+        {
+            get { return referenceKey; }
+        }
+
         private RatingModule parentModule;
 
-        public RatableObject() { }
+        public RatableObject()
+        {
+            referenceKey = Guid.NewGuid();
+        }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
             sr.SaveValue("comment", comment);
             sr.SaveList("categoryValues", categoryValues);
@@ -81,6 +92,9 @@ namespace RatableTracker.Framework
             {
                 switch (key)
                 {
+                    case "referenceKey":
+                        referenceKey = sr.GetGuid(key);
+                        break;
                     case "name":
                         name = sr.GetString(key);
                         break;
@@ -118,7 +132,7 @@ namespace RatableTracker.Framework
             double sum = 0;
             foreach (RatingCategoryValue rcv in CategoryValues)
             {
-                RatingCategory rc = GetParentModule().FindRatingCategory(rcv.RatingCategoryName);
+                RatingCategory rc = GetParentModule().FindRatingCategory(rcv.RatingCategory);
                 sum += rc.Weight;
             }
             return sum;
@@ -127,6 +141,16 @@ namespace RatableTracker.Framework
         public void SetManualFinalScore(double val)
         {
             finalScoreManual = val;
+        }
+
+        public void UpdateRatingCategoryValues(Func<RatingCategoryValue, bool> where, Action<RatingCategoryValue> action)
+        {
+            Util.UpdateInListOnCondition(categoryValues, where, action);
+        }
+
+        public void DeleteRatingCategoryValues(Predicate<RatingCategoryValue> where)
+        {
+            Util.DeleteFromListOnCondition(ref categoryValues, where);
         }
     }
 }

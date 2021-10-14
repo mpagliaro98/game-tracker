@@ -8,7 +8,7 @@ using RatableTracker.Framework.LoadSave;
 
 namespace RatableTracker.Framework
 {
-    public class ScoreRange : ISavable, IModuleAccess
+    public class ScoreRange : ISavable, IModuleAccess, IReferable
     {
         private string name = "";
         public string Name
@@ -26,13 +26,23 @@ namespace RatableTracker.Framework
 
         private IEnumerable<int> valueList;
 
+        private Guid referenceKey = Guid.NewGuid();
+        public Guid ReferenceKey
+        {
+            get { return referenceKey; }
+        }
+
         private RatingModule parentModule;
         
-        public ScoreRange() { }
+        public ScoreRange()
+        {
+            referenceKey = Guid.NewGuid();
+        }
 
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
             sr.SaveValue("scoreRelationshipName", scoreRelationshipName);
             sr.SaveList("valueList", valueList);
@@ -46,6 +56,9 @@ namespace RatableTracker.Framework
             {
                 switch (key)
                 {
+                    case "referenceKey":
+                        referenceKey = sr.GetGuid(key);
+                        break;
                     case "name":
                         name = sr.GetString(key);
                         break;

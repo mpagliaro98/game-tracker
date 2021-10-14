@@ -10,15 +10,15 @@ namespace GameTracker.Model
 {
     public class RatableGame : RatableObjectCompletable
     {
-        private Platform platform;
-        public Platform Platform
+        private ObjectReference platform;
+        public ObjectReference Platform
         {
             get { return platform; }
             set { platform = value; }
         }
 
-        private Platform platformPlayedOn;
-        public Platform PlatformPlayedOn
+        private ObjectReference platformPlayedOn;
+        public ObjectReference PlatformPlayedOn
         {
             get { return platformPlayedOn; }
             set { platformPlayedOn = value; }
@@ -59,10 +59,10 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "platform":
-                        platform = sr.GetISavable<Platform>(key);
+                        platform = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "platformPlayedOn":
-                        platformPlayedOn = sr.GetISavable<Platform>(key);
+                        platformPlayedOn = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "completionCriteria":
                         completionCriteria = sr.GetString(key);

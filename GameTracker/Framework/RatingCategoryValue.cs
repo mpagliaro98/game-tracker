@@ -10,11 +10,11 @@ namespace RatableTracker.Framework
 {
     public class RatingCategoryValue : ISavable, IModuleAccess
     {
-        private string ratingCategoryName = "";
-        public string RatingCategoryName
+        private ObjectReference ratingCategory = null;
+        public ObjectReference RatingCategory
         {
-            get { return ratingCategoryName; }
-            set { ratingCategoryName = value; }
+            get { return ratingCategory; }
+            set { ratingCategory = value; }
         }
 
         private double pointValue = 0;
@@ -30,14 +30,14 @@ namespace RatableTracker.Framework
 
         public RatingCategoryValue(RatingCategory ratingCategory, double pointValue)
         {
-            RatingCategoryName = ratingCategory.Name;
+            RatingCategory = new ObjectReference(ratingCategory);
             PointValue = pointValue;
         }
 
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
-            sr.SaveValue("ratingCategoryName", ratingCategoryName);
+            sr.SaveValue("ratingCategory", ratingCategory);
             sr.SaveValue("pointValue", pointValue);
             return sr;
         }
@@ -49,8 +49,8 @@ namespace RatableTracker.Framework
             {
                 switch (key)
                 {
-                    case "ratingCategoryName":
-                        ratingCategoryName = sr.GetString(key);
+                    case "ratingCategory":
+                        ratingCategory = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "pointValue":
                         pointValue = sr.GetDouble(key);

@@ -8,7 +8,7 @@ using RatableTracker.Framework.LoadSave;
 
 namespace GameTracker.Model
 {
-    public class Platform : ISavable
+    public class Platform : ISavable, IReferable
     {
         private string name = "";
         public string Name
@@ -17,9 +17,21 @@ namespace GameTracker.Model
             set { name = value; }
         }
 
+        private Guid referenceKey = Guid.NewGuid();
+        public Guid ReferenceKey
+        {
+            get { return referenceKey; }
+        }
+
+        public Platform()
+        {
+            referenceKey = Guid.NewGuid();
+        }
+
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
             return sr;
         }
@@ -31,6 +43,9 @@ namespace GameTracker.Model
             {
                 switch (key)
                 {
+                    case "referenceKey":
+                        referenceKey = sr.GetGuid(key);
+                        break;
                     case "name":
                         name = sr.GetString(key);
                         break;

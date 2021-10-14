@@ -22,13 +22,13 @@ namespace GameTracker.UI
     /// </summary>
     public partial class ListBoxItemRatingCategory : UserControl
     {
-        private RatingCategory rc;
-        public RatingCategory RatingCategory
+        private RatingCategoryWeighted rc;
+        public RatingCategoryWeighted RatingCategory
         {
             get { return rc; }
         }
 
-        public ListBoxItemRatingCategory(RatingCategory rc)
+        public ListBoxItemRatingCategory(RatingCategoryWeighted rc)
         {
             InitializeComponent();
             this.rc = rc;

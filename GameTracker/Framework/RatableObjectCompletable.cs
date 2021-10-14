@@ -9,8 +9,8 @@ namespace RatableTracker.Framework
 {
     public class RatableObjectCompletable : RatableObject
     {
-        private CompletionStatus completionStatus;
-        public CompletionStatus CompletionStatus
+        private ObjectReference completionStatus;
+        public ObjectReference CompletionStatus
         {
             get { return completionStatus; }
             set { completionStatus = value; }
@@ -34,7 +34,7 @@ namespace RatableTracker.Framework
                 switch (key)
                 {
                     case "completionStatus":
-                        completionStatus = sr.GetISavable<CompletionStatus>(key);
+                        completionStatus = sr.GetISavable<ObjectReference>(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("RatableObjectCompletable.cs RestoreFromRepresentation: unrecognized key " + key);

@@ -8,7 +8,7 @@ using RatableTracker.Framework.LoadSave;
 
 namespace RatableTracker.Framework
 {
-    public class RatingCategory : ISavable
+    public class RatingCategory : ISavable, IReferable
     {
         private string name = "";
         public string Name
@@ -30,7 +30,16 @@ namespace RatableTracker.Framework
             get { return weight; }
         }
 
-        public RatingCategory() { }
+        private Guid referenceKey = Guid.NewGuid();
+        public Guid ReferenceKey
+        {
+            get { return referenceKey; }
+        }
+
+        public RatingCategory()
+        {
+            referenceKey = Guid.NewGuid();
+        }
 
         public RatingCategory(string name, string comment)
         {
@@ -41,6 +50,7 @@ namespace RatableTracker.Framework
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
             sr.SaveValue("comment", comment);
             sr.SaveValue("weight", weight);
@@ -54,6 +64,9 @@ namespace RatableTracker.Framework
             {
                 switch (key)
                 {
+                    case "referenceKey":
+                        referenceKey = sr.GetGuid(key);
+                        break;
                     case "name":
                         name = sr.GetString(key);
                         break;

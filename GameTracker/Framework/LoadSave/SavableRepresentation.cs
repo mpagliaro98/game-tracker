@@ -41,6 +41,12 @@ namespace RatableTracker.Framework.LoadSave
             values.Add(key, vc);
         }
 
+        public void SaveValue(string key, Guid value)
+        {
+            IValueContainer vc = new ValueContainer(value.ToString());
+            values.Add(key, vc);
+        }
+
         public void SaveValue(string key, ISavable obj)
         {
             IValueContainer vc = new ValueContainer(obj);
@@ -103,6 +109,11 @@ namespace RatableTracker.Framework.LoadSave
         public double GetDouble(string key)
         {
             return double.Parse(values[key].GetContentString());
+        }
+
+        public Guid GetGuid(string key)
+        {
+            return Guid.Parse(values[key].GetContentString());
         }
 
         public T GetISavable<T>(string key) where T : ISavable, new()

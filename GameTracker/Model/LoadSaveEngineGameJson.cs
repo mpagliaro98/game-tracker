@@ -113,7 +113,7 @@ namespace GameTracker.Model
         protected virtual T LoadISavable<T>(string filepath, RatingModule parentModule) where T : ISavable, new()
         {
             string serialized = ReadJSONFromFile(filepath);
-            SavableRepresentation sr = LoadJSONIntoRepresentation<T>(serialized);
+            SavableRepresentation sr = LoadJSONIntoRepresentation(serialized);
             T t = new T();
             t.RestoreFromRepresentation(sr);
             SetParentModule(t, parentModule);
@@ -141,7 +141,7 @@ namespace GameTracker.Model
             foreach (JObject root in objects)
             {
                 string jsonObj = root.ToString();
-                SavableRepresentation sr = LoadJSONIntoRepresentation<T>(jsonObj);
+                SavableRepresentation sr = LoadJSONIntoRepresentation(jsonObj);
                 T t = new T();
                 t.RestoreFromRepresentation(sr);
                 result = result.Append(t).ToList();
@@ -149,7 +149,7 @@ namespace GameTracker.Model
             return result;
         }
 
-        protected SavableRepresentation LoadJSONIntoRepresentation<T>(string json) where T : ISavable, new()
+        protected SavableRepresentation LoadJSONIntoRepresentation(string json)
         {
             if (json == "")
             {
@@ -170,14 +170,18 @@ namespace GameTracker.Model
                     foreach (JObject childRoot in objects)
                     {
                         string jsonObj = childRoot.ToString();
-                        SavableRepresentation srChild = LoadJSONIntoRepresentation<T>(jsonObj);
+                        SavableRepresentation srChild = LoadJSONIntoRepresentation(jsonObj);
                         srList = srList.Append(srChild).ToList();
                     }
                     sr.SaveList(node.Key, srList);
                 }
-                else if (node.Value is JObject || node.Value is JValue)
+                else if (node.Value is JValue)
                 {
                     sr.SaveValue(node.Key, node.Value.ToString());
+                }
+                else if (node.Value is JObject)
+                {
+                    sr.SaveValue(node.Key, LoadJSONIntoRepresentation(node.Value.ToString()));
                 }
             }
             return sr;

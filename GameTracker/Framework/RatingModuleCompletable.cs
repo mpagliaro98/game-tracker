@@ -25,16 +25,9 @@ namespace RatableTracker.Framework
         protected abstract void LoadCompletionStatuses();
         public abstract void SaveCompletionStatuses();
 
-        public CompletionStatus FindCompletionStatus(string name)
+        public CompletionStatus FindCompletionStatus(ObjectReference objectKey)
         {
-            foreach (CompletionStatus cs in completionStatuses)
-            {
-                if (cs.Name == name)
-                {
-                    return cs;
-                }
-            }
-            throw new NameNotFoundException("RatingModuleCompletable FindCompletionStatus: could not find name of " + name);
+            return FindObject(completionStatuses, objectKey);
         }
 
         public void AddCompletionStatus(CompletionStatus obj)
@@ -45,6 +38,11 @@ namespace RatableTracker.Framework
         public void UpdateCompletionStatus(CompletionStatus obj, CompletionStatus orig)
         {
             UpdateInList(ref completionStatuses, SaveCompletionStatuses, obj, orig);
+        }
+
+        public void DeleteCompletionStatus(CompletionStatus obj)
+        {
+            DeleteFromList(ref completionStatuses, SaveCompletionStatuses, obj);
         }
     }
 }
