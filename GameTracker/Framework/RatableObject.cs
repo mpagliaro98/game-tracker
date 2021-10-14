@@ -151,5 +151,23 @@ namespace RatableTracker.Framework
         {
             Util.DeleteFromListOnCondition(ref categoryValues, where);
         }
+
+        public override int GetHashCode()
+        {
+            return ReferenceKey.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                RatableObject o = (RatableObject)obj;
+                return !ReferenceKey.Equals(Guid.Empty) && ReferenceKey.Equals(o.ReferenceKey);
+            }
+        }
     }
 }

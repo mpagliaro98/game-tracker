@@ -9,5 +9,7 @@ namespace RatableTracker.Framework.Interfaces
     public interface IReferable
     {
         Guid ReferenceKey { get; }
+        int GetHashCode();
+        bool Equals(object obj);
     }
 }
