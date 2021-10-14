@@ -207,7 +207,7 @@ namespace RatableTracker.Framework
         public void DeleteRatingCategory(RatingCategory obj)
         {
             DeleteFromList(ref ratingCategories, SaveRatingCategories, obj);
-            ratableObjects.ForEach(ro => ro.DeleteRatingCategoryValues(rcv => rcv.RatingCategory.IsReferencedObject(obj)));
+            ratableObjects.ForEach(ro => ro.DeleteRatingCategoryValues(rcv => rcv.RatingCategory.Equals(obj)));
             if (GlobalSettings.Autosave) SaveRatableObjects();
         }
     }

@@ -10,18 +10,24 @@ namespace GameTracker.Model
 {
     public class RatableGame : RatableObjectCompletable
     {
-        private ObjectReference platform;
-        public ObjectReference Platform
+        private ObjectReference platform = new ObjectReference();
+        public Platform Platform
         {
-            get { return platform; }
-            set { platform = value; }
+            get
+            {
+                return platform.HasReference() ? ((RatingModuleGame)GetParentModule()).FindPlatform(platform) : null;
+            }
+            set { platform.SetReference(value); }
         }
 
-        private ObjectReference platformPlayedOn;
-        public ObjectReference PlatformPlayedOn
+        private ObjectReference platformPlayedOn = new ObjectReference();
+        public Platform PlatformPlayedOn
         {
-            get { return platformPlayedOn; }
-            set { platformPlayedOn = value; }
+            get
+            {
+                return platformPlayedOn.HasReference() ? ((RatingModuleGame)GetParentModule()).FindPlatform(platformPlayedOn) : null;
+            }
+            set { platform.SetReference(value); }
         }
 
         private string completionCriteria = "";
@@ -75,6 +81,16 @@ namespace GameTracker.Model
                         break;
                 }
             }
+        }
+
+        public void RemovePlatform()
+        {
+            platform.ClearReference();
+        }
+
+        public void RemovePlatformPlayedOn()
+        {
+            platformPlayedOn.ClearReference();
         }
     }
 }

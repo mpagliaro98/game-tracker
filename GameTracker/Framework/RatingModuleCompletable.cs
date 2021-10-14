@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.Exceptions;
+using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework
 {
@@ -43,6 +44,10 @@ namespace RatableTracker.Framework
         public void DeleteCompletionStatus(CompletionStatus obj)
         {
             DeleteFromList(ref completionStatuses, SaveCompletionStatuses, obj);
+            ratableObjects.Cast<RatableObjectCompletable>()
+                .Where(ro => ro.CompletionStatus.Equals(obj))
+                .ForEach(ro => ro.RemoveCompletionStatus());
+            if (GlobalSettings.Autosave) SaveRatableObjects();
         }
     }
 }

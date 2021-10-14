@@ -10,11 +10,13 @@ namespace RatableTracker.Framework
 {
     public class RatingCategoryValue : ISavable, IModuleAccess
     {
-        private ObjectReference ratingCategory = null;
-        public ObjectReference RatingCategory
+        private ObjectReference ratingCategory = new ObjectReference();
+        public RatingCategory RatingCategory
         {
-            get { return ratingCategory; }
-            set { ratingCategory = value; }
+            get
+            {
+                return ratingCategory.HasReference() ? parentModule.FindRatingCategory(ratingCategory) : null;
+            }
         }
 
         private double pointValue = 0;
@@ -30,8 +32,8 @@ namespace RatableTracker.Framework
 
         public RatingCategoryValue(RatingCategory ratingCategory, double pointValue)
         {
-            RatingCategory = new ObjectReference(ratingCategory);
-            PointValue = pointValue;
+            this.ratingCategory = new ObjectReference(ratingCategory);
+            this.pointValue = pointValue;
         }
 
         public SavableRepresentation LoadIntoRepresentation()

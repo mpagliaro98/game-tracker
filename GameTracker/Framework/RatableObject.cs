@@ -52,7 +52,7 @@ namespace RatableTracker.Framework
                     double sumOfWeights = SumOfWeights();
                     foreach (RatingCategoryValue categoryValue in categoryValues)
                     {
-                        double categoryWeight = GetParentModule().FindRatingCategory(categoryValue.RatingCategory).Weight;
+                        double categoryWeight = categoryValue.RatingCategory.Weight;
                         total += (categoryWeight / sumOfWeights) * categoryValue.PointValue;
                     }
                     return total;
@@ -132,8 +132,7 @@ namespace RatableTracker.Framework
             double sum = 0;
             foreach (RatingCategoryValue rcv in CategoryValues)
             {
-                RatingCategory rc = GetParentModule().FindRatingCategory(rcv.RatingCategory);
-                sum += rc.Weight;
+                sum += rcv.RatingCategory.Weight;
             }
             return sum;
         }

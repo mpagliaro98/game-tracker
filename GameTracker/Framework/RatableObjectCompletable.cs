@@ -9,11 +9,14 @@ namespace RatableTracker.Framework
 {
     public class RatableObjectCompletable : RatableObject
     {
-        private ObjectReference completionStatus;
-        public ObjectReference CompletionStatus
+        private ObjectReference completionStatus = new ObjectReference();
+        public CompletionStatus CompletionStatus
         {
-            get { return completionStatus; }
-            set { completionStatus = value; }
+            get
+            {
+                return completionStatus.HasReference() ? ((RatingModuleCompletable)GetParentModule()).FindCompletionStatus(completionStatus) : null;
+            }
+            set { completionStatus.SetReference(value); }
         }
 
         public RatableObjectCompletable() : base() { }
@@ -41,6 +44,11 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
+        }
+
+        public void RemoveCompletionStatus()
+        {
+            completionStatus.ClearReference();
         }
     }
 }

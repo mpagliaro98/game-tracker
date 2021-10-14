@@ -56,5 +56,15 @@ namespace RatableTracker.Framework
         {
             objectKey = obj.ReferenceKey;
         }
+
+        public void ClearReference()
+        {
+            objectKey = Guid.Empty;
+        }
+
+        public bool HasReference()
+        {
+            return !objectKey.Equals(Guid.Empty);
+        }
     }
 }

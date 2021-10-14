@@ -55,5 +55,23 @@ namespace GameTracker.Model
                 }
             }
         }
+
+        public override int GetHashCode()
+        {
+            return ReferenceKey.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                Platform o = (Platform)obj;
+                return !ReferenceKey.Equals(Guid.Empty) && ReferenceKey.Equals(o.ReferenceKey);
+            }
+        }
     }
 }

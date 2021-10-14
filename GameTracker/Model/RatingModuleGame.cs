@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework;
-using RatableTracker.Framework.Exceptions;
+using RatableTracker.Framework.Global;
 
 namespace GameTracker.Model
 {
@@ -107,6 +107,13 @@ namespace GameTracker.Model
         public void DeletePlatform(Platform obj)
         {
             DeleteFromList(ref platforms, SavePlatforms, obj);
+            ratableObjects.Cast<RatableGame>()
+                .Where(ro => ro.Platform.Equals(obj))
+                .ForEach(ro => ro.RemovePlatform());
+            ratableObjects.Cast<RatableGame>()
+                .Where(ro => ro.PlatformPlayedOn.Equals(obj))
+                .ForEach(ro => ro.RemovePlatformPlayedOn());
+            if (GlobalSettings.Autosave) SaveRatableObjects();
         }
     }
 }

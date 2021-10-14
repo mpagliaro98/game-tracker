@@ -77,5 +77,23 @@ namespace RatableTracker.Framework
                 }
             }
         }
+
+        public override int GetHashCode()
+        {
+            return ReferenceKey.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if ((obj == null) || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                CompletionStatus o = (CompletionStatus)obj;
+                return !ReferenceKey.Equals(Guid.Empty) && ReferenceKey.Equals(o.ReferenceKey);
+            }
+        }
     }
 }
