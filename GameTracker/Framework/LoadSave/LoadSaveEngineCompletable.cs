@@ -8,24 +8,21 @@ namespace RatableTracker.Framework.LoadSave
 {
     public abstract class LoadSaveEngineCompletable : LoadSaveEngine
     {
+        protected static LoadSaveIdentifier ID_COMPLETIONSTATUSES = new LoadSaveIdentifier("CompletionStatuses");
+
         public virtual IEnumerable<CompletionStatus> LoadCompletionStatuses(RatingModule parentModule)
         {
-            return LoadListParent<CompletionStatus>(parentModule);
+            return LoadListParent<CompletionStatus>(parentModule, ID_COMPLETIONSTATUSES);
         }
 
         public virtual void SaveCompletionStatuses(IEnumerable<CompletionStatus> completionStatuses)
         {
-            SaveListParent(completionStatuses);
+            SaveListParent(completionStatuses, ID_COMPLETIONSTATUSES);
         }
 
         public override IEnumerable<RatableObject> LoadRatableObjects(RatingModule parentModule)
         {
-            return LoadListParent<RatableObjectCompletable>(parentModule);
-        }
-
-        public override void SaveRatableObjects(IEnumerable<RatableObject> ratableObjects)
-        {
-            SaveListParent(ratableObjects.Cast<RatableObjectCompletable>());
+            return LoadListParent<RatableObjectCompletable>(parentModule, ID_RATABLEOBJECTS);
         }
     }
 }

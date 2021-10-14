@@ -61,6 +61,7 @@
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
     <Compile Include="Framework\Interfaces\IReferable.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveIdentifier.cs" />
     <Compile Include="Framework\ObjectReference.cs" />
     <Compile Include="Model\Partial\IValueContainer.cs" />
     <Compile Include="Model\Partial\SavableRepresentation.cs" />

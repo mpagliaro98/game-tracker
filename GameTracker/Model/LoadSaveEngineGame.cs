@@ -10,34 +10,26 @@ namespace GameTracker.Model
 {
     public abstract class LoadSaveEngineGame : LoadSaveEngineCompletable
     {
+        protected static LoadSaveIdentifier ID_PLATFORMS = new LoadSaveIdentifier("Platforms");
+
         public virtual IEnumerable<Platform> LoadPlatforms(RatingModule parentModule)
         {
-            return LoadListParent<Platform>(parentModule);
+            return LoadListParent<Platform>(parentModule, ID_PLATFORMS);
         }
 
         public virtual void SavePlatforms(IEnumerable<Platform> platforms)
         {
-            SaveListParent(platforms);
+            SaveListParent(platforms, ID_PLATFORMS);
         }
 
         public override IEnumerable<RatableObject> LoadRatableObjects(RatingModule parentModule)
         {
-            return LoadListParent<RatableGame>(parentModule);
+            return LoadListParent<RatableGame>(parentModule, ID_RATABLEOBJECTS);
         }
 
         public override IEnumerable<RatingCategory> LoadRatingCategories(RatingModule parentModule)
         {
-            return LoadListParent<RatingCategoryWeighted>(parentModule);
-        }
-
-        public override void SaveRatableObjects(IEnumerable<RatableObject> ratableObjects)
-        {
-            SaveRatableObjects(ratableObjects.Cast<RatableGame>());
-        }
-
-        public override void SaveRatingCategories(IEnumerable<RatingCategory> ratingCategories)
-        {
-            SaveRatingCategories(ratingCategories.Cast<RatingCategoryWeighted>());
+            return LoadListParent<RatingCategoryWeighted>(parentModule, ID_RATINGCATEGORIES);
         }
     }
 }

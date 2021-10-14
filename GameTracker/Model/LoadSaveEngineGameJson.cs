@@ -22,27 +22,27 @@ namespace GameTracker.Model
         protected const string FILENAME_SETTINGS = "settings.json";
         protected const string DIRECTORY_SAVE = "savefiles";
         protected static string SAVE_DIR = PathController.Combine(PathController.BaseDirectory(), DIRECTORY_SAVE);
-        protected readonly IDictionary<Type, string> filepathMap = new Dictionary<Type, string>()
+        protected readonly IDictionary<LoadSaveIdentifier, string> filepathMap = new Dictionary<LoadSaveIdentifier, string>()
         {
-            { typeof(RatableGame), PathController.Combine(SAVE_DIR, FILENAME_GAMES) },
-            { typeof(Platform), PathController.Combine(SAVE_DIR, FILENAME_PLATFORMS) },
-            { typeof(CompletionStatus), PathController.Combine(SAVE_DIR, FILENAME_STATUSES) },
-            { typeof(RatingCategoryWeighted), PathController.Combine(SAVE_DIR, FILENAME_CATEGORIES) },
-            { typeof(ScoreRange), PathController.Combine(SAVE_DIR, FILENAME_RANGES) },
-            { typeof(Settings), PathController.Combine(SAVE_DIR, FILENAME_SETTINGS) }
+            { ID_RATABLEOBJECTS, PathController.Combine(SAVE_DIR, FILENAME_GAMES) },
+            { ID_PLATFORMS, PathController.Combine(SAVE_DIR, FILENAME_PLATFORMS) },
+            { ID_COMPLETIONSTATUSES, PathController.Combine(SAVE_DIR, FILENAME_STATUSES) },
+            { ID_RATINGCATEGORIES, PathController.Combine(SAVE_DIR, FILENAME_CATEGORIES) },
+            { ID_SCORERANGES, PathController.Combine(SAVE_DIR, FILENAME_RANGES) },
+            { ID_SETTINGS, PathController.Combine(SAVE_DIR, FILENAME_SETTINGS) }
         };
 
-        protected override IEnumerable<T> LoadISavableList<T>()
+        protected override IEnumerable<T> LoadISavableList<T>(LoadSaveIdentifier id)
         {
-            string filepath = GetFilenameForType(typeof(T));
+            string filepath = GetFilename(id);
             string serialized = ReadJSONFromFile(filepath);
             IEnumerable<T> result = LoadJSONArrayIntoObjects<T>(serialized);
             return result;
         }
 
-        protected override T LoadISavable<T>()
+        protected override T LoadISavable<T>(LoadSaveIdentifier id)
         {
-            string filepath = GetFilenameForType(typeof(T));
+            string filepath = GetFilename(id);
             string serialized = ReadJSONFromFile(filepath);
             SavableRepresentation sr = SavableRepresentation.LoadFromJSON(serialized);
             T t = new T();
@@ -50,16 +50,16 @@ namespace GameTracker.Model
             return t;
         }
 
-        protected override void SaveISavableList<T>(IEnumerable<T> list)
+        protected override void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id)
         {
-            string filepath = GetFilenameForType(typeof(T));
+            string filepath = GetFilename(id);
             string serialized = Util.CreateJSONArray(list.Cast<ISavable>());
             SaveJSONToFile(serialized, filepath);
         }
 
-        protected override void SaveISavable<T>(T obj)
+        protected override void SaveISavable<T>(T obj, LoadSaveIdentifier id)
         {
-            string filepath = GetFilenameForType(typeof(T));
+            string filepath = GetFilename(id);
             SavableRepresentation sr = obj.LoadIntoRepresentation();
             string serialized = sr.ConvertToJSON();
             SaveJSONToFile(serialized, filepath);
@@ -111,13 +111,13 @@ namespace GameTracker.Model
             }
         }
 
-        protected string GetFilenameForType(Type type)
+        protected string GetFilename(LoadSaveIdentifier id)
         {
-            if (!filepathMap.ContainsKey(type))
+            if (!filepathMap.ContainsKey(id))
             {
-                throw new Exception("Attempting to get filename of type " + type.ToString() + ", which is not handled");
+                throw new Exception("Attempting to get filename of ID " + id.ToString() + ", which is not handled");
             }
-            return filepathMap[type];
+            return filepathMap[id];
         }
     }
 }
