@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
-        Title="SubWindowCompletionStatus" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Title="Completion Status" Height="220" Width="300">
+    <StackPanel>
+        <Label Content="Name" />
+        <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />
+        <CheckBox x:Name="CheckboxUseAsFinished" Content="Consider as finished" Margin="5,10,0,0" />
+        <CheckBox x:Name="CheckboxExcludeFromStats" Content="Exclude from stats" Margin="5,10,0,0" />
+        <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />
+        <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
+        <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" />
+    </StackPanel>
 </Window>

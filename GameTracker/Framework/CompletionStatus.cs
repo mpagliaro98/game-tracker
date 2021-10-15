@@ -42,6 +42,14 @@ namespace RatableTracker.Framework
             referenceKey = Guid.NewGuid();
         }
 
+        public CompletionStatus(string name, bool useAsFinished, bool excludeFromStats)
+        {
+            referenceKey = Guid.NewGuid();
+            this.name = name;
+            this.useAsFinished = useAsFinished;
+            this.excludeFromStats = excludeFromStats;
+        }
+
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();

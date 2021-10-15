@@ -57,6 +57,7 @@ namespace GameTracker.UI
                     ResetSettingsLabels();
                     UpdateSettingsUI();
                     UpdateRatingCategoryUI();
+                    UpdateCompletionStatusUI();
                     break;
                 default:
                     throw new Exception("Unhandled tab");
@@ -195,9 +196,48 @@ namespace GameTracker.UI
         #endregion
 
         #region Completion Statuses
+        private void UpdateCompletionStatusUI()
+        {
+            SettingsListboxCompletionStatuses.ClearItems();
+            foreach (CompletionStatus cs in rm.CompletionStatuses)
+            {
+                ListBoxItemCompletionStatus item = new ListBoxItemCompletionStatus(cs);
+                item.MouseDoubleClick += CompletionStatusEdit;
+                SettingsListboxCompletionStatuses.AddItem(item);
+
+                item.ContextMenu = EditDeleteContextMenu(CompletionStatusEdit, CompletionStatusDelete);
+            }
+        }
+
         private void SettingsButtonNewCompletionStatus_Click(object sender, RoutedEventArgs e)
         {
+            OpenSubWindowCompletionStatus(SubWindowMode.MODE_ADD);
+        }
 
+        private void CompletionStatusEdit(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemCompletionStatus lbi;
+            if (sender is MenuItem)
+            {
+                lbi = GetControlFromMenuItem<ListBoxItemCompletionStatus>((MenuItem)sender);
+            }
+            else
+            {
+                lbi = (ListBoxItemCompletionStatus)sender;
+            }
+            OpenSubWindowCompletionStatus(SubWindowMode.MODE_EDIT, lbi.CompletionStatus);
+        }
+
+        private void CompletionStatusDelete(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemCompletionStatus lbi = GetControlFromMenuItem<ListBoxItemCompletionStatus>((MenuItem)sender);
+
+            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this completion status and all data associated with it?", "Delete Completion Status Confirmation", MessageBoxButton.YesNo);
+            if (mbr != MessageBoxResult.Yes) return;
+
+            CompletionStatus cs = lbi.CompletionStatus;
+            rm.DeleteCompletionStatus(cs);
+            UpdateCompletionStatusUI();
         }
 
         private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatus orig = null)
@@ -209,7 +249,7 @@ namespace GameTracker.UI
 
         private void CompletionStatusWindow_Closed(object sender, EventArgs e)
         {
-            UpdateRatingCategoryUI();
+            UpdateCompletionStatusUI();
         }
         #endregion
 
