@@ -43,7 +43,11 @@
                             <Label x:Name="SettingsLabelSuccess" Content="Settings successfully saved" Foreground="Lime" />
                         </StackPanel>
                         <DockPanel x:Name="SettingsCompletionStatusesLayout" Grid.Column="1">
-                            <Label x:Name="SettingsLabelCompletionStatuses" Content="Completion Statuses" DockPanel.Dock="Top" />
+                            <DockPanel DockPanel.Dock="Top">
+                                <Label x:Name="SettingsLabelCompletionStatuses" Content="Completion Statuses" />
+                                <Button x:Name="SettingsButtonNewCompletionStatus" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewCompletionStatus_Click" />
+                            </DockPanel>
+                            
                             <local:ScalableListBox x:Name="SettingsListboxCompletionStatuses" DockPanel.Dock="Bottom" Margin="5,2,5,5" />
                         </DockPanel>
                         <DockPanel x:Name="SettingsScoreRangesLayout" Grid.Row="1">

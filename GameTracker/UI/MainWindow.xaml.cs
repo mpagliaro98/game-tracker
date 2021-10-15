@@ -39,54 +39,7 @@ namespace GameTracker.UI
             InitializeComponent();
         }
 
-        private void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
-        {
-            ResetSettingsLabels();
-            string minScoreInput = SettingsTextboxMin.Text;
-            string maxScoreInput = SettingsTextboxMax.Text;
-            if (!(double.TryParse(minScoreInput, out double minScore) && double.TryParse(maxScoreInput, out double maxScore)))
-            {
-                SettingsLabelError.Visibility = Visibility.Visible;
-                return;
-            }
-
-            if (minScore != rm.Settings.MinScore || maxScore != rm.Settings.MaxScore)
-            {
-                MessageBoxResult mbr = MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
-                if (mbr != MessageBoxResult.Yes) return;
-            }
-
-            rm.Settings.MinScore = minScore;
-            rm.Settings.MaxScore = maxScore;
-            UpdateSettingsUI();
-            SettingsLabelSuccess.Visibility = Visibility.Visible;
-        }
-
-        private void UpdateSettingsUI()
-        {
-            SettingsTextboxMin.Text = rm.Settings.MinScore.ToString();
-            SettingsTextboxMax.Text = rm.Settings.MaxScore.ToString();
-        }
-
-        private void ResetSettingsLabels()
-        {
-            SettingsLabelError.Visibility = Visibility.Collapsed;
-            SettingsLabelSuccess.Visibility = Visibility.Collapsed;
-        }
-
-        private void UpdateRatingCategoryUI()
-        {
-            SettingsListboxRatingCategories.ClearItems();
-            foreach (RatingCategoryWeighted rc in rm.RatingCategories)
-            {
-                ListBoxItemRatingCategory item = new ListBoxItemRatingCategory(rc);
-                item.MouseDoubleClick += RatingCategoryEdit;
-                SettingsListboxRatingCategories.AddItem(item);
-
-                item.ContextMenu = EditDeleteContextMenu(RatingCategoryEdit, RatingCategoryDelete);
-            }
-        }
-
+        #region General Functionality and Utilities
         private void TabsBase_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.Source != TabsBase)
@@ -109,6 +62,92 @@ namespace GameTracker.UI
                     throw new Exception("Unhandled tab");
             }
             e.Handled = true;
+        }
+
+        private T GetControlFromMenuItem<T>(MenuItem menuItem) where T : UIElement
+        {
+            while (menuItem.Parent is MenuItem)
+            {
+                menuItem = (MenuItem)menuItem.Parent;
+            }
+            if (menuItem.Parent is ContextMenu menu)
+            {
+                return menu.PlacementTarget as T;
+            }
+            throw new Exception("Could not find parent control for menu item");
+        }
+
+        private ContextMenu EditDeleteContextMenu(RoutedEventHandler editFunc, RoutedEventHandler deleteFunc)
+        {
+            ContextMenu cm = new ContextMenu();
+            MenuItem mie = new MenuItem();
+            mie.Header = "Edit";
+            if (editFunc != null) mie.Click += editFunc;
+            cm.Items.Add(mie);
+            MenuItem mid = new MenuItem();
+            mid.Header = "Delete";
+            if (deleteFunc != null) mid.Click += deleteFunc;
+            cm.Items.Add(mid);
+            return cm;
+        }
+        #endregion
+
+        #region Games Tab
+        #endregion
+
+        #region Platforms Tab
+        #endregion
+
+        #region Settings Tab
+        #region General Settings
+        private void UpdateSettingsUI()
+        {
+            SettingsTextboxMin.Text = rm.Settings.MinScore.ToString();
+            SettingsTextboxMax.Text = rm.Settings.MaxScore.ToString();
+        }
+
+        private void ResetSettingsLabels()
+        {
+            SettingsLabelError.Visibility = Visibility.Collapsed;
+            SettingsLabelSuccess.Visibility = Visibility.Collapsed;
+        }
+
+        private void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
+        {
+            ResetSettingsLabels();
+            string minScoreInput = SettingsTextboxMin.Text;
+            string maxScoreInput = SettingsTextboxMax.Text;
+            if (!(double.TryParse(minScoreInput, out double minScore) && double.TryParse(maxScoreInput, out double maxScore)))
+            {
+                SettingsLabelError.Visibility = Visibility.Visible;
+                return;
+            }
+
+            if (minScore != rm.Settings.MinScore || maxScore != rm.Settings.MaxScore)
+            {
+                MessageBoxResult mbr = MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
+                if (mbr != MessageBoxResult.Yes) return;
+            }
+
+            rm.Settings.MinScore = minScore;
+            rm.Settings.MaxScore = maxScore;
+            UpdateSettingsUI();
+            SettingsLabelSuccess.Visibility = Visibility.Visible;
+        }
+        #endregion
+
+        #region Rating Categories
+        private void UpdateRatingCategoryUI()
+        {
+            SettingsListboxRatingCategories.ClearItems();
+            foreach (RatingCategoryWeighted rc in rm.RatingCategories)
+            {
+                ListBoxItemRatingCategory item = new ListBoxItemRatingCategory(rc);
+                item.MouseDoubleClick += RatingCategoryEdit;
+                SettingsListboxRatingCategories.AddItem(item);
+
+                item.ContextMenu = EditDeleteContextMenu(RatingCategoryEdit, RatingCategoryDelete);
+            }
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
@@ -153,32 +192,29 @@ namespace GameTracker.UI
         {
             UpdateRatingCategoryUI();
         }
+        #endregion
 
-        private T GetControlFromMenuItem<T>(MenuItem menuItem) where T : UIElement
+        #region Completion Statuses
+        private void SettingsButtonNewCompletionStatus_Click(object sender, RoutedEventArgs e)
         {
-            while (menuItem.Parent is MenuItem)
-            {
-                menuItem = (MenuItem)menuItem.Parent;
-            }
-            if (menuItem.Parent is ContextMenu menu)
-            {
-                return menu.PlacementTarget as T;
-            }
-            throw new Exception("Could not find parent control for menu item");
+
         }
 
-        private ContextMenu EditDeleteContextMenu(RoutedEventHandler editFunc, RoutedEventHandler deleteFunc)
+        private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatus orig = null)
         {
-            ContextMenu cm = new ContextMenu();
-            MenuItem mie = new MenuItem();
-            mie.Header = "Edit";
-            if (editFunc != null) mie.Click += editFunc;
-            cm.Items.Add(mie);
-            MenuItem mid = new MenuItem();
-            mid.Header = "Delete";
-            if (deleteFunc != null) mid.Click += deleteFunc;
-            cm.Items.Add(mid);
-            return cm;
+            var window = new SubWindowCompletionStatus(rm, mode, orig);
+            window.Closed += CompletionStatusWindow_Closed;
+            window.ShowDialog();
         }
+
+        private void CompletionStatusWindow_Closed(object sender, EventArgs e)
+        {
+            UpdateRatingCategoryUI();
+        }
+        #endregion
+
+        #region Score Ranges
+        #endregion
+        #endregion
     }
 }

@@ -70,16 +70,26 @@
     <Compile Include="Model\Partial\ValueContainer.cs" />
     <Compile Include="Framework\Global\Util.cs" />
     <Compile Include="Model\Partial\Util.cs" />
+    <Compile Include="UI\ListBoxItemCompletionStatus.xaml.cs">
+      <DependentUpon>ListBoxItemCompletionStatus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ListBoxItemRatingCategory.xaml.cs">
       <DependentUpon>ListBoxItemRatingCategory.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ScalableListBox.xaml.cs">
       <DependentUpon>ScalableListBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SubWindowCompletionStatus.xaml.cs">
+      <DependentUpon>SubWindowCompletionStatus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SubWindowMode.cs" />
     <Compile Include="UI\SubWindowRatingCategory.xaml.cs">
       <DependentUpon>SubWindowRatingCategory.xaml</DependentUpon>
     </Compile>
+    <Page Include="UI\ListBoxItemCompletionStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UI\ListBoxItemRatingCategory.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -102,6 +112,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\ScalableListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SubWindowCompletionStatus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
