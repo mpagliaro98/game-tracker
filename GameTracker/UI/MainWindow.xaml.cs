@@ -58,6 +58,7 @@ namespace GameTracker.UI
                     UpdateSettingsUI();
                     UpdateRatingCategoryUI();
                     UpdateCompletionStatusUI();
+                    UpdateScoreRangeUI();
                     break;
                 default:
                     throw new Exception("Unhandled tab");
@@ -254,6 +255,61 @@ namespace GameTracker.UI
         #endregion
 
         #region Score Ranges
+        private void UpdateScoreRangeUI()
+        {
+            SettingsListboxScoreRanges.ClearItems();
+            foreach (ScoreRange sr in rm.ScoreRanges)
+            {
+                ListBoxItemScoreRange item = new ListBoxItemScoreRange(sr);
+                item.MouseDoubleClick += ScoreRangeEdit;
+                SettingsListboxScoreRanges.AddItem(item);
+
+                item.ContextMenu = EditDeleteContextMenu(ScoreRangeEdit, ScoreRangeDelete);
+            }
+        }
+
+        private void SettingsButtonNewScoreRange_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSubWindowScoreRange(SubWindowMode.MODE_ADD);
+        }
+
+        private void ScoreRangeEdit(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemScoreRange lbi;
+            if (sender is MenuItem)
+            {
+                lbi = GetControlFromMenuItem<ListBoxItemScoreRange>((MenuItem)sender);
+            }
+            else
+            {
+                lbi = (ListBoxItemScoreRange)sender;
+            }
+            OpenSubWindowScoreRange(SubWindowMode.MODE_EDIT, lbi.ScoreRange);
+        }
+
+        private void ScoreRangeDelete(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemScoreRange lbi = GetControlFromMenuItem<ListBoxItemScoreRange>((MenuItem)sender);
+
+            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this score range?", "Delete Score Range Confirmation", MessageBoxButton.YesNo);
+            if (mbr != MessageBoxResult.Yes) return;
+
+            ScoreRange sr = lbi.ScoreRange;
+            rm.DeleteScoreRange(sr);
+            UpdateScoreRangeUI();
+        }
+
+        private void OpenSubWindowScoreRange(SubWindowMode mode, ScoreRange orig = null)
+        {
+            var window = new SubWindowScoreRange(rm, mode, orig);
+            window.Closed += ScoreRangeWindow_Closed;
+            window.ShowDialog();
+        }
+
+        private void ScoreRangeWindow_Closed(object sender, EventArgs e)
+        {
+            UpdateScoreRangeUI();
+        }
         #endregion
         #endregion
     }

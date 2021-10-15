@@ -21,6 +21,8 @@ namespace RatableTracker.Framework
 
         public RatableObjectCompletable() : base() { }
 
+        public RatableObjectCompletable(RatingModule parentModule) : base(parentModule) { }
+
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

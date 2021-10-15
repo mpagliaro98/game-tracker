@@ -44,22 +44,40 @@ namespace RatableTracker.Framework.LoadSave
             {
                 if (node.Value is JArray)
                 {
-                    IEnumerable<SavableRepresentation> srList = new LinkedList<SavableRepresentation>();
-                    var objects = node.Value;
-                    foreach (JObject childRoot in objects)
+                    // Node is an array
+                    if (((JArray)node.Value).First is JValue)
                     {
-                        string jsonObj = childRoot.ToString();
-                        SavableRepresentation srChild = LoadFromJSON(jsonObj);
-                        srList = srList.Append(srChild).ToList();
+                        // Array is all single values (assumes all values are same type)
+                        LinkedList<string> stringList = new LinkedList<string>();
+                        var objects = node.Value;
+                        foreach (JValue childRoot in objects)
+                        {
+                            stringList.AddLast(childRoot.Value.ToString());
+                        }
+                        sr.SaveList(node.Key, stringList);
                     }
-                    sr.SaveList(node.Key, srList);
+                    else if (((JArray)node.Value).First is JObject)
+                    {
+                        // Array is all json objects (assumes all values are same type)
+                        LinkedList<SavableRepresentation> srList = new LinkedList<SavableRepresentation>();
+                        var objects = node.Value;
+                        foreach (JObject childRoot in objects)
+                        {
+                            string jsonObj = childRoot.ToString();
+                            SavableRepresentation srChild = LoadFromJSON(jsonObj);
+                            srList.AddLast(srChild);
+                        }
+                        sr.SaveList(node.Key, srList);
+                    }
                 }
                 else if (node.Value is JValue)
                 {
+                    // Node is a single value
                     sr.SaveValue(node.Key, node.Value.ToString());
                 }
                 else if (node.Value is JObject)
                 {
+                    // Node is a json array
                     sr.SaveValue(node.Key, LoadFromJSON(node.Value.ToString()));
                 }
             }

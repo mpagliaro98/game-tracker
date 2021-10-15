@@ -52,6 +52,13 @@ namespace RatableTracker.Framework
             }
         }
 
+        public Settings() { }
+
+        public Settings(RatingModule parentModule)
+        {
+            this.parentModule = parentModule;
+        }
+
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();

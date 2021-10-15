@@ -144,10 +144,10 @@ namespace RatableTracker.Framework.LoadSave
         public IEnumerable<T> GetListOfType<T>(string key)
         {
             List<T> result = new List<T>();
-            IEnumerable<object> list = GetStringList(key);
-            foreach (object obj in list)
+            IEnumerable<string> list = GetStringList(key);
+            foreach (string obj in list)
             {
-                T t = (T)obj;
+                T t = TConverter.ChangeType<T>(obj);
                 result.Add(t);
             }
             return result;

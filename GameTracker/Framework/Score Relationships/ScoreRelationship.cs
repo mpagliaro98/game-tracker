@@ -19,5 +19,10 @@ namespace RatableTracker.Framework.ScoreRelationships
         }
 
         public abstract bool IsValueInRange(double val, IEnumerable<double> valueList);
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

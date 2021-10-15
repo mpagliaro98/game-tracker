@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework.ScoreRelationships;
 
 namespace RatableTracker.Framework
 {
@@ -18,13 +19,18 @@ namespace RatableTracker.Framework
         }
 
         private string scoreRelationshipName = "";
-        public string ScoreRelationshipName
+        public ScoreRelationship ScoreRelationship
         {
-            get { return scoreRelationshipName; }
-            set { scoreRelationshipName = value; }
+            get { return parentModule.FindScoreRelationship(scoreRelationshipName); }
+            set { scoreRelationshipName = value.Name; }
         }
 
         private IEnumerable<int> valueList;
+        public IEnumerable<int> ValueList
+        {
+            get { return valueList; }
+            set { valueList = value; }
+        }
 
         private Guid referenceKey = Guid.NewGuid();
         public Guid ReferenceKey
@@ -40,6 +46,14 @@ namespace RatableTracker.Framework
         }
 
         public ScoreRange() { }
+
+        public ScoreRange(RatingModule parentModule, string name, IEnumerable<int> valueList, ScoreRelationship sr)
+        {
+            this.parentModule = parentModule;
+            this.name = name;
+            this.valueList = valueList;
+            scoreRelationshipName = sr.Name;
+        }
 
         public SavableRepresentation LoadIntoRepresentation()
         {

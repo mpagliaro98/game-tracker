@@ -60,6 +60,7 @@
     </ApplicationDefinition>
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
+    <Compile Include="Framework\Global\TConverter.cs" />
     <Compile Include="Framework\Interfaces\IReferable.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveIdentifier.cs" />
     <Compile Include="Framework\ObjectReference.cs" />
@@ -76,6 +77,9 @@
     <Compile Include="UI\ListBoxItemRatingCategory.xaml.cs">
       <DependentUpon>ListBoxItemRatingCategory.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ListBoxItemScoreRange.xaml.cs">
+      <DependentUpon>ListBoxItemScoreRange.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ScalableListBox.xaml.cs">
       <DependentUpon>ScalableListBox.xaml</DependentUpon>
     </Compile>
@@ -86,11 +90,18 @@
     <Compile Include="UI\SubWindowRatingCategory.xaml.cs">
       <DependentUpon>SubWindowRatingCategory.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SubWindowScoreRange.xaml.cs">
+      <DependentUpon>SubWindowScoreRange.xaml</DependentUpon>
+    </Compile>
     <Page Include="UI\ListBoxItemCompletionStatus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\ListBoxItemRatingCategory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ListBoxItemScoreRange.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -120,6 +131,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SubWindowRatingCategory.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SubWindowScoreRange.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

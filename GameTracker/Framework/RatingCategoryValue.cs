@@ -35,7 +35,7 @@ namespace RatableTracker.Framework
 
         public RatingCategoryValue() { }
 
-        public RatingCategoryValue(RatingCategory ratingCategory, double pointValue)
+        public RatingCategoryValue(RatingModule parentModule, RatingCategory ratingCategory, double pointValue)
         {
             this.ratingCategory = new ObjectReference(ratingCategory);
             this.pointValue = pointValue;

@@ -46,6 +46,8 @@ namespace GameTracker.Model
 
         public RatableGame() : base() { }
 
+        public RatableGame(RatingModule parentModule) : base(parentModule) { }
+
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();
