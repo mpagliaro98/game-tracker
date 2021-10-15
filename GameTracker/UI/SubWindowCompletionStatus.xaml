@@ -9,7 +9,7 @@
     <StackPanel>
         <Label Content="Name" />
         <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />
-        <CheckBox x:Name="CheckboxUseAsFinished" Content="Consider as finished" Margin="5,10,0,0" />
+        <CheckBox x:Name="CheckboxUseAsFinished" Content="Mark as finished" Margin="5,10,0,0" />
         <CheckBox x:Name="CheckboxExcludeFromStats" Content="Exclude from stats" Margin="5,10,0,0" />
         <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />
         <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonUpdate_Click" />

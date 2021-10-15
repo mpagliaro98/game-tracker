@@ -12,5 +12,6 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Label x:Name="LabelName" />
+        <Label x:Name="LabelRelationship" Grid.Column="1" />
     </Grid>
 </UserControl>

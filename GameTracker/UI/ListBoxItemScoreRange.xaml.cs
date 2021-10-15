@@ -32,6 +32,20 @@ namespace GameTracker.UI
             InitializeComponent();
             this.sr = sr;
             LabelName.Content = sr.Name;
+            LabelRelationship.Content = sr.ScoreRelationship.Name + " " + GetRelationshipValues(sr.ValueList);
+        }
+
+        private string GetRelationshipValues(IEnumerable<int> valueList)
+        {
+            List<int> list = valueList.ToList();
+            string result = "";
+            for (int i = 0; i < valueList.Count(); i += 1)
+            {
+                if (result != "" && valueList.Count() > 2) result += ", ";
+                if (result != "" && i == valueList.Count() - 1) result += " and ";
+                result += list[i].ToString();
+            }
+            return result;
         }
     }
 }
