@@ -12,5 +12,9 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Label x:Name="LabelName" />
+        <StackPanel Grid.Column="1">
+            <CheckBox x:Name="CheckboxUseAsFinished" IsEnabled="False" Content="Mark as finished" FontSize="10" />
+            <CheckBox x:Name="CheckboxExcludeFromStats" IsEnabled="False" Content="Exclude from stats" FontSize="10" />
+        </StackPanel>
     </Grid>
 </UserControl>

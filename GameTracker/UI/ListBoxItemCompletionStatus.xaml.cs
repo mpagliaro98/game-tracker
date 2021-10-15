@@ -32,6 +32,8 @@ namespace GameTracker.UI
             InitializeComponent();
             this.cs = cs;
             LabelName.Content = cs.Name;
+            CheckboxUseAsFinished.IsChecked = cs.UseAsFinished;
+            CheckboxExcludeFromStats.IsChecked = cs.ExcludeFromStats;
         }
     }
 }
