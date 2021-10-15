@@ -36,10 +36,7 @@ namespace RatableTracker.Framework
             get { return referenceKey; }
         }
 
-        public RatingCategory()
-        {
-            referenceKey = Guid.NewGuid();
-        }
+        public RatingCategory() { }
 
         public RatingCategory(string name, string comment)
         {

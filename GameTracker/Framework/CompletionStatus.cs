@@ -37,14 +37,10 @@ namespace RatableTracker.Framework
             get { return referenceKey; }
         }
 
-        public CompletionStatus()
-        {
-            referenceKey = Guid.NewGuid();
-        }
+        public CompletionStatus() { }
 
         public CompletionStatus(string name, bool useAsFinished, bool excludeFromStats)
         {
-            referenceKey = Guid.NewGuid();
             this.name = name;
             this.useAsFinished = useAsFinished;
             this.excludeFromStats = excludeFromStats;

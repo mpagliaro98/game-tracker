@@ -39,10 +39,7 @@ namespace RatableTracker.Framework
             set { parentModule = value; }
         }
 
-        public ScoreRange()
-        {
-            referenceKey = Guid.NewGuid();
-        }
+        public ScoreRange() { }
 
         public SavableRepresentation LoadIntoRepresentation()
         {

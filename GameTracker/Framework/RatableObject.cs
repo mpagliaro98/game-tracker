@@ -73,10 +73,7 @@ namespace RatableTracker.Framework
             set { parentModule = value; }
         }
 
-        public RatableObject()
-        {
-            referenceKey = Guid.NewGuid();
-        }
+        public RatableObject() { }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {

@@ -23,10 +23,7 @@ namespace GameTracker.Model
             get { return referenceKey; }
         }
 
-        public Platform()
-        {
-            referenceKey = Guid.NewGuid();
-        }
+        public Platform() { }
 
         public SavableRepresentation LoadIntoRepresentation()
         {
