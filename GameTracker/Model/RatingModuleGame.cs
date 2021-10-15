@@ -108,10 +108,10 @@ namespace GameTracker.Model
         {
             DeleteFromList(ref platforms, SavePlatforms, obj);
             ratableObjects.Cast<RatableGame>()
-                .Where(ro => ro.Platform.Equals(obj))
+                .Where(ro => ro.Platform != null && ro.Platform.Equals(obj))
                 .ForEach(ro => ro.RemovePlatform());
             ratableObjects.Cast<RatableGame>()
-                .Where(ro => ro.PlatformPlayedOn.Equals(obj))
+                .Where(ro => ro.Platform != null && ro.PlatformPlayedOn.Equals(obj))
                 .ForEach(ro => ro.RemovePlatformPlayedOn());
             if (GlobalSettings.Autosave) SaveRatableObjects();
         }

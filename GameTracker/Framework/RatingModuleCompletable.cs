@@ -45,7 +45,7 @@ namespace RatableTracker.Framework
         {
             DeleteFromList(ref completionStatuses, SaveCompletionStatuses, obj);
             ratableObjects.Cast<RatableObjectCompletable>()
-                .Where(ro => ro.CompletionStatus.Equals(obj))
+                .Where(ro => ro.CompletionStatus != null && ro.CompletionStatus.Equals(obj))
                 .ForEach(ro => ro.RemoveCompletionStatus());
             if (GlobalSettings.Autosave) SaveRatableObjects();
         }
