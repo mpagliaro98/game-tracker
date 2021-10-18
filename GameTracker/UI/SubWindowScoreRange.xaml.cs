@@ -54,28 +54,33 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out IEnumerable<int> valueList, out ScoreRelationship sr)) return;
-            var range = new ScoreRange(rm, name, valueList, sr);
+            if (!ValidateInputs(out string name, out IEnumerable<int> valueList,
+                out ScoreRelationship sr, out System.Drawing.Color color)) return;
+            var range = new ScoreRange(rm, name, valueList, sr, color);
             rm.AddScoreRange(range);
             Close();
         }
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out IEnumerable<int> valueList, out ScoreRelationship sr)) return;
+            if (!ValidateInputs(out string name, out IEnumerable<int> valueList,
+                out ScoreRelationship sr, out System.Drawing.Color color)) return;
             orig.Name = name;
             orig.ValueList = valueList;
             orig.ScoreRelationship = sr;
+            orig.Color = color;
             rm.SaveScoreRanges();
             Close();
         }
 
-        private bool ValidateInputs(out string name, out IEnumerable<int> valueList, out ScoreRelationship sr)
+        private bool ValidateInputs(out string name, out IEnumerable<int> valueList, out ScoreRelationship sr,
+            out System.Drawing.Color color)
         {
             name = TextboxName.Text;
             valueList = new List<int>();
             IEnumerable<string> list = GetValueListText();
             sr = (ScoreRelationship)ComboboxRelationship.SelectedItem;
+            color = new System.Drawing.Color();
             if (name == "" || sr == null)
             {
                 LabelError.Visibility = Visibility.Visible;

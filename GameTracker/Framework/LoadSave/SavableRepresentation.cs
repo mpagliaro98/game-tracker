@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.Global;
 
@@ -44,6 +45,12 @@ namespace RatableTracker.Framework.LoadSave
         public void SaveValue(string key, Guid value)
         {
             IValueContainer vc = new ValueContainer(value.ToString());
+            values.Add(key, vc);
+        }
+
+        public void SaveValue(string key, Color value)
+        {
+            IValueContainer vc = new ValueContainer(value.ToArgb().ToString());
             values.Add(key, vc);
         }
 
@@ -114,6 +121,11 @@ namespace RatableTracker.Framework.LoadSave
         public Guid GetGuid(string key)
         {
             return Guid.Parse(values[key].GetContentString());
+        }
+
+        public Color GetColor(string key)
+        {
+            return Color.FromArgb(int.Parse(values[key].GetContentString()));
         }
 
         public T GetISavable<T>(string key) where T : ISavable, new()

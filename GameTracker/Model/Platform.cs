@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
 
@@ -23,6 +24,13 @@ namespace GameTracker.Model
             get { return referenceKey; }
         }
 
+        private Color color;
+        public Color Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
+
         public Platform() { }
 
         public SavableRepresentation LoadIntoRepresentation()
@@ -30,6 +38,7 @@ namespace GameTracker.Model
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
+            sr.SaveValue("color", color);
             return sr;
         }
 
@@ -45,6 +54,9 @@ namespace GameTracker.Model
                         break;
                     case "name":
                         name = sr.GetString(key);
+                        break;
+                    case "color":
+                        color = sr.GetColor(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("Platform.cs RestoreFromRepresentation: unrecognized key " + key);

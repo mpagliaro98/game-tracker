@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
 
@@ -31,6 +32,13 @@ namespace RatableTracker.Framework
             set { excludeFromStats = value; }
         }
 
+        private Color color;
+        public Color Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
+
         private Guid referenceKey = Guid.NewGuid();
         public Guid ReferenceKey
         {
@@ -39,7 +47,7 @@ namespace RatableTracker.Framework
 
         public CompletionStatus() { }
 
-        public CompletionStatus(string name, bool useAsFinished, bool excludeFromStats)
+        public CompletionStatus(string name, bool useAsFinished, bool excludeFromStats, Color color)
         {
             this.name = name;
             this.useAsFinished = useAsFinished;
@@ -53,6 +61,7 @@ namespace RatableTracker.Framework
             sr.SaveValue("name", name);
             sr.SaveValue("useAsFinished", useAsFinished);
             sr.SaveValue("excludeFromStats", excludeFromStats);
+            sr.SaveValue("color", color);
             return sr;
         }
 
@@ -74,6 +83,9 @@ namespace RatableTracker.Framework
                         break;
                     case "excludeFromStats":
                         excludeFromStats = sr.GetBool(key);
+                        break;
+                    case "color":
+                        color = sr.GetColor(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("CompletionStatus.cs RestoreFromRepresentation: unrecognized key " + key);

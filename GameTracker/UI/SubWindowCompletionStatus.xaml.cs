@@ -50,27 +50,32 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out bool useAsFinished, out bool excludeFromStats)) return;
-            var status = new CompletionStatus(name, useAsFinished, excludeFromStats);
+            if (!ValidateInputs(out string name, out bool useAsFinished,
+                out bool excludeFromStats, out System.Drawing.Color color)) return;
+            var status = new CompletionStatus(name, useAsFinished, excludeFromStats, color);
             rm.AddCompletionStatus(status);
             Close();
         }
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out bool useAsFinished, out bool excludeFromStats)) return;
+            if (!ValidateInputs(out string name, out bool useAsFinished,
+                out bool excludeFromStats, out System.Drawing.Color color)) return;
             orig.Name = name;
             orig.UseAsFinished = useAsFinished;
             orig.ExcludeFromStats = excludeFromStats;
+            orig.Color = color;
             rm.SaveCompletionStatuses();
             Close();
         }
 
-        private bool ValidateInputs(out string name, out bool useAsFinished, out bool excludeFromStats)
+        private bool ValidateInputs(out string name, out bool useAsFinished, out bool excludeFromStats,
+            out System.Drawing.Color color)
         {
             name = TextboxName.Text;
             useAsFinished = CheckboxUseAsFinished.IsChecked.Value;
             excludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
+            color = new System.Drawing.Color();
             if (name == "")
             {
                 LabelError.Visibility = Visibility.Visible;

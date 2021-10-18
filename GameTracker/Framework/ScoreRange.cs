@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework.ScoreRelationships;
@@ -32,6 +33,13 @@ namespace RatableTracker.Framework
             set { valueList = value; }
         }
 
+        private Color color;
+        public Color Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
+
         private Guid referenceKey = Guid.NewGuid();
         public Guid ReferenceKey
         {
@@ -47,12 +55,14 @@ namespace RatableTracker.Framework
 
         public ScoreRange() { }
 
-        public ScoreRange(RatingModule parentModule, string name, IEnumerable<int> valueList, ScoreRelationship sr)
+        public ScoreRange(RatingModule parentModule, string name, IEnumerable<int> valueList,
+            ScoreRelationship sr, Color color)
         {
             this.parentModule = parentModule;
             this.name = name;
             this.valueList = valueList;
             scoreRelationshipName = sr.Name;
+            this.color = color;
         }
 
         public SavableRepresentation LoadIntoRepresentation()
@@ -62,6 +72,7 @@ namespace RatableTracker.Framework
             sr.SaveValue("name", name);
             sr.SaveValue("scoreRelationshipName", scoreRelationshipName);
             sr.SaveList("valueList", valueList);
+            sr.SaveValue("color", color);
             return sr;
         }
 
@@ -83,6 +94,9 @@ namespace RatableTracker.Framework
                         break;
                     case "valueList":
                         valueList = sr.GetListOfType<int>(key);
+                        break;
+                    case "color":
+                        color = sr.GetColor(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine("ScoreRange.cs RestoreFromRepresentation: unrecognized key " + key);
