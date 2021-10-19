@@ -10,11 +10,13 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="0.2*" />
         </Grid.ColumnDefinitions>
         <Label x:Name="LabelName" />
         <StackPanel Grid.Column="1">
             <CheckBox x:Name="CheckboxUseAsFinished" IsEnabled="False" Content="Mark as finished" FontSize="10" />
             <CheckBox x:Name="CheckboxExcludeFromStats" IsEnabled="False" Content="Exclude from stats" FontSize="10" />
         </StackPanel>
+        <Rectangle x:Name="RectangeColor" Grid.Column="2" Stroke="Black" />
     </Grid>
 </UserControl>

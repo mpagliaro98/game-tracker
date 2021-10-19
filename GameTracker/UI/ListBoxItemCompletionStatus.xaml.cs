@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using RatableTracker.Framework;
+using RatableTracker.Framework.Global;
 
 namespace GameTracker.UI
 {
@@ -34,6 +35,7 @@ namespace GameTracker.UI
             LabelName.Content = cs.Name;
             CheckboxUseAsFinished.IsChecked = cs.UseAsFinished;
             CheckboxExcludeFromStats.IsChecked = cs.ExcludeFromStats;
+            RectangeColor.Fill = new SolidColorBrush(cs.Color.ToMediaColor());
         }
     }
 }
