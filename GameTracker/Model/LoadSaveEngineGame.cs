@@ -31,5 +31,10 @@ namespace GameTracker.Model
         {
             return LoadListParent<RatingCategoryWeighted>(parentModule, ID_RATINGCATEGORIES);
         }
+
+        public override IEnumerable<CompletionStatus> LoadCompletionStatuses(RatingModule parentModule)
+        {
+            return LoadListParent<CompletionStatusGame>(parentModule, ID_COMPLETIONSTATUSES);
+        }
     }
 }

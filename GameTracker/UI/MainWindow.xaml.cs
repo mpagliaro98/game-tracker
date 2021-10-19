@@ -212,7 +212,7 @@ namespace GameTracker.UI
         private void UpdateCompletionStatusUI()
         {
             SettingsListboxCompletionStatuses.ClearItems();
-            foreach (CompletionStatus cs in rm.CompletionStatuses)
+            foreach (CompletionStatusGame cs in rm.CompletionStatuses)
             {
                 ListBoxItemCompletionStatus item = new ListBoxItemCompletionStatus(cs);
                 item.MouseDoubleClick += CompletionStatusEdit;
@@ -248,12 +248,12 @@ namespace GameTracker.UI
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this completion status and all data associated with it?", "Delete Completion Status Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            CompletionStatus cs = lbi.CompletionStatus;
+            CompletionStatusGame cs = lbi.CompletionStatus;
             rm.DeleteCompletionStatus(cs);
             UpdateCompletionStatusUI();
         }
 
-        private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatus orig = null)
+        private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatusGame orig = null)
         {
             var window = new SubWindowCompletionStatus(rm, mode, orig);
             window.Closed += CompletionStatusWindow_Closed;

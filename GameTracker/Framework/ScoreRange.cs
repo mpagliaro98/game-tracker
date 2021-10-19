@@ -60,7 +60,7 @@ namespace RatableTracker.Framework
             this.parentModule = parentModule;
         }
 
-        public SavableRepresentation LoadIntoRepresentation()
+        public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("referenceKey", referenceKey);
@@ -71,7 +71,7 @@ namespace RatableTracker.Framework
             return sr;
         }
 
-        public void RestoreFromRepresentation(SavableRepresentation sr)
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
             if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())

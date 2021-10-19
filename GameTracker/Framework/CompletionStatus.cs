@@ -18,20 +18,6 @@ namespace RatableTracker.Framework
             set { name = value; }
         }
 
-        private bool useAsFinished = false;
-        public bool UseAsFinished 
-        {
-            get { return useAsFinished;  }
-            set { useAsFinished = value; }
-        }
-
-        private bool excludeFromStats = false;
-        public bool ExcludeFromStats
-        {
-            get { return excludeFromStats; }
-            set { excludeFromStats = value; }
-        }
-
         private Color color = new Color();
         public Color Color
         {
@@ -47,18 +33,16 @@ namespace RatableTracker.Framework
 
         public CompletionStatus() { }
 
-        public SavableRepresentation LoadIntoRepresentation()
+        public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
-            sr.SaveValue("useAsFinished", useAsFinished);
-            sr.SaveValue("excludeFromStats", excludeFromStats);
             sr.SaveValue("color", color);
             return sr;
         }
 
-        public void RestoreFromRepresentation(SavableRepresentation sr)
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
             if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())
@@ -70,12 +54,6 @@ namespace RatableTracker.Framework
                         break;
                     case "name":
                         name = sr.GetString(key);
-                        break;
-                    case "useAsFinished":
-                        useAsFinished = sr.GetBool(key);
-                        break;
-                    case "excludeFromStats":
-                        excludeFromStats = sr.GetBool(key);
                         break;
                     case "color":
                         color = sr.GetColor(key);

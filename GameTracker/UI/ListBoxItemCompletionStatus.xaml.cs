@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
+using GameTracker.Model;
 
 namespace GameTracker.UI
 {
@@ -22,13 +23,13 @@ namespace GameTracker.UI
     /// </summary>
     public partial class ListBoxItemCompletionStatus : UserControl
     {
-        private CompletionStatus cs;
-        public CompletionStatus CompletionStatus
+        private CompletionStatusGame cs;
+        public CompletionStatusGame CompletionStatus
         {
             get { return cs; }
         }
 
-        public ListBoxItemCompletionStatus(CompletionStatus cs)
+        public ListBoxItemCompletionStatus(CompletionStatusGame cs)
         {
             InitializeComponent();
             this.cs = cs;

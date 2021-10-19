@@ -82,6 +82,7 @@
     <Compile Include="Framework\Interfaces\IReferable.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveIdentifier.cs" />
     <Compile Include="Framework\ObjectReference.cs" />
+    <Compile Include="Model\CompletionStatusGame.cs" />
     <Compile Include="Model\Partial\IValueContainer.cs" />
     <Compile Include="Model\Partial\SavableRepresentation.cs" />
     <Compile Include="Framework\LoadSave\ValueContainer.cs" />
