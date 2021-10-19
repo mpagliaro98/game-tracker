@@ -12,6 +12,8 @@ namespace RatableTracker.Framework
     {
         protected IEnumerable<CompletionStatus> completionStatuses;
 
+        public virtual int LimitCompletionStatuses => 20;
+
         public IEnumerable<CompletionStatus> CompletionStatuses
         {
             get { return completionStatuses; }
@@ -33,7 +35,7 @@ namespace RatableTracker.Framework
 
         public void AddCompletionStatus(CompletionStatus obj)
         {
-            AddToList(ref completionStatuses, SaveCompletionStatuses, obj);
+            AddToList(ref completionStatuses, SaveCompletionStatuses, obj, LimitCompletionStatuses);
         }
 
         public void UpdateCompletionStatus(CompletionStatus obj, CompletionStatus orig)

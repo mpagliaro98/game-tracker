@@ -43,6 +43,9 @@ namespace RatableTracker.Framework
             get { return settings; }
         }
 
+        public virtual int LimitScoreRanges => 20;
+        public virtual int LimitRatingCategories => 10;
+
         public RatingModule()
         {
             scoreRelationships = new List<ScoreRelationship>();
@@ -149,6 +152,15 @@ namespace RatableTracker.Framework
 
         protected void AddToList<T>(ref IEnumerable<T> list, Action saveFunction, T obj)
         {
+            AddToList(ref list, saveFunction, obj, -1);
+        }
+
+        protected void AddToList<T>(ref IEnumerable<T> list, Action saveFunction, T obj, int limit)
+        {
+            if (limit >= 0 && list.Count() >= limit)
+            {
+                throw new ExceededLimitException("Attempted to exceed limit of " + limit.ToString() + " for list of " + typeof(T).ToString());
+            }
             list = list.Append(obj);
             if (GlobalSettings.Autosave) saveFunction();
         }
@@ -183,12 +195,12 @@ namespace RatableTracker.Framework
 
         public void AddScoreRange(ScoreRange obj)
         {
-            AddToList(ref scoreRanges, SaveScoreRanges, obj);
+            AddToList(ref scoreRanges, SaveScoreRanges, obj, LimitScoreRanges);
         }
 
         public void AddRatingCategory(RatingCategory obj)
         {
-            AddToList(ref ratingCategories, SaveRatingCategories, obj);
+            AddToList(ref ratingCategories, SaveRatingCategories, obj, LimitRatingCategories);
         }
 
         public void UpdateRatableObject(RatableObject obj, RatableObject orig)

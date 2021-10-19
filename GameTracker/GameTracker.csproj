@@ -76,6 +76,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Framework\Exceptions\ExceededLimitException.cs" />
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
     <Compile Include="Framework\Global\TConverter.cs" />

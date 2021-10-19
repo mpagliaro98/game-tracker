@@ -162,6 +162,9 @@ namespace GameTracker.UI
 
                 item.ContextMenu = EditDeleteContextMenu(RatingCategoryEdit, RatingCategoryDelete);
             }
+
+            var vis = rm.RatingCategories.Count() >= rm.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
+            SettingsButtonNewRatingCategory.Visibility = vis;
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
@@ -220,6 +223,9 @@ namespace GameTracker.UI
 
                 item.ContextMenu = EditDeleteContextMenu(CompletionStatusEdit, CompletionStatusDelete);
             }
+
+            var vis = rm.CompletionStatuses.Count() >= rm.LimitCompletionStatuses ? Visibility.Hidden : Visibility.Visible;
+            SettingsButtonNewCompletionStatus.Visibility = vis;
         }
 
         private void SettingsButtonNewCompletionStatus_Click(object sender, RoutedEventArgs e)
@@ -278,6 +284,9 @@ namespace GameTracker.UI
 
                 item.ContextMenu = EditDeleteContextMenu(ScoreRangeEdit, ScoreRangeDelete);
             }
+
+            var vis = rm.ScoreRanges.Count() >= rm.LimitScoreRanges ? Visibility.Hidden : Visibility.Visible;
+            SettingsButtonNewScoreRange.Visibility = vis;
         }
 
         private void SettingsButtonNewScoreRange_Click(object sender, RoutedEventArgs e)
