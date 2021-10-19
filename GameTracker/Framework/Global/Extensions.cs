@@ -23,5 +23,27 @@ namespace RatableTracker.Framework.Global
                 action(element);
             }
         }
+
+        public static System.Drawing.Color ToDrawingColor(this System.Windows.Media.Color? color)
+        {
+            var colorInput = color ?? new System.Windows.Media.Color();
+            return System.Drawing.Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
+        }
+
+        public static System.Drawing.Color ToDrawingColor(this System.Windows.Media.Color color)
+        {
+            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        public static System.Windows.Media.Color ToMediaColor(this System.Drawing.Color? color)
+        {
+            var colorInput = color ?? new System.Drawing.Color();
+            return System.Windows.Media.Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
+        }
+
+        public static System.Windows.Media.Color ToMediaColor(this System.Drawing.Color color)
+        {
+            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
     }
 }

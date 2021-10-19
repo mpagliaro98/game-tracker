@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using RatableTracker.Framework;
+using RatableTracker.Framework.Global;
 using GameTracker.Model;
 
 namespace GameTracker.UI
@@ -42,6 +43,7 @@ namespace GameTracker.UI
                     TextboxName.Text = orig.Name;
                     CheckboxUseAsFinished.IsChecked = orig.UseAsFinished;
                     CheckboxExcludeFromStats.IsChecked = orig.ExcludeFromStats;
+                    ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
                     break;
                 default:
                     throw new Exception("Unhandled mode");
@@ -75,7 +77,7 @@ namespace GameTracker.UI
             name = TextboxName.Text;
             useAsFinished = CheckboxUseAsFinished.IsChecked.Value;
             excludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
-            color = new System.Drawing.Color();
+            color = ColorPickerColor.SelectedColor.ToDrawingColor();
             if (name == "")
             {
                 LabelError.Visibility = Visibility.Visible;

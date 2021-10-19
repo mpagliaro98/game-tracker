@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using RatableTracker.Framework;
 using GameTracker.Model;
 using RatableTracker.Framework.ScoreRelationships;
+using RatableTracker.Framework.Global;
 
 namespace GameTracker.UI
 {
@@ -45,6 +46,7 @@ namespace GameTracker.UI
                     ButtonUpdate.Visibility = Visibility.Visible;
                     TextboxName.Text = orig.Name;
                     ComboboxRelationship.SelectedItem = orig.ScoreRelationship;
+                    ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
                     SetValueList(orig.ValueList);
                     break;
                 default:
@@ -80,7 +82,7 @@ namespace GameTracker.UI
             valueList = new List<int>();
             IEnumerable<string> list = GetValueListText();
             sr = (ScoreRelationship)ComboboxRelationship.SelectedItem;
-            color = new System.Drawing.Color();
+            color = ColorPickerColor.SelectedColor.ToDrawingColor();
             if (name == "" || sr == null)
             {
                 LabelError.Visibility = Visibility.Visible;
