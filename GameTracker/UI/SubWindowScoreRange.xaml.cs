@@ -58,7 +58,13 @@ namespace GameTracker.UI
         {
             if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
                 out ScoreRelationship sr, out System.Drawing.Color color)) return;
-            var range = new ScoreRange(rm, name, valueList, sr, color);
+            var range = new ScoreRange(rm)
+            {
+                Name = name,
+                ValueList = valueList,
+                ScoreRelationship = sr,
+                Color = color
+            };
             rm.AddScoreRange(range);
             Close();
         }

@@ -51,7 +51,12 @@ namespace GameTracker.UI
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             if (!ValidateInputs(out string name, out string comment, out double weight)) return;
-            var cat = new RatingCategoryWeighted(name, comment, weight);
+            var cat = new RatingCategoryWeighted()
+            {
+                Name = name,
+                Comment = comment
+            };
+            cat.SetWeight(weight);
             rm.AddRatingCategory(cat);
             Close();
         }

@@ -54,7 +54,13 @@ namespace GameTracker.UI
         {
             if (!ValidateInputs(out string name, out bool useAsFinished,
                 out bool excludeFromStats, out System.Drawing.Color color)) return;
-            var status = new CompletionStatus(name, useAsFinished, excludeFromStats, color);
+            var status = new CompletionStatus()
+            {
+                Name = name,
+                UseAsFinished = useAsFinished,
+                ExcludeFromStats = excludeFromStats,
+                Color = color
+            };
             rm.AddCompletionStatus(status);
             Close();
         }

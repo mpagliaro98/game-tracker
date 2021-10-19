@@ -47,13 +47,6 @@ namespace RatableTracker.Framework
 
         public CompletionStatus() { }
 
-        public CompletionStatus(string name, bool useAsFinished, bool excludeFromStats, Color color)
-        {
-            this.name = name;
-            this.useAsFinished = useAsFinished;
-            this.excludeFromStats = excludeFromStats;
-        }
-
         public SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();

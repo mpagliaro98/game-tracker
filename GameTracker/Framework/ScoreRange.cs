@@ -55,14 +55,9 @@ namespace RatableTracker.Framework
 
         public ScoreRange() { }
 
-        public ScoreRange(RatingModule parentModule, string name, IEnumerable<double> valueList,
-            ScoreRelationship sr, Color color)
+        public ScoreRange(RatingModule parentModule)
         {
             this.parentModule = parentModule;
-            this.name = name;
-            this.valueList = valueList;
-            scoreRelationshipName = sr.Name;
-            this.color = color;
         }
 
         public SavableRepresentation LoadIntoRepresentation()

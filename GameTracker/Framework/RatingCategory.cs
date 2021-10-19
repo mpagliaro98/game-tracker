@@ -38,12 +38,6 @@ namespace RatableTracker.Framework
 
         public RatingCategory() { }
 
-        public RatingCategory(string name, string comment)
-        {
-            Name = name;
-            Comment = comment;
-        }
-
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();

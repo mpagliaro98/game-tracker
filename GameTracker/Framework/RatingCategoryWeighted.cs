@@ -10,11 +10,6 @@ namespace RatableTracker.Framework
     {
         public RatingCategoryWeighted() : base() { }
 
-        public RatingCategoryWeighted(string name, string comment, double weight) : base(name, comment)
-        {
-            this.weight = weight;
-        }
-
         public void SetWeight(double val)
         {
             weight = val;
