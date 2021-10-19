@@ -97,6 +97,9 @@
     <Compile Include="UI\ListBoxItemGameSmall.xaml.cs">
       <DependentUpon>ListBoxItemGameSmall.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ListBoxItemPlatform.xaml.cs">
+      <DependentUpon>ListBoxItemPlatform.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ListBoxItemRatingCategory.xaml.cs">
       <DependentUpon>ListBoxItemRatingCategory.xaml</DependentUpon>
     </Compile>
@@ -121,6 +124,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\ListBoxItemGameSmall.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ListBoxItemPlatform.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

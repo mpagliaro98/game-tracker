@@ -115,5 +115,11 @@ namespace GameTracker.Model
                 .ForEach(ro => ro.RemovePlatformPlayedOn());
             if (GlobalSettings.Autosave) SaveRatableObjects();
         }
+
+        public IEnumerable<RatableGame> GetGamesOnPlatform(Platform platform)
+        {
+            var objs = RatableObjects.Where(ro => ((RatableGame)ro).Platform != null && ((RatableGame)ro).Platform.Equals(platform));
+            return objs.Cast<RatableGame>().ToList();
+        }
     }
 }

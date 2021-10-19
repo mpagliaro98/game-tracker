@@ -53,6 +53,7 @@ namespace GameTracker.UI
                     UpdateGamesUI();
                     break;
                 case TAB_PLATFORMS:
+                    UpdatePlatformsUI();
                     break;
                 case TAB_SETTINGS:
                     ResetSettingsLabels();
@@ -110,6 +111,17 @@ namespace GameTracker.UI
         #endregion
 
         #region Platforms Tab
+        private void UpdatePlatformsUI()
+        {
+            PlatformsListbox.ClearItems();
+            foreach (Platform platform in rm.Platforms)
+            {
+                ListBoxItemPlatform item = new ListBoxItemPlatform(platform);
+                PlatformsListbox.AddItem(item);
+
+                item.ContextMenu = EditDeleteContextMenu(null, null);
+            }
+        }
         #endregion
 
         #region Settings Tab

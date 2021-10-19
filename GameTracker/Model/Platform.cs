@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using System.Drawing;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework;
 
 namespace GameTracker.Model
 {
-    public class Platform : ISavable, IReferable
+    public class Platform : ISavable, IReferable, IModuleAccess
     {
         private string name = "";
         public string Name
@@ -31,7 +32,47 @@ namespace GameTracker.Model
             set { color = value; }
         }
 
+        private RatingModule parentModule;
+        public RatingModule ParentModule
+        {
+            get { return parentModule; }
+            set { parentModule = value; }
+        }
+
+        public int NumGamesOwned
+        {
+            get { return ((RatingModuleGame)ParentModule).GetGamesOnPlatform(this).Count(); }
+        }
+
+        public int NumGamesFinishable
+        {
+            get { return 0; }
+        }
+
+        public double AverageScoreOfGames { get { return 0; } }
+
+        public double HighestScoreFromGames { get { return 0; } }
+
+        public double LowestScoreFromGames { get { return 0; } }
+
+        public double NumGamesFinished { get { return 0; } }
+
+        public double PercentageGamesFinished
+        {
+            get
+            {
+                int numFinishable = NumGamesFinishable;
+                if (numFinishable <= 0) numFinishable = 1;
+                return NumGamesFinished / numFinishable * 100;
+            }
+        }
+
         public Platform() { }
+
+        public Platform(RatingModule parentModule)
+        {
+            this.parentModule = parentModule;
+        }
 
         public SavableRepresentation LoadIntoRepresentation()
         {
