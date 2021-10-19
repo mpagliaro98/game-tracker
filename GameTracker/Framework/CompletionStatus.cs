@@ -32,7 +32,7 @@ namespace RatableTracker.Framework
             set { excludeFromStats = value; }
         }
 
-        private Color color;
+        private Color color = new Color();
         public Color Color
         {
             get { return color; }

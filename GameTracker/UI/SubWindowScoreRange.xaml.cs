@@ -56,7 +56,7 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out IEnumerable<int> valueList,
+            if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
                 out ScoreRelationship sr, out System.Drawing.Color color)) return;
             var range = new ScoreRange(rm, name, valueList, sr, color);
             rm.AddScoreRange(range);
@@ -65,7 +65,7 @@ namespace GameTracker.UI
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out IEnumerable<int> valueList,
+            if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
                 out ScoreRelationship sr, out System.Drawing.Color color)) return;
             orig.Name = name;
             orig.ValueList = valueList;
@@ -75,11 +75,11 @@ namespace GameTracker.UI
             Close();
         }
 
-        private bool ValidateInputs(out string name, out IEnumerable<int> valueList, out ScoreRelationship sr,
+        private bool ValidateInputs(out string name, out IEnumerable<double> valueList, out ScoreRelationship sr,
             out System.Drawing.Color color)
         {
             name = TextboxName.Text;
-            valueList = new List<int>();
+            valueList = new List<double>();
             IEnumerable<string> list = GetValueListText();
             sr = (ScoreRelationship)ComboboxRelationship.SelectedItem;
             color = ColorPickerColor.SelectedColor.ToDrawingColor();
@@ -142,11 +142,11 @@ namespace GameTracker.UI
             }
         }
 
-        private void SetValueList(IEnumerable<int> valueList)
+        private void SetValueList(IEnumerable<double> valueList)
         {
             RefreshValueList();
             if (valueList == null) return;
-            List<int> list = valueList.ToList();
+            List<double> list = valueList.ToList();
             for (int i = 0; i < valueList.Count(); i += 1)
             {
                 TextBox tb = (TextBox)StackPanelValueList.Children[i];

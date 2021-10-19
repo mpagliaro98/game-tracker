@@ -50,6 +50,7 @@ namespace GameTracker.UI
             switch (tab.Name)
             {
                 case TAB_GAMES:
+                    UpdateGamesUI();
                     break;
                 case TAB_PLATFORMS:
                     break;
@@ -95,6 +96,17 @@ namespace GameTracker.UI
         #endregion
 
         #region Games Tab
+        private void UpdateGamesUI()
+        {
+            GamesListbox.ClearItems();
+            foreach (RatableGame rg in rm.RatableObjects)
+            {
+                ListBoxItemGameSmall item = new ListBoxItemGameSmall(rg);
+                GamesListbox.AddItem(item);
+
+                item.ContextMenu = EditDeleteContextMenu(null, null);
+            }
+        }
         #endregion
 
         #region Platforms Tab

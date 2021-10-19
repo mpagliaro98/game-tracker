@@ -11,7 +11,7 @@
             <TabItem x:Name="TabGames" Header="Games">
                 <DockPanel>
                     <Grid x:Name="GamesTop" DockPanel.Dock="Top" >
-                        
+                        <local:ScalableListBox x:Name="GamesListbox" DockPanel.Dock="Bottom" Margin="5" />
                     </Grid>
                 </DockPanel>
             </TabItem>

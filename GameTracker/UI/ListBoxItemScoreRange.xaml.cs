@@ -37,9 +37,9 @@ namespace GameTracker.UI
             RectangeColor.Fill = new SolidColorBrush(sr.Color.ToMediaColor());
         }
 
-        private string GetRelationshipValues(IEnumerable<int> valueList)
+        private string GetRelationshipValues(IEnumerable<double> valueList)
         {
-            List<int> list = valueList.ToList();
+            List<double> list = valueList.ToList();
             string result = "";
             for (int i = 0; i < valueList.Count(); i += 1)
             {

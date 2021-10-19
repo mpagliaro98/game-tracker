@@ -24,7 +24,7 @@ namespace GameTracker.Model
             get { return referenceKey; }
         }
 
-        private Color color;
+        private Color color = new Color();
         public Color Color
         {
             get { return color; }

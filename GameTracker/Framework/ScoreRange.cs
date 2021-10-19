@@ -26,14 +26,14 @@ namespace RatableTracker.Framework
             set { scoreRelationshipName = value.Name; }
         }
 
-        private IEnumerable<int> valueList;
-        public IEnumerable<int> ValueList
+        private IEnumerable<double> valueList = new List<double>();
+        public IEnumerable<double> ValueList
         {
             get { return valueList; }
             set { valueList = value; }
         }
 
-        private Color color;
+        private Color color = new Color();
         public Color Color
         {
             get { return color; }
@@ -55,7 +55,7 @@ namespace RatableTracker.Framework
 
         public ScoreRange() { }
 
-        public ScoreRange(RatingModule parentModule, string name, IEnumerable<int> valueList,
+        public ScoreRange(RatingModule parentModule, string name, IEnumerable<double> valueList,
             ScoreRelationship sr, Color color)
         {
             this.parentModule = parentModule;
@@ -93,7 +93,7 @@ namespace RatableTracker.Framework
                         scoreRelationshipName = sr.GetString(key);
                         break;
                     case "valueList":
-                        valueList = sr.GetListOfType<int>(key);
+                        valueList = sr.GetListOfType<double>(key);
                         break;
                     case "color":
                         color = sr.GetColor(key);

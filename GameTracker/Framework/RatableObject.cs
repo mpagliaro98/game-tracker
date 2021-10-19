@@ -24,7 +24,7 @@ namespace RatableTracker.Framework
             set { comment = value; }
         }
 
-        private IEnumerable<RatingCategoryValue> categoryValues;
+        private IEnumerable<RatingCategoryValue> categoryValues = new List<RatingCategoryValue>();
         public IEnumerable<RatingCategoryValue> CategoryValues
         {
             get { return categoryValues; }
@@ -57,6 +57,15 @@ namespace RatableTracker.Framework
                     }
                     return total;
                 }
+            }
+        }
+
+        public System.Drawing.Color FinalScoreColor
+        {
+            get
+            {
+                ScoreRange sr = ParentModule.ApplyScoreRange(FinalScore);
+                return sr == null ? new System.Drawing.Color() : sr.Color;
             }
         }
 

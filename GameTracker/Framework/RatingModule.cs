@@ -135,6 +135,18 @@ namespace RatableTracker.Framework
             }
         }
 
+        public ScoreRange ApplyScoreRange(double score)
+        {
+            foreach (ScoreRange sr in ScoreRanges)
+            {
+                if (sr.ScoreRelationship.IsValueInRange(score, sr.ValueList))
+                {
+                    return sr;
+                }
+            }
+            return null;
+        }
+
         protected void AddToList<T>(ref IEnumerable<T> list, Action saveFunction, T obj)
         {
             list = list.Append(obj);
