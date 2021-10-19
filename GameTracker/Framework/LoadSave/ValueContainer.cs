@@ -14,35 +14,7 @@ namespace RatableTracker.Framework.LoadSave
         private IEnumerable<string> valueStringList = null;
         private IEnumerable<SavableRepresentation> valueSRList = null;
 
-        public ValueContainer(string val)
-        {
-            SetContent(val);
-        }
-
-        public ValueContainer(ISavable val)
-        {
-            SetContent(val);
-        }
-
-        public ValueContainer(SavableRepresentation val)
-        {
-            SetContent(val);
-        }
-
-        public ValueContainer(IEnumerable<string> val)
-        {
-            SetContent(val);
-        }
-
-        public ValueContainer(IEnumerable<ISavable> val)
-        {
-            SetContent(val);
-        }
-
-        public ValueContainer(IEnumerable<SavableRepresentation> val)
-        {
-            SetContent(val);
-        }
+        public ValueContainer() { }
 
         public void SetContent(string val)
         {

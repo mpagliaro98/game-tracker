@@ -18,83 +18,101 @@ namespace RatableTracker.Framework.LoadSave
             values = new Dictionary<string, IValueContainer>();
         }
 
+        public virtual IValueContainer ProvideValueContainer()
+        {
+            return new ValueContainer();
+        }
+
         public void SaveValue(string key, string value)
         {
-            IValueContainer vc = new ValueContainer(value);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(value);
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, int value)
         {
-            IValueContainer vc = new ValueContainer(value.ToString());
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(value.ToString());
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, bool value)
         {
-            IValueContainer vc = new ValueContainer(value.ToString());
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(value.ToString());
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, double value)
         {
-            IValueContainer vc = new ValueContainer(value.ToString());
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(value.ToString());
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, Guid value)
         {
-            IValueContainer vc = new ValueContainer(value.ToString());
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(value.ToString());
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, Color value)
         {
-            IValueContainer vc = new ValueContainer(value.ToArgb().ToString());
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(value.ToArgb().ToString());
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, ISavable obj)
         {
-            IValueContainer vc = new ValueContainer(obj);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(obj);
             values.Add(key, vc);
         }
 
         public void SaveValue(string key, SavableRepresentation sr)
         {
-            IValueContainer vc = new ValueContainer(sr);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(sr);
             values.Add(key, vc);
         }
 
         public void SaveList(string key, IEnumerable<string> values)
         {
-            IValueContainer vc = new ValueContainer(values);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(values);
             this.values.Add(key, vc);
         }
 
         public void SaveList(string key, IEnumerable<int> values)
         {
             IEnumerable<string> list = Util.ConvertListToStringList(values);
-            IValueContainer vc = new ValueContainer(list);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(list);
             this.values.Add(key, vc);
         }
 
         public void SaveList(string key, IEnumerable<double> values)
         {
             IEnumerable<string> list = Util.ConvertListToStringList(values);
-            IValueContainer vc = new ValueContainer(list);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(list);
             this.values.Add(key, vc);
         }
 
         public void SaveList(string key, IEnumerable<ISavable> values)
         {
-            IValueContainer vc = new ValueContainer(values);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(values);
             this.values.Add(key, vc);
         }
 
         public void SaveList(string key, IEnumerable<SavableRepresentation> values)
         {
-            IValueContainer vc = new ValueContainer(values);
+            IValueContainer vc = ProvideValueContainer();
+            vc.SetContent(values);
             this.values.Add(key, vc);
         }
 
