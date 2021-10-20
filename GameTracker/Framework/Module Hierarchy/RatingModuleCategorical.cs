@@ -32,17 +32,17 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public abstract void LoadRatingCategories();
         public abstract void SaveRatingCategories();
 
-        public override double GetScoreOfObject(TListedObj ro)
+        public override double GetScoreOfObject(TListedObj obj)
         {
-            if (ro.IgnoreCategories)
+            if (obj.IgnoreCategories)
             {
-                return base.GetScoreOfObject(ro);
+                return base.GetScoreOfObject(obj);
             }
             else
             {
                 double total = 0;
-                double sumOfWeights = SumOfWeights(ro);
-                foreach (RatingCategoryValue categoryValue in ro.CategoryValues)
+                double sumOfWeights = SumOfWeights(obj);
+                foreach (RatingCategoryValue categoryValue in obj.CategoryValues)
                 {
                     TRatingCat cat = FindRatingCategory(categoryValue.RefRatingCategory);
                     double categoryWeight = cat.Weight;
@@ -75,10 +75,10 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return FindObject(ratingCategories, objectKey);
         }
 
-        protected double SumOfWeights(TListedObj ro)
+        protected double SumOfWeights(TListedObj obj)
         {
             double sum = 0;
-            foreach (RatingCategoryValue rcv in ro.CategoryValues)
+            foreach (RatingCategoryValue rcv in obj.CategoryValues)
             {
                 TRatingCat cat = FindRatingCategory(rcv.RefRatingCategory);
                 sum += cat.Weight;

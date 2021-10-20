@@ -47,7 +47,7 @@ namespace RatableTracker.Framework
                         pointValue = sr.GetDouble(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine("RatingCategoryValue.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

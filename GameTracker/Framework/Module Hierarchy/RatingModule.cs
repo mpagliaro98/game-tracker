@@ -23,9 +23,9 @@ namespace RatableTracker.Framework.ModuleHierarchy
             double oldRange = maxRangeOld - minRangeOld;
             double newRange = maxRangeNew - minRangeNew;
 
-            foreach (TListedObj ro in listedObjs)
+            foreach (TListedObj obj in listedObjs)
             {
-                ScaleScoreOfObject(ro, oldRange, newRange, minRangeOld, minRangeNew);
+                ScaleScoreOfObject(obj, oldRange, newRange, minRangeOld, minRangeNew);
             }
         }
 
@@ -44,9 +44,9 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return range == null ? new System.Drawing.Color() : range.Color;
         }
 
-        public virtual double GetScoreOfObject(TListedObj ro)
+        public virtual double GetScoreOfObject(TListedObj obj)
         {
-            return ro.FinalScoreManual;
+            return obj.FinalScoreManual;
         }
 
         public virtual void SetMinScoreAndUpdate(double newVal)

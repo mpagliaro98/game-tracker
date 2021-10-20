@@ -60,7 +60,7 @@ namespace GameTracker.Model
                         color = sr.GetColor(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine("Platform.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

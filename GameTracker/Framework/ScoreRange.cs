@@ -81,7 +81,7 @@ namespace RatableTracker.Framework
                         color = sr.GetColor(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine("ScoreRange.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }
