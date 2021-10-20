@@ -45,6 +45,11 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         public RankingModule()
         {
+            CreateScoreRelationshipsList();
+        }
+
+        protected virtual void CreateScoreRelationshipsList()
+        {
             scoreRelationships = new List<ScoreRelationship>();
             scoreRelationships = scoreRelationships.Append(new ScoreRelationshipBetween()).ToList();
             scoreRelationships = scoreRelationships.Append(new ScoreRelationshipAbove()).ToList();
