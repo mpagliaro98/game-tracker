@@ -4,24 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework
 {
     public class RatableObjectCompletable : RatableObject
     {
         private ObjectReference completionStatus = new ObjectReference();
-        public CompletionStatus CompletionStatus
+        public ObjectReference RefCompletionStatus
         {
-            get
-            {
-                return completionStatus.HasReference() ? ((RatingModuleCompletable)ParentModule).FindCompletionStatus(completionStatus) : null;
-            }
-            set { completionStatus.SetReference(value); }
+            get { return completionStatus; }
         }
 
         public RatableObjectCompletable() : base() { }
-
-        public RatableObjectCompletable(RatingModule parentModule) : base(parentModule) { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {
@@ -46,6 +41,11 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
+        }
+
+        public void SetCompletionStatus<T>(T obj) where T : CompletionStatus, IReferable
+        {
+            completionStatus.SetReference(obj);
         }
 
         public void RemoveCompletionStatus()

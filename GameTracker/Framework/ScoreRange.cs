@@ -10,7 +10,7 @@ using RatableTracker.Framework.ScoreRelationships;
 
 namespace RatableTracker.Framework
 {
-    public class ScoreRange : ISavable, IModuleAccess, IReferable
+    public class ScoreRange : ISavable, IReferable
     {
         private string name = "";
         public string Name
@@ -19,11 +19,10 @@ namespace RatableTracker.Framework
             set { name = value; }
         }
 
-        private string scoreRelationshipName = "";
-        public ScoreRelationship ScoreRelationship
+        private ObjectReference scoreRelationship = new ObjectReference();
+        public ObjectReference RefScoreRelationship
         {
-            get { return parentModule.FindScoreRelationship(scoreRelationshipName); }
-            set { scoreRelationshipName = value.Name; }
+            get { return scoreRelationship; }
         }
 
         private IEnumerable<double> valueList = new List<double>();
@@ -46,26 +45,14 @@ namespace RatableTracker.Framework
             get { return referenceKey; }
         }
 
-        private RatingModule parentModule;
-        public RatingModule ParentModule
-        {
-            get { return parentModule; }
-            set { parentModule = value; }
-        }
-
         public ScoreRange() { }
-
-        public ScoreRange(RatingModule parentModule)
-        {
-            this.parentModule = parentModule;
-        }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
             sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
-            sr.SaveValue("scoreRelationshipName", scoreRelationshipName);
+            sr.SaveValue("scoreRelationship", scoreRelationship);
             sr.SaveList("valueList", valueList);
             sr.SaveValue("color", color);
             return sr;
@@ -84,8 +71,8 @@ namespace RatableTracker.Framework
                     case "name":
                         name = sr.GetString(key);
                         break;
-                    case "scoreRelationshipName":
-                        scoreRelationshipName = sr.GetString(key);
+                    case "scoreRelationship":
+                        scoreRelationship = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "valueList":
                         valueList = sr.GetListOfType<double>(key);
@@ -98,6 +85,11 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
+        }
+
+        public void SetScoreRelationship<T>(T obj) where T : ScoreRelationship, IReferable
+        {
+            scoreRelationship.SetReference(obj);
         }
 
         public override int GetHashCode()

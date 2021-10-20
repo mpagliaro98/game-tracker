@@ -34,7 +34,7 @@ namespace GameTracker.UI
         {
             PathController.PathControllerInstance = new PathControllerWindows();
             GlobalSettings.Autosave = true;
-            rm = new RatingModuleGame(new LoadSaveEngineGameJson());
+            rm = new RatingModuleGame();
             rm.Init();
             InitializeComponent();
         }
@@ -102,7 +102,7 @@ namespace GameTracker.UI
             GamesListbox.ClearItems();
             foreach (RatableGame rg in rm.RatableObjects)
             {
-                ListBoxItemGameSmall item = new ListBoxItemGameSmall(rg);
+                ListBoxItemGameSmall item = new ListBoxItemGameSmall(rm, rg);
                 GamesListbox.AddItem(item);
 
                 item.ContextMenu = EditDeleteContextMenu(null, null);
@@ -116,7 +116,7 @@ namespace GameTracker.UI
             PlatformsListbox.ClearItems();
             foreach (Platform platform in rm.Platforms)
             {
-                ListBoxItemPlatform item = new ListBoxItemPlatform(platform);
+                ListBoxItemPlatform item = new ListBoxItemPlatform(rm, platform);
                 PlatformsListbox.AddItem(item);
 
                 item.ContextMenu = EditDeleteContextMenu(null, null);
@@ -155,8 +155,8 @@ namespace GameTracker.UI
                 if (mbr != MessageBoxResult.Yes) return;
             }
 
-            rm.Settings.MinScore = minScore;
-            rm.Settings.MaxScore = maxScore;
+            rm.SetMinScoreAndUpdate(minScore);
+            rm.SetMaxScoreAndUpdate(maxScore);
             UpdateSettingsUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
         }
@@ -205,7 +205,7 @@ namespace GameTracker.UI
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this rating category and all data associated with it?", "Delete Rating Category Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            RatingCategory rc = lbi.RatingCategory;
+            RatingCategoryWeighted rc = lbi.RatingCategory;
             rm.DeleteRatingCategory(rc);
             UpdateRatingCategoryUI();
         }
@@ -290,7 +290,7 @@ namespace GameTracker.UI
             SettingsListboxScoreRanges.ClearItems();
             foreach (ScoreRange sr in rm.ScoreRanges)
             {
-                ListBoxItemScoreRange item = new ListBoxItemScoreRange(sr);
+                ListBoxItemScoreRange item = new ListBoxItemScoreRange(rm, sr);
                 item.MouseDoubleClick += ScoreRangeEdit;
                 SettingsListboxScoreRanges.AddItem(item);
 

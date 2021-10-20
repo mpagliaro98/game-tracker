@@ -12,7 +12,7 @@ using RatableTracker.Framework.Global;
 
 namespace GameTracker.Model
 {
-    public class LoadSaveEngineGameJson : LoadSaveEngineGame
+    public class LoadSaveEngineGameJson : LoadSaveEngineGame<RatableGame, RatingCategoryWeighted, CompletionStatusGame>
     {
         protected const string FILENAME_PLATFORMS = "platforms.json";
         protected const string FILENAME_GAMES = "games.json";

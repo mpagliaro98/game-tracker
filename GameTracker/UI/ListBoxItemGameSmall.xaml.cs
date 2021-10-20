@@ -24,23 +24,28 @@ namespace GameTracker.UI
     public partial class ListBoxItemGameSmall : UserControl
     {
         private const string DECIMAL_FORMAT = "0.##";
+
         private RatableGame rg;
         public RatableGame Game
         {
             get { return rg; }
         }
 
-        public ListBoxItemGameSmall(RatableGame rg)
+        public ListBoxItemGameSmall(RatingModuleGame rm, RatableGame rg)
         {
             InitializeComponent();
             this.rg = rg;
+
+            var platform = rm.FindPlatform(rg.RefPlatform);
+            var completionStatus = rm.FindCompletionStatus(rg.RefCompletionStatus);
+
             LabelName.Content = rg.Name;
-            LabelPlatform.Content = rg.Platform != null ? rg.Platform.Name : "";
-            LabelStatus.Content = rg.CompletionStatus != null ? rg.CompletionStatus.Name : "";
-            if (rg.CompletionStatus != null) LabelStatus.Background = new SolidColorBrush(rg.CompletionStatus.Color.ToMediaColor());
-            BuildCategories(rg.ParentModule.RatingCategories, rg.CategoryValues);
-            LabelFinalScore.Content = rg.FinalScore.ToString(DECIMAL_FORMAT);
-            LabelFinalScore.Background = new SolidColorBrush(rg.FinalScoreColor.ToMediaColor());
+            LabelPlatform.Content = platform != null ? platform.Name : "";
+            LabelStatus.Content = completionStatus != null ? completionStatus.Name : "";
+            if (completionStatus != null) LabelStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
+            BuildCategories(rm.RatingCategories, rg.CategoryValues);
+            LabelFinalScore.Content = rm.CalculateFinalScore(rg).ToString(DECIMAL_FORMAT);
+            LabelFinalScore.Background = new SolidColorBrush(rm.ApplyScoreRange(rm.CalculateFinalScore(rg)).Color.ToMediaColor());
         }
 
         private void BuildCategories(IEnumerable<RatingCategory> cats, IEnumerable<RatingCategoryValue> vals)
@@ -49,7 +54,7 @@ namespace GameTracker.UI
             foreach (RatingCategory cat in cats)
             {
                 GridCategories.ColumnDefinitions.Add(new ColumnDefinition());
-                var matches = vals.Where(val => val.RatingCategory.Equals(cat));
+                var matches = vals.Where(val => val.RefRatingCategory.IsReferencedObject(cat));
                 if (matches.Count() > 0)
                 {
                     RatingCategoryValue pointValue = matches.First();

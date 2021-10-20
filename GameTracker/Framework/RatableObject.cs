@@ -9,7 +9,7 @@ using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework
 {
-    public class RatableObject : ISavable, IModuleAccess, IReferable
+    public class RatableObject : ISavable, IReferable
     {
         private string name = "";
         public string Name {
@@ -38,35 +38,10 @@ namespace RatableTracker.Framework
         }
 
         private double finalScoreManual = 0;
-        public double FinalScore
+        public double FinalScoreManual
         {
-            get
-            {
-                if (IgnoreCategories)
-                {
-                    return finalScoreManual;
-                }
-                else
-                {
-                    double total = 0;
-                    double sumOfWeights = SumOfWeights();
-                    foreach (RatingCategoryValue categoryValue in categoryValues)
-                    {
-                        double categoryWeight = categoryValue.RatingCategory.Weight;
-                        total += (categoryWeight / sumOfWeights) * categoryValue.PointValue;
-                    }
-                    return total;
-                }
-            }
-        }
-
-        public System.Drawing.Color FinalScoreColor
-        {
-            get
-            {
-                ScoreRange sr = ParentModule.ApplyScoreRange(FinalScore);
-                return sr == null ? new System.Drawing.Color() : sr.Color;
-            }
+            get { return finalScoreManual; }
+            set { finalScoreManual = value; }
         }
 
         private Guid referenceKey = Guid.NewGuid();
@@ -75,19 +50,7 @@ namespace RatableTracker.Framework
             get { return referenceKey; }
         }
 
-        private RatingModule parentModule;
-        public RatingModule ParentModule
-        {
-            get { return parentModule; }
-            set { parentModule = value; }
-        }
-
         public RatableObject() { }
-
-        public RatableObject(RatingModule parentModule)
-        {
-            this.parentModule = parentModule;
-        }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
@@ -131,21 +94,6 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
-        }
-
-        public double SumOfWeights()
-        {
-            double sum = 0;
-            foreach (RatingCategoryValue rcv in CategoryValues)
-            {
-                sum += rcv.RatingCategory.Weight;
-            }
-            return sum;
-        }
-
-        public void SetManualFinalScore(double val)
-        {
-            finalScoreManual = val;
         }
 
         public void UpdateRatingCategoryValues(Func<RatingCategoryValue, bool> where, Action<RatingCategoryValue> action)

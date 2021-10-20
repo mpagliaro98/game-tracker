@@ -19,6 +19,8 @@ namespace RatableTracker.Framework.ScoreRelationships
             get { return 1; }
         }
 
+        public override Guid ReferenceKey => KeyScoreRelAbove;
+
         public override bool IsValueInRange(double val, IEnumerable<double> valueList)
         {
             if (valueList.Count() != NumValuesRequired)

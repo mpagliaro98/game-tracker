@@ -8,13 +8,17 @@ using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework
 {
-    public abstract class RatingModuleCompletable : RatingModule
+    public abstract class RatingModuleCompletable<TRatableObj, TRatingCat, TCompStatus>
+        : RatingModule<TRatableObj, TRatingCat>
+        where TRatableObj : RatableObjectCompletable
+        where TRatingCat : RatingCategory
+        where TCompStatus : CompletionStatus
     {
-        protected IEnumerable<CompletionStatus> completionStatuses;
+        protected IEnumerable<TCompStatus> completionStatuses;
 
         public virtual int LimitCompletionStatuses => 20;
 
-        public IEnumerable<CompletionStatus> CompletionStatuses
+        public IEnumerable<TCompStatus> CompletionStatuses
         {
             get { return completionStatuses; }
         }
@@ -28,26 +32,25 @@ namespace RatableTracker.Framework
         protected abstract void LoadCompletionStatuses();
         public abstract void SaveCompletionStatuses();
 
-        public CompletionStatus FindCompletionStatus(ObjectReference objectKey)
+        public TCompStatus FindCompletionStatus(ObjectReference objectKey)
         {
             return FindObject(completionStatuses, objectKey);
         }
 
-        public void AddCompletionStatus(CompletionStatus obj)
+        public void AddCompletionStatus(TCompStatus obj)
         {
             AddToList(ref completionStatuses, SaveCompletionStatuses, obj, LimitCompletionStatuses);
         }
 
-        public void UpdateCompletionStatus(CompletionStatus obj, CompletionStatus orig)
+        public void UpdateCompletionStatus(TCompStatus obj, TCompStatus orig)
         {
             UpdateInList(ref completionStatuses, SaveCompletionStatuses, obj, orig);
         }
 
-        public void DeleteCompletionStatus(CompletionStatus obj)
+        public void DeleteCompletionStatus(TCompStatus obj)
         {
             DeleteFromList(ref completionStatuses, SaveCompletionStatuses, obj);
-            ratableObjects.Cast<RatableObjectCompletable>()
-                .Where(ro => ro.CompletionStatus != null && ro.CompletionStatus.Equals(obj))
+            ratableObjects.Where(ro => ro.RefCompletionStatus.HasReference() && ro.RefCompletionStatus.IsReferencedObject(obj))
                 .ForEach(ro => ro.RemoveCompletionStatus());
             if (GlobalSettings.Autosave) SaveRatableObjects();
         }

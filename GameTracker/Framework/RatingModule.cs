@@ -10,15 +10,17 @@ using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework
 {
-    public abstract class RatingModule
+    public abstract class RatingModule<TRatableObj, TRatingCat>
+        where TRatableObj : RatableObject
+        where TRatingCat : RatingCategory
     {
-        protected IEnumerable<RatableObject> ratableObjects;
+        protected IEnumerable<TRatableObj> ratableObjects;
         protected IEnumerable<ScoreRange> scoreRanges;
-        protected IEnumerable<RatingCategory> ratingCategories;
+        protected IEnumerable<TRatingCat> ratingCategories;
         protected IEnumerable<ScoreRelationship> scoreRelationships;
         protected Settings settings;
 
-        public IEnumerable<RatableObject> RatableObjects
+        public IEnumerable<TRatableObj> RatableObjects
         {
             get { return ratableObjects; }
         }
@@ -28,7 +30,7 @@ namespace RatableTracker.Framework
             get { return scoreRanges; }
         }
 
-        public IEnumerable<RatingCategory> RatingCategories
+        public IEnumerable<TRatingCat> RatingCategories
         {
             get { return ratingCategories; }
         }
@@ -73,6 +75,7 @@ namespace RatableTracker.Framework
 
         protected T FindObject<T>(IEnumerable<T> sourceList, ObjectReference objectKey) where T : IReferable
         {
+            if (!objectKey.HasReference()) return default;
             foreach (IReferable obj in sourceList)
             {
                 if (objectKey.IsReferencedObject(obj))
@@ -83,7 +86,7 @@ namespace RatableTracker.Framework
             throw new ReferenceNotFoundException("RatingModule: could not find object in " + sourceList.ToString() + " with key " + objectKey.ObjectKey.ToString());
         }
 
-        public RatableObject FindRatableObject(ObjectReference objectKey)
+        public TRatableObj FindRatableObject(ObjectReference objectKey)
         {
             return FindObject(ratableObjects, objectKey);
         }
@@ -93,21 +96,14 @@ namespace RatableTracker.Framework
             return FindObject(scoreRanges, objectKey);
         }
 
-        public RatingCategory FindRatingCategory(ObjectReference objectKey)
+        public TRatingCat FindRatingCategory(ObjectReference objectKey)
         {
             return FindObject(ratingCategories, objectKey);
         }
 
-        public ScoreRelationship FindScoreRelationship(string name)
+        public ScoreRelationship FindScoreRelationship(ObjectReference objectKey)
         {
-            foreach (ScoreRelationship sr in scoreRelationships)
-            {
-                if (sr.Name == name)
-                {
-                    return sr;
-                }
-            }
-            throw new ReferenceNotFoundException("RatingModule FindScoreRelationship: could not find name of " + name);
+            return FindObject(scoreRelationships, objectKey);
         }
 
         public void RecalculateScores(double minRangeOld, double maxRangeOld, double minRangeNew, double maxRangeNew)
@@ -116,14 +112,14 @@ namespace RatableTracker.Framework
             double oldRange = maxRangeOld - minRangeOld;
             double newRange = maxRangeNew - minRangeNew;
 
-            foreach (RatableObject ro in ratableObjects)
+            foreach (TRatableObj ro in ratableObjects)
             {
                 if (ro.IgnoreCategories)
                 {
                     if (oldRange == 0)
-                        ro.SetManualFinalScore(minRangeNew);
+                        ro.FinalScoreManual = minRangeNew;
                     else
-                        ro.SetManualFinalScore(((ro.FinalScore - minRangeOld) * newRange / oldRange) + minRangeNew);
+                        ro.FinalScoreManual = ((CalculateFinalScore(ro) - minRangeOld) * newRange / oldRange) + minRangeNew;
                 }
                 else
                 {
@@ -142,12 +138,68 @@ namespace RatableTracker.Framework
         {
             foreach (ScoreRange sr in ScoreRanges)
             {
-                if (sr.ScoreRelationship.IsValueInRange(score, sr.ValueList))
+                ScoreRelationship relationship = FindScoreRelationship(sr.RefScoreRelationship);
+                if (relationship.IsValueInRange(score, sr.ValueList))
                 {
                     return sr;
                 }
             }
             return null;
+        }
+
+        public double SumOfWeights(TRatableObj ro)
+        {
+            double sum = 0;
+            foreach (RatingCategoryValue rcv in ro.CategoryValues)
+            {
+                TRatingCat cat = FindRatingCategory(rcv.RefRatingCategory);
+                sum += cat.Weight;
+            }
+            return sum;
+        }
+
+        public double CalculateFinalScore(TRatableObj ro)
+        {
+            if (ro.IgnoreCategories)
+            {
+                return ro.FinalScoreManual;
+            }
+            else
+            {
+                double total = 0;
+                double sumOfWeights = SumOfWeights(ro);
+                foreach (RatingCategoryValue categoryValue in ro.CategoryValues)
+                {
+                    TRatingCat cat = FindRatingCategory(categoryValue.RefRatingCategory);
+                    double categoryWeight = cat.Weight;
+                    total += (categoryWeight / sumOfWeights) * categoryValue.PointValue;
+                }
+                return total;
+            }
+        }
+
+        public void SetMinScoreAndUpdate(double newVal)
+        {
+            double oldMinScore = Settings.MinScore;
+            Settings.MinScore = newVal;
+            RecalculateScores(oldMinScore, Settings.MaxScore, Settings.MinScore, Settings.MaxScore);
+            if (GlobalSettings.Autosave)
+            {
+                SaveSettings();
+                SaveRatableObjects();
+            }
+        }
+
+        public void SetMaxScoreAndUpdate(double newVal)
+        {
+            double oldMaxScore = Settings.MaxScore;
+            Settings.MaxScore = newVal;
+            RecalculateScores(Settings.MinScore, oldMaxScore, Settings.MinScore, Settings.MaxScore);
+            if (GlobalSettings.Autosave)
+            {
+                SaveSettings();
+                SaveRatableObjects();
+            }
         }
 
         protected void AddToList<T>(ref IEnumerable<T> list, Action saveFunction, T obj)
@@ -188,7 +240,7 @@ namespace RatableTracker.Framework
             if (GlobalSettings.Autosave) saveFunction();
         }
 
-        public void AddRatableObject(RatableObject obj)
+        public void AddRatableObject(TRatableObj obj)
         {
             AddToList(ref ratableObjects, SaveRatableObjects, obj);
         }
@@ -198,12 +250,12 @@ namespace RatableTracker.Framework
             AddToList(ref scoreRanges, SaveScoreRanges, obj, LimitScoreRanges);
         }
 
-        public void AddRatingCategory(RatingCategory obj)
+        public void AddRatingCategory(TRatingCat obj)
         {
             AddToList(ref ratingCategories, SaveRatingCategories, obj, LimitRatingCategories);
         }
 
-        public void UpdateRatableObject(RatableObject obj, RatableObject orig)
+        public void UpdateRatableObject(TRatableObj obj, TRatableObj orig)
         {
             UpdateInList(ref ratableObjects, SaveRatableObjects, obj, orig);
         }
@@ -213,12 +265,12 @@ namespace RatableTracker.Framework
             UpdateInList(ref scoreRanges, SaveScoreRanges, obj, orig);
         }
 
-        public void UpdateRatingCategory(RatingCategory obj, RatingCategory orig)
+        public void UpdateRatingCategory(TRatingCat obj, TRatingCat orig)
         {
             UpdateInList(ref ratingCategories, SaveRatingCategories, obj, orig);
         }
 
-        public void DeleteRatableObject(RatableObject obj)
+        public void DeleteRatableObject(TRatableObj obj)
         {
             DeleteFromList(ref ratableObjects, SaveRatableObjects, obj);
         }
@@ -228,10 +280,10 @@ namespace RatableTracker.Framework
             DeleteFromList(ref scoreRanges, SaveScoreRanges, obj);
         }
 
-        public void DeleteRatingCategory(RatingCategory obj)
+        public void DeleteRatingCategory(TRatingCat obj)
         {
             DeleteFromList(ref ratingCategories, SaveRatingCategories, obj);
-            ratableObjects.ForEach(ro => ro.DeleteRatingCategoryValues(rcv => rcv.RatingCategory.Equals(obj)));
+            ratableObjects.ForEach(ro => ro.DeleteRatingCategoryValues(rcv => rcv.RefRatingCategory.IsReferencedObject(obj)));
             if (GlobalSettings.Autosave) SaveRatableObjects();
         }
     }

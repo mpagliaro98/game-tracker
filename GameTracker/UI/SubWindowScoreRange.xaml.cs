@@ -45,7 +45,7 @@ namespace GameTracker.UI
                     ButtonSave.Visibility = Visibility.Collapsed;
                     ButtonUpdate.Visibility = Visibility.Visible;
                     TextboxName.Text = orig.Name;
-                    ComboboxRelationship.SelectedItem = orig.ScoreRelationship;
+                    ComboboxRelationship.SelectedItem = rm.FindScoreRelationship(orig.RefScoreRelationship);
                     ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
                     SetValueList(orig.ValueList);
                     break;
@@ -58,13 +58,13 @@ namespace GameTracker.UI
         {
             if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
                 out ScoreRelationship sr, out System.Drawing.Color color)) return;
-            var range = new ScoreRange(rm)
+            var range = new ScoreRange()
             {
                 Name = name,
                 ValueList = valueList,
-                ScoreRelationship = sr,
                 Color = color
             };
+            range.SetScoreRelationship(sr);
             rm.AddScoreRange(range);
             Close();
         }
@@ -75,7 +75,7 @@ namespace GameTracker.UI
                 out ScoreRelationship sr, out System.Drawing.Color color)) return;
             orig.Name = name;
             orig.ValueList = valueList;
-            orig.ScoreRelationship = sr;
+            orig.SetScoreRelationship(sr);
             orig.Color = color;
             rm.SaveScoreRanges();
             Close();

@@ -28,18 +28,18 @@ namespace GameTracker.UI
             get { return platform; }
         }
 
-        public ListBoxItemPlatform(Platform platform)
+        public ListBoxItemPlatform(RatingModuleGame rm, Platform platform)
         {
             InitializeComponent();
             this.platform = platform;
             RectangeColor.Fill = new SolidColorBrush(platform.Color.ToMediaColor());
             LabelName.Content = platform.Name;
-            LabelNumOwned.Content = platform.NumGamesOwned.ToString();
-            LabelAverage.Content = platform.AverageScoreOfGames.ToString("0.#####");
-            LabelHighest.Content = platform.HighestScoreFromGames.ToString("0.##");
-            LabelLowest.Content = platform.LowestScoreFromGames.ToString("0.##");
-            LabelFinishPercent.Content = platform.PercentageGamesFinished.ToString("0.##") + "%";
-            LabelFinishRatio.Content = platform.NumGamesFinished.ToString() + platform.NumGamesFinishable.ToString() + " games";
+            LabelNumOwned.Content = rm.GetNumGamesByPlatform(platform).ToString();
+            LabelAverage.Content = rm.GetAverageScoreOfGamesByPlatform(platform).ToString("0.#####");
+            LabelHighest.Content = rm.GetHighestScoreFromGamesByPlatform(platform).ToString("0.##");
+            LabelLowest.Content = rm.GetLowestScoreFromGamesByPlatform(platform).ToString("0.##");
+            LabelFinishPercent.Content = rm.GetPercentageGamesFinishedByPlatform(platform).ToString("0.##") + "%";
+            LabelFinishRatio.Content = rm.GetNumGamesFinishedByPlatform(platform).ToString() + rm.GetNumGamesFinishableByPlatform(platform).ToString() + " games";
         }
     }
 }

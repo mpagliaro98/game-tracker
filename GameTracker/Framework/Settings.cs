@@ -9,55 +9,23 @@ using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework
 {
-    public class Settings : ISavable, IModuleAccess
+    public class Settings : ISavable
     {
-        private RatingModule parentModule;
-        public RatingModule ParentModule
-        {
-            get { return parentModule; }
-            set { parentModule = value; }
-        }
-
         private double minScore = 0;
         public double MinScore
         {
             get { return minScore; }
-            set
-            {
-                double oldMinScore = minScore;
-                minScore = value;
-                parentModule.RecalculateScores(oldMinScore, MaxScore, minScore, MaxScore);
-                if (GlobalSettings.Autosave)
-                {
-                    ParentModule.SaveSettings();
-                    ParentModule.SaveRatableObjects();
-                }
-            }
+            set { minScore = value; }
         }
 
         private double maxScore = 10;
         public double MaxScore
         {
             get { return maxScore; }
-            set
-            {
-                double oldMaxScore = maxScore;
-                maxScore = value;
-                parentModule.RecalculateScores(MinScore, oldMaxScore, MinScore, maxScore);
-                if (GlobalSettings.Autosave)
-                {
-                    ParentModule.SaveSettings();
-                    ParentModule.SaveRatableObjects();
-                }
-            }
+            set { maxScore = value; }
         }
 
         public Settings() { }
-
-        public Settings(RatingModule parentModule)
-        {
-            this.parentModule = parentModule;
-        }
 
         public SavableRepresentation LoadIntoRepresentation()
         {

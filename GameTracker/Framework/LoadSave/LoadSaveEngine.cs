@@ -7,7 +7,9 @@ using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.LoadSave
 {
-    public abstract class LoadSaveEngine
+    public abstract class LoadSaveEngine<TRatableObj, TRatingCat>
+        where TRatableObj : RatableObject, ISavable, new()
+        where TRatingCat : RatingCategory, ISavable, new()
     {
         protected static LoadSaveIdentifier ID_RATABLEOBJECTS = new LoadSaveIdentifier("RatableObjects");
         protected static LoadSaveIdentifier ID_SCORERANGES = new LoadSaveIdentifier("ScoreRanges");
@@ -19,27 +21,27 @@ namespace RatableTracker.Framework.LoadSave
         protected abstract void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable;
         protected abstract void SaveISavable<T>(T obj, LoadSaveIdentifier id) where T : ISavable;
         
-        public virtual IEnumerable<RatableObject> LoadRatableObjects(RatingModule parentModule)
+        public virtual IEnumerable<TRatableObj> LoadRatableObjects(RatingModule<TRatableObj, TRatingCat> parentModule)
         {
-            return LoadListParent<RatableObject>(parentModule, ID_RATABLEOBJECTS);
+            return LoadListParent<TRatableObj>(parentModule, ID_RATABLEOBJECTS);
         }
 
-        public virtual IEnumerable<ScoreRange> LoadScoreRanges(RatingModule parentModule)
+        public virtual IEnumerable<ScoreRange> LoadScoreRanges(RatingModule<TRatableObj, TRatingCat> parentModule)
         {
             return LoadListParent<ScoreRange>(parentModule, ID_SCORERANGES);
         }
 
-        public virtual IEnumerable<RatingCategory> LoadRatingCategories(RatingModule parentModule)
+        public virtual IEnumerable<TRatingCat> LoadRatingCategories(RatingModule<TRatableObj, TRatingCat> parentModule)
         {
-            return LoadListParent<RatingCategory>(parentModule, ID_RATINGCATEGORIES);
+            return LoadListParent<TRatingCat>(parentModule, ID_RATINGCATEGORIES);
         }
 
-        public virtual Settings LoadSettings(RatingModule parentModule)
+        public virtual Settings LoadSettings(RatingModule<TRatableObj, TRatingCat> parentModule)
         {
             return LoadObjectParent<Settings>(parentModule, ID_SETTINGS);
         }
 
-        public virtual void SaveRatableObjects(IEnumerable<RatableObject> ratableObjects)
+        public virtual void SaveRatableObjects(IEnumerable<TRatableObj> ratableObjects)
         {
             SaveListParent(ratableObjects, ID_RATABLEOBJECTS);
         }
@@ -49,7 +51,7 @@ namespace RatableTracker.Framework.LoadSave
             SaveListParent(scoreRanges, ID_SCORERANGES);
         }
 
-        public virtual void SaveRatingCategories(IEnumerable<RatingCategory> ratingCategories)
+        public virtual void SaveRatingCategories(IEnumerable<TRatingCat> ratingCategories)
         {
             SaveListParent(ratingCategories, ID_RATINGCATEGORIES);
         }
@@ -59,18 +61,14 @@ namespace RatableTracker.Framework.LoadSave
             SaveObjectParent(settings, ID_SETTINGS);
         }
 
-        protected virtual IEnumerable<T> LoadListParent<T>(RatingModule parentModule, LoadSaveIdentifier id) where T : ISavable, new()
+        protected virtual IEnumerable<T> LoadListParent<T>(RatingModule<TRatableObj, TRatingCat> parentModule, LoadSaveIdentifier id) where T : ISavable, new()
         {
-            var loadedList = LoadISavableList<T>(id);
-            SetParentModule(loadedList, parentModule);
-            return loadedList;
+            return LoadISavableList<T>(id);
         }
 
-        protected virtual T LoadObjectParent<T>(RatingModule parentModule, LoadSaveIdentifier id) where T : ISavable, new()
+        protected virtual T LoadObjectParent<T>(RatingModule<TRatableObj, TRatingCat> parentModule, LoadSaveIdentifier id) where T : ISavable, new()
         {
-            var loaded = LoadISavable<T>(id);
-            SetParentModule(loaded, parentModule);
-            return loaded;
+            return LoadISavable<T>(id);
         }
 
         protected virtual void SaveListParent<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable
@@ -81,22 +79,6 @@ namespace RatableTracker.Framework.LoadSave
         protected virtual void SaveObjectParent<T>(T obj, LoadSaveIdentifier id) where T : ISavable
         {
             SaveISavable(obj, id);
-        }
-
-        protected void SetParentModule<T>(IEnumerable<T> list, RatingModule parentModule)
-        {
-            foreach (T obj in list)
-            {
-                SetParentModule(obj, parentModule);
-            }
-        }
-
-        protected void SetParentModule<T>(T obj, RatingModule parentModule)
-        {
-            if (obj is IModuleAccess moduleAccess)
-            {
-                moduleAccess.ParentModule = parentModule;
-            }
         }
     }
 }

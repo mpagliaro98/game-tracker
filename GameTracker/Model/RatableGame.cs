@@ -5,29 +5,22 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework.Interfaces;
 
 namespace GameTracker.Model
 {
     public class RatableGame : RatableObjectCompletable
     {
         private ObjectReference platform = new ObjectReference();
-        public Platform Platform
+        public ObjectReference RefPlatform
         {
-            get
-            {
-                return platform.HasReference() ? ((RatingModuleGame)ParentModule).FindPlatform(platform) : null;
-            }
-            set { platform.SetReference(value); }
+            get { return platform; }
         }
 
         private ObjectReference platformPlayedOn = new ObjectReference();
-        public Platform PlatformPlayedOn
+        public ObjectReference RefPlatformPlayedOn
         {
-            get
-            {
-                return platformPlayedOn.HasReference() ? ((RatingModuleGame)ParentModule).FindPlatform(platformPlayedOn) : null;
-            }
-            set { platform.SetReference(value); }
+            get { return platformPlayedOn; }
         }
 
         private string completionCriteria = "";
@@ -45,8 +38,6 @@ namespace GameTracker.Model
         }
 
         public RatableGame() : base() { }
-
-        public RatableGame(RatingModule parentModule) : base(parentModule) { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {
@@ -85,9 +76,19 @@ namespace GameTracker.Model
             }
         }
 
+        public void SetPlatform<T>(T obj) where T : Platform, IReferable
+        {
+            platform.SetReference(obj);
+        }
+
         public void RemovePlatform()
         {
             platform.ClearReference();
+        }
+
+        public void SetPlatformPlayedOn<T>(T obj) where T : Platform, IReferable
+        {
+            platformPlayedOn.SetReference(obj);
         }
 
         public void RemovePlatformPlayedOn()

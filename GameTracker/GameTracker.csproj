@@ -91,6 +91,7 @@
     <Compile Include="Model\Partial\ValueContainer.cs" />
     <Compile Include="Framework\Global\Util.cs" />
     <Compile Include="Model\Partial\Util.cs" />
+    <Compile Include="Model\RatingModuleGame.cs" />
     <Compile Include="UI\ListBoxItemCompletionStatus.xaml.cs">
       <DependentUpon>ListBoxItemCompletionStatus.xaml</DependentUpon>
     </Compile>
@@ -147,7 +148,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Framework\Interfaces\IModuleAccess.cs" />
     <Compile Include="Framework\Exceptions\IncompleteScoreRangeException.cs" />
     <Compile Include="Framework\Interfaces\IPathController.cs" />
     <Compile Include="Framework\Interfaces\ISavable.cs" />
@@ -180,7 +180,7 @@
     <Compile Include="Framework\Exceptions\ReferenceNotFoundException.cs" />
     <Compile Include="Framework\Path Controller\PathController.cs" />
     <Compile Include="Framework\Path Controller\PathControllerWindows.cs" />
-    <Compile Include="Model\RatingModuleGame.cs" />
+    <Compile Include="Model\RatingModuleCompletableGame.cs" />
     <Compile Include="Model\LoadSaveEngineGameJson.cs" />
     <Compile Include="Model\Platform.cs" />
     <Compile Include="Model\RatableGame.cs" />

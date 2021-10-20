@@ -8,15 +8,12 @@ using RatableTracker.Framework.LoadSave;
 
 namespace RatableTracker.Framework
 {
-    public class RatingCategoryValue : ISavable, IModuleAccess
+    public class RatingCategoryValue : ISavable
     {
         private ObjectReference ratingCategory = new ObjectReference();
-        public RatingCategory RatingCategory
+        public ObjectReference RefRatingCategory
         {
-            get
-            {
-                return ratingCategory.HasReference() ? parentModule.FindRatingCategory(ratingCategory) : null;
-            }
+            get { return ratingCategory; }
         }
 
         private double pointValue = 0;
@@ -26,19 +23,7 @@ namespace RatableTracker.Framework
             set { pointValue = value; }
         }
 
-        private RatingModule parentModule;
-        public RatingModule ParentModule
-        {
-            get { return parentModule; }
-            set { parentModule = value; }
-        }
-
         public RatingCategoryValue() { }
-
-        public RatingCategoryValue(RatingModule parentModule)
-        {
-            this.parentModule = parentModule;
-        }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
@@ -66,6 +51,11 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
+        }
+
+        public void SetRatingCategory<T>(T obj) where T : RatingCategory, IReferable
+        {
+            ratingCategory.SetReference(obj);
         }
     }
 }

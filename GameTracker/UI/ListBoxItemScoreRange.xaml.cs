@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
+using GameTracker.Model;
 
 namespace GameTracker.UI
 {
@@ -28,12 +29,12 @@ namespace GameTracker.UI
             get { return sr; }
         }
 
-        public ListBoxItemScoreRange(ScoreRange sr)
+        public ListBoxItemScoreRange(RatingModuleGame rm, ScoreRange sr)
         {
             InitializeComponent();
             this.sr = sr;
             LabelName.Content = sr.Name;
-            LabelRelationship.Content = sr.ScoreRelationship.Name + " " + GetRelationshipValues(sr.ValueList);
+            LabelRelationship.Content = rm.FindScoreRelationship(sr.RefScoreRelationship).Name + " " + GetRelationshipValues(sr.ValueList);
             RectangeColor.Fill = new SolidColorBrush(sr.Color.ToMediaColor());
         }
 
