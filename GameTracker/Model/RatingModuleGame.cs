@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework;
+using RatableTracker.Framework.LoadSave;
 
 namespace GameTracker.Model
 {
@@ -12,7 +13,7 @@ namespace GameTracker.Model
     {
         public RatingModuleGame()
         {
-            loadSaveEngine = new LoadSaveEngineGameJson();
+            loadSaveEngine = new LoadSaveEngineGameJson<ValueContainer>();
         }
     }
 }

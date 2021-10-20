@@ -12,8 +12,12 @@ using RatableTracker.Framework.Global;
 
 namespace GameTracker.Model
 {
-    public class LoadSaveEngineGameJson : LoadSaveEngineGame<RatableGame, RatingCategoryWeighted, CompletionStatusGame>
+    public class LoadSaveEngineGameJson<TValCont>
+        : LoadSaveEngineGame<RatableGame, RatingCategoryWeighted, CompletionStatusGame>
+        where TValCont : IValueContainer<TValCont>, new()
     {
+        
+
         protected const string FILENAME_PLATFORMS = "platforms.json";
         protected const string FILENAME_GAMES = "games.json";
         protected const string FILENAME_STATUSES = "completion_statuses.json";
@@ -44,7 +48,7 @@ namespace GameTracker.Model
         {
             string filepath = GetFilename(id);
             string serialized = ReadJSONFromFile(filepath);
-            SavableRepresentation sr = SavableRepresentation.LoadFromJSON(serialized);
+            SavableRepresentation<TValCont> sr = SavableRepresentation<TValCont>.LoadFromJSON(serialized);
             T t = new T();
             t.RestoreFromRepresentation(sr);
             return t;
@@ -53,14 +57,14 @@ namespace GameTracker.Model
         protected override void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id)
         {
             string filepath = GetFilename(id);
-            string serialized = Util.CreateJSONArray(list.Cast<ISavable>());
+            string serialized = Util.CreateJSONArray<TValCont>(list.Cast<ISavable>());
             SaveJSONToFile(serialized, filepath);
         }
 
         protected override void SaveISavable<T>(T obj, LoadSaveIdentifier id)
         {
             string filepath = GetFilename(id);
-            SavableRepresentation sr = obj.LoadIntoRepresentation();
+            SavableRepresentation<TValCont> sr = obj.LoadIntoRepresentation<TValCont>();
             string serialized = sr.ConvertToJSON();
             SaveJSONToFile(serialized, filepath);
         }
@@ -92,7 +96,7 @@ namespace GameTracker.Model
             foreach (JObject root in objects)
             {
                 string jsonObj = root.ToString();
-                SavableRepresentation sr = SavableRepresentation.LoadFromJSON(jsonObj);
+                SavableRepresentation<TValCont> sr = SavableRepresentation<TValCont>.LoadFromJSON(jsonObj);
                 T t = new T();
                 t.RestoreFromRepresentation(sr);
                 result = result.Append(t).ToList();

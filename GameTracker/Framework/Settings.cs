@@ -27,15 +27,15 @@ namespace RatableTracker.Framework
 
         public Settings() { }
 
-        public SavableRepresentation LoadIntoRepresentation()
+        public SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("minScore", minScore);
             sr.SaveValue("maxScore", maxScore);
             return sr;
         }
 
-        public void RestoreFromRepresentation(SavableRepresentation sr)
+        public void RestoreFromRepresentation<T>(SavableRepresentation<T> sr) where T : IValueContainer<T>, new()
         {
             if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())

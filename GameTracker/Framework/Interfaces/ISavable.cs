@@ -9,7 +9,7 @@ namespace RatableTracker.Framework.Interfaces
 {
     public interface ISavable
     {
-        SavableRepresentation LoadIntoRepresentation();
-        void RestoreFromRepresentation(SavableRepresentation sr);
+        SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new();
+        void RestoreFromRepresentation<T>(SavableRepresentation<T> sr) where T : IValueContainer<T>, new();
     }
 }

@@ -18,14 +18,14 @@ namespace RatableTracker.Framework
 
         public RatableObjectCompletable() : base() { }
 
-        public override SavableRepresentation LoadIntoRepresentation()
+        public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
+            SavableRepresentation<T> sr = base.LoadIntoRepresentation<T>();
             sr.SaveValue("completionStatus", completionStatus);
             return sr;
         }
 
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation<T>(SavableRepresentation<T> sr)
         {
             if (sr == null) return;
             base.RestoreFromRepresentation(sr);

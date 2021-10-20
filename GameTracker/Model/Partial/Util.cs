@@ -16,10 +16,10 @@ namespace RatableTracker.Framework.Global
             return str.Replace("\"", "\\\"");
         }
 
-        public static string CreateJSONArray(IEnumerable<SavableRepresentation> objs)
+        public static string CreateJSONArray<T>(IEnumerable<SavableRepresentation<T>> objs) where T : IValueContainer<T>, new()
         {
             IEnumerable<string> jsonObjs = new LinkedList<string>();
-            foreach (SavableRepresentation obj in objs)
+            foreach (SavableRepresentation<T> obj in objs)
             {
                 string json = obj.ConvertToJSON();
                 jsonObjs = jsonObjs.Append(json).ToList();
@@ -28,12 +28,12 @@ namespace RatableTracker.Framework.Global
             return "[" + jsonArray + "]";
         }
 
-        public static string CreateJSONArray(IEnumerable<ISavable> objs)
+        public static string CreateJSONArray<T>(IEnumerable<ISavable> objs) where T : IValueContainer<T>, new()
         {
             IEnumerable<string> jsonObjs = new LinkedList<string>();
             foreach (ISavable obj in objs)
             {
-                SavableRepresentation sr = obj.LoadIntoRepresentation();
+                SavableRepresentation<T> sr = obj.LoadIntoRepresentation<T>();
                 string json = sr.ConvertToJSON();
                 jsonObjs = jsonObjs.Append(json).ToList();
             }

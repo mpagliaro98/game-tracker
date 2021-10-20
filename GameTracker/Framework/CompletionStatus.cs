@@ -33,16 +33,16 @@ namespace RatableTracker.Framework
 
         public CompletionStatus() { }
 
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public virtual SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
             sr.SaveValue("color", color);
             return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public virtual void RestoreFromRepresentation<T>(SavableRepresentation<T> sr) where T : IValueContainer<T>, new()
         {
             if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())

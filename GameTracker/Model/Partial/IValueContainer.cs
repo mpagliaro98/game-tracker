@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Framework.Interfaces
 {
-    public partial interface IValueContainer
+    public partial interface IValueContainer<TValCont>
+        where TValCont : IValueContainer<TValCont>, new()
     {
         string ConvertValueToJSON();
     }

@@ -7,12 +7,14 @@ using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.LoadSave
 {
-    public partial class ValueContainer : IValueContainer
+    using TInner = ValueContainer;
+
+    public partial class ValueContainer : IValueContainer<TInner>
     {
         private string valueString = null;
-        private SavableRepresentation valueSR = null;
+        private SavableRepresentation<TInner> valueSR = null;
         private IEnumerable<string> valueStringList = null;
-        private IEnumerable<SavableRepresentation> valueSRList = null;
+        private IEnumerable<SavableRepresentation<TInner>> valueSRList = null;
 
         public ValueContainer() { }
 
@@ -23,11 +25,11 @@ namespace RatableTracker.Framework.LoadSave
 
         public void SetContent(ISavable val)
         {
-            SavableRepresentation sr = val?.LoadIntoRepresentation();
+            SavableRepresentation<TInner> sr = val?.LoadIntoRepresentation<TInner>();
             valueSR = sr;
         }
 
-        public void SetContent(SavableRepresentation val)
+        public void SetContent(SavableRepresentation<TInner> val)
         {
             valueSR = val;
         }
@@ -39,15 +41,15 @@ namespace RatableTracker.Framework.LoadSave
 
         public void SetContent(IEnumerable<ISavable> val)
         {
-            LinkedList<SavableRepresentation> list = new LinkedList<SavableRepresentation>();
+            LinkedList<SavableRepresentation<TInner>> list = new LinkedList<SavableRepresentation<TInner>>();
             foreach (ISavable value in val)
             {
-                list.AddLast(value.LoadIntoRepresentation());
+                list.AddLast(value.LoadIntoRepresentation<TInner>());
             }
             valueSRList = list;
         }
 
-        public void SetContent(IEnumerable<SavableRepresentation> val)
+        public void SetContent(IEnumerable<SavableRepresentation<TInner>> val)
         {
             valueSRList = val;
         }
@@ -59,13 +61,13 @@ namespace RatableTracker.Framework.LoadSave
 
         public T GetContentISavable<T>() where T : ISavable, new()
         {
-            SavableRepresentation sr = valueSR;
+            SavableRepresentation<TInner> sr = valueSR;
             T t = new T();
             t.RestoreFromRepresentation(sr);
             return t;
         }
 
-        public SavableRepresentation GetContentSavableRepresentation()
+        public SavableRepresentation<TInner> GetContentSavableRepresentation()
         {
             return valueSR;
         }
@@ -78,8 +80,8 @@ namespace RatableTracker.Framework.LoadSave
         public IEnumerable<T> GetContentISavableList<T>() where T : ISavable, new()
         {
             List<T> result = new List<T>();
-            IEnumerable<SavableRepresentation> list = GetContentSavableRepresentationList();
-            foreach (SavableRepresentation sr in list)
+            IEnumerable<SavableRepresentation<TInner>> list = GetContentSavableRepresentationList();
+            foreach (SavableRepresentation<TInner> sr in list)
             {
                 T t = new T();
                 t.RestoreFromRepresentation(sr);
@@ -88,7 +90,7 @@ namespace RatableTracker.Framework.LoadSave
             return result;
         }
 
-        public IEnumerable<SavableRepresentation> GetContentSavableRepresentationList()
+        public IEnumerable<SavableRepresentation<TInner>> GetContentSavableRepresentationList()
         {
             return valueSRList;
         }
