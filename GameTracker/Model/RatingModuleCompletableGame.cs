@@ -119,6 +119,18 @@ namespace GameTracker.Model
             return RatableObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform));
         }
 
+        public IEnumerable<TRatableObj> GetFinishableGamesOnPlatform(Platform platform)
+        {
+            return RatableObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform)
+                && ((ro.RefCompletionStatus.HasReference() && !FindCompletionStatus(ro.RefCompletionStatus).ExcludeFromStats) || !ro.RefCompletionStatus.HasReference()));
+        }
+
+        public IEnumerable<TRatableObj> GetFinishedGamesOnPlatform(Platform platform)
+        {
+            return ratableObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
+                .Where(ro => ro.RefCompletionStatus.HasReference() && FindCompletionStatus(ro.RefCompletionStatus).UseAsFinished);
+        }
+
         public int GetNumGamesByPlatform(Platform platform)
         {
             return GetGamesOnPlatform(platform).Count();
@@ -126,27 +138,30 @@ namespace GameTracker.Model
 
         public int GetNumGamesFinishableByPlatform(Platform platform)
         {
-            return 0;
+            return GetFinishableGamesOnPlatform(platform).Count();
         }
 
         public double GetAverageScoreOfGamesByPlatform(Platform platform)
         {
-            return 0;
+            var games = GetFinishedGamesOnPlatform(platform);
+            return games.Count() <= 0 ? Settings.MinScore : games.Average(ro => CalculateFinalScore(ro));
         }
 
         public double GetHighestScoreFromGamesByPlatform(Platform platform)
         {
-            return 0;
+            var games = GetFinishedGamesOnPlatform(platform);
+            return games.Count() <= 0 ? Settings.MinScore : games.Max(ro => CalculateFinalScore(ro));
         }
 
         public double GetLowestScoreFromGamesByPlatform(Platform platform)
         {
-            return 0;
+            var games = GetFinishedGamesOnPlatform(platform);
+            return games.Count() <= 0 ? Settings.MinScore : games.Min(ro => CalculateFinalScore(ro));
         }
 
         public double GetNumGamesFinishedByPlatform(Platform platform)
         {
-            return 0;
+            return GetFinishedGamesOnPlatform(platform).Count();
         }
 
         public double GetPercentageGamesFinishedByPlatform(Platform platform)
@@ -154,6 +169,20 @@ namespace GameTracker.Model
             int numFinishable = GetNumGamesFinishableByPlatform(platform);
             if (numFinishable <= 0) numFinishable = 1;
             return GetNumGamesFinishedByPlatform(platform) / numFinishable * 100;
+        }
+
+        public IEnumerable<TRatableObj> GetTopGamesByPlatform(Platform platform, int numToGet)
+        {
+            return RatableObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
+                .OrderBy(ro => CalculateFinalScore(ro))
+                .Take(numToGet);
+        }
+
+        public IEnumerable<TRatableObj> GetBottomGamesByPlatform(Platform platform, int numToGet)
+        {
+            return RatableObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
+                .OrderByDescending(ro => CalculateFinalScore(ro))
+                .Take(numToGet);
         }
     }
 }

@@ -39,7 +39,20 @@ namespace GameTracker.UI
             LabelHighest.Content = rm.GetHighestScoreFromGamesByPlatform(platform).ToString("0.##");
             LabelLowest.Content = rm.GetLowestScoreFromGamesByPlatform(platform).ToString("0.##");
             LabelFinishPercent.Content = rm.GetPercentageGamesFinishedByPlatform(platform).ToString("0.##") + "%";
-            LabelFinishRatio.Content = rm.GetNumGamesFinishedByPlatform(platform).ToString() + rm.GetNumGamesFinishableByPlatform(platform).ToString() + " games";
+            LabelFinishRatio.Content = rm.GetNumGamesFinishedByPlatform(platform).ToString() + "/" + rm.GetNumGamesFinishableByPlatform(platform).ToString() + " games";
+            SetStackPanelLabels(StackPanelTop, rm.GetTopGamesByPlatform(platform, 3));
+            SetStackPanelLabels(StackPanelBottom, rm.GetBottomGamesByPlatform(platform, 3));
+        }
+
+        private void SetStackPanelLabels(StackPanel panel, IEnumerable<RatableGame> list)
+        {
+            panel.Children.Clear();
+            foreach (RatableGame rg in list)
+            {
+                Label label = new Label();
+                label.Content = rg.Name;
+                panel.Children.Add(label);
+            }
         }
     }
 }
