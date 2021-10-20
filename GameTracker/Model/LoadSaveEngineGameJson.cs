@@ -48,7 +48,7 @@ namespace GameTracker.Model
             string serialized = ReadJSONFromFile(filepath);
             SavableRepresentation<TValCont> sr = SavableRepresentation<TValCont>.LoadFromJSON(serialized);
             T t = new T();
-            t.RestoreFromRepresentation(sr);
+            if (sr != null) t.RestoreFromRepresentation(sr);
             return t;
         }
 
@@ -96,7 +96,7 @@ namespace GameTracker.Model
                 string jsonObj = root.ToString();
                 SavableRepresentation<TValCont> sr = SavableRepresentation<TValCont>.LoadFromJSON(jsonObj);
                 T t = new T();
-                t.RestoreFromRepresentation(sr);
+                if (sr != null) t.RestoreFromRepresentation(sr);
                 result = result.Append(t).ToList();
             }
             return result;

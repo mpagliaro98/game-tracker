@@ -63,7 +63,7 @@ namespace RatableTracker.Framework.LoadSave
         {
             SavableRepresentation<TInner> sr = valueSR;
             T t = new T();
-            t.RestoreFromRepresentation(sr);
+            if (sr != null) t.RestoreFromRepresentation(sr);
             return t;
         }
 
@@ -84,7 +84,7 @@ namespace RatableTracker.Framework.LoadSave
             foreach (SavableRepresentation<TInner> sr in list)
             {
                 T t = new T();
-                t.RestoreFromRepresentation(sr);
+                if (sr != null) t.RestoreFromRepresentation(sr);
                 result.Add(t);
             }
             return result;

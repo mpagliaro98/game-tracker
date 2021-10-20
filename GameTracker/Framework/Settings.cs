@@ -21,7 +21,6 @@ namespace RatableTracker.Framework
 
         public virtual void RestoreFromRepresentation<T>(SavableRepresentation<T> sr) where T : IValueContainer<T>, new()
         {
-            if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

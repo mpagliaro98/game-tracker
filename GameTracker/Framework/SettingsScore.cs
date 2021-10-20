@@ -35,7 +35,6 @@ namespace RatableTracker.Framework
 
         public override void RestoreFromRepresentation<T>(SavableRepresentation<T> sr)
         {
-            if (sr == null) return;
             base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
