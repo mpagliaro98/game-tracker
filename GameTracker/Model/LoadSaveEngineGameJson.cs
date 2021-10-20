@@ -13,11 +13,9 @@ using RatableTracker.Framework.Global;
 namespace GameTracker.Model
 {
     public class LoadSaveEngineGameJson<TValCont>
-        : LoadSaveEngineGame<RatableGame, RatingCategoryWeighted, CompletionStatusGame>
+        : LoadSaveEngineGame<RatableGame, ScoreRange, SettingsScore, CompletionStatus, RatingCategoryWeighted>
         where TValCont : IValueContainer<TValCont>, new()
     {
-        
-
         protected const string FILENAME_PLATFORMS = "platforms.json";
         protected const string FILENAME_GAMES = "games.json";
         protected const string FILENAME_STATUSES = "completion_statuses.json";
@@ -28,11 +26,11 @@ namespace GameTracker.Model
         protected static string SAVE_DIR = PathController.Combine(PathController.BaseDirectory(), DIRECTORY_SAVE);
         protected readonly IDictionary<LoadSaveIdentifier, string> filepathMap = new Dictionary<LoadSaveIdentifier, string>()
         {
-            { ID_RATABLEOBJECTS, PathController.Combine(SAVE_DIR, FILENAME_GAMES) },
+            { ID_LISTEDOBJECTS, PathController.Combine(SAVE_DIR, FILENAME_GAMES) },
             { ID_PLATFORMS, PathController.Combine(SAVE_DIR, FILENAME_PLATFORMS) },
-            { ID_COMPLETIONSTATUSES, PathController.Combine(SAVE_DIR, FILENAME_STATUSES) },
+            { ID_STATUSES, PathController.Combine(SAVE_DIR, FILENAME_STATUSES) },
             { ID_RATINGCATEGORIES, PathController.Combine(SAVE_DIR, FILENAME_CATEGORIES) },
-            { ID_SCORERANGES, PathController.Combine(SAVE_DIR, FILENAME_RANGES) },
+            { ID_RANGES, PathController.Combine(SAVE_DIR, FILENAME_RANGES) },
             { ID_SETTINGS, PathController.Combine(SAVE_DIR, FILENAME_SETTINGS) }
         };
 

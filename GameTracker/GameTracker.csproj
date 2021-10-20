@@ -80,10 +80,29 @@
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
     <Compile Include="Framework\Global\TConverter.cs" />
+    <Compile Include="Framework\LoadSave\ILoadSaveCategorical.cs" />
+    <Compile Include="Framework\LoadSave\ILoadSaveStatus.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveEngineRated.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveEngineRatedCategorical.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveEngineRatedStatus.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveEngineRatedStatusCategorical.cs" />
+    <Compile Include="Framework\Module Hierarchy\IModuleCategorical.cs" />
+    <Compile Include="Framework\Module Hierarchy\IModuleStatus.cs" />
+    <Compile Include="Framework\Module Hierarchy\RankingModuleStatus.cs" />
+    <Compile Include="Framework\Module Hierarchy\RatingModuleCategorical.cs" />
+    <Compile Include="Framework\Module Hierarchy\RatingModuleStatusCategorical.cs" />
+    <Compile Include="Framework\Object Hierarchy\ICategorical.cs" />
+    <Compile Include="Framework\Object Hierarchy\IStatus.cs" />
     <Compile Include="Framework\Interfaces\IReferable.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveIdentifier.cs" />
+    <Compile Include="Framework\Module Hierarchy\RankingModule.cs" />
     <Compile Include="Framework\ObjectReference.cs" />
-    <Compile Include="Model\CompletionStatusGame.cs" />
+    <Compile Include="Framework\Object Hierarchy\RankableObject.cs" />
+    <Compile Include="Framework\Object Hierarchy\RankableObjectStatus.cs" />
+    <Compile Include="Framework\Object Hierarchy\RatableObjectCategorical.cs" />
+    <Compile Include="Framework\Object Hierarchy\RatableObjectStatusCategorical.cs" />
+    <Compile Include="Framework\SettingsScore.cs" />
+    <Compile Include="Model\CompletionStatus.cs" />
     <Compile Include="Model\Partial\IValueContainer.cs" />
     <Compile Include="Model\Partial\SavableRepresentation.cs" />
     <Compile Include="Framework\LoadSave\ValueContainer.cs" />
@@ -151,7 +170,7 @@
     <Compile Include="Framework\Exceptions\IncompleteScoreRangeException.cs" />
     <Compile Include="Framework\Interfaces\IPathController.cs" />
     <Compile Include="Framework\Interfaces\ISavable.cs" />
-    <Compile Include="Framework\LoadSave\LoadSaveEngineCompletable.cs" />
+    <Compile Include="Framework\LoadSave\LoadSaveEngineStatus.cs" />
     <Compile Include="UI\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -174,23 +193,23 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Framework\CompletionStatus.cs" />
+    <Compile Include="Framework\Status.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngine.cs" />
     <Compile Include="Model\LoadSaveEngineGame.cs" />
     <Compile Include="Framework\Exceptions\ReferenceNotFoundException.cs" />
     <Compile Include="Framework\Path Controller\PathController.cs" />
     <Compile Include="Framework\Path Controller\PathControllerWindows.cs" />
-    <Compile Include="Model\RatingModuleCompletableGame.cs" />
+    <Compile Include="Model\RatingModuleGameTemplate.cs" />
     <Compile Include="Model\LoadSaveEngineGameJson.cs" />
     <Compile Include="Model\Platform.cs" />
     <Compile Include="Model\RatableGame.cs" />
-    <Compile Include="Framework\RatableObject.cs" />
-    <Compile Include="Framework\RatableObjectCompletable.cs" />
+    <Compile Include="Framework\Object Hierarchy\RatableObject.cs" />
+    <Compile Include="Framework\Object Hierarchy\RatableObjectStatus.cs" />
     <Compile Include="Framework\RatingCategory.cs" />
     <Compile Include="Framework\RatingCategoryValue.cs" />
     <Compile Include="Framework\RatingCategoryWeighted.cs" />
-    <Compile Include="Framework\RatingModule.cs" />
-    <Compile Include="Framework\RatingModuleCompletable.cs" />
+    <Compile Include="Framework\Module Hierarchy\RatingModule.cs" />
+    <Compile Include="Framework\Module Hierarchy\RatingModuleStatus.cs" />
     <Compile Include="Framework\LoadSave\SavableRepresentation.cs" />
     <Compile Include="Framework\ScoreRange.cs" />
     <Compile Include="Framework\Score Relationships\ScoreRelationship.cs" />

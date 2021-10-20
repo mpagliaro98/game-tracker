@@ -37,15 +37,15 @@ namespace GameTracker.UI
             this.rg = rg;
 
             var platform = rm.FindPlatform(rg.RefPlatform);
-            var completionStatus = rm.FindCompletionStatus(rg.RefCompletionStatus);
+            var completionStatus = rm.FindStatus(rg.RefStatus);
 
             LabelName.Content = rg.Name;
             LabelPlatform.Content = platform != null ? platform.Name : "";
             LabelStatus.Content = completionStatus != null ? completionStatus.Name : "";
             if (completionStatus != null) LabelStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
             BuildCategories(rm.RatingCategories, rg.CategoryValues);
-            LabelFinalScore.Content = rm.CalculateFinalScore(rg).ToString(DECIMAL_FORMAT);
-            LabelFinalScore.Background = new SolidColorBrush(rm.ApplyScoreRange(rm.CalculateFinalScore(rg)).Color.ToMediaColor());
+            LabelFinalScore.Content = rm.GetScoreOfObject(rg).ToString(DECIMAL_FORMAT);
+            LabelFinalScore.Background = new SolidColorBrush(rm.GetColorFromRange(rg).ToMediaColor());
         }
 
         private void BuildCategories(IEnumerable<RatingCategory> cats, IEnumerable<RatingCategoryValue> vals)

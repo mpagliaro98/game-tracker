@@ -9,22 +9,24 @@ using RatableTracker.Framework.Interfaces;
 
 namespace GameTracker.Model
 {
-    public abstract class LoadSaveEngineGame<TRatableObj, TRatingCat, TCompStatus>
-        : LoadSaveEngineCompletable<TRatableObj, TRatingCat, TCompStatus>
-        where TRatableObj : RatableGame, ISavable, new()
+    public abstract class LoadSaveEngineGame<TListedObj, TRange, TSettings, TStatus, TRatingCat>
+        : LoadSaveEngineRatedStatusCategorical<TListedObj, TRange, TSettings, TStatus, TRatingCat>
+        where TListedObj : RatableGame, ISavable, new()
+        where TRange : ScoreRange, ISavable, new()
+        where TSettings : SettingsScore, ISavable, new()
+        where TStatus : Status, ISavable, new()
         where TRatingCat : RatingCategory, ISavable, new()
-        where TCompStatus : CompletionStatusGame, ISavable, new()
     {
         protected static LoadSaveIdentifier ID_PLATFORMS = new LoadSaveIdentifier("Platforms");
 
-        public virtual IEnumerable<Platform> LoadPlatforms(RatingModuleCompletableGame<TRatableObj, TRatingCat, TCompStatus> parentModule)
+        public virtual IEnumerable<Platform> LoadPlatforms()
         {
-            return LoadListParent<Platform>(parentModule, ID_PLATFORMS);
+            return LoadISavableList<Platform>(ID_PLATFORMS);
         }
 
         public virtual void SavePlatforms(IEnumerable<Platform> platforms)
         {
-            SaveListParent(platforms, ID_PLATFORMS);
+            SaveISavableList(platforms, ID_PLATFORMS);
         }
     }
 }

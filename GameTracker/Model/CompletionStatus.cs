@@ -8,7 +8,7 @@ using RatableTracker.Framework.LoadSave;
 
 namespace GameTracker.Model
 {
-    public class CompletionStatusGame : CompletionStatus
+    public class CompletionStatus : Status
     {
         private bool useAsFinished = false;
         public bool UseAsFinished
@@ -24,7 +24,7 @@ namespace GameTracker.Model
             set { excludeFromStats = value; }
         }
 
-        public CompletionStatusGame() : base() { }
+        public CompletionStatus() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {

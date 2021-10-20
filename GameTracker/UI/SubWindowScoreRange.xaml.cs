@@ -65,7 +65,7 @@ namespace GameTracker.UI
                 Color = color
             };
             range.SetScoreRelationship(sr);
-            rm.AddScoreRange(range);
+            rm.AddRange(range);
             Close();
         }
 
@@ -77,7 +77,7 @@ namespace GameTracker.UI
             orig.ValueList = valueList;
             orig.SetScoreRelationship(sr);
             orig.Color = color;
-            rm.SaveScoreRanges();
+            rm.SaveRanges();
             Close();
         }
 

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RatableTracker.Framework;
+using RatableTracker.Framework.ObjectHierarchy;
 using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework.Interfaces;
+using RatableTracker.Framework;
 
 namespace GameTracker.Model
 {
-    public class RatableGame : RatableObjectCompletable
+    public class RatableGame : RatableObjectStatusCategorical
     {
         private ObjectReference platform = new ObjectReference();
         public ObjectReference RefPlatform

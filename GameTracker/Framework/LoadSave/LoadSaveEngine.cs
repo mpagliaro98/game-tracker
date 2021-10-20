@@ -4,81 +4,53 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.Interfaces;
+using RatableTracker.Framework.ObjectHierarchy;
+using RatableTracker.Framework.ModuleHierarchy;
 
 namespace RatableTracker.Framework.LoadSave
 {
-    public abstract class LoadSaveEngine<TRatableObj, TRatingCat>
-        where TRatableObj : RatableObject, ISavable, new()
-        where TRatingCat : RatingCategory, ISavable, new()
+    public abstract class LoadSaveEngine<TListedObj, TRange, TSettings>
+        where TListedObj : RankableObject, ISavable, new()
+        where TRange : ScoreRange, ISavable, new()
+        where TSettings : Settings, ISavable, new()
     {
-        protected static LoadSaveIdentifier ID_RATABLEOBJECTS = new LoadSaveIdentifier("RatableObjects");
-        protected static LoadSaveIdentifier ID_SCORERANGES = new LoadSaveIdentifier("ScoreRanges");
-        protected static LoadSaveIdentifier ID_RATINGCATEGORIES = new LoadSaveIdentifier("RatingCategories");
+        protected static LoadSaveIdentifier ID_LISTEDOBJECTS = new LoadSaveIdentifier("ListedObjects");
+        protected static LoadSaveIdentifier ID_RANGES = new LoadSaveIdentifier("Ranges");
         protected static LoadSaveIdentifier ID_SETTINGS = new LoadSaveIdentifier("Settings");
 
         protected abstract IEnumerable<T> LoadISavableList<T>(LoadSaveIdentifier id) where T : ISavable, new();
         protected abstract T LoadISavable<T>(LoadSaveIdentifier id) where T : ISavable, new();
         protected abstract void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable;
         protected abstract void SaveISavable<T>(T obj, LoadSaveIdentifier id) where T : ISavable;
-        
-        public virtual IEnumerable<TRatableObj> LoadRatableObjects(RatingModule<TRatableObj, TRatingCat> parentModule)
+
+        public virtual IEnumerable<TListedObj> LoadListedObjects()
         {
-            return LoadListParent<TRatableObj>(parentModule, ID_RATABLEOBJECTS);
+            return LoadISavableList<TListedObj>(ID_LISTEDOBJECTS);
         }
 
-        public virtual IEnumerable<ScoreRange> LoadScoreRanges(RatingModule<TRatableObj, TRatingCat> parentModule)
+        public virtual IEnumerable<TRange> LoadRanges()
         {
-            return LoadListParent<ScoreRange>(parentModule, ID_SCORERANGES);
+            return LoadISavableList<TRange>(ID_RANGES);
         }
 
-        public virtual IEnumerable<TRatingCat> LoadRatingCategories(RatingModule<TRatableObj, TRatingCat> parentModule)
+        public virtual TSettings LoadSettings()
         {
-            return LoadListParent<TRatingCat>(parentModule, ID_RATINGCATEGORIES);
+            return LoadISavable<TSettings>(ID_SETTINGS);
         }
 
-        public virtual Settings LoadSettings(RatingModule<TRatableObj, TRatingCat> parentModule)
+        public virtual void SaveListedObjects(IEnumerable<TListedObj> ratableObjects)
         {
-            return LoadObjectParent<Settings>(parentModule, ID_SETTINGS);
+            SaveISavableList(ratableObjects, ID_LISTEDOBJECTS);
         }
 
-        public virtual void SaveRatableObjects(IEnumerable<TRatableObj> ratableObjects)
+        public virtual void SaveRanges(IEnumerable<TRange> scoreRanges)
         {
-            SaveListParent(ratableObjects, ID_RATABLEOBJECTS);
+            SaveISavableList(scoreRanges, ID_RANGES);
         }
 
-        public virtual void SaveScoreRanges(IEnumerable<ScoreRange> scoreRanges)
+        public virtual void SaveSettings(TSettings settings)
         {
-            SaveListParent(scoreRanges, ID_SCORERANGES);
-        }
-
-        public virtual void SaveRatingCategories(IEnumerable<TRatingCat> ratingCategories)
-        {
-            SaveListParent(ratingCategories, ID_RATINGCATEGORIES);
-        }
-
-        public virtual void SaveSettings(Settings settings)
-        {
-            SaveObjectParent(settings, ID_SETTINGS);
-        }
-
-        protected virtual IEnumerable<T> LoadListParent<T>(RatingModule<TRatableObj, TRatingCat> parentModule, LoadSaveIdentifier id) where T : ISavable, new()
-        {
-            return LoadISavableList<T>(id);
-        }
-
-        protected virtual T LoadObjectParent<T>(RatingModule<TRatableObj, TRatingCat> parentModule, LoadSaveIdentifier id) where T : ISavable, new()
-        {
-            return LoadISavable<T>(id);
-        }
-
-        protected virtual void SaveListParent<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable
-        {
-            SaveISavableList(list, id);
-        }
-
-        protected virtual void SaveObjectParent<T>(T obj, LoadSaveIdentifier id) where T : ISavable
-        {
-            SaveISavable(obj, id);
+            SaveISavable(settings, ID_SETTINGS);
         }
     }
 }

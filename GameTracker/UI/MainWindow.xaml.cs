@@ -100,7 +100,7 @@ namespace GameTracker.UI
         private void UpdateGamesUI()
         {
             GamesListbox.ClearItems();
-            foreach (RatableGame rg in rm.RatableObjects)
+            foreach (RatableGame rg in rm.ListedObjects)
             {
                 ListBoxItemGameSmall item = new ListBoxItemGameSmall(rm, rg);
                 GamesListbox.AddItem(item);
@@ -227,7 +227,7 @@ namespace GameTracker.UI
         private void UpdateCompletionStatusUI()
         {
             SettingsListboxCompletionStatuses.ClearItems();
-            foreach (CompletionStatusGame cs in rm.CompletionStatuses)
+            foreach (CompletionStatus cs in rm.Statuses)
             {
                 ListBoxItemCompletionStatus item = new ListBoxItemCompletionStatus(cs);
                 item.MouseDoubleClick += CompletionStatusEdit;
@@ -236,7 +236,7 @@ namespace GameTracker.UI
                 item.ContextMenu = EditDeleteContextMenu(CompletionStatusEdit, CompletionStatusDelete);
             }
 
-            var vis = rm.CompletionStatuses.Count() >= rm.LimitCompletionStatuses ? Visibility.Hidden : Visibility.Visible;
+            var vis = rm.Statuses.Count() >= rm.LimitStatuses ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewCompletionStatus.Visibility = vis;
         }
 
@@ -266,12 +266,12 @@ namespace GameTracker.UI
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this completion status and all data associated with it?", "Delete Completion Status Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            CompletionStatusGame cs = lbi.CompletionStatus;
-            rm.DeleteCompletionStatus(cs);
+            CompletionStatus cs = lbi.CompletionStatus;
+            rm.DeleteStatus(cs);
             UpdateCompletionStatusUI();
         }
 
-        private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatusGame orig = null)
+        private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatus orig = null)
         {
             var window = new SubWindowCompletionStatus(rm, mode, orig);
             window.Closed += CompletionStatusWindow_Closed;
@@ -288,7 +288,7 @@ namespace GameTracker.UI
         private void UpdateScoreRangeUI()
         {
             SettingsListboxScoreRanges.ClearItems();
-            foreach (ScoreRange sr in rm.ScoreRanges)
+            foreach (ScoreRange sr in rm.Ranges)
             {
                 ListBoxItemScoreRange item = new ListBoxItemScoreRange(rm, sr);
                 item.MouseDoubleClick += ScoreRangeEdit;
@@ -297,7 +297,7 @@ namespace GameTracker.UI
                 item.ContextMenu = EditDeleteContextMenu(ScoreRangeEdit, ScoreRangeDelete);
             }
 
-            var vis = rm.ScoreRanges.Count() >= rm.LimitScoreRanges ? Visibility.Hidden : Visibility.Visible;
+            var vis = rm.Ranges.Count() >= rm.LimitRanges ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewScoreRange.Visibility = vis;
         }
 
@@ -328,7 +328,7 @@ namespace GameTracker.UI
             if (mbr != MessageBoxResult.Yes) return;
 
             ScoreRange sr = lbi.ScoreRange;
-            rm.DeleteScoreRange(sr);
+            rm.DeleteRange(sr);
             UpdateScoreRangeUI();
         }
 

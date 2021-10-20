@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework.Global;
 
-namespace RatableTracker.Framework
+namespace RatableTracker.Framework.ObjectHierarchy
 {
-    public class CompletionStatus : ISavable, IReferable
+    public class RankableObject : ISavable, IReferable
     {
         private string name = "";
         public string Name
@@ -18,11 +18,11 @@ namespace RatableTracker.Framework
             set { name = value; }
         }
 
-        private Color color = new Color();
-        public Color Color
+        private string comment = "";
+        public string Comment
         {
-            get { return color; }
-            set { color = value; }
+            get { return comment; }
+            set { comment = value; }
         }
 
         private Guid referenceKey = Guid.NewGuid();
@@ -31,14 +31,14 @@ namespace RatableTracker.Framework
             get { return referenceKey; }
         }
 
-        public CompletionStatus() { }
+        public RankableObject() { }
 
         public virtual SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new()
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", name);
-            sr.SaveValue("color", color);
+            sr.SaveValue("comment", comment);
             return sr;
         }
 
@@ -55,11 +55,11 @@ namespace RatableTracker.Framework
                     case "name":
                         name = sr.GetString(key);
                         break;
-                    case "color":
-                        color = sr.GetColor(key);
+                    case "comment":
+                        comment = sr.GetString(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine("CompletionStatus.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }
@@ -78,7 +78,7 @@ namespace RatableTracker.Framework
             }
             else
             {
-                CompletionStatus o = (CompletionStatus)obj;
+                RankableObject o = (RankableObject)obj;
                 return !ReferenceKey.Equals(Guid.Empty) && ReferenceKey.Equals(o.ReferenceKey);
             }
         }

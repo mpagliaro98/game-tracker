@@ -23,13 +23,13 @@ namespace GameTracker.UI
     /// </summary>
     public partial class ListBoxItemCompletionStatus : UserControl
     {
-        private CompletionStatusGame cs;
-        public CompletionStatusGame CompletionStatus
+        private CompletionStatus cs;
+        public CompletionStatus CompletionStatus
         {
             get { return cs; }
         }
 
-        public ListBoxItemCompletionStatus(CompletionStatusGame cs)
+        public ListBoxItemCompletionStatus(CompletionStatus cs)
         {
             InitializeComponent();
             this.cs = cs;

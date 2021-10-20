@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework.Interfaces;
 
-namespace RatableTracker.Framework
+namespace RatableTracker.Framework.ObjectHierarchy
 {
-    public class RatableObjectCompletable : RatableObject
+    public class RatableObjectStatus : RatableObject, IStatus
     {
-        private ObjectReference completionStatus = new ObjectReference();
-        public ObjectReference RefCompletionStatus
+        private ObjectReference status = new ObjectReference();
+        public ObjectReference RefStatus
         {
-            get { return completionStatus; }
+            get { return status; }
         }
 
-        public RatableObjectCompletable() : base() { }
+        public RatableObjectStatus() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {
             SavableRepresentation<T> sr = base.LoadIntoRepresentation<T>();
-            sr.SaveValue("completionStatus", completionStatus);
+            sr.SaveValue("status", status);
             return sr;
         }
 
@@ -33,24 +33,24 @@ namespace RatableTracker.Framework
             {
                 switch (key)
                 {
-                    case "completionStatus":
-                        completionStatus = sr.GetISavable<ObjectReference>(key);
+                    case "status":
+                        status = sr.GetISavable<ObjectReference>(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine("RatableObjectCompletable.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }
         }
 
-        public void SetCompletionStatus<T>(T obj) where T : CompletionStatus, IReferable
+        public void SetStatus<T>(T obj) where T : Status, IReferable
         {
-            completionStatus.SetReference(obj);
+            status.SetReference(obj);
         }
 
-        public void RemoveCompletionStatus()
+        public void RemoveStatus()
         {
-            completionStatus.ClearReference();
+            status.ClearReference();
         }
     }
 }

@@ -9,7 +9,7 @@ using RatableTracker.Framework.LoadSave;
 namespace GameTracker.Model
 {
     public class RatingModuleGame
-        : RatingModuleCompletableGame<RatableGame, RatingCategoryWeighted, CompletionStatusGame>
+        : RatingModuleGameTemplate<RatableGame, ScoreRange, SettingsScore, CompletionStatus, RatingCategoryWeighted>
     {
         public RatingModuleGame()
         {

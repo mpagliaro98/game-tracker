@@ -23,9 +23,9 @@ namespace GameTracker.UI
     public partial class SubWindowCompletionStatus : Window
     {
         private RatingModuleGame rm;
-        private CompletionStatusGame orig;
+        private CompletionStatus orig;
 
-        public SubWindowCompletionStatus(RatingModuleGame rm, SubWindowMode mode, CompletionStatusGame orig = null)
+        public SubWindowCompletionStatus(RatingModuleGame rm, SubWindowMode mode, CompletionStatus orig = null)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
@@ -54,14 +54,14 @@ namespace GameTracker.UI
         {
             if (!ValidateInputs(out string name, out bool useAsFinished,
                 out bool excludeFromStats, out System.Drawing.Color color)) return;
-            var status = new CompletionStatusGame()
+            var status = new CompletionStatus()
             {
                 Name = name,
                 UseAsFinished = useAsFinished,
                 ExcludeFromStats = excludeFromStats,
                 Color = color
             };
-            rm.AddCompletionStatus(status);
+            rm.AddStatus(status);
             Close();
         }
 
@@ -73,7 +73,7 @@ namespace GameTracker.UI
             orig.UseAsFinished = useAsFinished;
             orig.ExcludeFromStats = excludeFromStats;
             orig.Color = color;
-            rm.SaveCompletionStatuses();
+            rm.SaveStatuses();
             Close();
         }
 

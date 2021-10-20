@@ -11,45 +11,23 @@ namespace RatableTracker.Framework
 {
     public class Settings : ISavable
     {
-        private double minScore = 0;
-        public double MinScore
-        {
-            get { return minScore; }
-            set { minScore = value; }
-        }
-
-        private double maxScore = 10;
-        public double MaxScore
-        {
-            get { return maxScore; }
-            set { maxScore = value; }
-        }
-
         public Settings() { }
 
-        public SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new()
+        public virtual SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new()
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
-            sr.SaveValue("minScore", minScore);
-            sr.SaveValue("maxScore", maxScore);
             return sr;
         }
 
-        public void RestoreFromRepresentation<T>(SavableRepresentation<T> sr) where T : IValueContainer<T>, new()
+        public virtual void RestoreFromRepresentation<T>(SavableRepresentation<T> sr) where T : IValueContainer<T>, new()
         {
             if (sr == null) return;
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)
                 {
-                    case "minScore":
-                        minScore = sr.GetDouble(key);
-                        break;
-                    case "maxScore":
-                        maxScore = sr.GetDouble(key);
-                        break;
                     default:
-                        System.Diagnostics.Debug.WriteLine("Settings.cs RestoreFromRepresentation: unrecognized key " + key);
+                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }
