@@ -107,6 +107,23 @@ namespace GameTracker.UI
 
                 item.ContextMenu = EditDeleteContextMenu(null, null);
             }
+            BuildCategoriesHeader(rm.RatingCategories);
+        }
+
+        private void BuildCategoriesHeader(IEnumerable<RatingCategory> cats)
+        {
+            GridCategories.Children.Clear();
+            GridCategories.ColumnDefinitions.Clear();
+            int i = 0;
+            foreach (RatingCategory cat in cats)
+            {
+                GridCategories.ColumnDefinitions.Add(new ColumnDefinition());
+                Label label = new Label();
+                label.Content = cat.Name;
+                Grid.SetColumn(label, i);
+                GridCategories.Children.Add(label);
+                i++;
+            }
         }
         #endregion
 
