@@ -32,7 +32,7 @@
                                 <ColumnDefinition Width="0.7*" />
                                 <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="0.5*" />
-                                <ColumnDefinition Width="0.1*" />
+                                <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
                             <Label Content="Name" />
                             <Label Content="Platform" Grid.Column="1" />
@@ -60,7 +60,7 @@
                         </Grid>
                         <Grid x:Name="PlatformsTop" Margin="5,0" >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.1*" />
+                                <ColumnDefinition Width="20" />
                                 <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="0.6*" />
                                 <ColumnDefinition Width="0.6*" />
