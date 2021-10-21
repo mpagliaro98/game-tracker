@@ -5,52 +5,81 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
-        Title="Game Tracker" Height="450" Width="800">
+        Title="Game Tracker" Height="600" Width="1100">
     <DockPanel>
         <TabControl x:Name="TabsBase" SelectionChanged="TabsBase_SelectionChanged">
             <TabItem x:Name="TabGames" Header="Games">
                 <DockPanel>
-                    <Grid x:Name="GamesTop" DockPanel.Dock="Top" Margin="5,0" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="0.7*" />
-                            <ColumnDefinition Width="0.7*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="0.5*" />
-                            <ColumnDefinition Width="0.1*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Name" />
-                        <Label Content="Platform" Grid.Column="1" />
-                        <Label Content="Completion Status" Grid.Column="2" />
-                        <Grid x:Name="GridCategories" Grid.Column="3" />
-                        <Label Content="Final Score" Grid.Column="4" />
-                    </Grid>
+                    <StackPanel DockPanel.Dock="Top">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="GamesButtonNew" Content="New" HorizontalAlignment="Left" Margin="5,0,0,0" Width="40" />
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
+                                <Button x:Name="GamesButtonList" Content="List" Margin="0,0,5,0" />
+                                <Button x:Name="GamesButtonExpanded" Content="Expanded" Margin="0,0,5,0" />
+                                <Button x:Name="GamesButtonBoxes" Content="Boxes" Margin="0,0,20,0" />
+                                <Button x:Name="GamesButtonSort" Content="Sort" Margin="0,0,5,0" />
+                                <Button x:Name="GamesButtonSearch" Content="Search" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid x:Name="GamesTop" Margin="5,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="0.7*" />
+                                <ColumnDefinition Width="0.7*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="0.1*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Name" />
+                            <Label Content="Platform" Grid.Column="1" />
+                            <Label Content="Completion Status" Grid.Column="2" />
+                            <Grid x:Name="GridCategories" Grid.Column="3" />
+                            <Label Content="Final Score" Grid.Column="4" />
+                        </Grid>
+                    </StackPanel>
                     <local:ScalableListBox x:Name="GamesListbox" DockPanel.Dock="Bottom" Margin="5" />
                 </DockPanel>
             </TabItem>
             <TabItem x:Name="TabPlatforms" Header="Platforms">
                 <DockPanel>
-                    <Grid x:Name="PlatformsTop" DockPanel.Dock="Top" Margin="5,0" >
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.1*" />
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="0.6*" />
-                            <ColumnDefinition Width="0.6*" />
-                            <ColumnDefinition Width="0.4*" />
-                            <ColumnDefinition Width="0.4*" />
-                            <ColumnDefinition Width="0.6*" />
-                            <ColumnDefinition Width="0.8*" />
-                            <ColumnDefinition Width="0.8*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Name" Grid.Column="1" />
-                        <Label Content="# Games" Grid.Column="2" />
-                        <Label Content="Average Score" Grid.Column="3" />
-                        <Label Content="Highest" Grid.Column="4" />
-                        <Label Content="Lowest" Grid.Column="5" />
-                        <Label Content="% Finished" Grid.Column="6" />
-                        <Label Content="Top Games" Grid.Column="7" />
-                        <Label Content="Bottom Games" Grid.Column="8" />
-                    </Grid>
+                    <StackPanel DockPanel.Dock="Top">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Button x:Name="PlatformsButtonNew" Content="New" HorizontalAlignment="Left" Margin="5,0,0,0" Width="40" />
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
+                                <Button x:Name="PlatformsButtonSort" Content="Sort" Margin="0,0,5,0" />
+                                <Button x:Name="PlatformsButtonSearch" Content="Search" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid x:Name="PlatformsTop" Margin="5,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="0.4*" />
+                                <ColumnDefinition Width="0.4*" />
+                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="0.8*" />
+                                <ColumnDefinition Width="0.8*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Name" Grid.Column="1" />
+                            <Label Content="# Games" Grid.Column="2" />
+                            <Label Content="Average Score" Grid.Column="3" />
+                            <Label Content="Highest" Grid.Column="4" />
+                            <Label Content="Lowest" Grid.Column="5" />
+                            <Label Content="% Finished" Grid.Column="6" />
+                            <Label Content="Top Games" Grid.Column="7" />
+                            <Label Content="Bottom Games" Grid.Column="8" />
+                        </Grid>
+                    </StackPanel>
                     <local:ScalableListBox x:Name="PlatformsListbox" DockPanel.Dock="Bottom" Margin="5" />
                 </DockPanel>
             </TabItem>

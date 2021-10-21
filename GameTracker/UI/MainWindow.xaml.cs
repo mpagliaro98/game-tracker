@@ -120,6 +120,11 @@ namespace GameTracker.UI
                 GridCategories.ColumnDefinitions.Add(new ColumnDefinition());
                 Label label = new Label();
                 label.Content = cat.Name;
+                TextBlock tb = new TextBlock();
+                tb.Text = cat.Comment;
+                tb.TextWrapping = TextWrapping.Wrap;
+                tb.MaxWidth = 400;
+                label.ToolTip = tb;
                 Grid.SetColumn(label, i);
                 GridCategories.Children.Add(label);
                 i++;
