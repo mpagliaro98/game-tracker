@@ -21,25 +21,13 @@ namespace RatableTracker.Framework.ModuleHierarchy
         protected IEnumerable<ScoreRelationship> scoreRelationships;
         protected TSettings settings;
 
-        public IEnumerable<TListedObj> ListedObjects
-        {
-            get { return listedObjs; }
-        }
+        public IEnumerable<TListedObj> ListedObjects => listedObjs;
 
-        public IEnumerable<TRange> Ranges
-        {
-            get { return ranges; }
-        }
+        public IEnumerable<TRange> Ranges => ranges;
 
-        public TSettings Settings
-        {
-            get { return settings; }
-        }
+        public TSettings Settings => settings;
 
-        public IEnumerable<ScoreRelationship> ScoreRelationships
-        {
-            get { return scoreRelationships; }
-        }
+        public IEnumerable<ScoreRelationship> ScoreRelationships => scoreRelationships;
 
         public virtual int LimitRanges => 20;
 

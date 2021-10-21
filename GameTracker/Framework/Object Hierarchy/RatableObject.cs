@@ -11,19 +11,14 @@ namespace RatableTracker.Framework.ObjectHierarchy
 {
     public class RatableObject : ListedObject
     {
-        private double finalScoreManual = 0;
-        public double FinalScoreManual
-        {
-            get { return finalScoreManual; }
-            set { finalScoreManual = value; }
-        }
+        public double FinalScoreManual { get; set; } = 0;
 
         public RatableObject() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {
             SavableRepresentation<T> sr = base.LoadIntoRepresentation<T>();
-            sr.SaveValue("finalScoreManual", finalScoreManual);
+            sr.SaveValue("finalScoreManual", FinalScoreManual);
             return sr;
         }
 
@@ -35,7 +30,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
                 switch (key)
                 {
                     case "finalScoreManual":
-                        finalScoreManual = sr.GetDouble(key);
+                        FinalScoreManual = sr.GetDouble(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

@@ -11,25 +11,12 @@ namespace RatableTracker.Framework.ObjectHierarchy
 {
     public class ListedObject : ISavable, IReferable
     {
-        private string name = "";
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public string Name { get; set; } = "";
 
-        private string comment = "";
-        public string Comment
-        {
-            get { return comment; }
-            set { comment = value; }
-        }
+        public string Comment { get; set; } = "";
 
         private Guid referenceKey = Guid.NewGuid();
-        public Guid ReferenceKey
-        {
-            get { return referenceKey; }
-        }
+        public Guid ReferenceKey => referenceKey;
 
         public ListedObject() { }
 
@@ -37,8 +24,8 @@ namespace RatableTracker.Framework.ObjectHierarchy
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("referenceKey", referenceKey);
-            sr.SaveValue("name", name);
-            sr.SaveValue("comment", comment);
+            sr.SaveValue("name", Name);
+            sr.SaveValue("comment", Comment);
             return sr;
         }
 
@@ -52,10 +39,10 @@ namespace RatableTracker.Framework.ObjectHierarchy
                         referenceKey = sr.GetGuid(key);
                         break;
                     case "name":
-                        name = sr.GetString(key);
+                        Name = sr.GetString(key);
                         break;
                     case "comment":
-                        comment = sr.GetString(key);
+                        Comment = sr.GetString(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

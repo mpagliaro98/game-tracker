@@ -9,12 +9,7 @@ namespace RatableTracker.Framework.PathController
 {
     public static class PathController
     {
-        public static IPathController pc;
-        public static IPathController PathControllerInstance
-        { 
-            get { return pc; }
-            set { pc = value; }
-        }
+        public static IPathController PathControllerInstance { get; set; }
 
         public static string BaseDirectory()
         {

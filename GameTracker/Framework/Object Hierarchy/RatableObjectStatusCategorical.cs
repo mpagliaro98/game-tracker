@@ -12,23 +12,15 @@ namespace RatableTracker.Framework.ObjectHierarchy
     public class RatableObjectStatusCategorical : RatableObjectStatus, ICategorical
     {
         private IEnumerable<RatingCategoryValue> categoryValues = new List<RatingCategoryValue>();
-        public IEnumerable<RatingCategoryValue> CategoryValues
-        {
-            get { return categoryValues; }
-        }
+        public IEnumerable<RatingCategoryValue> CategoryValues => categoryValues;
 
-        private bool ignoreCategories = false;
-        public bool IgnoreCategories
-        {
-            get { return ignoreCategories; }
-            set { ignoreCategories = value; }
-        }
+        public bool IgnoreCategories { get; set; } = false;
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {
             SavableRepresentation<T> sr = base.LoadIntoRepresentation<T>();
             sr.SaveList("categoryValues", categoryValues);
-            sr.SaveValue("ignoreCategories", ignoreCategories);
+            sr.SaveValue("ignoreCategories", IgnoreCategories);
             return sr;
         }
 
@@ -43,7 +35,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
                         categoryValues = sr.GetListOfISavable<RatingCategoryValue>(key);
                         break;
                     case "ignoreCategories":
-                        ignoreCategories = sr.GetBool(key);
+                        IgnoreCategories = sr.GetBool(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

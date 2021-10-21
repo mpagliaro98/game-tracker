@@ -12,38 +12,17 @@ namespace RatableTracker.Framework
 {
     public class ScoreRange : ISavable, IReferable
     {
-        private string name = "";
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public string Name { get; set; } = "";
 
         private ObjectReference scoreRelationship = new ObjectReference();
-        public ObjectReference RefScoreRelationship
-        {
-            get { return scoreRelationship; }
-        }
+        public ObjectReference RefScoreRelationship => scoreRelationship;
 
-        private IEnumerable<double> valueList = new List<double>();
-        public IEnumerable<double> ValueList
-        {
-            get { return valueList; }
-            set { valueList = value; }
-        }
+        public IEnumerable<double> ValueList { get; set; } = new List<double>();
 
-        private Color color = new Color();
-        public Color Color
-        {
-            get { return color; }
-            set { color = value; }
-        }
+        public Color Color { get; set; } = new Color();
 
         private Guid referenceKey = Guid.NewGuid();
-        public Guid ReferenceKey
-        {
-            get { return referenceKey; }
-        }
+        public Guid ReferenceKey => referenceKey;
 
         public ScoreRange() { }
 
@@ -51,10 +30,10 @@ namespace RatableTracker.Framework
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("referenceKey", referenceKey);
-            sr.SaveValue("name", name);
+            sr.SaveValue("name", Name);
             sr.SaveValue("scoreRelationship", scoreRelationship);
-            sr.SaveList("valueList", valueList);
-            sr.SaveValue("color", color);
+            sr.SaveList("valueList", ValueList);
+            sr.SaveValue("color", Color);
             return sr;
         }
 
@@ -68,16 +47,16 @@ namespace RatableTracker.Framework
                         referenceKey = sr.GetGuid(key);
                         break;
                     case "name":
-                        name = sr.GetString(key);
+                        Name = sr.GetString(key);
                         break;
                     case "scoreRelationship":
                         scoreRelationship = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "valueList":
-                        valueList = sr.GetListOfType<double>(key);
+                        ValueList = sr.GetListOfType<double>(key);
                         break;
                     case "color":
-                        color = sr.GetColor(key);
+                        Color = sr.GetColor(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

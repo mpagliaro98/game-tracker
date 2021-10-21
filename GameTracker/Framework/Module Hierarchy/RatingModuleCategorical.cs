@@ -16,10 +16,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
         where TRatingCat : RatingCategory
     {
         protected IEnumerable<TRatingCat> ratingCategories;
-        public IEnumerable<TRatingCat> RatingCategories
-        {
-            get { return ratingCategories; }
-        }
+        public IEnumerable<TRatingCat> RatingCategories => ratingCategories;
 
         public virtual int LimitRatingCategories => 10;
 

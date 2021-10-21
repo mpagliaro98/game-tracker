@@ -11,10 +11,7 @@ namespace RatableTracker.Framework
     public class ObjectReference : ISavable
     {
         private Guid objectKey = Guid.Empty;
-        public Guid ObjectKey
-        {
-            get { return objectKey; }
-        }
+        public Guid ObjectKey => objectKey;
 
         public ObjectReference() { }
 

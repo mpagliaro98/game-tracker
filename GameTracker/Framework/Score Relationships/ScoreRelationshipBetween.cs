@@ -9,15 +9,9 @@ namespace RatableTracker.Framework.ScoreRelationships
 {
     public class ScoreRelationshipBetween : ScoreRelationship
     {
-        public override string Name
-        {
-            get { return "Between"; }
-        }
+        public override string Name => "Between";
 
-        public override int NumValuesRequired
-        {
-            get { return 2; }
-        }
+        public override int NumValuesRequired => 2;
 
         public override Guid ReferenceKey => KeyScoreRelBetween;
 

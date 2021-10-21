@@ -8,11 +8,6 @@ namespace RatableTracker.Framework.Global
 {
     public static partial class GlobalSettings
     {
-        private static bool autosave = true;
-        public static bool Autosave
-        {
-            get { return autosave; }
-            set { autosave = value; }
-        }
+        public static bool Autosave { get; set; } = true;
     }
 }

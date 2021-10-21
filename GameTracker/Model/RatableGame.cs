@@ -13,30 +13,14 @@ namespace GameTracker.Model
     public class RatableGame : RatableObjectStatusCategorical
     {
         private ObjectReference platform = new ObjectReference();
-        public ObjectReference RefPlatform
-        {
-            get { return platform; }
-        }
+        public ObjectReference RefPlatform => platform;
 
         private ObjectReference platformPlayedOn = new ObjectReference();
-        public ObjectReference RefPlatformPlayedOn
-        {
-            get { return platformPlayedOn; }
-        }
+        public ObjectReference RefPlatformPlayedOn => platformPlayedOn;
 
-        private string completionCriteria = "";
-        public string CompletionCriteria
-        {
-            get { return completionCriteria; }
-            set { completionCriteria = value; }
-        }
+        public string CompletionCriteria { get; set; } = "";
 
-        private string completionComment = "";
-        public string CompletionComment
-        {
-            get { return completionComment; }
-            set { completionComment = value; }
-        }
+        public string CompletionComment { get; set; } = "";
 
         public RatableGame() : base() { }
 
@@ -45,8 +29,8 @@ namespace GameTracker.Model
             SavableRepresentation<T> sr = base.LoadIntoRepresentation<T>();
             sr.SaveValue("platform", platform);
             sr.SaveValue("platformPlayedOn", platformPlayedOn);
-            sr.SaveValue("completionCriteria", completionCriteria);
-            sr.SaveValue("completionComment", completionComment);
+            sr.SaveValue("completionCriteria", CompletionCriteria);
+            sr.SaveValue("completionComment", CompletionComment);
             return sr;
         }
 
@@ -64,10 +48,10 @@ namespace GameTracker.Model
                         platformPlayedOn = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "completionCriteria":
-                        completionCriteria = sr.GetString(key);
+                        CompletionCriteria = sr.GetString(key);
                         break;
                     case "completionComment":
-                        completionComment = sr.GetString(key);
+                        CompletionComment = sr.GetString(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

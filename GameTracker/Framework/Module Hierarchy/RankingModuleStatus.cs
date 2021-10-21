@@ -16,13 +16,9 @@ namespace RatableTracker.Framework.ModuleHierarchy
         where TStatus : Status
     {
         protected IEnumerable<TStatus> statuses;
+        public IEnumerable<TStatus> Statuses => statuses;
 
         public virtual int LimitStatuses => 20;
-
-        public IEnumerable<TStatus> Statuses
-        {
-            get { return statuses; }
-        }
 
         public override void Init()
         {

@@ -11,25 +11,11 @@ namespace RatableTracker.Framework
 {
     public class Status : ISavable, IReferable
     {
-        private string name = "";
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        private Color color = new Color();
-        public Color Color
-        {
-            get { return color; }
-            set { color = value; }
-        }
+        public string Name { get; set; } = "";
+        public Color Color { get; set; } = new Color();
 
         private Guid referenceKey = Guid.NewGuid();
-        public Guid ReferenceKey
-        {
-            get { return referenceKey; }
-        }
+        public Guid ReferenceKey => referenceKey;
 
         public Status() { }
 
@@ -37,8 +23,8 @@ namespace RatableTracker.Framework
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("referenceKey", referenceKey);
-            sr.SaveValue("name", name);
-            sr.SaveValue("color", color);
+            sr.SaveValue("name", Name);
+            sr.SaveValue("color", Color);
             return sr;
         }
 
@@ -52,10 +38,10 @@ namespace RatableTracker.Framework
                         referenceKey = sr.GetGuid(key);
                         break;
                     case "name":
-                        name = sr.GetString(key);
+                        Name = sr.GetString(key);
                         break;
                     case "color":
-                        color = sr.GetColor(key);
+                        Color = sr.GetColor(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

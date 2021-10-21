@@ -10,31 +10,15 @@ namespace RatableTracker.Framework
 {
     public class RatingCategory : ISavable, IReferable
     {
-        private string name = "";
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public string Name { get; set; } = "";
 
-        private string comment = "";
-        public string Comment
-        {
-            get { return comment; }
-            set { comment = value; }
-        }
+        public string Comment { get; set; } = "";
 
         protected double weight = 1.0;
-        public double Weight
-        {
-            get { return weight; }
-        }
+        public double Weight => weight;
 
         private Guid referenceKey = Guid.NewGuid();
-        public Guid ReferenceKey
-        {
-            get { return referenceKey; }
-        }
+        public Guid ReferenceKey => referenceKey;
 
         public RatingCategory() { }
 
@@ -42,8 +26,8 @@ namespace RatableTracker.Framework
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("referenceKey", referenceKey);
-            sr.SaveValue("name", name);
-            sr.SaveValue("comment", comment);
+            sr.SaveValue("name", Name);
+            sr.SaveValue("comment", Comment);
             sr.SaveValue("weight", weight);
             return sr;
         }
@@ -58,10 +42,10 @@ namespace RatableTracker.Framework
                         referenceKey = sr.GetGuid(key);
                         break;
                     case "name":
-                        name = sr.GetString(key);
+                        Name = sr.GetString(key);
                         break;
                     case "comment":
-                        comment = sr.GetString(key);
+                        Comment = sr.GetString(key);
                         break;
                     case "weight":
                         weight = sr.GetDouble(key);

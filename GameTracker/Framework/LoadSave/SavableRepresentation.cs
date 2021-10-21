@@ -12,7 +12,7 @@ namespace RatableTracker.Framework.LoadSave
     public partial class SavableRepresentation<TValCont>
         where TValCont : IValueContainer<TValCont>, new()
     {
-        private IDictionary<string, IValueContainer<TValCont>> values;
+        private readonly IDictionary<string, IValueContainer<TValCont>> values;
 
         public SavableRepresentation()
         {

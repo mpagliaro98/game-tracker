@@ -21,10 +21,7 @@ namespace GameTracker.Model
         protected IEnumerable<Platform> platforms;
         protected LoadSaveEngineGame<TListedObj, TRange, TSettings, TStatus, TRatingCat> loadSaveEngine;
 
-        public IEnumerable<Platform> Platforms
-        {
-            get { return platforms; }
-        }
+        public IEnumerable<Platform> Platforms => platforms;
 
         public override void Init()
         {

@@ -13,20 +13,11 @@ namespace RatableTracker.Framework.ScoreRelationships
         public static Guid KeyScoreRelBelow = new Guid("22222222222222222222222222222222");
         public static Guid KeyScoreRelBetween = new Guid("33333333333333333333333333333333");
 
-        public abstract string Name
-        {
-            get;
-        }
+        public abstract string Name { get; }
 
-        public abstract int NumValuesRequired
-        {
-            get;
-        }
+        public abstract int NumValuesRequired { get; }
 
-        public abstract Guid ReferenceKey
-        {
-            get;
-        }
+        public abstract Guid ReferenceKey { get; }
 
         public abstract bool IsValueInRange(double val, IEnumerable<double> valueList);
 

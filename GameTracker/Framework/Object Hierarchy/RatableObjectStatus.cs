@@ -11,10 +11,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
     public class RatableObjectStatus : RatableObject, IStatus
     {
         private ObjectReference status = new ObjectReference();
-        public ObjectReference RefStatus
-        {
-            get { return status; }
-        }
+        public ObjectReference RefStatus => status;
 
         public RatableObjectStatus() : base() { }
 

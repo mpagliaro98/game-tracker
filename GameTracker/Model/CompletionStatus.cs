@@ -10,27 +10,17 @@ namespace GameTracker.Model
 {
     public class CompletionStatus : Status
     {
-        private bool useAsFinished = false;
-        public bool UseAsFinished
-        {
-            get { return useAsFinished; }
-            set { useAsFinished = value; }
-        }
+        public bool UseAsFinished { get; set; } = false;
 
-        private bool excludeFromStats = false;
-        public bool ExcludeFromStats
-        {
-            get { return excludeFromStats; }
-            set { excludeFromStats = value; }
-        }
+        public bool ExcludeFromStats { get; set; } = false;
 
         public CompletionStatus() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {
             SavableRepresentation<T> sr = base.LoadIntoRepresentation<T>();
-            sr.SaveValue("useAsFinished", useAsFinished);
-            sr.SaveValue("excludeFromStats", excludeFromStats);
+            sr.SaveValue("useAsFinished", UseAsFinished);
+            sr.SaveValue("excludeFromStats", ExcludeFromStats);
             return sr;
         }
 
@@ -42,10 +32,10 @@ namespace GameTracker.Model
                 switch (key)
                 {
                     case "useAsFinished":
-                        useAsFinished = sr.GetBool(key);
+                        UseAsFinished = sr.GetBool(key);
                         break;
                     case "excludeFromStats":
-                        excludeFromStats = sr.GetBool(key);
+                        ExcludeFromStats = sr.GetBool(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

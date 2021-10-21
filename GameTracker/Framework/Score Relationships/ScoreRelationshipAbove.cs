@@ -9,15 +9,9 @@ namespace RatableTracker.Framework.ScoreRelationships
 {
     public class ScoreRelationshipAbove : ScoreRelationship
     {
-        public override string Name
-        {
-            get { return "Above"; }
-        }
+        public override string Name => "Above";
 
-        public override int NumValuesRequired
-        {
-            get { return 1; }
-        }
+        public override int NumValuesRequired => 1;
 
         public override Guid ReferenceKey => KeyScoreRelAbove;
 

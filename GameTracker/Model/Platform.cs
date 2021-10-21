@@ -12,25 +12,12 @@ namespace GameTracker.Model
 {
     public class Platform : ISavable, IReferable
     {
-        private string name = "";
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
+        public string Name { get; set; } = "";
 
         private Guid referenceKey = Guid.NewGuid();
-        public Guid ReferenceKey
-        {
-            get { return referenceKey; }
-        }
+        public Guid ReferenceKey => referenceKey;
 
-        private Color color = new Color();
-        public Color Color
-        {
-            get { return color; }
-            set { color = value; }
-        }
+        public Color Color { get; set; } = new Color();
 
         public Platform() { }
 
@@ -38,8 +25,8 @@ namespace GameTracker.Model
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("referenceKey", referenceKey);
-            sr.SaveValue("name", name);
-            sr.SaveValue("color", color);
+            sr.SaveValue("name", Name);
+            sr.SaveValue("color", Color);
             return sr;
         }
 
@@ -53,10 +40,10 @@ namespace GameTracker.Model
                         referenceKey = sr.GetGuid(key);
                         break;
                     case "name":
-                        name = sr.GetString(key);
+                        Name = sr.GetString(key);
                         break;
                     case "color":
-                        color = sr.GetColor(key);
+                        Color = sr.GetColor(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

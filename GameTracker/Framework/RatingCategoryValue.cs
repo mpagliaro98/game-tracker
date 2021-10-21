@@ -11,17 +11,9 @@ namespace RatableTracker.Framework
     public class RatingCategoryValue : ISavable
     {
         private ObjectReference ratingCategory = new ObjectReference();
-        public ObjectReference RefRatingCategory
-        {
-            get { return ratingCategory; }
-        }
+        public ObjectReference RefRatingCategory => ratingCategory;
 
-        private double pointValue = 0;
-        public double PointValue
-        {
-            get { return pointValue; }
-            set { pointValue = value; }
-        }
+        public double PointValue { get; set; } = 0;
 
         public RatingCategoryValue() { }
 
@@ -29,7 +21,7 @@ namespace RatableTracker.Framework
         {
             SavableRepresentation<T> sr = new SavableRepresentation<T>();
             sr.SaveValue("ratingCategory", ratingCategory);
-            sr.SaveValue("pointValue", pointValue);
+            sr.SaveValue("pointValue", PointValue);
             return sr;
         }
 
@@ -43,7 +35,7 @@ namespace RatableTracker.Framework
                         ratingCategory = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "pointValue":
-                        pointValue = sr.GetDouble(key);
+                        PointValue = sr.GetDouble(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

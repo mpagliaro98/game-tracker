@@ -8,11 +8,8 @@ namespace RatableTracker.Framework.LoadSave
 {
     public class LoadSaveIdentifier
     {
-        private string id = "";
-        public string ID
-        {
-            get { return id; }
-        }
+        private readonly string id = "";
+        public string ID => id;
 
         public LoadSaveIdentifier(string id)
         {
