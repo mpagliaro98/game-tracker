@@ -81,5 +81,10 @@ namespace GameTracker.Model
                 return !ReferenceKey.Equals(Guid.Empty) && ReferenceKey.Equals(o.ReferenceKey);
             }
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

@@ -43,5 +43,10 @@ namespace GameTracker.Model
                 }
             }
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

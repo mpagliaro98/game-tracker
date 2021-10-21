@@ -143,9 +143,10 @@ namespace GameTracker.UI
             foreach (RatableGame rg in rm.ListedObjects)
             {
                 ListBoxItemGameSmall item = new ListBoxItemGameSmall(rm, rg);
+                item.MouseDoubleClick += GameEdit;
                 GamesListbox.AddItem(item);
 
-                item.ContextMenu = EditDeleteContextMenu(null, null);
+                item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
             }
             BuildCategoriesHeader(rm.RatingCategories);
 
@@ -172,6 +173,49 @@ namespace GameTracker.UI
                 GridCategories.Children.Add(label);
                 i++;
             }
+        }
+
+        private void GamesButtonNew_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSubWindowGame(SubWindowMode.MODE_ADD);
+        }
+
+        private void GameEdit(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemGameSmall lbi;
+            if (sender is MenuItem)
+            {
+                lbi = GetControlFromMenuItem<ListBoxItemGameSmall>((MenuItem)sender);
+            }
+            else
+            {
+                lbi = (ListBoxItemGameSmall)sender;
+            }
+            OpenSubWindowGame(SubWindowMode.MODE_EDIT, lbi.Game);
+        }
+
+        private void GameDelete(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemGameSmall lbi = GetControlFromMenuItem<ListBoxItemGameSmall>((MenuItem)sender);
+
+            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this game?", "Delete Game Confirmation", MessageBoxButton.YesNo);
+            if (mbr != MessageBoxResult.Yes) return;
+
+            RatableGame game = lbi.Game;
+            rm.DeleteListedObject(game);
+            UpdateGamesUI();
+        }
+
+        private void OpenSubWindowGame(SubWindowMode mode, RatableGame orig = null)
+        {
+            var window = new SubWindowGame(rm, mode, orig);
+            window.Closed += GameWindow_Closed;
+            window.ShowDialog();
+        }
+
+        private void GameWindow_Closed(object sender, EventArgs e)
+        {
+            UpdateGamesUI();
         }
         #endregion
 
