@@ -10,7 +10,7 @@ using RatableTracker.Framework.ModuleHierarchy;
 namespace RatableTracker.Framework.LoadSave
 {
     public abstract class LoadSaveEngine<TListedObj, TRange, TSettings>
-        where TListedObj : RankableObject, ISavable, new()
+        where TListedObj : ListedObject, ISavable, new()
         where TRange : ScoreRange, ISavable, new()
         where TSettings : Settings, ISavable, new()
     {

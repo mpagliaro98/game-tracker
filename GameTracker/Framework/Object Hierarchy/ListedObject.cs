@@ -9,7 +9,7 @@ using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework.ObjectHierarchy
 {
-    public class RankableObject : ISavable, IReferable
+    public class ListedObject : ISavable, IReferable
     {
         private string name = "";
         public string Name
@@ -31,7 +31,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
             get { return referenceKey; }
         }
 
-        public RankableObject() { }
+        public ListedObject() { }
 
         public virtual SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new()
         {
@@ -77,7 +77,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
             }
             else
             {
-                RankableObject o = (RankableObject)obj;
+                ListedObject o = (ListedObject)obj;
                 return !ReferenceKey.Equals(Guid.Empty) && ReferenceKey.Equals(o.ReferenceKey);
             }
         }

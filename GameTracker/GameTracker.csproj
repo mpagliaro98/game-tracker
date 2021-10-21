@@ -97,8 +97,8 @@
     <Compile Include="Framework\LoadSave\LoadSaveIdentifier.cs" />
     <Compile Include="Framework\Module Hierarchy\RankingModule.cs" />
     <Compile Include="Framework\ObjectReference.cs" />
-    <Compile Include="Framework\Object Hierarchy\RankableObject.cs" />
-    <Compile Include="Framework\Object Hierarchy\RankableObjectStatus.cs" />
+    <Compile Include="Framework\Object Hierarchy\ListedObject.cs" />
+    <Compile Include="Framework\Object Hierarchy\ListedObjectStatus.cs" />
     <Compile Include="Framework\Object Hierarchy\RatableObjectCategorical.cs" />
     <Compile Include="Framework\Object Hierarchy\RatableObjectStatusCategorical.cs" />
     <Compile Include="Framework\SettingsScore.cs" />

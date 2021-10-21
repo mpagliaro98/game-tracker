@@ -12,7 +12,7 @@ using RatableTracker.Framework.ScoreRelationships;
 namespace RatableTracker.Framework.ModuleHierarchy
 {
     public abstract class RankingModule<TListedObj, TRange, TSettings>
-        where TListedObj : RankableObject
+        where TListedObj : ListedObject
         where TRange : ScoreRange
         where TSettings : Settings
     {

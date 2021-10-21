@@ -8,7 +8,7 @@ using RatableTracker.Framework.LoadSave;
 
 namespace RatableTracker.Framework.ObjectHierarchy
 {
-    public class RankableObjectStatus : RankableObject, IStatus
+    public class ListedObjectStatus : ListedObject, IStatus
     {
         private ObjectReference status = new ObjectReference();
         public ObjectReference RefStatus
@@ -16,7 +16,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
             get { return status; }
         }
 
-        public RankableObjectStatus() : base() { }
+        public ListedObjectStatus() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {

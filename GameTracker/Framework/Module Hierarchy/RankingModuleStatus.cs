@@ -10,7 +10,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
 {
     public abstract class RankingModuleStatus<TListedObj, TRange, TSettings, TStatus>
         : RankingModule<TListedObj, TRange, TSettings>, IModuleStatus<TStatus>
-        where TListedObj : RankableObjectStatus
+        where TListedObj : ListedObjectStatus
         where TRange : ScoreRange
         where TSettings : Settings
         where TStatus : Status

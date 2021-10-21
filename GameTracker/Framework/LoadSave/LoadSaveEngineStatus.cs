@@ -11,7 +11,7 @@ namespace RatableTracker.Framework.LoadSave
 {
     public abstract class LoadSaveEngineStatus<TListedObj, TRange, TSettings, TStatus>
         : LoadSaveEngine<TListedObj, TRange, TSettings>, ILoadSaveStatus<TStatus>
-        where TListedObj : RankableObjectStatus, ISavable, new()
+        where TListedObj : ListedObjectStatus, ISavable, new()
         where TRange : ScoreRange, ISavable, new()
         where TSettings : Settings, ISavable, new()
         where TStatus : Status, ISavable, new()

@@ -9,7 +9,7 @@ using RatableTracker.Framework.Global;
 
 namespace RatableTracker.Framework.ObjectHierarchy
 {
-    public class RatableObject : RankableObject
+    public class RatableObject : ListedObject
     {
         private double finalScoreManual = 0;
         public double FinalScoreManual
