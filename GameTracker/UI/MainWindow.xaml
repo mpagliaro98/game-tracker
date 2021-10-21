@@ -80,7 +80,7 @@
                             <Label Content="Bottom Games" Grid.Column="8" />
                         </Grid>
                     </StackPanel>
-                    <local:ScalableListBox x:Name="PlatformsListbox" DockPanel.Dock="Bottom" Margin="5" />
+                    <local:ScalableListBox x:Name="PlatformsListbox" DockPanel.Dock="Bottom" Margin="5" SmoothScrolling="True" />
                 </DockPanel>
             </TabItem>
             <TabItem x:Name="TabSettings" Header="Settings">
@@ -108,21 +108,21 @@
                                 <Label x:Name="SettingsLabelCompletionStatuses" Content="Completion Statuses" />
                                 <Button x:Name="SettingsButtonNewCompletionStatus" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewCompletionStatus_Click" />
                             </DockPanel>
-                            <local:ScalableListBox x:Name="SettingsListboxCompletionStatuses" DockPanel.Dock="Bottom" Margin="5,2,5,5" />
+                            <local:ScalableListBox x:Name="SettingsListboxCompletionStatuses" DockPanel.Dock="Bottom" Margin="5,2,5,5" SmoothScrolling="True" />
                         </DockPanel>
                         <DockPanel x:Name="SettingsScoreRangesLayout" Grid.Row="1">
                             <DockPanel DockPanel.Dock="Top">
                                 <Label x:Name="SettingsLabelScoreRanges" Content="Score Ranges" />
                                 <Button x:Name="SettingsButtonNewScoreRange" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewScoreRange_Click" />
                             </DockPanel>
-                            <local:ScalableListBox x:Name="SettingsListboxScoreRanges" DockPanel.Dock="Bottom" Margin="5,2,5,5" />
+                            <local:ScalableListBox x:Name="SettingsListboxScoreRanges" DockPanel.Dock="Bottom" Margin="5,2,5,5" SmoothScrolling="True" />
                         </DockPanel>
                         <DockPanel x:Name="SettingsRatingCategoriesLayout" Grid.Row="1" Grid.Column="1">
                             <DockPanel DockPanel.Dock="Top">
                                 <Label x:Name="SettingsLabelRatingCategories" Content="Rating Categories" DockPanel.Dock="Left" />
                                 <Button x:Name="SettingsButtonNewRatingCategory" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewRatingCategory_Click" />
                             </DockPanel>
-                            <local:ScalableListBox x:Name="SettingsListboxRatingCategories" DockPanel.Dock="Bottom" Margin="5,2,5,5" />
+                            <local:ScalableListBox x:Name="SettingsListboxRatingCategories" DockPanel.Dock="Bottom" Margin="5,2,5,5" SmoothScrolling="True" />
                         </DockPanel>
                     </Grid>
                 </DockPanel>

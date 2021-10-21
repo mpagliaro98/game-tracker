@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using RatableTracker.Framework.Global;
 
 namespace GameTracker.UI
 {
@@ -20,6 +21,20 @@ namespace GameTracker.UI
     /// </summary>
     public partial class ScalableListBox : UserControl
     {
+        public bool SmoothScrolling
+        {
+            get { return (bool)GetValue(SmoothScrollingProperty); }
+            set { SetValue(SmoothScrollingProperty, value); }
+        }
+        
+        public static readonly DependencyProperty SmoothScrollingProperty
+            = DependencyProperty.Register(
+                  "SmoothScrolling",
+                  typeof(bool),
+                  typeof(ScalableListBox),
+                  new PropertyMetadata(false)
+              );
+
         public ScalableListBox()
         {
             InitializeComponent();

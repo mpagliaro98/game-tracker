@@ -111,6 +111,7 @@
     <Compile Include="Framework\Global\Util.cs" />
     <Compile Include="Model\Partial\Util.cs" />
     <Compile Include="Model\RatingModuleGame.cs" />
+    <Compile Include="UI\InvertBooleanConverter.cs" />
     <Compile Include="UI\ListBoxItemCompletionStatus.xaml.cs">
       <DependentUpon>ListBoxItemCompletionStatus.xaml</DependentUpon>
     </Compile>

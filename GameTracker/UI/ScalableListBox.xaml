@@ -6,8 +6,17 @@
              xmlns:local="clr-namespace:GameTracker.UI"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <local:InvertBooleanConverter x:Key="invertBooleanConverter" />
+    </UserControl.Resources>
     <Border x:Name="HeightHelper" ScrollViewer.HorizontalScrollBarVisibility="Disabled" >
-        <ListBox x:Name="LB" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Height="{Binding Path=ActualHeight, ElementName=HeightHelper}" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+        <ListBox x:Name="LB"
+                 DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 Height="{Binding Path=ActualHeight, ElementName=HeightHelper}"
+                 VerticalContentAlignment="Stretch"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.CanContentScroll="{Binding SmoothScrolling, Converter={StaticResource invertBooleanConverter}}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                     <Setter Property="Padding" Value="0"/>
