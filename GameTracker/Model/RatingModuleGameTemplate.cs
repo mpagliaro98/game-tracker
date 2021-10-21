@@ -23,6 +23,8 @@ namespace GameTracker.Model
 
         public IEnumerable<Platform> Platforms => platforms;
 
+        public virtual int LimitPlatforms => 1000;
+
         public override void Init()
         {
             LoadPlatforms();

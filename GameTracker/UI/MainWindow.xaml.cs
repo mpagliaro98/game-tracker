@@ -108,6 +108,9 @@ namespace GameTracker.UI
                 item.ContextMenu = EditDeleteContextMenu(null, null);
             }
             BuildCategoriesHeader(rm.RatingCategories);
+
+            var vis = rm.ListedObjects.Count() >= rm.LimitListedObjects ? Visibility.Hidden : Visibility.Visible;
+            GamesButtonNew.Visibility = vis;
         }
 
         private void BuildCategoriesHeader(IEnumerable<RatingCategory> cats)
@@ -144,6 +147,9 @@ namespace GameTracker.UI
 
                 item.ContextMenu = EditDeleteContextMenu(PlatformEdit, PlatformDelete);
             }
+
+            var vis = rm.Platforms.Count() >= rm.LimitPlatforms ? Visibility.Hidden : Visibility.Visible;
+            PlatformsButtonNew.Visibility = vis;
         }
 
         private void PlatformsButtonNew_Click(object sender, RoutedEventArgs e)

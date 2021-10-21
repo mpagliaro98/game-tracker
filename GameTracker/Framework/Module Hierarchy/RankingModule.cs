@@ -31,6 +31,8 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         public virtual int LimitRanges => 20;
 
+        public virtual int LimitListedObjects => 100000;
+
         public RankingModule()
         {
             CreateScoreRelationshipsList();
