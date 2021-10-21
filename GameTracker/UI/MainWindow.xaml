@@ -6,6 +6,15 @@
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
         Title="Game Tracker" Height="600" Width="1100">
+    <Window.Resources>
+        <BitmapImage x:Key="ButtonSearch" UriSource="../Images/button_search.png" />
+        <BitmapImage x:Key="ButtonSort" UriSource="../Images/button_sort.png" />
+        <BitmapImage x:Key="ButtonUp" UriSource="../Images/button_up.png" />
+        <BitmapImage x:Key="ButtonDown" UriSource="../Images/button_down.png" />
+        <BitmapImage x:Key="ButtonList" UriSource="../Images/button_list.png" />
+        <BitmapImage x:Key="ButtonExpanded" UriSource="../Images/button_larger.png" />
+        <BitmapImage x:Key="ButtonBoxes" UriSource="../Images/button_squares.png" />
+    </Window.Resources>
     <DockPanel>
         <TabControl x:Name="TabsBase" SelectionChanged="TabsBase_SelectionChanged">
             <TabItem x:Name="TabGames" Header="Games">
@@ -16,13 +25,29 @@
                                 <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="1*" />
                             </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
                             <Button x:Name="GamesButtonNew" Content="New" HorizontalAlignment="Left" Margin="5,0,0,0" Width="40" />
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
-                                <Button x:Name="GamesButtonList" Content="List" Margin="0,0,5,0" />
-                                <Button x:Name="GamesButtonExpanded" Content="Expanded" Margin="0,0,5,0" />
-                                <Button x:Name="GamesButtonBoxes" Content="Boxes" Margin="0,0,20,0" />
-                                <Button x:Name="GamesButtonSort" Content="Sort" Margin="0,0,5,0" />
-                                <Button x:Name="GamesButtonSearch" Content="Search" />
+                                <Button x:Name="GamesButtonList" ToolTip="List" Margin="0,0,5,0">
+                                    <Image Source="{StaticResource ButtonList}" />
+                                </Button>
+                                <Button x:Name="GamesButtonExpanded" ToolTip="Expanded" Margin="0,0,5,0">
+                                    <Image Source="{StaticResource ButtonExpanded}" />
+                                </Button>
+                                <Button x:Name="GamesButtonBoxes" ToolTip="Boxes" Margin="0,0,20,0">
+                                    <Image Source="{StaticResource ButtonBoxes}" />
+                                </Button>
+                                <Button x:Name="GamesButtonSortMode" ToolTip="Ascending" Margin="0,0,5,0" Click="PlatformsButtonSortMode_Click">
+                                    <Image Source="{StaticResource ButtonUp}" />
+                                </Button>
+                                <Button x:Name="GamesButtonSort" ToolTip="Sort" Margin="0,0,5,0">
+                                    <Image Source="{StaticResource ButtonSort}" />
+                                </Button>
+                                <Button x:Name="GamesButtonSearch" ToolTip="Search">
+                                    <Image Source="{StaticResource ButtonSearch}" />
+                                </Button>
                             </StackPanel>
                         </Grid>
                         <Grid x:Name="GamesTop" Margin="5,0" >
@@ -52,10 +77,16 @@
                                 <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="1*" />
                             </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
                             <Button x:Name="PlatformsButtonNew" Content="New" HorizontalAlignment="Left" Margin="5,0,0,0" Width="40" Click="PlatformsButtonNew_Click" />
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
-                                <Button x:Name="PlatformsButtonSortMode" Content="Ascending" Margin="0,0,5,0" Click="PlatformsButtonSortMode_Click" />
-                                <Button x:Name="PlatformsButtonSort" Content="Sort" Margin="0,0,5,0" Click="PlatformsButtonSort_Click">
+                                <Button x:Name="PlatformsButtonSortMode" ToolTip="Ascending" Margin="0,0,5,0" Click="PlatformsButtonSortMode_Click">
+                                    <Image Source="{StaticResource ButtonUp}" />
+                                </Button>
+                                <Button x:Name="PlatformsButtonSort" ToolTip="Sort" Margin="0,0,5,0" Click="PlatformsButtonSort_Click">
+                                    <Image Source="{StaticResource ButtonSort}" />
                                     <Button.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem Name="PlatformsSortName" Header="Name" IsCheckable="True" Checked="PlatformsSort_Checked" />
@@ -69,7 +100,9 @@
                                         </ContextMenu>
                                     </Button.ContextMenu>
                                 </Button>
-                                <Button x:Name="PlatformsButtonSearch" Content="Search" />
+                                <Button x:Name="PlatformsButtonSearch" ToolTip="Search">
+                                    <Image Source="{StaticResource ButtonSearch}" />
+                                </Button>
                             </StackPanel>
                         </Grid>
                         <Grid x:Name="PlatformsTop" Margin="5,0" >

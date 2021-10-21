@@ -108,14 +108,21 @@ namespace GameTracker.UI
         private void ToggleSortModeButton(Button button)
         {
             SortMode mode = (SortMode)button.Tag;
+            Image image;
             switch (mode)
             {
                 case SortMode.ASCENDING:
-                    button.Content = "Descending";
+                    image = new Image();
+                    image.Source = (ImageSource)Resources["ButtonDown"];
+                    button.Content = image;
+                    button.ToolTip = "Descending";
                     button.Tag = SortMode.DESCENDING;
                     break;
                 case SortMode.DESCENDING:
-                    button.Content = "Ascending";
+                    image = new Image();
+                    image.Source = (ImageSource)Resources["ButtonUp"];
+                    button.Content = image;
+                    button.ToolTip = "Ascending";
                     button.Tag = SortMode.ASCENDING;
                     break;
                 default:
