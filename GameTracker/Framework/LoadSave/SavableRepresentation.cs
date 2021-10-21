@@ -61,6 +61,13 @@ namespace RatableTracker.Framework.LoadSave
             values.Add(key, vc);
         }
 
+        public void SaveValue(string key, DateTime value)
+        {
+            IValueContainer<TValCont> vc = new TValCont();
+            vc.SetContent(value.ToString());
+            values.Add(key, vc);
+        }
+
         public void SaveValue(string key, ISavable obj)
         {
             IValueContainer<TValCont> vc = new TValCont();
@@ -140,6 +147,11 @@ namespace RatableTracker.Framework.LoadSave
         public Color GetColor(string key)
         {
             return Color.FromArgb(int.Parse(values[key].GetContentString()));
+        }
+
+        public DateTime GetDateTime(string key)
+        {
+            return DateTime.Parse(values[key].GetContentString());
         }
 
         public T GetISavable<T>(string key) where T : ISavable, new()

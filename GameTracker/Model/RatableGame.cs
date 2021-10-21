@@ -22,6 +22,14 @@ namespace GameTracker.Model
 
         public string CompletionComment { get; set; } = "";
 
+        public string TimeSpent { get; set; } = "";
+
+        public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
+
+        public DateTime StartedOn { get; set; } = DateTime.MinValue;
+
+        public DateTime FinishedOn { get; set; } = DateTime.MinValue;
+
         public RatableGame() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
@@ -31,6 +39,10 @@ namespace GameTracker.Model
             sr.SaveValue("platformPlayedOn", platformPlayedOn);
             sr.SaveValue("completionCriteria", CompletionCriteria);
             sr.SaveValue("completionComment", CompletionComment);
+            sr.SaveValue("timeSpent", TimeSpent);
+            sr.SaveValue("acquiredOn", AcquiredOn);
+            sr.SaveValue("startedOn", StartedOn);
+            sr.SaveValue("finishedOn", FinishedOn);
             return sr;
         }
 
@@ -52,6 +64,18 @@ namespace GameTracker.Model
                         break;
                     case "completionComment":
                         CompletionComment = sr.GetString(key);
+                        break;
+                    case "timeSpent":
+                        TimeSpent = sr.GetString(key);
+                        break;
+                    case "acquiredOn":
+                        AcquiredOn = sr.GetDateTime(key);
+                        break;
+                    case "startedOn":
+                        StartedOn = sr.GetDateTime(key);
+                        break;
+                    case "finishedOn":
+                        FinishedOn = sr.GetDateTime(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);

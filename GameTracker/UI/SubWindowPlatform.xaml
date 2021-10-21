@@ -5,10 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
-        Title="Platform" Height="220" Width="300">
+        Title="Platform" Height="270" Width="300">
     <StackPanel>
         <Label Content="Name" />
         <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />
+        <StackPanel Orientation="Horizontal">
+            <StackPanel>
+                <Label Content="Release Year" />
+                <xctk:IntegerUpDown x:Name="TextboxYear" Margin="5,0" Width="100" HorizontalAlignment="Left" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Acquired Year" />
+                <xctk:IntegerUpDown x:Name="TextboxAcquiredYear" Margin="5,0" Width="100" HorizontalAlignment="Left" />
+            </StackPanel>
+        </StackPanel>
         <Label Content="Color" />
         <xctk:ColorPicker x:Name="ColorPickerColor" Margin="5,0,0,0" HorizontalAlignment="Left" Width="100" />
         <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />

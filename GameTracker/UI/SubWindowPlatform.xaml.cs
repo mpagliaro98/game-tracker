@@ -40,6 +40,8 @@ namespace GameTracker.UI
                     ButtonSave.Visibility = Visibility.Collapsed;
                     ButtonUpdate.Visibility = Visibility.Visible;
                     TextboxName.Text = orig.Name;
+                    TextboxYear.Text = orig.ReleaseYear > 0 ? orig.ReleaseYear.ToString() : "";
+                    TextboxAcquiredYear.Text = orig.AcquiredYear > 0 ? orig.AcquiredYear.ToString() : "";
                     ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
                     break;
                 default:
@@ -49,11 +51,14 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out System.Drawing.Color color)) return;
+            if (!ValidateInputs(out string name, out System.Drawing.Color color,
+                out int releaseYear, out int acquiredYear)) return;
             var platform = new Platform()
             {
                 Name = name,
-                Color = color
+                Color = color,
+                ReleaseYear = releaseYear,
+                AcquiredYear = acquiredYear
             };
             rm.AddPlatform(platform);
             Close();
@@ -61,16 +66,22 @@ namespace GameTracker.UI
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            if (!ValidateInputs(out string name, out System.Drawing.Color color)) return;
+            if (!ValidateInputs(out string name, out System.Drawing.Color color,
+                out int releaseYear, out int acquiredYear)) return;
             orig.Name = name;
             orig.Color = color;
+            orig.ReleaseYear = releaseYear;
+            orig.AcquiredYear = acquiredYear;
             rm.SavePlatforms();
             Close();
         }
 
-        private bool ValidateInputs(out string name, out System.Drawing.Color color)
+        private bool ValidateInputs(out string name, out System.Drawing.Color color,
+            out int releaseYear, out int acquiredYear)
         {
             name = TextboxName.Text;
+            releaseYear = TextboxYear.Text == "" ? 0 : TextboxYear.Value.HasValue ? TextboxYear.Value.Value : 0;
+            acquiredYear = TextboxAcquiredYear.Text == "" ? 0 : TextboxAcquiredYear.Value.HasValue ? TextboxAcquiredYear.Value.Value : 0;
             color = ColorPickerColor.SelectedColor.ToDrawingColor();
             if (name == "")
             {

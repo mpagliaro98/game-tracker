@@ -14,6 +14,10 @@ namespace GameTracker.Model
     {
         public string Name { get; set; } = "";
 
+        public int ReleaseYear { get; set; } = 0;
+
+        public int AcquiredYear { get; set; } = 0;
+
         private Guid referenceKey = Guid.NewGuid();
         public Guid ReferenceKey => referenceKey;
 
@@ -27,6 +31,8 @@ namespace GameTracker.Model
             sr.SaveValue("referenceKey", referenceKey);
             sr.SaveValue("name", Name);
             sr.SaveValue("color", Color);
+            sr.SaveValue("releaseYear", ReleaseYear);
+            sr.SaveValue("acquiredYear", AcquiredYear);
             return sr;
         }
 
@@ -44,6 +50,12 @@ namespace GameTracker.Model
                         break;
                     case "color":
                         Color = sr.GetColor(key);
+                        break;
+                    case "releaseYear":
+                        ReleaseYear = sr.GetInt(key);
+                        break;
+                    case "acquiredYear":
+                        AcquiredYear = sr.GetInt(key);
                         break;
                     default:
                         System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
