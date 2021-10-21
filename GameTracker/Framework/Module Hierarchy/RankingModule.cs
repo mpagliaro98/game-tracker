@@ -154,6 +154,15 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (GlobalSettings.Autosave) saveFunction();
         }
 
+        protected void SortList<TInput, TOutput>(ref IEnumerable<TInput> list,
+            Func<TInput, TOutput> keySelector, SortMode mode)
+        {
+            if (mode == SortMode.ASCENDING)
+                list = list.OrderBy(keySelector);
+            else if (mode == SortMode.DESCENDING)
+                list = list.OrderByDescending(keySelector);
+        }
+
         public void AddListedObject(TListedObj obj)
         {
             AddToList(ref listedObjs, SaveListedObjects, obj);
@@ -182,6 +191,16 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public void DeleteRange(TRange obj)
         {
             DeleteFromList(ref ranges, SaveRanges, obj);
+        }
+
+        public void SortListedObjects<TField>(Func<TListedObj, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        {
+            SortList(ref listedObjs, keySelector, mode);
+        }
+
+        public void SortRanges<TField>(Func<TRange, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        {
+            SortList(ref ranges, keySelector, mode);
         }
     }
 }

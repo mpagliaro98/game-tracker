@@ -54,7 +54,21 @@
                             </Grid.ColumnDefinitions>
                             <Button x:Name="PlatformsButtonNew" Content="New" HorizontalAlignment="Left" Margin="5,0,0,0" Width="40" Click="PlatformsButtonNew_Click" />
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
-                                <Button x:Name="PlatformsButtonSort" Content="Sort" Margin="0,0,5,0" />
+                                <Button x:Name="PlatformsButtonSortMode" Content="Ascending" Margin="0,0,5,0" Click="PlatformsButtonSortMode_Click" />
+                                <Button x:Name="PlatformsButtonSort" Content="Sort" Margin="0,0,5,0" Click="PlatformsButtonSort_Click">
+                                    <Button.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Name="PlatformsSortName" Header="Name" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortNumGames" Header="# Games" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortAverage" Header="Average Score" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortHighest" Header="Highest Score" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortLowest" Header="Lowest Score" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortPercentFinished" Header="% Finished" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortRelease" Header="Release Year" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortAcquired" Header="Acquired Year" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
                                 <Button x:Name="PlatformsButtonSearch" Content="Search" />
                             </StackPanel>
                         </Grid>

@@ -102,6 +102,7 @@
     <Compile Include="Framework\Object Hierarchy\RatableObjectCategorical.cs" />
     <Compile Include="Framework\Object Hierarchy\RatableObjectStatusCategorical.cs" />
     <Compile Include="Framework\SettingsScore.cs" />
+    <Compile Include="Framework\SortMode.cs" />
     <Compile Include="Model\CompletionStatus.cs" />
     <Compile Include="Model\Partial\IValueContainer.cs" />
     <Compile Include="Model\Partial\SavableRepresentation.cs" />

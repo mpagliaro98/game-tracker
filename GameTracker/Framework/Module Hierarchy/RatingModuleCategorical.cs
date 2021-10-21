@@ -99,5 +99,10 @@ namespace RatableTracker.Framework.ModuleHierarchy
             listedObjs.ForEach(ro => ro.DeleteRatingCategoryValues(rcv => rcv.RefRatingCategory.IsReferencedObject(obj)));
             if (GlobalSettings.Autosave) SaveListedObjects();
         }
+
+        public void SortRatingCategories<TField>(Func<TRatingCat, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        {
+            SortList(ref ratingCategories, keySelector, mode);
+        }
     }
 }

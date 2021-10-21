@@ -28,6 +28,15 @@ namespace GameTracker.UI
         private const string TAB_PLATFORMS = "TabPlatforms";
         private const string TAB_SETTINGS = "TabSettings";
 
+        private const string SORT_PLATFORM_NAME = "PlatformsSortName";
+        private const string SORT_PLATFORM_NUMGAMES = "PlatformsSortNumGames";
+        private const string SORT_PLATFORM_AVERAGE = "PlatformsSortAverage";
+        private const string SORT_PLATFORM_HIGHEST = "PlatformsSortHighest";
+        private const string SORT_PLATFORM_LOWEST = "PlatformsSortLowest";
+        private const string SORT_PLATFORM_PERCENT = "PlatformsSortPercentFinished";
+        private const string SORT_PLATFORM_RELEASE = "PlatformsSortRelease";
+        private const string SORT_PLATFORM_ACQUIRED = "PlatformsSortAcquired";
+
         private RatingModuleGame rm;
 
         public MainWindow()
@@ -37,6 +46,7 @@ namespace GameTracker.UI
             rm = new RatingModuleGame();
             rm.Init();
             InitializeComponent();
+            PlatformsButtonSortMode.Tag = SortMode.ASCENDING;
         }
 
         #region General Functionality and Utilities
@@ -93,6 +103,29 @@ namespace GameTracker.UI
             if (deleteFunc != null) mid.Click += deleteFunc;
             cm.Items.Add(mid);
             return cm;
+        }
+
+        private void ToggleSortModeButton(Button button)
+        {
+            SortMode mode = (SortMode)button.Tag;
+            switch (mode)
+            {
+                case SortMode.ASCENDING:
+                    button.Content = "Descending";
+                    button.Tag = SortMode.DESCENDING;
+                    break;
+                case SortMode.DESCENDING:
+                    button.Content = "Ascending";
+                    button.Tag = SortMode.ASCENDING;
+                    break;
+                default:
+                    throw new Exception("Unhandled mode");
+            }
+        }
+
+        private SortMode GetSortModeFromButton(Button button)
+        {
+            return (SortMode)button.Tag;
         }
         #endregion
 
@@ -193,6 +226,79 @@ namespace GameTracker.UI
         private void PlatformWindow_Closed(object sender, EventArgs e)
         {
             UpdatePlatformsUI();
+        }
+
+        private void PlatformsButtonSort_Click(object sender, RoutedEventArgs e)
+        {
+            var contextMenu = PlatformsButtonSort.ContextMenu;
+            contextMenu.PlacementTarget = PlatformsButtonSort;
+            contextMenu.IsOpen = true;
+        }
+
+        private void PlatformsSort_Checked(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            foreach (MenuItem sortItem in PlatformsButtonSort.ContextMenu.Items)
+            {
+                if (!sortItem.Equals(item))
+                {
+                    sortItem.IsChecked = false;
+                }
+            }
+            PlatformSort(item.Name);
+        }
+
+        private void PlatformSort(string sortField)
+        {
+            SortMode mode = GetSortModeFromButton(PlatformsButtonSortMode);
+            switch (sortField)
+            {
+                case SORT_PLATFORM_NAME:
+                    rm.SortPlatforms(platform => platform.Name, mode);
+                    break;
+                case SORT_PLATFORM_NUMGAMES:
+                    rm.SortPlatforms(platform => rm.GetNumGamesByPlatform(platform), mode);
+                    break;
+                case SORT_PLATFORM_AVERAGE:
+                    rm.SortPlatforms(platform => rm.GetAverageScoreOfGamesByPlatform(platform), mode);
+                    break;
+                case SORT_PLATFORM_HIGHEST:
+                    rm.SortPlatforms(platform => rm.GetHighestScoreFromGamesByPlatform(platform), mode);
+                    break;
+                case SORT_PLATFORM_LOWEST:
+                    rm.SortPlatforms(platform => rm.GetLowestScoreFromGamesByPlatform(platform), mode);
+                    break;
+                case SORT_PLATFORM_PERCENT:
+                    rm.SortPlatforms(platform => rm.GetPercentageGamesFinishedByPlatform(platform), mode);
+                    break;
+                case SORT_PLATFORM_RELEASE:
+                    rm.SortPlatforms(platform => platform.ReleaseYear, mode);
+                    break;
+                case SORT_PLATFORM_ACQUIRED:
+                    rm.SortPlatforms(platform => platform.AcquiredYear, mode);
+                    break;
+                default:
+                    throw new Exception("Unhandled sort expression");
+            }
+            UpdatePlatformsUI();
+        }
+
+        private void PlatformSortRefresh()
+        {
+            foreach (MenuItem sortItem in PlatformsButtonSort.ContextMenu.Items)
+            {
+                if (sortItem.IsChecked)
+                {
+                    PlatformSort(sortItem.Name);
+                }
+            }
+        }
+
+        private void PlatformsButtonSortMode_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            ToggleSortModeButton(button);
+            PlatformSortRefresh();
         }
         #endregion
 
@@ -416,6 +522,7 @@ namespace GameTracker.UI
             UpdateScoreRangeUI();
         }
         #endregion
+
         #endregion
     }
 }

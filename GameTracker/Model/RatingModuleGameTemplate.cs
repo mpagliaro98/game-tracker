@@ -116,6 +116,11 @@ namespace GameTracker.Model
             if (GlobalSettings.Autosave) SaveListedObjects();
         }
 
+        public void SortPlatforms<TField>(Func<Platform, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        {
+            SortList(ref platforms, keySelector, mode);
+        }
+
         public IEnumerable<TListedObj> GetGamesOnPlatform(Platform platform)
         {
             return ListedObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform));
