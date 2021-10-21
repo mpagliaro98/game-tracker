@@ -133,6 +133,9 @@
       <DependentUpon>SubWindowCompletionStatus.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\SubWindowMode.cs" />
+    <Compile Include="UI\SubWindowPlatform.xaml.cs">
+      <DependentUpon>SubWindowPlatform.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SubWindowRatingCategory.xaml.cs">
       <DependentUpon>SubWindowRatingCategory.xaml</DependentUpon>
     </Compile>
@@ -180,6 +183,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\SubWindowCompletionStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SubWindowPlatform.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

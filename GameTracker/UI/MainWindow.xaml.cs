@@ -139,10 +139,54 @@ namespace GameTracker.UI
             foreach (Platform platform in rm.Platforms)
             {
                 ListBoxItemPlatform item = new ListBoxItemPlatform(rm, platform);
+                item.MouseDoubleClick += PlatformEdit;
                 PlatformsListbox.AddItem(item);
 
-                item.ContextMenu = EditDeleteContextMenu(null, null);
+                item.ContextMenu = EditDeleteContextMenu(PlatformEdit, PlatformDelete);
             }
+        }
+
+        private void PlatformsButtonNew_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSubWindowPlatform(SubWindowMode.MODE_ADD);
+        }
+
+        private void PlatformEdit(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemPlatform lbi;
+            if (sender is MenuItem)
+            {
+                lbi = GetControlFromMenuItem<ListBoxItemPlatform>((MenuItem)sender);
+            }
+            else
+            {
+                lbi = (ListBoxItemPlatform)sender;
+            }
+            OpenSubWindowPlatform(SubWindowMode.MODE_EDIT, lbi.Platform);
+        }
+
+        private void PlatformDelete(object sender, RoutedEventArgs e)
+        {
+            ListBoxItemPlatform lbi = GetControlFromMenuItem<ListBoxItemPlatform>((MenuItem)sender);
+
+            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this platform and all data associated with it?", "Delete Platform Confirmation", MessageBoxButton.YesNo);
+            if (mbr != MessageBoxResult.Yes) return;
+
+            Platform platform = lbi.Platform;
+            rm.DeletePlatform(platform);
+            UpdatePlatformsUI();
+        }
+
+        private void OpenSubWindowPlatform(SubWindowMode mode, Platform orig = null)
+        {
+            var window = new SubWindowPlatform(rm, mode, orig);
+            window.Closed += PlatformWindow_Closed;
+            window.ShowDialog();
+        }
+
+        private void PlatformWindow_Closed(object sender, EventArgs e)
+        {
+            UpdatePlatformsUI();
         }
         #endregion
 
