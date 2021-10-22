@@ -272,7 +272,7 @@ namespace GameTracker.UI
 
         private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
         {
-            TextBoxFinalScore.Text = CalculateFinalScoreFromText().ToString("0.##");
+            UpdateFinalScoreTextBoxAuto();
         }
 
         private void UpdateScoreEditButton(bool finalScoreEnabled)
@@ -285,7 +285,10 @@ namespace GameTracker.UI
                 text.IsEnabled = finalScoreEnabled;
             }
             ButtonEditScore.Content = finalScoreEnabled ? "Edit" : "Lock";
-            if (finalScoreEnabled) TextBoxFinalScore.Text = CalculateFinalScoreFromText().ToString("0.##");
+            if (finalScoreEnabled)
+                UpdateFinalScoreTextBoxAuto();
+            else
+                UpdateFinalScoreTextBox();
         }
 
         private void ButtonEditScore_Click(object sender, RoutedEventArgs e)
@@ -308,6 +311,37 @@ namespace GameTracker.UI
                 return false;
             }
             return true;
+        }
+
+        private void UpdateFinalScoreTextBoxAuto()
+        {
+            double score = CalculateFinalScoreFromText();
+            TextBoxFinalScore.Text = score.ToString("0.##");
+            UpdateFinalScoreColor(score);
+        }
+
+        private void UpdateFinalScoreColor(double score)
+        {
+            System.Drawing.Color color = rm.GetRangeColorFromScore(score);
+            if (color.Equals(new System.Drawing.Color()))
+            {
+                TextBoxFinalScore.Background = new SolidColorBrush(new Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
+            }
+            else
+            {
+                TextBoxFinalScore.Background = new SolidColorBrush(color.ToMediaColor());
+            }
+        }
+
+        private void TextBoxFinalScore_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateFinalScoreTextBox();
+        }
+
+        private void UpdateFinalScoreTextBox()
+        {
+            bool result = double.TryParse(TextBoxFinalScore.Text, out double score);
+            if (result) UpdateFinalScoreColor(score);
         }
     }
 }

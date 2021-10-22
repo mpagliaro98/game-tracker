@@ -88,7 +88,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return FindObject(scoreRelationships, objectKey);
         }
 
-        public virtual System.Drawing.Color GetColorFromRange(TListedObj obj)
+        public virtual System.Drawing.Color GetRangeColorFromObject(TListedObj obj)
         {
             int i = 1;
             foreach (TListedObj objLoop in ListedObjects)

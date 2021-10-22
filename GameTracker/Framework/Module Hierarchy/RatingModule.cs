@@ -37,10 +37,15 @@ namespace RatableTracker.Framework.ModuleHierarchy
                 obj.FinalScoreManual = ((GetScoreOfObject(obj) - minRangeOld) * newRange / oldRange) + minRangeNew;
         }
 
-        public override System.Drawing.Color GetColorFromRange(TListedObj obj)
+        public override System.Drawing.Color GetRangeColorFromObject(TListedObj obj)
         {
             double score = GetScoreOfObject(obj);
-            TRange range = ApplyRange(score);
+            return GetRangeColorFromScore(score);
+        }
+
+        public virtual System.Drawing.Color GetRangeColorFromScore(double val)
+        {
+            TRange range = ApplyRange(val);
             return range == null ? new System.Drawing.Color() : range.Color;
         }
 

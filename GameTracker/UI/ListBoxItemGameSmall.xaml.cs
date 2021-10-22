@@ -45,7 +45,7 @@ namespace GameTracker.UI
             if (completionStatus != null) LabelStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
             BuildCategories(rm.RatingCategories, rg.CategoryValues);
             LabelFinalScore.Content = rm.GetScoreOfObject(rg).ToString(DECIMAL_FORMAT);
-            LabelFinalScore.Background = new SolidColorBrush(rm.GetColorFromRange(rg).ToMediaColor());
+            LabelFinalScore.Background = new SolidColorBrush(rm.GetRangeColorFromObject(rg).ToMediaColor());
         }
 
         private void BuildCategories(IEnumerable<RatingCategory> cats, IEnumerable<RatingCategoryValue> vals)

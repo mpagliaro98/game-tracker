@@ -67,7 +67,7 @@
                         <Label Content="Final Score" />
                         <Button x:Name="ButtonEditScore" Content="Edit" Height="20" Click="ButtonEditScore_Click" />
                     </StackPanel>
-                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" />
+                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" TextChanged="TextBoxFinalScore_TextChanged" />
                 </DockPanel>
             </Grid>
         </Grid>
