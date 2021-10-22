@@ -191,5 +191,15 @@ namespace GameTracker.Model
                 .OrderByDescending(ro => GetScoreOfObject(ro))
                 .Take(numToGet);
         }
+
+        public int GetRankOfScoreByPlatform(double score, Platform platform)
+        {
+            return GetRankOfScore(score, ListedObjects, game => game.RefPlatform.IsReferencedObject(platform), null);
+        }
+
+        public int GetRankOfScoreByPlatform(double score, Platform platform, TListedObj obj)
+        {
+            return GetRankOfScore(score, ListedObjects, game => game.RefPlatform.IsReferencedObject(platform), obj);
+        }
     }
 }

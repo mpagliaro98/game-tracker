@@ -40,13 +40,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public override System.Drawing.Color GetRangeColorFromObject(TListedObj obj)
         {
             double score = GetScoreOfObject(obj);
-            return GetRangeColorFromScore(score);
-        }
-
-        public virtual System.Drawing.Color GetRangeColorFromScore(double val)
-        {
-            TRange range = ApplyRange(val);
-            return range == null ? new System.Drawing.Color() : range.Color;
+            return GetRangeColorFromValue(score);
         }
 
         public virtual double GetScoreOfObject(TListedObj obj)
@@ -88,6 +82,39 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (!ValidateManualScore(val))
                 throw new ScoreOutOfRangeException();
             obj.FinalScoreManual = val;
+        }
+
+        public override int GetRankOfObject(TListedObj obj)
+        {
+            return GetRankOfScore(GetScoreOfObject(obj));
+        }
+
+        public virtual int GetRankOfScore(double score)
+        {
+            return GetRankOfScore(score, ListedObjects, null, null);
+        }
+
+        public virtual int GetRankOfScore(double score, TListedObj obj)
+        {
+            return GetRankOfScore(score, ListedObjects, null, obj);
+        }
+
+        protected int GetRankOfScore(double score, IEnumerable<TListedObj> list, 
+            Func<TListedObj, bool> where, TListedObj obj)
+        {
+            IEnumerable<TListedObj> temp = list;
+            if (where != null) temp = temp.Where(where);
+            temp = temp.OrderByDescending(lo => GetScoreOfObject(lo));
+            int i = 1;
+            foreach (TListedObj objLoop in temp)
+            {
+                if (score >= GetScoreOfObject(objLoop))
+                {
+                    return i;
+                }
+                if (obj == null || !obj.Equals(objLoop)) i++;
+            }
+            return i;
         }
     }
 }

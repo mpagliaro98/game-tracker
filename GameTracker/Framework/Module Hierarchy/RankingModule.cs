@@ -90,17 +90,14 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         public virtual System.Drawing.Color GetRangeColorFromObject(TListedObj obj)
         {
-            int i = 1;
-            foreach (TListedObj objLoop in ListedObjects)
-            {
-                if (objLoop.Equals(obj))
-                {
-                    TRange range = ApplyRange(i);
-                    return range == null ? new System.Drawing.Color() : range.Color;
-                }
-                i++;
-            }
-            return new System.Drawing.Color();
+            int rank = GetRankOfObject(obj);
+            return GetRangeColorFromValue(rank);
+        }
+
+        public virtual System.Drawing.Color GetRangeColorFromValue(double val)
+        {
+            TRange range = ApplyRange(val);
+            return range == null ? new System.Drawing.Color() : range.Color;
         }
 
         protected TRange ApplyRange(double val)
@@ -114,6 +111,20 @@ namespace RatableTracker.Framework.ModuleHierarchy
                 }
             }
             return null;
+        }
+
+        public virtual int GetRankOfObject(TListedObj obj)
+        {
+            int i = 1;
+            foreach (TListedObj objLoop in ListedObjects)
+            {
+                if (objLoop.Equals(obj))
+                {
+                    return i;
+                }
+                i++;
+            }
+            return i;
         }
 
         protected void AddToList<T>(ref IEnumerable<T> list, Action saveFunction, T obj)

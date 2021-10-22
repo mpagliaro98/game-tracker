@@ -33,7 +33,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label Content="Platform" />
-                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" />
+                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" SelectionChanged="ComboBoxPlatform_SelectionChanged" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="2">
@@ -69,6 +69,7 @@
                     </StackPanel>
                     <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" TextChanged="TextBoxFinalScore_TextChanged" />
                 </DockPanel>
+                <TextBlock x:Name="TextBlockStats" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" />
             </Grid>
         </Grid>
         <Grid Grid.Row="2">

@@ -317,12 +317,12 @@ namespace GameTracker.UI
         {
             double score = CalculateFinalScoreFromText();
             TextBoxFinalScore.Text = score.ToString("0.##");
-            UpdateFinalScoreColor(score);
+            FinalScoreUpdate(score);
         }
 
         private void UpdateFinalScoreColor(double score)
         {
-            System.Drawing.Color color = rm.GetRangeColorFromScore(score);
+            System.Drawing.Color color = rm.GetRangeColorFromValue(score);
             if (color.Equals(new System.Drawing.Color()))
             {
                 TextBoxFinalScore.Background = new SolidColorBrush(new Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
@@ -341,7 +341,31 @@ namespace GameTracker.UI
         private void UpdateFinalScoreTextBox()
         {
             bool result = double.TryParse(TextBoxFinalScore.Text, out double score);
-            if (result) UpdateFinalScoreColor(score);
+            if (result) FinalScoreUpdate(score);
+        }
+
+        private void FinalScoreUpdate(double score)
+        {
+            UpdateFinalScoreColor(score);
+            UpdateStats(score);
+        }
+
+        private void UpdateStats(double score)
+        {
+            int rankOverall = rm.GetRankOfScore(score, orig);
+            int rankPlatform = -1;
+            Platform platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
+            if (platform != null) rankPlatform = rm.GetRankOfScoreByPlatform(score, platform, orig);
+
+            string text = "";
+            if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
+            text += "#" + rankOverall.ToString() + " overall";
+            TextBlockStats.Text = text;
+        }
+
+        private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateFinalScoreTextBox();
         }
     }
 }
