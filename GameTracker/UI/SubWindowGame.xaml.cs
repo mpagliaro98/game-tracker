@@ -12,7 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameTracker.Model;
-using RatableTracker.Framework.ObjectHierarchy;
+using RatableTracker.Framework;
+using RatableTracker.Framework.Global;
 
 namespace GameTracker.UI
 {
@@ -36,6 +37,11 @@ namespace GameTracker.UI
             ComboBoxStatus.SelectedIndex = 0;
             ComboBoxPlatform.SelectedIndex = 0;
             ComboBoxPlatformPlayedOn.SelectedIndex = 0;
+            bool defaultIgnore = new RatableGame().IgnoreCategories;
+            CreateRatingCategories(rm.RatingCategories,
+                orig == null ? new List<RatingCategoryValue>() : orig.CategoryValues, rm.Settings,
+                orig == null ? !defaultIgnore : !orig.IgnoreCategories);
+            UpdateScoreEditButton(orig == null ? !defaultIgnore : !orig.IgnoreCategories);
             switch (mode)
             {
                 case SubWindowMode.MODE_ADD:
@@ -56,6 +62,7 @@ namespace GameTracker.UI
                     if (!orig.StartedOn.Equals(DateTime.MinValue)) DatePickerStarted.SelectedDate = orig.StartedOn;
                     if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
                     TextBoxComments.Text = orig.Comment;
+                    TextBoxFinalScore.Text = rm.GetScoreOfObject(orig).ToString("0.##");
                     break;
                 default:
                     throw new Exception("Unhandled mode");
@@ -68,6 +75,8 @@ namespace GameTracker.UI
                 out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
                 out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
                 out string comment)) return;
+            if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
+                out bool ignoreCategories)) return;
             var game = new RatableGame()
             {
                 Name = name,
@@ -77,20 +86,25 @@ namespace GameTracker.UI
                 AcquiredOn = acquiredOn,
                 StartedOn = startedOn,
                 FinishedOn = finishedOn,
-                Comment = comment
+                Comment = comment,
+                IgnoreCategories = ignoreCategories
             };
             if (status != null)
-                orig.SetStatus(status);
+                game.SetStatus(status);
             else
-                orig.RemoveStatus();
+                game.RemoveStatus();
             if (platform != null)
-                orig.SetPlatform(platform);
+                game.SetPlatform(platform);
             else
-                orig.RemovePlatform();
+                game.RemovePlatform();
             if (platformPlayedOn != null)
-                orig.SetPlatformPlayedOn(platformPlayedOn);
+                game.SetPlatformPlayedOn(platformPlayedOn);
             else
-                orig.RemovePlatformPlayedOn();
+                game.RemovePlatformPlayedOn();
+            if (game.IgnoreCategories)
+                rm.SetManualScoreForObject(game, finalScore);
+            else
+                rm.SetCategoryValuesForObject(game, vals);
             rm.AddListedObject(game);
             Close();
         }
@@ -101,6 +115,8 @@ namespace GameTracker.UI
                 out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
                 out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
                 out string comment)) return;
+            if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
+                out bool ignoreCategories)) return;
             orig.Name = name;
             if (status != null)
                 orig.SetStatus(status);
@@ -121,6 +137,11 @@ namespace GameTracker.UI
             orig.StartedOn = startedOn;
             orig.FinishedOn = finishedOn;
             orig.Comment = comment;
+            orig.IgnoreCategories = ignoreCategories;
+            if (orig.IgnoreCategories)
+                rm.SetManualScoreForObject(orig, finalScore);
+            else
+                rm.SetCategoryValuesForObject(orig, vals);
             rm.SaveListedObjects();
             Close();
         }
@@ -144,6 +165,7 @@ namespace GameTracker.UI
             if (name == "")
             {
                 LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "A name is required";
                 return false;
             }
             return true;
@@ -171,6 +193,121 @@ namespace GameTracker.UI
             {
                 cb.Items.Add(platform);
             }
+        }
+
+        private void CreateRatingCategories(IEnumerable<RatingCategory> ratingCategories,
+            IEnumerable<RatingCategoryValue> pointValues, SettingsScore settings, bool isEnabled)
+        {
+            GridRatingCategories.Children.Clear();
+            GridRatingCategories.ColumnDefinitions.Clear();
+            int i = 0;
+            foreach (RatingCategory rc in ratingCategories)
+            {
+                GridRatingCategories.ColumnDefinitions.Add(new ColumnDefinition());
+                DockPanel dock = new DockPanel
+                {
+                    Background = new SolidColorBrush(new Color { A = 0xFF, R = 0xF1, G = 0xF1, B = 0xF1 }),
+                    Margin = new Thickness { Bottom = 5, Left = 5, Top = 5, Right = 5 }
+                };
+                TextBlock tb = new TextBlock
+                {
+                    Text = rc.Comment,
+                    TextWrapping = TextWrapping.Wrap,
+                    MaxWidth = 400
+                };
+                Label label = new Label
+                {
+                    Content = rc.Name,
+                    ToolTip = tb
+                };
+                DockPanel.SetDock(label, Dock.Top);
+
+                var matches = pointValues.Where(rcv => rcv.RefRatingCategory.IsReferencedObject(rc));
+                RatingCategoryValue match = matches.FirstOrDefault();
+                TextBox text = new TextBox
+                {
+                    Name = "TextBoxValue",
+                    Margin = new Thickness { Bottom = 5, Left = 5, Right = 5 },
+                    BorderThickness = new Thickness { Top = 0, Left = 0, Bottom = 0, Right = 0 },
+                    Background = new SolidColorBrush(new Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9}),
+                    FontSize = 32,
+                    IsEnabled = isEnabled,
+                    Text = match == null ? settings.MinScore.ToString("0.##") : match.PointValue.ToString()
+                };
+                text.TextChanged += TextBoxScore_TextChanged;
+                dock.Children.Add(label);
+                dock.Children.Add(text);
+                Grid.SetColumn(dock, i);
+                GridRatingCategories.Children.Add(dock);
+                i++;
+            }
+        }
+
+        private double CalculateFinalScoreFromText()
+        {
+            IEnumerable<RatingCategoryValue> vals = GetCategoryValueInputs(rm.RatingCategories);
+            return rm.SimulateScoreOfObject(vals);
+        }
+
+        private IEnumerable<RatingCategoryValue> GetCategoryValueInputs(IEnumerable<RatingCategory> ratingCategories)
+        {
+            List<RatingCategoryValue> result = new List<RatingCategoryValue>();
+            ratingCategories = ratingCategories.ToList();
+            for (int i = 0; i < ratingCategories.Count(); i++)
+            {
+                RatingCategory rc = ratingCategories.ElementAt(i);
+                DockPanel dock = (DockPanel)GridRatingCategories.Children.Cast<UIElement>().First(d => Grid.GetColumn(d) == i);
+                TextBox text = dock.FindChild<TextBox>("TextBoxValue");
+                bool valid = double.TryParse(text.Text, out double value);
+                if (!valid) value = rm.Settings.MinScore;
+                RatingCategoryValue rcv = new RatingCategoryValue
+                {
+                    PointValue = value
+                };
+                rcv.SetRatingCategory(rc);
+                result.Add(rcv);
+            }
+            return result;
+        }
+
+        private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBoxFinalScore.Text = CalculateFinalScoreFromText().ToString("0.##");
+        }
+
+        private void UpdateScoreEditButton(bool finalScoreEnabled)
+        {
+            TextBoxFinalScore.IsEnabled = !finalScoreEnabled;
+            for (int i = 0; i < rm.RatingCategories.Count(); i++)
+            {
+                DockPanel dock = (DockPanel)GridRatingCategories.Children.Cast<UIElement>().First(d => Grid.GetColumn(d) == i);
+                TextBox text = dock.FindChild<TextBox>("TextBoxValue");
+                text.IsEnabled = finalScoreEnabled;
+            }
+            ButtonEditScore.Content = finalScoreEnabled ? "Edit" : "Lock";
+            if (finalScoreEnabled) TextBoxFinalScore.Text = CalculateFinalScoreFromText().ToString("0.##");
+        }
+
+        private void ButtonEditScore_Click(object sender, RoutedEventArgs e)
+        {
+            UpdateScoreEditButton(TextBoxFinalScore.IsEnabled);
+        }
+
+        private bool ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
+            out bool ignoreCategories)
+        {
+            vals = GetCategoryValueInputs(rm.RatingCategories);
+            bool validFinalScore = double.TryParse(TextBoxFinalScore.Text, out finalScore);
+            validFinalScore &= rm.ValidateManualScore(finalScore);
+            ignoreCategories = TextBoxFinalScore.IsEnabled;
+            bool categoriesValid = rm.ValidateCategoryScores(vals);
+            if ((ignoreCategories && !validFinalScore) || (!ignoreCategories && !categoriesValid))
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "All scores must be between " + rm.Settings.MinScore.ToString() + " and " + rm.Settings.MaxScore.ToString();
+                return false;
+            }
+            return true;
         }
     }
 }

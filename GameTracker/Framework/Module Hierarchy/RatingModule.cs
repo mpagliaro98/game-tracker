@@ -72,5 +72,17 @@ namespace RatableTracker.Framework.ModuleHierarchy
                 SaveListedObjects();
             }
         }
+
+        public virtual bool ValidateManualScore(double val)
+        {
+            return !(val < Settings.MinScore || val > Settings.MaxScore);
+        }
+
+        public virtual void SetManualScoreForObject(TListedObj obj, double val)
+        {
+            if (!ValidateManualScore(val))
+                throw new ScoreOutOfRangeException();
+            obj.FinalScoreManual = val;
+        }
     }
 }

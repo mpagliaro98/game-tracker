@@ -53,10 +53,23 @@
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.75*" />
-                <ColumnDefinition Width="0.25*" />
+                <ColumnDefinition Width="2.5*" />
+                <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Grid x:Name="GridRatingCategories" />
+            <Grid Grid.Column="1" Margin="5" Background="#FFF1F1F1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <Label Content="Final Score" />
+                        <Button x:Name="ButtonEditScore" Content="Edit" Height="20" Click="ButtonEditScore_Click" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" />
+                </DockPanel>
+            </Grid>
         </Grid>
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>

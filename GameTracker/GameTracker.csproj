@@ -77,6 +77,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Framework\Exceptions\ExceededLimitException.cs" />
+    <Compile Include="Framework\Exceptions\ScoreOutOfRangeException.cs" />
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
     <Compile Include="Framework\Global\TConverter.cs" />
@@ -104,6 +105,7 @@
     <Compile Include="Framework\SettingsScore.cs" />
     <Compile Include="Framework\SortMode.cs" />
     <Compile Include="Model\CompletionStatus.cs" />
+    <Compile Include="Model\Partial\Extensions.cs" />
     <Compile Include="Model\Partial\IValueContainer.cs" />
     <Compile Include="Model\Partial\SavableRepresentation.cs" />
     <Compile Include="Framework\LoadSave\ValueContainer.cs" />

@@ -47,6 +47,7 @@ namespace GameTracker.UI
             rm.Init();
             InitializeComponent();
             PlatformsButtonSortMode.Tag = SortMode.ASCENDING;
+            GamesButtonSortMode.Tag = SortMode.ASCENDING;
         }
 
         #region General Functionality and Utilities

@@ -12,7 +12,11 @@ namespace RatableTracker.Framework.ObjectHierarchy
     public class RatableObjectStatusCategorical : RatableObjectStatus, ICategorical
     {
         private IEnumerable<RatingCategoryValue> categoryValues = new List<RatingCategoryValue>();
-        public IEnumerable<RatingCategoryValue> CategoryValues => categoryValues;
+        public IEnumerable<RatingCategoryValue> CategoryValues
+        {
+            get { return categoryValues; }
+            set { categoryValues = value; }
+        }
 
         public bool IgnoreCategories { get; set; } = false;
 
