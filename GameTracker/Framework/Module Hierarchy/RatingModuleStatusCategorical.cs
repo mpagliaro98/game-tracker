@@ -39,19 +39,11 @@ namespace RatableTracker.Framework.ModuleHierarchy
             }
             else
             {
-                double total = 0;
-                double sumOfWeights = SumOfWeights(obj.CategoryValues);
-                foreach (RatingCategoryValue categoryValue in obj.CategoryValues)
-                {
-                    TRatingCat cat = FindRatingCategory(categoryValue.RefRatingCategory);
-                    double categoryWeight = cat.Weight;
-                    total += (categoryWeight / sumOfWeights) * categoryValue.PointValue;
-                }
-                return total;
+                return GetScoreOfCategoryValues(obj.CategoryValues);
             }
         }
 
-        public virtual double SimulateScoreOfObject(IEnumerable<RatingCategoryValue> categoryValues)
+        public virtual double GetScoreOfCategoryValues(IEnumerable<RatingCategoryValue> categoryValues)
         {
             double total = 0;
             double sumOfWeights = SumOfWeights(categoryValues);
@@ -92,7 +84,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return true;
         }
 
-        public virtual void SetCategoryValuesForObject(TListedObj obj, IEnumerable<RatingCategoryValue> vals)
+        public virtual void SetCategoryValuesAndBoundsCheck(TListedObj obj, IEnumerable<RatingCategoryValue> vals)
         {
             if (!ValidateCategoryScores(vals))
                 throw new ScoreOutOfRangeException();

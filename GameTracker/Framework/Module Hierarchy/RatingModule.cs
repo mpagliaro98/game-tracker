@@ -78,7 +78,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return !(val < Settings.MinScore || val > Settings.MaxScore);
         }
 
-        public virtual void SetManualScoreForObject(TListedObj obj, double val)
+        public virtual void SetManualScoreAndBoundsCheck(TListedObj obj, double val)
         {
             if (!ValidateManualScore(val))
                 throw new ScoreOutOfRangeException();

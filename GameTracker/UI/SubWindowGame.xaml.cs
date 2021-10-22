@@ -102,9 +102,9 @@ namespace GameTracker.UI
             else
                 game.RemovePlatformPlayedOn();
             if (game.IgnoreCategories)
-                rm.SetManualScoreForObject(game, finalScore);
+                rm.SetManualScoreAndBoundsCheck(game, finalScore);
             else
-                rm.SetCategoryValuesForObject(game, vals);
+                rm.SetCategoryValuesAndBoundsCheck(game, vals);
             rm.AddListedObject(game);
             Close();
         }
@@ -139,9 +139,9 @@ namespace GameTracker.UI
             orig.Comment = comment;
             orig.IgnoreCategories = ignoreCategories;
             if (orig.IgnoreCategories)
-                rm.SetManualScoreForObject(orig, finalScore);
+                rm.SetManualScoreAndBoundsCheck(orig, finalScore);
             else
-                rm.SetCategoryValuesForObject(orig, vals);
+                rm.SetCategoryValuesAndBoundsCheck(orig, vals);
             rm.SaveListedObjects();
             Close();
         }
@@ -246,7 +246,7 @@ namespace GameTracker.UI
         private double CalculateFinalScoreFromText()
         {
             IEnumerable<RatingCategoryValue> vals = GetCategoryValueInputs(rm.RatingCategories);
-            return rm.SimulateScoreOfObject(vals);
+            return rm.GetScoreOfCategoryValues(vals);
         }
 
         private IEnumerable<RatingCategoryValue> GetCategoryValueInputs(IEnumerable<RatingCategory> ratingCategories)
