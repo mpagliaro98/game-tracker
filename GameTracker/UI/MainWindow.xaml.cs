@@ -37,6 +37,13 @@ namespace GameTracker.UI
         private const string SORT_PLATFORM_RELEASE = "PlatformsSortRelease";
         private const string SORT_PLATFORM_ACQUIRED = "PlatformsSortAcquired";
 
+        private const string SORT_GAME_NAME = "GamesSortName";
+        private const string SORT_GAME_STATUS = "GamesSortStatus";
+        private const string SORT_GAME_PLATFORM = "GamesSortPlatform";
+        private const string SORT_GAME_PLAYEDON = "GamesSortPlayedOn";
+        private const string SORT_GAME_SCORE = "GamesSortScore";
+        private const string SORT_GAME_HASCOMMENT = "GamesSortHasComment";
+
         private IEnumerable<RatableGame> gamesView;
         private IEnumerable<Platform> platformsView;
 
@@ -222,6 +229,79 @@ namespace GameTracker.UI
         private void GameWindow_Closed(object sender, EventArgs e)
         {
             UpdateGamesUI();
+        }
+
+        private void GamesButtonSort_Click(object sender, RoutedEventArgs e)
+        {
+            var contextMenu = GamesButtonSort.ContextMenu;
+            contextMenu.PlacementTarget = GamesButtonSort;
+            contextMenu.IsOpen = true;
+        }
+
+        private void GamesSort_Checked(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            foreach (MenuItem sortItem in GamesButtonSort.ContextMenu.Items)
+            {
+                if (!sortItem.Equals(item))
+                {
+                    sortItem.IsChecked = false;
+                }
+            }
+            GamesSort(item.Name);
+        }
+
+        private void GamesSort_Unchecked(object sender, RoutedEventArgs e)
+        {
+            gamesView = rm.ListedObjects;
+            UpdateGamesUI();
+        }
+
+        private void GamesSort(string sortField)
+        {
+            SortMode mode = GetSortModeFromButton(GamesButtonSortMode);
+            switch (sortField)
+            {
+                case SORT_GAME_NAME:
+                    gamesView = rm.SortListedObjects(game => game.Name, mode);
+                    break;
+                case SORT_GAME_STATUS:
+                    gamesView = rm.SortListedObjects(game => rm.FindStatus(game.RefStatus).Name, mode);
+                    break;
+                case SORT_GAME_PLATFORM:
+                    gamesView = rm.SortListedObjects(game => rm.FindPlatform(game.RefPlatform).Name, mode);
+                    break;
+                case SORT_GAME_PLAYEDON:
+                    gamesView = rm.SortListedObjects(game => rm.FindPlatform(game.RefPlatformPlayedOn).Name, mode);
+                    break;
+                case SORT_GAME_SCORE:
+                    gamesView = rm.SortListedObjects(game => rm.GetScoreOfObject(game), mode);
+                    break;
+                case SORT_GAME_HASCOMMENT:
+                    gamesView = rm.SortListedObjects(game => game.Comment.Length > 0, mode);
+                    break;
+                default:
+                    throw new Exception("Unhandled sort expression");
+            }
+            UpdateGamesUI();
+        }
+
+        private void GamesSortRefresh()
+        {
+            foreach (MenuItem sortItem in GamesButtonSort.ContextMenu.Items)
+            {
+                if (sortItem.IsChecked)
+                {
+                    GamesSort(sortItem.Name);
+                }
+            }
+        }
+
+        private void GamesButtonSortMode_Click(object sender, RoutedEventArgs e)
+        {
+            Button button = (Button)sender;
+            ToggleSortModeButton(button);
+            GamesSortRefresh();
         }
         #endregion
 
