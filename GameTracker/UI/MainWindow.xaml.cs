@@ -266,13 +266,13 @@ namespace GameTracker.UI
                     gamesView = rm.SortListedObjects(game => game.Name, mode);
                     break;
                 case SORT_GAME_STATUS:
-                    gamesView = rm.SortListedObjects(game => rm.FindStatus(game.RefStatus).Name, mode);
+                    gamesView = rm.SortListedObjects(game => game.RefStatus.HasReference() ? rm.FindStatus(game.RefStatus).Name : "", mode);
                     break;
                 case SORT_GAME_PLATFORM:
-                    gamesView = rm.SortListedObjects(game => rm.FindPlatform(game.RefPlatform).Name, mode);
+                    gamesView = rm.SortListedObjects(game => game.RefPlatform.HasReference() ? rm.FindPlatform(game.RefPlatform).Name : "", mode);
                     break;
                 case SORT_GAME_PLAYEDON:
-                    gamesView = rm.SortListedObjects(game => rm.FindPlatform(game.RefPlatformPlayedOn).Name, mode);
+                    gamesView = rm.SortListedObjects(game => game.RefPlatformPlayedOn.HasReference() ? rm.FindPlatform(game.RefPlatformPlayedOn).Name : "", mode);
                     break;
                 case SORT_GAME_SCORE:
                     gamesView = rm.SortListedObjects(game => rm.GetScoreOfObject(game), mode);

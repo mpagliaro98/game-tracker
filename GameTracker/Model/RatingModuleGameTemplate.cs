@@ -138,6 +138,12 @@ namespace GameTracker.Model
                 .Where(ro => ro.RefStatus.HasReference() && FindStatus(ro.RefStatus).UseAsFinished);
         }
 
+        public IEnumerable<TListedObj> GetFinishedGamesExcludeStatsOnPlatform(Platform platform)
+        {
+            return ListedObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
+                .Where(ro => ro.RefStatus.HasReference() && FindStatus(ro.RefStatus).UseAsFinished && !FindStatus(ro.RefStatus).ExcludeFromStats);
+        }
+
         public int GetNumGamesByPlatform(Platform platform)
         {
             return GetGamesOnPlatform(platform).Count();
@@ -168,7 +174,9 @@ namespace GameTracker.Model
 
         public double GetNumGamesFinishedByPlatform(Platform platform)
         {
-            return GetFinishedGamesOnPlatform(platform).Count();
+            return GetFinishedGamesOnPlatform(platform)
+                .Where(game => !FindStatus(game.RefStatus).ExcludeFromStats)
+                .Count();
         }
 
         public double GetPercentageGamesFinishedByPlatform(Platform platform)
@@ -180,15 +188,15 @@ namespace GameTracker.Model
 
         public IEnumerable<TListedObj> GetTopGamesByPlatform(Platform platform, int numToGet)
         {
-            return ListedObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
-                .OrderBy(ro => GetScoreOfObject(ro))
+            return GetFinishedGamesOnPlatform(platform)
+                .OrderByDescending(ro => GetScoreOfObject(ro))
                 .Take(numToGet);
         }
 
         public IEnumerable<TListedObj> GetBottomGamesByPlatform(Platform platform, int numToGet)
         {
-            return ListedObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
-                .OrderByDescending(ro => GetScoreOfObject(ro))
+            return GetFinishedGamesOnPlatform(platform)
+                .OrderBy(ro => GetScoreOfObject(ro))
                 .Take(numToGet);
         }
 
