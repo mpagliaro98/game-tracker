@@ -89,14 +89,14 @@
                                     <Image Source="{StaticResource ButtonSort}" />
                                     <Button.ContextMenu>
                                         <ContextMenu>
-                                            <MenuItem Name="PlatformsSortName" Header="Name" IsCheckable="True" Checked="PlatformsSort_Checked" />
-                                            <MenuItem Name="PlatformsSortNumGames" Header="# Games" IsCheckable="True" Checked="PlatformsSort_Checked" />
-                                            <MenuItem Name="PlatformsSortAverage" Header="Average Score" IsCheckable="True" Checked="PlatformsSort_Checked" />
-                                            <MenuItem Name="PlatformsSortHighest" Header="Highest Score" IsCheckable="True" Checked="PlatformsSort_Checked" />
-                                            <MenuItem Name="PlatformsSortLowest" Header="Lowest Score" IsCheckable="True" Checked="PlatformsSort_Checked" />
-                                            <MenuItem Name="PlatformsSortPercentFinished" Header="% Finished" IsCheckable="True" Checked="PlatformsSort_Checked" />
-                                            <MenuItem Name="PlatformsSortRelease" Header="Release Year" IsCheckable="True" Checked="PlatformsSort_Checked" />
-                                            <MenuItem Name="PlatformsSortAcquired" Header="Acquired Year" IsCheckable="True" Checked="PlatformsSort_Checked" />
+                                            <MenuItem Name="PlatformsSortName" Header="Name" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortNumGames" Header="# Games" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortAverage" Header="Average Score" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortHighest" Header="Highest Score" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortLowest" Header="Lowest Score" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortPercentFinished" Header="% Finished" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortRelease" Header="Release Year" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortAcquired" Header="Acquired Year" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
                                         </ContextMenu>
                                     </Button.ContextMenu>
                                 </Button>

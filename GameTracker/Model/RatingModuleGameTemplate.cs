@@ -116,9 +116,9 @@ namespace GameTracker.Model
             if (GlobalSettings.Autosave) SaveListedObjects();
         }
 
-        public void SortPlatforms<TField>(Func<Platform, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        public IEnumerable<Platform> SortPlatforms<TField>(Func<Platform, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
-            SortList(ref platforms, keySelector, mode);
+            return SortList(platforms, keySelector, mode);
         }
 
         public IEnumerable<TListedObj> GetGamesOnPlatform(Platform platform)

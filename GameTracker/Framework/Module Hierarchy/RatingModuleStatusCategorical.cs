@@ -124,9 +124,9 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (GlobalSettings.Autosave) SaveListedObjects();
         }
 
-        public void SortRatingCategories<TField>(Func<TRatingCat, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        public IEnumerable<TRatingCat> SortRatingCategories<TField>(Func<TRatingCat, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
-            SortList(ref ratingCategories, keySelector, mode);
+            return SortList(ratingCategories, keySelector, mode);
         }
     }
 }

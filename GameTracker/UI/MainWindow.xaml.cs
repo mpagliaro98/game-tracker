@@ -37,6 +37,9 @@ namespace GameTracker.UI
         private const string SORT_PLATFORM_RELEASE = "PlatformsSortRelease";
         private const string SORT_PLATFORM_ACQUIRED = "PlatformsSortAcquired";
 
+        private IEnumerable<RatableGame> gamesView;
+        private IEnumerable<Platform> platformsView;
+
         private RatingModuleGame rm;
 
         public MainWindow()
@@ -48,6 +51,8 @@ namespace GameTracker.UI
             InitializeComponent();
             PlatformsButtonSortMode.Tag = SortMode.ASCENDING;
             GamesButtonSortMode.Tag = SortMode.ASCENDING;
+            gamesView = rm.ListedObjects;
+            platformsView = rm.Platforms;
         }
 
         #region General Functionality and Utilities
@@ -141,7 +146,7 @@ namespace GameTracker.UI
         private void UpdateGamesUI()
         {
             GamesListbox.ClearItems();
-            foreach (RatableGame rg in rm.ListedObjects)
+            foreach (RatableGame rg in gamesView)
             {
                 ListBoxItemGameSmall item = new ListBoxItemGameSmall(rm, rg);
                 item.MouseDoubleClick += GameEdit;
@@ -224,7 +229,7 @@ namespace GameTracker.UI
         private void UpdatePlatformsUI()
         {
             PlatformsListbox.ClearItems();
-            foreach (Platform platform in rm.Platforms)
+            foreach (Platform platform in platformsView)
             {
                 ListBoxItemPlatform item = new ListBoxItemPlatform(rm, platform);
                 item.MouseDoubleClick += PlatformEdit;
@@ -300,34 +305,40 @@ namespace GameTracker.UI
             PlatformSort(item.Name);
         }
 
+        private void PlatformsSort_Unchecked(object sender, RoutedEventArgs e)
+        {
+            platformsView = rm.Platforms;
+            UpdatePlatformsUI();
+        }
+
         private void PlatformSort(string sortField)
         {
             SortMode mode = GetSortModeFromButton(PlatformsButtonSortMode);
             switch (sortField)
             {
                 case SORT_PLATFORM_NAME:
-                    rm.SortPlatforms(platform => platform.Name, mode);
+                    platformsView = rm.SortPlatforms(platform => platform.Name, mode);
                     break;
                 case SORT_PLATFORM_NUMGAMES:
-                    rm.SortPlatforms(platform => rm.GetNumGamesByPlatform(platform), mode);
+                    platformsView = rm.SortPlatforms(platform => rm.GetNumGamesByPlatform(platform), mode);
                     break;
                 case SORT_PLATFORM_AVERAGE:
-                    rm.SortPlatforms(platform => rm.GetAverageScoreOfGamesByPlatform(platform), mode);
+                    platformsView = rm.SortPlatforms(platform => rm.GetAverageScoreOfGamesByPlatform(platform), mode);
                     break;
                 case SORT_PLATFORM_HIGHEST:
-                    rm.SortPlatforms(platform => rm.GetHighestScoreFromGamesByPlatform(platform), mode);
+                    platformsView = rm.SortPlatforms(platform => rm.GetHighestScoreFromGamesByPlatform(platform), mode);
                     break;
                 case SORT_PLATFORM_LOWEST:
-                    rm.SortPlatforms(platform => rm.GetLowestScoreFromGamesByPlatform(platform), mode);
+                    platformsView = rm.SortPlatforms(platform => rm.GetLowestScoreFromGamesByPlatform(platform), mode);
                     break;
                 case SORT_PLATFORM_PERCENT:
-                    rm.SortPlatforms(platform => rm.GetPercentageGamesFinishedByPlatform(platform), mode);
+                    platformsView = rm.SortPlatforms(platform => rm.GetPercentageGamesFinishedByPlatform(platform), mode);
                     break;
                 case SORT_PLATFORM_RELEASE:
-                    rm.SortPlatforms(platform => platform.ReleaseYear, mode);
+                    platformsView = rm.SortPlatforms(platform => platform.ReleaseYear, mode);
                     break;
                 case SORT_PLATFORM_ACQUIRED:
-                    rm.SortPlatforms(platform => platform.AcquiredYear, mode);
+                    platformsView = rm.SortPlatforms(platform => platform.AcquiredYear, mode);
                     break;
                 default:
                     throw new Exception("Unhandled sort expression");

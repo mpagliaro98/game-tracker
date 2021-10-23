@@ -165,13 +165,15 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (GlobalSettings.Autosave) saveFunction();
         }
 
-        protected void SortList<TInput, TOutput>(ref IEnumerable<TInput> list,
+        protected IEnumerable<TInput> SortList<TInput, TOutput>(IEnumerable<TInput> list,
             Func<TInput, TOutput> keySelector, SortMode mode)
         {
             if (mode == SortMode.ASCENDING)
-                list = list.OrderBy(keySelector);
+                return list.OrderBy(keySelector);
             else if (mode == SortMode.DESCENDING)
-                list = list.OrderByDescending(keySelector);
+                return list.OrderByDescending(keySelector);
+            else
+                throw new Exception("Unhandled sort mode");
         }
 
         public void AddListedObject(TListedObj obj)
@@ -204,14 +206,14 @@ namespace RatableTracker.Framework.ModuleHierarchy
             DeleteFromList(ref ranges, SaveRanges, obj);
         }
 
-        public void SortListedObjects<TField>(Func<TListedObj, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        public IEnumerable<TListedObj> SortListedObjects<TField>(Func<TListedObj, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
-            SortList(ref listedObjs, keySelector, mode);
+            return SortList(listedObjs, keySelector, mode);
         }
 
-        public void SortRanges<TField>(Func<TRange, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        public IEnumerable<TRange> SortRanges<TField>(Func<TRange, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
-            SortList(ref ranges, keySelector, mode);
+            return SortList(ranges, keySelector, mode);
         }
     }
 }

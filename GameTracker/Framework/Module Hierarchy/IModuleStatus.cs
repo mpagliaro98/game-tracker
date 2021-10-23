@@ -16,5 +16,6 @@ namespace RatableTracker.Framework.ModuleHierarchy
         void AddStatus(TStatus obj);
         void UpdateStatus(TStatus obj, TStatus orig);
         void DeleteStatus(TStatus obj);
+        IEnumerable<TStatus> SortStatuses<TField>(Func<TStatus, TField> keySelector, SortMode mode = SortMode.ASCENDING);
     }
 }
