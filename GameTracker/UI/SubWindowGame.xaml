@@ -5,7 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
-        Title="Game" Height="550" Width="800">
+        Title="Game" Height="550" Width="900">
+    <Window.Resources>
+        <BitmapImage x:Key="ButtonEdit" UriSource="../Images/button_pencil.png" />
+        <BitmapImage x:Key="ButtonLock" UriSource="../Images/button_lock.png" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="2.5*" />
@@ -65,7 +69,9 @@
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                         <Label Content="Final Score" />
-                        <Button x:Name="ButtonEditScore" Content="Edit" Height="20" Click="ButtonEditScore_Click" />
+                        <Button x:Name="ButtonEditScore" ToolTip="Edit the final score manually" Height="20" Click="ButtonEditScore_Click">
+                            <Image Source="{StaticResource ButtonEdit}" />
+                        </Button>
                     </StackPanel>
                     <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" TextChanged="TextBoxFinalScore_TextChanged" />
                 </DockPanel>

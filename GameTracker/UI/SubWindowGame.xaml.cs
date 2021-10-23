@@ -284,7 +284,10 @@ namespace GameTracker.UI
                 TextBox text = dock.FindChild<TextBox>("TextBoxValue");
                 text.IsEnabled = finalScoreEnabled;
             }
-            ButtonEditScore.Content = finalScoreEnabled ? "Edit" : "Lock";
+            Image image = new Image();
+            image.Source = (ImageSource)Resources[finalScoreEnabled ? "ButtonEdit" : "ButtonLock"];
+            ButtonEditScore.Content = image;
+            ButtonEditScore.ToolTip = finalScoreEnabled ? "Edit the final score manually" : "Use categories to automatically calculate the final score";
             if (finalScoreEnabled)
                 UpdateFinalScoreTextBoxAuto();
             else

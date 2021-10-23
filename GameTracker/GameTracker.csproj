@@ -270,5 +270,9 @@
     <Resource Include="Images\button_squares.png" />
     <Resource Include="Images\button_up.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\button_lock.png" />
+    <Resource Include="Images\button_pencil.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
