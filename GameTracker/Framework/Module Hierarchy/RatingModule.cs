@@ -72,16 +72,10 @@ namespace RatableTracker.Framework.ModuleHierarchy
             }
         }
 
-        public virtual bool ValidateManualScore(double val)
+        public virtual void ValidateManualScore(double val)
         {
-            return !(val < Settings.MinScore || val > Settings.MaxScore);
-        }
-
-        public virtual void SetManualScoreAndBoundsCheck(TListedObj obj, double val)
-        {
-            if (!ValidateManualScore(val))
-                throw new ScoreOutOfRangeException();
-            obj.FinalScoreManual = val;
+            if (val < Settings.MinScore || val > Settings.MaxScore)
+                throw new ValidationException("Score must be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString());
         }
 
         public override int GetRankOfObject(TListedObj obj)
@@ -115,6 +109,13 @@ namespace RatableTracker.Framework.ModuleHierarchy
                 if (obj == null || !obj.Equals(objLoop)) i++;
             }
             return i;
+        }
+
+        public override void ValidateListedObject(TListedObj obj)
+        {
+            base.ValidateListedObject(obj);
+            if (obj.FinalScoreManual < Settings.MinScore || obj.FinalScoreManual > Settings.MaxScore)
+                throw new ValidationException("Score must be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString());
         }
     }
 }

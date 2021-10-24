@@ -12,6 +12,8 @@ namespace RatableTracker.Framework
 {
     public class ScoreRange : ISavable, IReferable
     {
+        public static int MaxLengthName => 200;
+
         public string Name { get; set; } = "";
 
         private ObjectReference scoreRelationship = new ObjectReference();
@@ -68,6 +70,12 @@ namespace RatableTracker.Framework
         public void SetScoreRelationship<T>(T obj) where T : ScoreRelationship, IReferable
         {
             scoreRelationship.SetReference(obj);
+        }
+
+        public void OverwriteReferenceKey(IReferable orig)
+        {
+            if (orig is ScoreRange origRange)
+                referenceKey = origRange.referenceKey;
         }
 
         public override int GetHashCode()

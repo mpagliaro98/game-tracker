@@ -11,6 +11,8 @@ namespace RatableTracker.Framework
 {
     public class Status : ISavable, IReferable
     {
+        public static int MaxLengthName => 200;
+
         public string Name { get; set; } = "";
         public Color Color { get; set; } = new Color();
 
@@ -48,6 +50,12 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
+        }
+
+        public void OverwriteReferenceKey(IReferable orig)
+        {
+            if (orig is Status origStatus)
+                referenceKey = origStatus.referenceKey;
         }
 
         public override int GetHashCode()

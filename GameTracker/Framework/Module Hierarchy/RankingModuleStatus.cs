@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.ObjectHierarchy;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.Exceptions;
+using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.ModuleHierarchy
 {
@@ -36,11 +38,13 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         public void AddStatus(TStatus obj)
         {
+            ValidateStatus(obj);
             AddToList(ref statuses, SaveStatuses, obj, LimitStatuses);
         }
 
         public void UpdateStatus(TStatus obj, TStatus orig)
         {
+            ValidateStatus(obj);
             UpdateInList(ref statuses, SaveStatuses, obj, orig);
         }
 
@@ -55,6 +59,14 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public IEnumerable<TStatus> SortStatuses<TField>(Func<TStatus, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
             return SortList(statuses, keySelector, mode);
+        }
+
+        public virtual void ValidateStatus(TStatus obj)
+        {
+            if (obj.Name == "")
+                throw new ValidationException("A name is required");
+            if (obj.Name.Length > Status.MaxLengthName)
+                throw new ValidationException("Name cannot be longer than " + Status.MaxLengthName.ToString());
         }
     }
 }

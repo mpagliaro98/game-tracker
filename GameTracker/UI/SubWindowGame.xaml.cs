@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using GameTracker.Model;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.Exceptions;
 
 namespace GameTracker.UI
 {
@@ -71,6 +72,16 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
+            SaveResult();
+        }
+
+        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            SaveResult();
+        }
+
+        private void SaveResult()
+        {
             if (!ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
                 out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
                 out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
@@ -87,7 +98,9 @@ namespace GameTracker.UI
                 StartedOn = startedOn,
                 FinishedOn = finishedOn,
                 Comment = comment,
-                IgnoreCategories = ignoreCategories
+                IgnoreCategories = ignoreCategories,
+                FinalScoreManual = finalScore,
+                CategoryValues = vals
             };
             if (status != null)
                 game.SetStatus(status);
@@ -101,48 +114,19 @@ namespace GameTracker.UI
                 game.SetPlatformPlayedOn(platformPlayedOn);
             else
                 game.RemovePlatformPlayedOn();
-            if (game.IgnoreCategories)
-                rm.SetManualScoreAndBoundsCheck(game, finalScore);
-            else
-                rm.SetCategoryValuesAndBoundsCheck(game, vals);
-            rm.AddListedObject(game);
-            Close();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            if (!ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
-                out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
-                out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
-                out string comment)) return;
-            if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
-                out bool ignoreCategories)) return;
-            orig.Name = name;
-            if (status != null)
-                orig.SetStatus(status);
-            else
-                orig.RemoveStatus();
-            if (platform != null)
-                orig.SetPlatform(platform);
-            else
-                orig.RemovePlatform();
-            if (platformPlayedOn != null)
-                orig.SetPlatformPlayedOn(platformPlayedOn);
-            else
-                orig.RemovePlatformPlayedOn();
-            orig.CompletionCriteria = completionCriteria;
-            orig.CompletionComment = completionComment;
-            orig.TimeSpent = timeSpent;
-            orig.AcquiredOn = acquiredOn;
-            orig.StartedOn = startedOn;
-            orig.FinishedOn = finishedOn;
-            orig.Comment = comment;
-            orig.IgnoreCategories = ignoreCategories;
-            if (orig.IgnoreCategories)
-                rm.SetManualScoreAndBoundsCheck(orig, finalScore);
-            else
-                rm.SetCategoryValuesAndBoundsCheck(orig, vals);
-            rm.SaveListedObjects();
+            try
+            {
+                if (orig == null)
+                    rm.AddListedObject(game);
+                else
+                    rm.UpdateListedObject(game, orig);
+            }
+            catch (ValidationException e)
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = e.Message;
+                return;
+            }
             Close();
         }
 
@@ -166,6 +150,31 @@ namespace GameTracker.UI
             {
                 LabelError.Visibility = Visibility.Visible;
                 LabelError.Content = "A name is required";
+                return false;
+            }
+            return true;
+        }
+
+        private bool ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
+            out bool ignoreCategories)
+        {
+            vals = GetCategoryValueInputs(rm.RatingCategories);
+            ignoreCategories = TextBoxFinalScore.IsEnabled;
+            if (!double.TryParse(TextBoxFinalScore.Text, out finalScore))
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "The value of score must be a number";
+                return false;
+            }
+            try
+            {
+                rm.ValidateManualScore(finalScore);
+                rm.ValidateCategoryScores(vals);
+            }
+            catch (ValidationException e)
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = e.Message;
                 return false;
             }
             return true;
@@ -297,23 +306,6 @@ namespace GameTracker.UI
         private void ButtonEditScore_Click(object sender, RoutedEventArgs e)
         {
             UpdateScoreEditButton(TextBoxFinalScore.IsEnabled);
-        }
-
-        private bool ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
-            out bool ignoreCategories)
-        {
-            vals = GetCategoryValueInputs(rm.RatingCategories);
-            bool validFinalScore = double.TryParse(TextBoxFinalScore.Text, out finalScore);
-            validFinalScore &= rm.ValidateManualScore(finalScore);
-            ignoreCategories = TextBoxFinalScore.IsEnabled;
-            bool categoriesValid = rm.ValidateCategoryScores(vals);
-            if ((ignoreCategories && !validFinalScore) || (!ignoreCategories && !categoriesValid))
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "All scores must be between " + rm.Settings.MinScore.ToString() + " and " + rm.Settings.MaxScore.ToString();
-                return false;
-            }
-            return true;
         }
 
         private void UpdateFinalScoreTextBoxAuto()

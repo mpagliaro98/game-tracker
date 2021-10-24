@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
 using GameTracker.Model;
+using RatableTracker.Framework.Exceptions;
 
 namespace GameTracker.UI
 {
@@ -52,6 +53,16 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
+            SaveResult();
+        }
+
+        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            SaveResult();
+        }
+
+        private void SaveResult()
+        {
             if (!ValidateInputs(out string name, out bool useAsFinished,
                 out bool excludeFromStats, out System.Drawing.Color color)) return;
             var status = new CompletionStatus()
@@ -61,19 +72,19 @@ namespace GameTracker.UI
                 ExcludeFromStats = excludeFromStats,
                 Color = color
             };
-            rm.AddStatus(status);
-            Close();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            if (!ValidateInputs(out string name, out bool useAsFinished,
-                out bool excludeFromStats, out System.Drawing.Color color)) return;
-            orig.Name = name;
-            orig.UseAsFinished = useAsFinished;
-            orig.ExcludeFromStats = excludeFromStats;
-            orig.Color = color;
-            rm.SaveStatuses();
+            try
+            {
+                if (orig == null)
+                    rm.AddStatus(status);
+                else
+                    rm.UpdateStatus(status, orig);
+            }
+            catch (ValidationException e)
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = e.Message;
+                return;
+            }
             Close();
         }
 
@@ -84,11 +95,6 @@ namespace GameTracker.UI
             useAsFinished = CheckboxUseAsFinished.IsChecked.Value;
             excludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
             color = ColorPickerColor.SelectedColor.ToDrawingColor();
-            if (name == "")
-            {
-                LabelError.Visibility = Visibility.Visible;
-                return false;
-            }
             return true;
         }
     }

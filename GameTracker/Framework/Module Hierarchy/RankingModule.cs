@@ -144,6 +144,8 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         protected void UpdateInList<T>(ref IEnumerable<T> list, Action saveFunction, T obj, T orig)
         {
+            if (obj is IReferable objReferable && orig is IReferable origReferable)
+                objReferable.OverwriteReferenceKey(origReferable);
             List<T> temp = list.ToList();
             int idx = temp.IndexOf(orig);
             UpdateInList(ref list, saveFunction, obj, idx);
@@ -178,21 +180,25 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         public void AddListedObject(TListedObj obj)
         {
+            ValidateListedObject(obj);
             AddToList(ref listedObjs, SaveListedObjects, obj);
         }
 
         public void AddRange(TRange obj)
         {
+            ValidateRange(obj);
             AddToList(ref ranges, SaveRanges, obj, LimitRanges);
         }
 
         public void UpdateListedObject(TListedObj obj, TListedObj orig)
         {
+            ValidateListedObject(obj);
             UpdateInList(ref listedObjs, SaveListedObjects, obj, orig);
         }
 
         public void UpdateRange(TRange obj, TRange orig)
         {
+            ValidateRange(obj);
             UpdateInList(ref ranges, SaveRanges, obj, orig);
         }
 
@@ -214,6 +220,29 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public IEnumerable<TRange> SortRanges<TField>(Func<TRange, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
             return SortList(ranges, keySelector, mode);
+        }
+
+        public virtual void ValidateListedObject(TListedObj obj)
+        {
+            if (obj.Name == "")
+                throw new ValidationException("A name is required");
+            if (obj.Name.Length > ListedObject.MaxLengthName)
+                throw new ValidationException("Name cannot be longer than " + ListedObject.MaxLengthName.ToString());
+            if (obj.Comment.Length > ListedObject.MaxLengthComment)
+                throw new ValidationException("Comment cannot be longer than " + ListedObject.MaxLengthComment.ToString());
+        }
+
+        public virtual void ValidateRange(TRange obj)
+        {
+            if (obj.Name == "")
+                throw new ValidationException("A name is required");
+            if (obj.Name.Length > ScoreRange.MaxLengthName)
+                throw new ValidationException("Name cannot be longer than " + ScoreRange.MaxLengthName.ToString());
+            if (!obj.RefScoreRelationship.HasReference())
+                throw new ValidationException("A score relationship is required");
+            ScoreRelationship sr = FindScoreRelationship(obj.RefScoreRelationship);
+            if (sr.NumValuesRequired != obj.ValueList.Count())
+                throw new ValidationException("The " + sr.Name + " relationship requires " + sr.NumValuesRequired.ToString() + " values, but " + obj.ValueList.Count().ToString() + " were given");
         }
     }
 }

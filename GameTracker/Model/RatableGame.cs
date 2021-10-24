@@ -12,6 +12,10 @@ namespace GameTracker.Model
 {
     public class RatableGame : RatableObjectStatusCategorical
     {
+        public static int MaxLengthCompletionCriteria => 1000;
+        public static int MaxLengthCompletionComment => 1000;
+        public static int MaxLengthTimeSpent => 1000;
+
         private ObjectReference platform = new ObjectReference();
         public ObjectReference RefPlatform => platform;
 

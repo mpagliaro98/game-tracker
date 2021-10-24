@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameTracker.Model;
 using RatableTracker.Framework;
+using RatableTracker.Framework.Exceptions;
 
 namespace GameTracker.UI
 {
@@ -50,6 +51,16 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
+            SaveResult();
+        }
+
+        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            SaveResult();
+        }
+
+        private void SaveResult()
+        {
             if (!ValidateInputs(out string name, out string comment, out double weight)) return;
             var cat = new RatingCategoryWeighted()
             {
@@ -57,17 +68,19 @@ namespace GameTracker.UI
                 Comment = comment
             };
             cat.SetWeight(weight);
-            rm.AddRatingCategory(cat);
-            Close();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            if (!ValidateInputs(out string name, out string comment, out double weight)) return;
-            orig.Name = name;
-            orig.Comment = comment;
-            orig.SetWeight(weight);
-            rm.SaveRatingCategories();
+            try
+            {
+                if (orig == null)
+                    rm.AddRatingCategory(cat);
+                else
+                    rm.UpdateRatingCategory(cat, orig);
+            }
+            catch (ValidationException e)
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = e.Message;
+                return;
+            }
             Close();
         }
 
@@ -75,9 +88,10 @@ namespace GameTracker.UI
         {
             name = TextboxName.Text;
             comment = TextboxComment.Text;
-            if (!double.TryParse(TextboxWeight.Text, out weight) || name == "")
+            if (!double.TryParse(TextboxWeight.Text, out weight))
             {
                 LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "The value for weight must be a number";
                 return false;
             }
             return true;

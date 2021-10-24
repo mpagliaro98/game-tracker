@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.ModuleHierarchy
 {
@@ -17,5 +18,6 @@ namespace RatableTracker.Framework.ModuleHierarchy
         void UpdateStatus(TStatus obj, TStatus orig);
         void DeleteStatus(TStatus obj);
         IEnumerable<TStatus> SortStatuses<TField>(Func<TStatus, TField> keySelector, SortMode mode = SortMode.ASCENDING);
+        void ValidateStatus(TStatus obj);
     }
 }

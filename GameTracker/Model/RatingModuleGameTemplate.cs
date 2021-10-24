@@ -7,6 +7,7 @@ using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.ModuleHierarchy;
+using RatableTracker.Framework.Exceptions;
 
 namespace GameTracker.Model
 {
@@ -98,11 +99,13 @@ namespace GameTracker.Model
 
         public void AddPlatform(Platform obj)
         {
+            ValidatePlatform(obj);
             AddToList(ref platforms, SavePlatforms, obj);
         }
 
         public void UpdatePlatform(Platform obj, Platform orig)
         {
+            ValidatePlatform(obj);
             UpdateInList(ref platforms, SavePlatforms, obj, orig);
         }
 
@@ -119,6 +122,25 @@ namespace GameTracker.Model
         public IEnumerable<Platform> SortPlatforms<TField>(Func<Platform, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
             return SortList(platforms, keySelector, mode);
+        }
+
+        public override void ValidateListedObject(TListedObj obj)
+        {
+            base.ValidateListedObject(obj);
+            if (obj.CompletionCriteria.Length > RatableGame.MaxLengthCompletionCriteria)
+                throw new ValidationException("Completion criteria cannot be longer than " + RatableGame.MaxLengthCompletionCriteria.ToString());
+            if (obj.CompletionComment.Length > RatableGame.MaxLengthCompletionComment)
+                throw new ValidationException("Completion comment cannot be longer than " + RatableGame.MaxLengthCompletionComment.ToString());
+            if (obj.TimeSpent.Length > RatableGame.MaxLengthTimeSpent)
+                throw new ValidationException("Time spent cannot be longer than " + RatableGame.MaxLengthTimeSpent.ToString());
+        }
+
+        public virtual void ValidatePlatform(Platform obj)
+        {
+            if (obj.Name == "")
+                throw new ValidationException("A name is required");
+            if (obj.Name.Length > Platform.MaxLengthName)
+                throw new ValidationException("Name cannot be longer than " + Platform.MaxLengthName.ToString());
         }
 
         public IEnumerable<TListedObj> GetGamesOnPlatform(Platform platform)

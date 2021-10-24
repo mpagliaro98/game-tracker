@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using RatableTracker.Framework.ObjectHierarchy;
 using RatableTracker.Framework.Global;
 using RatableTracker.Framework.Exceptions;
+using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.ModuleHierarchy
 {
@@ -57,42 +58,14 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         protected override void ScaleScoreOfObject(TListedObj obj, double oldRange, double newRange, double minRangeOld, double minRangeNew)
         {
-            if (obj.IgnoreCategories)
+            base.ScaleScoreOfObject(obj, oldRange, newRange, minRangeOld, minRangeNew);
+            foreach (RatingCategoryValue rcv in obj.CategoryValues)
             {
-                base.ScaleScoreOfObject(obj, oldRange, newRange, minRangeOld, minRangeNew);
+                if (oldRange == 0)
+                    rcv.PointValue = minRangeNew;
+                else
+                    rcv.PointValue = ((rcv.PointValue - minRangeOld) * newRange / oldRange) + minRangeNew;
             }
-            else
-            {
-                foreach (RatingCategoryValue rcv in obj.CategoryValues)
-                {
-                    if (oldRange == 0)
-                        rcv.PointValue = minRangeNew;
-                    else
-                        rcv.PointValue = ((rcv.PointValue - minRangeOld) * newRange / oldRange) + minRangeNew;
-                }
-            }
-        }
-
-        public virtual bool ValidateCategoryScores(IEnumerable<RatingCategoryValue> vals)
-        {
-            foreach (RatingCategoryValue val in vals)
-            {
-                if (val.PointValue < Settings.MinScore || val.PointValue > Settings.MaxScore)
-                    return false;
-            }
-            return true;
-        }
-
-        public virtual void SetCategoryValuesAndBoundsCheck(TListedObj obj, IEnumerable<RatingCategoryValue> vals)
-        {
-            if (!ValidateCategoryScores(vals))
-                throw new ScoreOutOfRangeException();
-            obj.CategoryValues = vals;
-        }
-
-        public TRatingCat FindRatingCategory(ObjectReference objectKey)
-        {
-            return FindObject(ratingCategories, objectKey);
         }
 
         protected double SumOfWeights(IEnumerable<RatingCategoryValue> categoryValues)
@@ -106,13 +79,20 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return sum;
         }
 
+        public TRatingCat FindRatingCategory(ObjectReference objectKey)
+        {
+            return FindObject(ratingCategories, objectKey);
+        }
+
         public void AddRatingCategory(TRatingCat obj)
         {
+            ValidateRatingCategory(obj);
             AddToList(ref ratingCategories, SaveRatingCategories, obj, LimitRatingCategories);
         }
 
         public void UpdateRatingCategory(TRatingCat obj, TRatingCat orig)
         {
+            ValidateRatingCategory(obj);
             UpdateInList(ref ratingCategories, SaveRatingCategories, obj, orig);
         }
 
@@ -126,6 +106,34 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public IEnumerable<TRatingCat> SortRatingCategories<TField>(Func<TRatingCat, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
             return SortList(ratingCategories, keySelector, mode);
+        }
+
+        public override void ValidateListedObject(TListedObj obj)
+        {
+            base.ValidateListedObject(obj);
+            ValidateCategoryScores(obj.CategoryValues);
+        }
+
+        public virtual void ValidateCategoryScores(IEnumerable<RatingCategoryValue> vals)
+        {
+            foreach (RatingCategoryValue val in vals)
+            {
+                if (val.PointValue < Settings.MinScore || val.PointValue > Settings.MaxScore)
+                {
+                    TRatingCat cat = FindRatingCategory(val.RefRatingCategory);
+                    throw new ValidationException(cat.Name + " score must all be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString());
+                }
+            }
+        }
+
+        public virtual void ValidateRatingCategory(TRatingCat obj)
+        {
+            if (obj.Name == "")
+                throw new ValidationException("A name is required");
+            if (obj.Name.Length > RatingCategory.MaxLengthName)
+                throw new ValidationException("Name cannot be longer than " + RatingCategory.MaxLengthName.ToString());
+            if (obj.Comment.Length > RatingCategory.MaxLengthComment)
+                throw new ValidationException("Comment cannot be longer than " + RatingCategory.MaxLengthComment.ToString());
         }
     }
 }

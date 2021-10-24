@@ -11,6 +11,9 @@ namespace RatableTracker.Framework.ObjectHierarchy
 {
     public class ListedObject : ISavable, IReferable
     {
+        public static int MaxLengthName => 200;
+        public static int MaxLengthComment => 4000;
+
         public string Name { get; set; } = "";
 
         public string Comment { get; set; } = "";
@@ -49,6 +52,12 @@ namespace RatableTracker.Framework.ObjectHierarchy
                         break;
                 }
             }
+        }
+
+        public void OverwriteReferenceKey(IReferable orig)
+        {
+            if (orig is ListedObject origObj)
+                referenceKey = origObj.referenceKey;
         }
 
         public override int GetHashCode()

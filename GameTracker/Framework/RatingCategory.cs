@@ -10,6 +10,9 @@ namespace RatableTracker.Framework
 {
     public class RatingCategory : ISavable, IReferable
     {
+        public static int MaxLengthName => 200;
+        public static int MaxLengthComment => 4000;
+
         public string Name { get; set; } = "";
 
         public string Comment { get; set; } = "";
@@ -55,6 +58,12 @@ namespace RatableTracker.Framework
                         break;
                 }
             }
+        }
+
+        public void OverwriteReferenceKey(IReferable orig)
+        {
+            if (orig is RatingCategory origCategory)
+            referenceKey = origCategory.referenceKey;
         }
 
         public override int GetHashCode()

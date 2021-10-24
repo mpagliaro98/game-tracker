@@ -12,6 +12,8 @@ namespace GameTracker.Model
 {
     public class Platform : ISavable, IReferable
     {
+        public static int MaxLengthName => 200;
+
         public string Name { get; set; } = "";
 
         public int ReleaseYear { get; set; } = 0;
@@ -62,6 +64,12 @@ namespace GameTracker.Model
                         break;
                 }
             }
+        }
+
+        public void OverwriteReferenceKey(IReferable orig)
+        {
+            if (orig is Platform origPlatform)
+                referenceKey = origPlatform.referenceKey;
         }
 
         public override int GetHashCode()

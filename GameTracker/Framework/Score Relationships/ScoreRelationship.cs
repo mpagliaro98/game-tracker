@@ -17,9 +17,12 @@ namespace RatableTracker.Framework.ScoreRelationships
 
         public abstract int NumValuesRequired { get; }
 
+        protected Guid referenceKey;
         public abstract Guid ReferenceKey { get; }
 
         public abstract bool IsValueInRange(double val, IEnumerable<double> valueList);
+
+        public abstract void OverwriteReferenceKey(IReferable orig);
 
         public override string ToString()
         {

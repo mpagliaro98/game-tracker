@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.Exceptions;
+using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.ScoreRelationships
 {
@@ -22,6 +23,12 @@ namespace RatableTracker.Framework.ScoreRelationships
                 throw new IncompleteScoreRangeException("ScoreRelationshipBelow expects " + NumValuesRequired.ToString() + " values, got " + valueList.Count().ToString());
             }
             return val < valueList.ElementAt(0);
+        }
+
+        public override void OverwriteReferenceKey(IReferable orig)
+        {
+            if (orig is ScoreRelationship origRel)
+                referenceKey = origRel.ReferenceKey;
         }
     }
 }

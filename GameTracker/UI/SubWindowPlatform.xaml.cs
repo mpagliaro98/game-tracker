@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameTracker.Model;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.Exceptions;
 
 namespace GameTracker.UI
 {
@@ -51,6 +52,16 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
+            SaveResult();
+        }
+
+        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            SaveResult();
+        }
+
+        private void SaveResult()
+        {
             if (!ValidateInputs(out string name, out System.Drawing.Color color,
                 out int releaseYear, out int acquiredYear)) return;
             var platform = new Platform()
@@ -60,19 +71,19 @@ namespace GameTracker.UI
                 ReleaseYear = releaseYear,
                 AcquiredYear = acquiredYear
             };
-            rm.AddPlatform(platform);
-            Close();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            if (!ValidateInputs(out string name, out System.Drawing.Color color,
-                out int releaseYear, out int acquiredYear)) return;
-            orig.Name = name;
-            orig.Color = color;
-            orig.ReleaseYear = releaseYear;
-            orig.AcquiredYear = acquiredYear;
-            rm.SavePlatforms();
+            try
+            {
+                if (orig == null)
+                    rm.AddPlatform(platform);
+                else
+                    rm.UpdatePlatform(platform, orig);
+            }
+            catch (ValidationException e)
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = e.Message;
+                return;
+            }
             Close();
         }
 
@@ -83,11 +94,6 @@ namespace GameTracker.UI
             releaseYear = TextboxYear.Text == "" ? 0 : TextboxYear.Value.HasValue ? TextboxYear.Value.Value : 0;
             acquiredYear = TextboxAcquiredYear.Text == "" ? 0 : TextboxAcquiredYear.Value.HasValue ? TextboxAcquiredYear.Value.Value : 0;
             color = ColorPickerColor.SelectedColor.ToDrawingColor();
-            if (name == "")
-            {
-                LabelError.Visibility = Visibility.Visible;
-                return false;
-            }
             return true;
         }
     }

@@ -15,6 +15,7 @@ using RatableTracker.Framework;
 using GameTracker.Model;
 using RatableTracker.Framework.ScoreRelationships;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.Exceptions;
 
 namespace GameTracker.UI
 {
@@ -56,6 +57,16 @@ namespace GameTracker.UI
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
+            SaveResult();
+        }
+
+        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            SaveResult();
+        }
+
+        private void SaveResult()
+        {
             if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
                 out ScoreRelationship sr, out System.Drawing.Color color)) return;
             var range = new ScoreRange()
@@ -65,19 +76,19 @@ namespace GameTracker.UI
                 Color = color
             };
             range.SetScoreRelationship(sr);
-            rm.AddRange(range);
-            Close();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
-                out ScoreRelationship sr, out System.Drawing.Color color)) return;
-            orig.Name = name;
-            orig.ValueList = valueList;
-            orig.SetScoreRelationship(sr);
-            orig.Color = color;
-            rm.SaveRanges();
+            try
+            {
+                if (orig == null)
+                    rm.AddRange(range);
+                else
+                    rm.UpdateRange(range, orig);
+            }
+            catch (ValidationException e)
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = e.Message;
+                return;
+            }
             Close();
         }
 
@@ -89,18 +100,21 @@ namespace GameTracker.UI
             IEnumerable<string> list = GetValueListText();
             sr = (ScoreRelationship)ComboboxRelationship.SelectedItem;
             color = ColorPickerColor.SelectedColor.ToDrawingColor();
-            if (name == "" || sr == null)
+            if (sr == null)
             {
                 LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "You must select a score relationship";
                 return false;
             }
             foreach (string str in list)
             {
-                if (!int.TryParse(str, out _) || str == "")
+                if (!double.TryParse(str, out _) || str == "")
                 {
+                    LabelError.Visibility = Visibility.Visible;
+                    LabelError.Content = "All values must be numbers";
                     return false;
                 }
-                valueList = valueList.Append(int.Parse(str));
+                valueList = valueList.Append(double.Parse(str));
             }
             return true;
         }
