@@ -21,7 +21,7 @@ namespace GameTracker.UI
     /// <summary>
     /// Interaction logic for ListBoxItemGameSmall.xaml
     /// </summary>
-    public partial class ListBoxItemGameSmall : UserControl
+    public partial class ListBoxItemGameSmall : UserControl, IListBoxItemGame
     {
         private const string DECIMAL_FORMAT = "0.##";
 

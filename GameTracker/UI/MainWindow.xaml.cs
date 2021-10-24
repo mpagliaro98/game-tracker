@@ -207,14 +207,19 @@ namespace GameTracker.UI
 
         private void GameEdit(object sender, RoutedEventArgs e)
         {
-            ListBoxItemGameSmall lbi;
+            IListBoxItemGame lbi = null;
             if (sender is MenuItem)
             {
-                lbi = GetControlFromMenuItem<ListBoxItemGameSmall>((MenuItem)sender);
+                try
+                {
+                    lbi = GetControlFromMenuItem<ListBoxItemGameSmall>((MenuItem)sender);
+                }
+                catch (Exception) { }
+                if (lbi == null) throw new Exception("Could not find list box item");
             }
             else
             {
-                lbi = (ListBoxItemGameSmall)sender;
+                lbi = (IListBoxItemGame)sender;
             }
             OpenSubWindowGame(SubWindowMode.MODE_EDIT, lbi.Game);
         }
