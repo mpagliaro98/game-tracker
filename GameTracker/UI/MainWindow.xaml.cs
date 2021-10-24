@@ -44,10 +44,17 @@ namespace GameTracker.UI
         private const string SORT_GAME_SCORE = "GamesSortScore";
         private const string SORT_GAME_HASCOMMENT = "GamesSortHasComment";
 
-        private IEnumerable<RatableGame> gamesView;
-        private IEnumerable<Platform> platformsView;
-
         private RatingModuleGame rm;
+
+        private class SavedState
+        {
+            public Func<RatableGame, object> gamesSortFunc = null;
+            public SortMode gamesSortMode = SortMode.ASCENDING;
+            public Func<Platform, object> platformsSortFunc = null;
+            public SortMode platformsSortMode = SortMode.ASCENDING;
+        }
+
+        private SavedState savedState = new SavedState();
 
         public MainWindow()
         {
@@ -56,10 +63,8 @@ namespace GameTracker.UI
             rm = new RatingModuleGame();
             rm.Init();
             InitializeComponent();
-            PlatformsButtonSortMode.Tag = SortMode.ASCENDING;
-            GamesButtonSortMode.Tag = SortMode.ASCENDING;
-            gamesView = rm.ListedObjects;
-            platformsView = rm.Platforms;
+            PlatformsButtonSortMode.Tag = savedState.platformsSortMode;
+            GamesButtonSortMode.Tag = savedState.gamesSortMode;
         }
 
         #region General Functionality and Utilities
@@ -150,10 +155,17 @@ namespace GameTracker.UI
         #endregion
 
         #region Games Tab
+        private IEnumerable<RatableGame> GetGamesView()
+        {
+            IEnumerable<RatableGame> temp = rm.ListedObjects;
+            if (savedState.gamesSortFunc != null) temp = rm.SortListedObjects(savedState.gamesSortFunc, savedState.gamesSortMode);
+            return temp;
+        }
+
         private void UpdateGamesUI()
         {
             GamesListbox.ClearItems();
-            foreach (RatableGame rg in gamesView)
+            foreach (RatableGame rg in GetGamesView())
             {
                 ListBoxItemGameSmall item = new ListBoxItemGameSmall(rm, rg);
                 item.MouseDoubleClick += GameEdit;
@@ -253,32 +265,32 @@ namespace GameTracker.UI
 
         private void GamesSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            gamesView = rm.ListedObjects;
+            savedState.gamesSortFunc = null;
             UpdateGamesUI();
         }
 
         private void GamesSort(string sortField)
         {
-            SortMode mode = GetSortModeFromButton(GamesButtonSortMode);
+            savedState.gamesSortMode = GetSortModeFromButton(GamesButtonSortMode);
             switch (sortField)
             {
                 case SORT_GAME_NAME:
-                    gamesView = rm.SortListedObjects(game => game.Name, mode);
+                    savedState.gamesSortFunc = game => game.Name;
                     break;
                 case SORT_GAME_STATUS:
-                    gamesView = rm.SortListedObjects(game => game.RefStatus.HasReference() ? rm.FindStatus(game.RefStatus).Name : "", mode);
+                    savedState.gamesSortFunc = game => game.RefStatus.HasReference() ? rm.FindStatus(game.RefStatus).Name : "";
                     break;
                 case SORT_GAME_PLATFORM:
-                    gamesView = rm.SortListedObjects(game => game.RefPlatform.HasReference() ? rm.FindPlatform(game.RefPlatform).Name : "", mode);
+                    savedState.gamesSortFunc = game => game.RefPlatform.HasReference() ? rm.FindPlatform(game.RefPlatform).Name : "";
                     break;
                 case SORT_GAME_PLAYEDON:
-                    gamesView = rm.SortListedObjects(game => game.RefPlatformPlayedOn.HasReference() ? rm.FindPlatform(game.RefPlatformPlayedOn).Name : "", mode);
+                    savedState.gamesSortFunc = game => game.RefPlatformPlayedOn.HasReference() ? rm.FindPlatform(game.RefPlatformPlayedOn).Name : "";
                     break;
                 case SORT_GAME_SCORE:
-                    gamesView = rm.SortListedObjects(game => rm.GetScoreOfObject(game), mode);
+                    savedState.gamesSortFunc = game => rm.GetScoreOfObject(game);
                     break;
                 case SORT_GAME_HASCOMMENT:
-                    gamesView = rm.SortListedObjects(game => game.Comment.Length > 0, mode);
+                    savedState.gamesSortFunc = game => game.Comment.Length > 0;
                     break;
                 default:
                     throw new Exception("Unhandled sort expression");
@@ -306,10 +318,17 @@ namespace GameTracker.UI
         #endregion
 
         #region Platforms Tab
+        private IEnumerable<Platform> GetPlatformsView()
+        {
+            IEnumerable<Platform> temp = rm.Platforms;
+            if (savedState.platformsSortFunc != null) temp = rm.SortPlatforms(savedState.platformsSortFunc, savedState.platformsSortMode);
+            return temp;
+        }
+
         private void UpdatePlatformsUI()
         {
             PlatformsListbox.ClearItems();
-            foreach (Platform platform in platformsView)
+            foreach (Platform platform in GetPlatformsView())
             {
                 ListBoxItemPlatform item = new ListBoxItemPlatform(rm, platform);
                 item.MouseDoubleClick += PlatformEdit;
@@ -387,7 +406,7 @@ namespace GameTracker.UI
 
         private void PlatformsSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            platformsView = rm.Platforms;
+            savedState.platformsSortFunc = null;
             UpdatePlatformsUI();
         }
 
@@ -397,28 +416,28 @@ namespace GameTracker.UI
             switch (sortField)
             {
                 case SORT_PLATFORM_NAME:
-                    platformsView = rm.SortPlatforms(platform => platform.Name, mode);
+                    savedState.platformsSortFunc = platform => platform.Name;
                     break;
                 case SORT_PLATFORM_NUMGAMES:
-                    platformsView = rm.SortPlatforms(platform => rm.GetNumGamesByPlatform(platform), mode);
+                    savedState.platformsSortFunc = platform => rm.GetNumGamesByPlatform(platform);
                     break;
                 case SORT_PLATFORM_AVERAGE:
-                    platformsView = rm.SortPlatforms(platform => rm.GetAverageScoreOfGamesByPlatform(platform), mode);
+                    savedState.platformsSortFunc = platform => rm.GetAverageScoreOfGamesByPlatform(platform);
                     break;
                 case SORT_PLATFORM_HIGHEST:
-                    platformsView = rm.SortPlatforms(platform => rm.GetHighestScoreFromGamesByPlatform(platform), mode);
+                    savedState.platformsSortFunc = platform => rm.GetHighestScoreFromGamesByPlatform(platform);
                     break;
                 case SORT_PLATFORM_LOWEST:
-                    platformsView = rm.SortPlatforms(platform => rm.GetLowestScoreFromGamesByPlatform(platform), mode);
+                    savedState.platformsSortFunc = platform => rm.GetLowestScoreFromGamesByPlatform(platform);
                     break;
                 case SORT_PLATFORM_PERCENT:
-                    platformsView = rm.SortPlatforms(platform => rm.GetPercentageGamesFinishedByPlatform(platform), mode);
+                    savedState.platformsSortFunc = platform => rm.GetPercentageGamesFinishedByPlatform(platform);
                     break;
                 case SORT_PLATFORM_RELEASE:
-                    platformsView = rm.SortPlatforms(platform => platform.ReleaseYear, mode);
+                    savedState.platformsSortFunc = platform => platform.ReleaseYear;
                     break;
                 case SORT_PLATFORM_ACQUIRED:
-                    platformsView = rm.SortPlatforms(platform => platform.AcquiredYear, mode);
+                    savedState.platformsSortFunc = platform => platform.AcquiredYear;
                     break;
                 default:
                     throw new Exception("Unhandled sort expression");
