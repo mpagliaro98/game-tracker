@@ -135,10 +135,23 @@ namespace RatableTracker.Framework.ModuleHierarchy
         protected void AddToList<T>(ref IEnumerable<T> list, Action saveFunction, T obj, int limit)
         {
             if (limit >= 0 && list.Count() >= limit)
-            {
                 throw new ExceededLimitException("Attempted to exceed limit of " + limit.ToString() + " for list of " + typeof(T).ToString());
-            }
             list = list.Append(obj);
+            if (GlobalSettings.Autosave) saveFunction();
+        }
+
+        protected void InsertIntoList<T>(ref IEnumerable<T> list, Action saveFunction, T obj, int position)
+        {
+            InsertIntoList(ref list, saveFunction, obj, position, -1);
+        }
+
+        protected void InsertIntoList<T>(ref IEnumerable<T> list, Action saveFunction, T obj, int position, int limit)
+        {
+            if (limit >= 0 && list.Count() >= limit)
+                throw new ExceededLimitException("Attempted to exceed limit of " + limit.ToString() + " for list of " + typeof(T).ToString());
+            List<T> temp = list.ToList();
+            temp.Insert(position, obj);
+            list = temp;
             if (GlobalSettings.Autosave) saveFunction();
         }
 
@@ -153,6 +166,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
 
         protected void UpdateInList<T>(ref IEnumerable<T> list, Action saveFunction, T obj, int idx)
         {
+            if (idx < 0 || idx >= list.Count()) throw new ArgumentOutOfRangeException();
             List<T> temp = list.ToList();
             temp[idx] = obj;
             list = temp;
@@ -162,7 +176,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
         protected void DeleteFromList<T>(ref IEnumerable<T> list, Action saveFunction, T obj)
         {
             List<T> temp = list.ToList();
-            temp.Remove(obj);
+            if (!temp.Remove(obj)) throw new ArgumentOutOfRangeException();
             list = temp;
             if (GlobalSettings.Autosave) saveFunction();
         }
@@ -178,10 +192,32 @@ namespace RatableTracker.Framework.ModuleHierarchy
                 throw new Exception("Unhandled sort mode");
         }
 
+        protected void MoveElementInList<T>(ref IEnumerable<T> list, Action saveFunction, int posToChange, int newPos)
+        {
+            List<T> temp = list.ToList();
+            T element = temp.ElementAt(posToChange);
+            MoveElementInList(ref list, saveFunction, element, newPos);
+        }
+
+        protected void MoveElementInList<T>(ref IEnumerable<T> list, Action saveFunction, T element, int newPos)
+        {
+            List<T> temp = list.ToList();
+            if (!temp.Remove(element)) throw new ArgumentOutOfRangeException();
+            temp.Insert(newPos, element);
+            list = temp;
+            if (GlobalSettings.Autosave) saveFunction();
+        }
+
         public void AddListedObject(TListedObj obj)
         {
             ValidateListedObject(obj);
-            AddToList(ref listedObjs, SaveListedObjects, obj);
+            AddToList(ref listedObjs, SaveListedObjects, obj, LimitListedObjects);
+        }
+
+        public void AddListedObjectAtPosition(TListedObj obj, int position)
+        {
+            ValidateListedObject(obj);
+            InsertIntoList(ref listedObjs, SaveListedObjects, obj, position, LimitListedObjects);
         }
 
         public void AddRange(TRange obj)
@@ -220,6 +256,38 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public IEnumerable<TRange> SortRanges<TField>(Func<TRange, TField> keySelector, SortMode mode = SortMode.ASCENDING)
         {
             return SortList(ranges, keySelector, mode);
+        }
+
+        public void ChangeRankOfListedObject(int rankToChange, int newRank)
+        {
+            MoveElementInList(ref listedObjs, SaveListedObjects, rankToChange, newRank);
+        }
+
+        public void ChangeRankOfListedObject(TListedObj obj, int newRank)
+        {
+            MoveElementInList(ref listedObjs, SaveListedObjects, obj, newRank);
+        }
+
+        public void MoveObjectUpOneRank(TListedObj obj)
+        {
+            int position = listedObjs.ToList().IndexOf(obj);
+            MoveObjectUpOneRank(position);
+        }
+
+        public void MoveObjectUpOneRank(int rank)
+        {
+            MoveElementInList(ref listedObjs, SaveListedObjects, rank, rank - 1);
+        }
+
+        public void MoveObjectDownOneRank(TListedObj obj)
+        {
+            int position = listedObjs.ToList().IndexOf(obj);
+            MoveObjectDownOneRank(position);
+        }
+
+        public void MoveObjectDownOneRank(int rank)
+        {
+            MoveElementInList(ref listedObjs, SaveListedObjects, rank, rank - 1);
         }
 
         public virtual void ValidateListedObject(TListedObj obj)

@@ -100,7 +100,7 @@ namespace GameTracker.Model
         public void AddPlatform(Platform obj)
         {
             ValidatePlatform(obj);
-            AddToList(ref platforms, SavePlatforms, obj);
+            AddToList(ref platforms, SavePlatforms, obj, LimitPlatforms);
         }
 
         public void UpdatePlatform(Platform obj, Platform orig)
