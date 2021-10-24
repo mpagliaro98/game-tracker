@@ -77,7 +77,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Framework\Exceptions\ExceededLimitException.cs" />
-    <Compile Include="Framework\Exceptions\ScoreOutOfRangeException.cs" />
     <Compile Include="Framework\Exceptions\ValidationException.cs" />
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />

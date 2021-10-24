@@ -474,10 +474,9 @@ namespace GameTracker.UI
             {
                 MessageBoxResult mbr = MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
                 if (mbr != MessageBoxResult.Yes) return;
+                rm.SetScoresAndUpdate(minScore, maxScore);
             }
 
-            rm.SetMinScoreAndUpdate(minScore);
-            rm.SetMaxScoreAndUpdate(maxScore);
             UpdateSettingsUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
         }

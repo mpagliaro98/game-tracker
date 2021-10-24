@@ -48,23 +48,13 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return obj.FinalScoreManual;
         }
 
-        public virtual void SetMinScoreAndUpdate(double newVal)
+        public virtual void SetScoresAndUpdate(double newMin, double newMax)
         {
             double oldMinScore = Settings.MinScore;
-            Settings.MinScore = newVal;
-            RecalculateScores(oldMinScore, Settings.MaxScore, Settings.MinScore, Settings.MaxScore);
-            if (GlobalSettings.Autosave)
-            {
-                SaveSettings();
-                SaveListedObjects();
-            }
-        }
-
-        public virtual void SetMaxScoreAndUpdate(double newVal)
-        {
             double oldMaxScore = Settings.MaxScore;
-            Settings.MaxScore = newVal;
-            RecalculateScores(Settings.MinScore, oldMaxScore, Settings.MinScore, Settings.MaxScore);
+            Settings.MinScore = newMin;
+            Settings.MaxScore = newMax;
+            RecalculateScores(oldMinScore, oldMaxScore, Settings.MinScore, Settings.MaxScore);
             if (GlobalSettings.Autosave)
             {
                 SaveSettings();
