@@ -168,7 +168,7 @@ namespace GameTracker.UI
             }
             try
             {
-                rm.ValidateManualScore(finalScore);
+                rm.ValidateScore(finalScore);
                 rm.ValidateCategoryScores(vals);
             }
             catch (ValidationException e)

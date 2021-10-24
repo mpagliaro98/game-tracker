@@ -62,7 +62,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
             }
         }
 
-        public virtual void ValidateManualScore(double val)
+        public virtual void ValidateScore(double val)
         {
             if (val < Settings.MinScore || val > Settings.MaxScore)
                 throw new ValidationException("Score must be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString());
@@ -104,8 +104,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public override void ValidateListedObject(TListedObj obj)
         {
             base.ValidateListedObject(obj);
-            if (obj.FinalScoreManual < Settings.MinScore || obj.FinalScoreManual > Settings.MaxScore)
-                throw new ValidationException("Score must be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString());
+            ValidateScore(obj.FinalScoreManual);
         }
     }
 }

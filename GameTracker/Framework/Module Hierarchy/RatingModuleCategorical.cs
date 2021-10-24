@@ -118,10 +118,14 @@ namespace RatableTracker.Framework.ModuleHierarchy
         {
             foreach (RatingCategoryValue val in vals)
             {
-                if (val.PointValue < Settings.MinScore || val.PointValue > Settings.MaxScore)
+                try
+                {
+                    ValidateScore(val.PointValue);
+                }
+                catch (ValidationException e)
                 {
                     TRatingCat cat = FindRatingCategory(val.RefRatingCategory);
-                    throw new ValidationException(cat.Name + " score must all be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString());
+                    throw new ValidationException(e.Message + " (" + cat.Name + ")");
                 }
             }
         }
@@ -131,9 +135,9 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (obj.Name == "")
                 throw new ValidationException("A name is required");
             if (obj.Name.Length > RatingCategory.MaxLengthName)
-                throw new ValidationException("Name cannot be longer than " + RatingCategory.MaxLengthName.ToString());
+                throw new ValidationException("Name cannot be longer than " + RatingCategory.MaxLengthName.ToString() + " characters");
             if (obj.Comment.Length > RatingCategory.MaxLengthComment)
-                throw new ValidationException("Comment cannot be longer than " + RatingCategory.MaxLengthComment.ToString());
+                throw new ValidationException("Comment cannot be longer than " + RatingCategory.MaxLengthComment.ToString() + " characters");
         }
     }
 }

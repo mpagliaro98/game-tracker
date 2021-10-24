@@ -66,7 +66,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (obj.Name == "")
                 throw new ValidationException("A name is required");
             if (obj.Name.Length > Status.MaxLengthName)
-                throw new ValidationException("Name cannot be longer than " + Status.MaxLengthName.ToString());
+                throw new ValidationException("Name cannot be longer than " + Status.MaxLengthName.ToString() + " characters");
         }
     }
 }

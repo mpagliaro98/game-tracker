@@ -227,9 +227,9 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (obj.Name == "")
                 throw new ValidationException("A name is required");
             if (obj.Name.Length > ListedObject.MaxLengthName)
-                throw new ValidationException("Name cannot be longer than " + ListedObject.MaxLengthName.ToString());
+                throw new ValidationException("Name cannot be longer than " + ListedObject.MaxLengthName.ToString() + " characters");
             if (obj.Comment.Length > ListedObject.MaxLengthComment)
-                throw new ValidationException("Comment cannot be longer than " + ListedObject.MaxLengthComment.ToString());
+                throw new ValidationException("Comment cannot be longer than " + ListedObject.MaxLengthComment.ToString() + " characters");
         }
 
         public virtual void ValidateRange(TRange obj)
@@ -237,7 +237,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (obj.Name == "")
                 throw new ValidationException("A name is required");
             if (obj.Name.Length > ScoreRange.MaxLengthName)
-                throw new ValidationException("Name cannot be longer than " + ScoreRange.MaxLengthName.ToString());
+                throw new ValidationException("Name cannot be longer than " + ScoreRange.MaxLengthName.ToString() + " characters");
             if (!obj.RefScoreRelationship.HasReference())
                 throw new ValidationException("A score relationship is required");
             ScoreRelationship sr = FindScoreRelationship(obj.RefScoreRelationship);
