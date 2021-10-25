@@ -176,7 +176,7 @@ namespace GameTracker.UI
                 item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
             }
             BuildCategoriesHeader(rm.RatingCategories);
-            AddCategorySortOptions(rm.RatingCategories);
+            BuildGamesSortOptions(rm.RatingCategories);
 
             var vis = rm.ListedObjects.Count() >= rm.LimitListedObjects ? Visibility.Hidden : Visibility.Visible;
             GamesButtonNew.Visibility = vis;
@@ -203,15 +203,39 @@ namespace GameTracker.UI
             }
         }
 
-        private void AddCategorySortOptions(IEnumerable<RatingCategory> cats)
+        private void BuildGamesSortOptions(IEnumerable<RatingCategory> cats)
         {
             if (savedState.gamesSortCatCreated) return;
+            GamesButtonSort.ContextMenu.Items.Clear();
+            MenuItem item;
+            foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>(SORT_GAME_NAME, "Name"),
+                new Tuple<string, string>(SORT_GAME_STATUS, "Completion Status"),
+                new Tuple<string, string>(SORT_GAME_PLATFORM, "Platform"),
+                new Tuple<string, string>(SORT_GAME_PLAYEDON, "Platform Played On"),
+                new Tuple<string, string>(SORT_GAME_SCORE, "Final Score"),
+                new Tuple<string, string>(SORT_GAME_HASCOMMENT, "Has Comment"),
+            })
+            {
+                item = new MenuItem
+                {
+                    Name = sortOption.Item1,
+                    Header = sortOption.Item2,
+                    IsCheckable = true
+                };
+                item.Checked += GamesSort_Checked;
+                item.Unchecked += GamesSort_Unchecked;
+                GamesButtonSort.ContextMenu.Items.Add(item);
+            }
             foreach (RatingCategory cat in cats)
             {
-                MenuItem item = new MenuItem();
-                item.Header = cat.Name;
-                item.Name = "z" + cat.ReferenceKey.ToString("N");
-                item.IsCheckable = true;
+                item = new MenuItem
+                {
+                    Header = cat.Name,
+                    Name = "z" + cat.ReferenceKey.ToString("N"),
+                    IsCheckable = true
+                };
                 item.Checked += GamesSort_Checked;
                 item.Unchecked += GamesSort_Unchecked;
                 GamesButtonSort.ContextMenu.Items.Add(item);
@@ -549,6 +573,8 @@ namespace GameTracker.UI
 
             var vis = rm.RatingCategories.Count() >= rm.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewRatingCategory.Visibility = vis;
+            savedState.gamesSortCatCreated = false;
+            savedState.gamesSortFunc = null;
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)

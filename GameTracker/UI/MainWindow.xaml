@@ -45,14 +45,7 @@
                                 <Button x:Name="GamesButtonSort" ToolTip="Sort" Margin="0,0,5,0" Click="GamesButtonSort_Click">
                                     <Image Source="{StaticResource ButtonSort}" />
                                     <Button.ContextMenu>
-                                        <ContextMenu>
-                                            <MenuItem Name="GamesSortName" Header="Name" IsCheckable="True" Checked="GamesSort_Checked" Unchecked="GamesSort_Unchecked" />
-                                            <MenuItem Name="GamesSortStatus" Header="Completion Status" IsCheckable="True" Checked="GamesSort_Checked" Unchecked="GamesSort_Unchecked" />
-                                            <MenuItem Name="GamesSortPlatform" Header="Platform" IsCheckable="True" Checked="GamesSort_Checked" Unchecked="GamesSort_Unchecked" />
-                                            <MenuItem Name="GamesSortPlayedOn" Header="Platform Played On" IsCheckable="True" Checked="GamesSort_Checked" Unchecked="GamesSort_Unchecked" />
-                                            <MenuItem Name="GamesSortScore" Header="Final Score" IsCheckable="True" Checked="GamesSort_Checked" Unchecked="GamesSort_Unchecked" />
-                                            <MenuItem Name="GamesSortHasComment" Header="Has Comment" IsCheckable="True" Checked="GamesSort_Checked" Unchecked="GamesSort_Unchecked" />
-                                        </ContextMenu>
+                                        <ContextMenu />
                                     </Button.ContextMenu>
                                 </Button>
                                 <Button x:Name="GamesButtonSearch" ToolTip="Search">
