@@ -81,6 +81,9 @@
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
     <Compile Include="Framework\Global\TConverter.cs" />
+    <Compile Include="Framework\Interfaces\IFileLoadSave.cs" />
+    <Compile Include="Framework\LoadSave\FileLoadSave.cs" />
+    <Compile Include="Framework\LoadSave\FileLoadSaveStandard.cs" />
     <Compile Include="Framework\LoadSave\ILoadSaveCategorical.cs" />
     <Compile Include="Framework\LoadSave\ILoadSaveStatus.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngineRated.cs" />

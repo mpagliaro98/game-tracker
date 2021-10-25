@@ -48,5 +48,16 @@ namespace RatableTracker.Framework.PathController
         {
             return System.IO.File.Create(filepath);
         }
+
+        public void CreateFileIfDoesNotExist(string filepath)
+        {
+            if (!PathController.FileExists(filepath))
+            {
+                string directory = PathController.GetDirectoryFromFilename(filepath);
+                PathController.CreateDirectory(directory);
+                System.IO.FileStream fs = PathController.CreateFile(filepath);
+                fs.Close();
+            }
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace RatableTracker.Framework.Interfaces
         string GetDirectoryFromFilename(string filepath);
         System.IO.DirectoryInfo CreateDirectory(string directory);
         System.IO.FileStream CreateFile(string filepath);
+        void CreateFileIfDoesNotExist(string filepath);
     }
 }

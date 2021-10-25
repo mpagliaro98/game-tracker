@@ -9,7 +9,7 @@ namespace RatableTracker.Framework.PathController
 {
     public static class PathController
     {
-        public static IPathController PathControllerInstance { get; set; }
+        public static IPathController PathControllerInstance { get; set; } = new PathControllerWindows();
 
         public static string BaseDirectory()
         {
@@ -49,6 +49,11 @@ namespace RatableTracker.Framework.PathController
         public static System.IO.FileStream CreateFile(string filepath)
         {
             return PathControllerInstance.CreateFile(filepath);
+        }
+
+        public static void CreateFileIfDoesNotExist(string filepath)
+        {
+            PathControllerInstance.CreateFileIfDoesNotExist(filepath);
         }
     }
 }
