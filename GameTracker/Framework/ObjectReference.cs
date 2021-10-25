@@ -42,7 +42,6 @@ namespace RatableTracker.Framework
                         objectKey = sr.GetGuid(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

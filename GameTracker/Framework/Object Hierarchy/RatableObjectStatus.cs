@@ -33,7 +33,6 @@ namespace RatableTracker.Framework.ObjectHierarchy
                         status = sr.GetISavable<ObjectReference>(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }

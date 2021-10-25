@@ -33,7 +33,6 @@ namespace RatableTracker.Framework.ObjectHierarchy
                         FinalScoreManual = sr.GetDouble(key);
                         break;
                     default:
-                        System.Diagnostics.Debug.WriteLine(GetType().Name + " RestoreFromRepresentation: unrecognized key " + key);
                         break;
                 }
             }
