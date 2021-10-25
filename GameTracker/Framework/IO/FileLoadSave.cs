@@ -9,7 +9,7 @@ namespace RatableTracker.Framework.IO
 {
     public static class FileLoadSave
     {
-        public static IFileLoadSave FileLoadSaveInstance { get; set; } = new FileLoadSaveStandard();
+        public static IFileLoadSave FileLoadSaveInstance { get; set; } = new FileLoadSaveLocal();
 
         public static string ReadStringFromFile(string filename)
         {

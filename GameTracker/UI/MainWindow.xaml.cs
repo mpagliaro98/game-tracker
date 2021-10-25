@@ -60,7 +60,7 @@ namespace GameTracker.UI
         public MainWindow()
         {
             PathController.PathControllerInstance = new PathControllerWindows();
-            FileLoadSave.FileLoadSaveInstance = new FileLoadSaveStandard();
+            FileLoadSave.FileLoadSaveInstance = new FileLoadSaveLocal();
             GlobalSettings.Autosave = false;
             rm = new RatingModuleGame();
             InitializeComponent();

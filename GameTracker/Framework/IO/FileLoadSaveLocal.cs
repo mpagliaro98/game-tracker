@@ -7,7 +7,7 @@ using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.IO
 {
-    public class FileLoadSaveStandard : IFileLoadSave
+    public class FileLoadSaveLocal : IFileLoadSave
     {
         protected const string DIRECTORY_SAVE = "savefiles";
         protected static string SAVE_DIR = IO.PathController.Combine(IO.PathController.BaseDirectory(), DIRECTORY_SAVE);
