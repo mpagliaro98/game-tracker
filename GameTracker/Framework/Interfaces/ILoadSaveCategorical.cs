@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RatableTracker.Framework;
 
-namespace RatableTracker.Framework.LoadSave
+namespace RatableTracker.Framework.Interfaces
 {
     public interface ILoadSaveCategorical<TRatingCat>
         where TRatingCat : RatingCategory

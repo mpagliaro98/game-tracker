@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.Interfaces;
 
-namespace RatableTracker.Framework.LoadSave
+namespace RatableTracker.Framework.IO
 {
     public static class FileLoadSave
     {

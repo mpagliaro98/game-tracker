@@ -8,6 +8,7 @@ using RatableTracker.Framework;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.IO;
 
 namespace GameTracker.Model
 {

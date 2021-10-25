@@ -13,10 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using GameTracker.Model;
-using RatableTracker.Framework.PathController;
+using RatableTracker.Framework.IO;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
-using RatableTracker.Framework.LoadSave;
 
 namespace GameTracker.UI
 {

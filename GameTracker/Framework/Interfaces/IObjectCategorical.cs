@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RatableTracker.Framework.ObjectHierarchy
+namespace RatableTracker.Framework.Interfaces
 {
-    public interface ICategorical
+    public interface IObjectCategorical
     {
         IEnumerable<RatingCategoryValue> CategoryValues { get; set; }
         bool IgnoreCategories { get; set; }

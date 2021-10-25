@@ -8,7 +8,7 @@ using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.ObjectHierarchy
 {
-    public class RatableObjectStatus : RatableObject, IStatus
+    public class RatableObjectStatus : RatableObject, IObjectStatus
     {
         private ObjectReference status = new ObjectReference();
         public ObjectReference RefStatus => status;

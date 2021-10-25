@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RatableTracker.Framework.Interfaces;
 
-namespace RatableTracker.Framework.ObjectHierarchy
+namespace RatableTracker.Framework.Interfaces
 {
-    public interface IStatus
+    public interface IObjectStatus
     {
         ObjectReference RefStatus { get; }
         void SetStatus<T>(T obj) where T : Status, IReferable;

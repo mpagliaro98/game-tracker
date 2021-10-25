@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RatableTracker.Framework.ObjectHierarchy;
-using RatableTracker.Framework.Interfaces;
 
-namespace RatableTracker.Framework.ModuleHierarchy
+namespace RatableTracker.Framework.Interfaces
 {
     public interface IModuleCategorical<TListedObj, TRatingCat>
-        where TListedObj : ICategorical
+        where TListedObj : IObjectCategorical
         where TRatingCat : RatingCategory
     {
         IEnumerable<TRatingCat> RatingCategories { get; }

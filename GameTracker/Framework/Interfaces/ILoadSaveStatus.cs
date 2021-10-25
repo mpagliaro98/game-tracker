@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RatableTracker.Framework.LoadSave
+namespace RatableTracker.Framework.Interfaces
 {
     public interface ILoadSaveStatus<TStatus>
         where TStatus : Status

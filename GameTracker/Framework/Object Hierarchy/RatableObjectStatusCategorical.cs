@@ -9,7 +9,7 @@ using RatableTracker.Framework.Interfaces;
 
 namespace RatableTracker.Framework.ObjectHierarchy
 {
-    public class RatableObjectStatusCategorical : RatableObjectStatus, ICategorical
+    public class RatableObjectStatusCategorical : RatableObjectStatus, IObjectCategorical
     {
         private IEnumerable<RatingCategoryValue> categoryValues = new List<RatingCategoryValue>();
         public IEnumerable<RatingCategoryValue> CategoryValues

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework.Interfaces;
 
-namespace RatableTracker.Framework.PathController
+namespace RatableTracker.Framework.IO
 {
     public class PathControllerWindows : IPathController
     {

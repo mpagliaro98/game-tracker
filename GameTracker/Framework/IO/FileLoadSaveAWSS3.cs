@@ -10,7 +10,7 @@ using Amazon.S3.Model;
 using System.IO;
 using Amazon;
 
-namespace RatableTracker.Framework.LoadSave
+namespace RatableTracker.Framework.IO
 {
     public class FileLoadSaveAWSS3 : IFileLoadSave
     {
@@ -20,7 +20,7 @@ namespace RatableTracker.Framework.LoadSave
 
         public FileLoadSaveAWSS3(string filenameAWSKeys)
         {
-            string fileContents = PathController.PathController.ReadFromFile(filenameAWSKeys);
+            string fileContents = IO.PathController.ReadFromFile(filenameAWSKeys);
             if (fileContents.Length <= 0)
                 throw new FederatedAuthenticationFailureException("Invalid AWS credentials");
             string[] fileLines = fileContents.Split('\n');

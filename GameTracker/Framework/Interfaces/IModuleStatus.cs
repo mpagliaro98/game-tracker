@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RatableTracker.Framework.Interfaces;
 
-namespace RatableTracker.Framework.ModuleHierarchy
+namespace RatableTracker.Framework.Interfaces
 {
     public interface IModuleStatus<TStatus> where TStatus : Status
     {
