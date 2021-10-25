@@ -61,7 +61,7 @@ namespace GameTracker.UI
         {
             PathController.PathControllerInstance = new PathControllerWindows();
             FileLoadSave.FileLoadSaveInstance = new FileLoadSaveStandard();
-            GlobalSettings.Autosave = true;
+            GlobalSettings.Autosave = false;
             rm = new RatingModuleGame();
             InitializeComponent();
             PlatformsButtonSortMode.Tag = savedState.platformsSortMode;
@@ -75,6 +75,16 @@ namespace GameTracker.UI
             UpdateCurrentTab();
             EnableNewButtons();
             mainWindow.Title = "Game Tracker";
+        }
+
+        private void mainWindow_Closed(object sender, EventArgs e)
+        {
+            //rm.SaveListedObjects();
+            //rm.SavePlatforms();
+            //rm.SaveRanges();
+            //rm.SaveRatingCategories();
+            //rm.SaveSettings();
+            //rm.SaveStatuses();
         }
 
         #region General Functionality and Utilities
@@ -290,7 +300,7 @@ namespace GameTracker.UI
             OpenSubWindowGame(SubWindowMode.MODE_EDIT, lbi.Game);
         }
 
-        private void GameDelete(object sender, RoutedEventArgs e)
+        private async void GameDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemGameSmall lbi = GetControlFromMenuItem<ListBoxItemGameSmall>((MenuItem)sender);
 
@@ -300,6 +310,7 @@ namespace GameTracker.UI
             RatableGame game = lbi.Game;
             rm.DeleteListedObject(game);
             UpdateGamesUI();
+            await SaveListedObjectsAsync();
         }
 
         private void OpenSubWindowGame(SubWindowMode mode, RatableGame orig = null)
@@ -309,9 +320,15 @@ namespace GameTracker.UI
             window.ShowDialog();
         }
 
-        private void GameWindow_Closed(object sender, EventArgs e)
+        private async void GameWindow_Closed(object sender, EventArgs e)
         {
             UpdateGamesUI();
+            await SaveListedObjectsAsync();
+        }
+
+        private async Task SaveListedObjectsAsync()
+        {
+            await rm.SaveListedObjectsAsync();
         }
 
         private void GamesButtonSort_Click(object sender, RoutedEventArgs e)
@@ -440,7 +457,7 @@ namespace GameTracker.UI
             OpenSubWindowPlatform(SubWindowMode.MODE_EDIT, lbi.Platform);
         }
 
-        private void PlatformDelete(object sender, RoutedEventArgs e)
+        private async void PlatformDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemPlatform lbi = GetControlFromMenuItem<ListBoxItemPlatform>((MenuItem)sender);
 
@@ -450,6 +467,7 @@ namespace GameTracker.UI
             Platform platform = lbi.Platform;
             rm.DeletePlatform(platform);
             UpdatePlatformsUI();
+            await SavePlatformsAsync();
         }
 
         private void OpenSubWindowPlatform(SubWindowMode mode, Platform orig = null)
@@ -459,9 +477,16 @@ namespace GameTracker.UI
             window.ShowDialog();
         }
 
-        private void PlatformWindow_Closed(object sender, EventArgs e)
+        private async void PlatformWindow_Closed(object sender, EventArgs e)
         {
             UpdatePlatformsUI();
+            await SavePlatformsAsync();
+        }
+
+        private async Task SavePlatformsAsync()
+        {
+            await rm.SavePlatformsAsync();
+            await rm.SaveListedObjectsAsync();
         }
 
         private void PlatformsButtonSort_Click(object sender, RoutedEventArgs e)
@@ -558,7 +583,7 @@ namespace GameTracker.UI
             SettingsLabelSuccess.Visibility = Visibility.Collapsed;
         }
 
-        private void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
+        private async void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
         {
             ResetSettingsLabels();
             string minScoreInput = SettingsTextboxMin.Text;
@@ -578,6 +603,12 @@ namespace GameTracker.UI
 
             UpdateSettingsUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
+            await SaveSettingsAsync();
+        }
+
+        private async Task SaveSettingsAsync()
+        {
+            await rm.SaveStatusesAsync();
         }
         #endregion
 
@@ -619,7 +650,7 @@ namespace GameTracker.UI
             OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, lbi.RatingCategory);
         }
 
-        private void RatingCategoryDelete(object sender, RoutedEventArgs e)
+        private async void RatingCategoryDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemRatingCategory lbi = GetControlFromMenuItem<ListBoxItemRatingCategory>((MenuItem)sender);
 
@@ -629,6 +660,7 @@ namespace GameTracker.UI
             RatingCategoryWeighted rc = lbi.RatingCategory;
             rm.DeleteRatingCategory(rc);
             UpdateRatingCategoryUI();
+            await SaveRatingCategoriesAsync();
         }
 
         private void OpenSubWindowRatingCategory(SubWindowMode mode, RatingCategoryWeighted orig = null)
@@ -638,9 +670,16 @@ namespace GameTracker.UI
             window.ShowDialog();
         }
 
-        private void RatingCategoryWindow_Closed(object sender, EventArgs e)
+        private async void RatingCategoryWindow_Closed(object sender, EventArgs e)
         {
             UpdateRatingCategoryUI();
+            await SaveRatingCategoriesAsync();
+        }
+
+        private async Task SaveRatingCategoriesAsync()
+        {
+            await rm.SaveRatingCategoriesAsync();
+            await rm.SaveListedObjectsAsync();
         }
         #endregion
 
@@ -680,7 +719,7 @@ namespace GameTracker.UI
             OpenSubWindowCompletionStatus(SubWindowMode.MODE_EDIT, lbi.CompletionStatus);
         }
 
-        private void CompletionStatusDelete(object sender, RoutedEventArgs e)
+        private async void CompletionStatusDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemCompletionStatus lbi = GetControlFromMenuItem<ListBoxItemCompletionStatus>((MenuItem)sender);
 
@@ -690,6 +729,7 @@ namespace GameTracker.UI
             CompletionStatus cs = lbi.CompletionStatus;
             rm.DeleteStatus(cs);
             UpdateCompletionStatusUI();
+            await SaveCompletionStatusesAsync();
         }
 
         private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatus orig = null)
@@ -699,9 +739,16 @@ namespace GameTracker.UI
             window.ShowDialog();
         }
 
-        private void CompletionStatusWindow_Closed(object sender, EventArgs e)
+        private async void CompletionStatusWindow_Closed(object sender, EventArgs e)
         {
             UpdateCompletionStatusUI();
+            await SaveCompletionStatusesAsync();
+        }
+
+        private async Task SaveCompletionStatusesAsync()
+        {
+            await rm.SaveStatusesAsync();
+            await rm.SaveListedObjectsAsync();
         }
         #endregion
 
@@ -741,7 +788,7 @@ namespace GameTracker.UI
             OpenSubWindowScoreRange(SubWindowMode.MODE_EDIT, lbi.ScoreRange);
         }
 
-        private void ScoreRangeDelete(object sender, RoutedEventArgs e)
+        private async void ScoreRangeDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemScoreRange lbi = GetControlFromMenuItem<ListBoxItemScoreRange>((MenuItem)sender);
 
@@ -751,6 +798,7 @@ namespace GameTracker.UI
             ScoreRange sr = lbi.ScoreRange;
             rm.DeleteRange(sr);
             UpdateScoreRangeUI();
+            await SaveScoreRangesAsync();
         }
 
         private void OpenSubWindowScoreRange(SubWindowMode mode, ScoreRange orig = null)
@@ -760,9 +808,15 @@ namespace GameTracker.UI
             window.ShowDialog();
         }
 
-        private void ScoreRangeWindow_Closed(object sender, EventArgs e)
+        private async void ScoreRangeWindow_Closed(object sender, EventArgs e)
         {
             UpdateScoreRangeUI();
+            await SaveScoreRangesAsync();
+        }
+
+        private async Task SaveScoreRangesAsync()
+        {
+            await rm.SaveRangesAsync();
         }
         #endregion
 

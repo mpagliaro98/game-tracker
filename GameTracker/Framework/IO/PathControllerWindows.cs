@@ -27,8 +27,7 @@ namespace RatableTracker.Framework.IO
 
         public async Task WriteToFileAsync(string filepath, string text)
         {
-            using (FileStream fs = new FileStream(filepath, FileMode.Open))
-            using (StreamWriter sw = new StreamWriter(fs))
+            using (StreamWriter sw = new StreamWriter(filepath, false))
                 await sw.WriteAsync(text);
         }
 
