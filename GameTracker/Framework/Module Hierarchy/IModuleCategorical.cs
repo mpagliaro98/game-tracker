@@ -16,6 +16,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
         int LimitRatingCategories { get; }
         void LoadRatingCategories();
         void SaveRatingCategories();
+        double GetScoreOfCategory(TListedObj obj, TRatingCat cat);
         double GetScoreOfCategoryValues(IEnumerable<RatingCategoryValue> categoryValues);
         TRatingCat FindRatingCategory(ObjectReference objectKey);
         void AddRatingCategory(TRatingCat obj);

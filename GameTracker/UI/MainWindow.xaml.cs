@@ -16,6 +16,7 @@ using GameTracker.Model;
 using RatableTracker.Framework.PathController;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.LoadSave;
 
 namespace GameTracker.UI
 {
@@ -52,6 +53,7 @@ namespace GameTracker.UI
             public SortMode gamesSortMode = SortMode.ASCENDING;
             public Func<Platform, object> platformsSortFunc = null;
             public SortMode platformsSortMode = SortMode.ASCENDING;
+            public bool gamesSortCatCreated = false;
         }
 
         private SavedState savedState = new SavedState();
@@ -174,6 +176,7 @@ namespace GameTracker.UI
                 item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
             }
             BuildCategoriesHeader(rm.RatingCategories);
+            AddCategorySortOptions(rm.RatingCategories);
 
             var vis = rm.ListedObjects.Count() >= rm.LimitListedObjects ? Visibility.Hidden : Visibility.Visible;
             GamesButtonNew.Visibility = vis;
@@ -198,6 +201,22 @@ namespace GameTracker.UI
                 GridCategories.Children.Add(label);
                 i++;
             }
+        }
+
+        private void AddCategorySortOptions(IEnumerable<RatingCategory> cats)
+        {
+            if (savedState.gamesSortCatCreated) return;
+            foreach (RatingCategory cat in cats)
+            {
+                MenuItem item = new MenuItem();
+                item.Header = cat.Name;
+                item.Name = "z" + cat.ReferenceKey.ToString("N");
+                item.IsCheckable = true;
+                item.Checked += GamesSort_Checked;
+                item.Unchecked += GamesSort_Unchecked;
+                GamesButtonSort.ContextMenu.Items.Add(item);
+            }
+            savedState.gamesSortCatCreated = true;
         }
 
         private void GamesButtonNew_Click(object sender, RoutedEventArgs e)
@@ -298,7 +317,16 @@ namespace GameTracker.UI
                     savedState.gamesSortFunc = game => game.Comment.Length > 0;
                     break;
                 default:
-                    throw new Exception("Unhandled sort expression");
+                    if (Guid.TryParse(sortField.Substring(1), out Guid key))
+                    {
+                        ObjectReference refCat = new ObjectReference(key);
+                        savedState.gamesSortFunc = game => rm.GetScoreOfCategory(game, rm.FindRatingCategory(refCat));
+                    }
+                    else
+                    {
+                        throw new Exception("Unhandled sort expression");
+                    }
+                    break;
             }
             UpdateGamesUI();
         }

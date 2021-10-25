@@ -15,6 +15,11 @@ namespace RatableTracker.Framework
 
         public ObjectReference() { }
 
+        public ObjectReference(Guid key)
+        {
+            objectKey = key;
+        }
+
         public ObjectReference(IReferable referable)
         {
             SetReference(referable);

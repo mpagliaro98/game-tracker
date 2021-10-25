@@ -44,6 +44,18 @@ namespace RatableTracker.Framework.ModuleHierarchy
             }
         }
 
+        public virtual double GetScoreOfCategory(TListedObj obj, TRatingCat cat)
+        {
+            foreach (RatingCategoryValue val in obj.CategoryValues)
+            {
+                if (val.RefRatingCategory.IsReferencedObject(cat))
+                {
+                    return val.PointValue;
+                }
+            }
+            return Settings.MinScore;
+        }
+
         public virtual double GetScoreOfCategoryValues(IEnumerable<RatingCategoryValue> categoryValues)
         {
             double total = 0;
