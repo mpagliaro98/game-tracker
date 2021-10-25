@@ -22,18 +22,22 @@ namespace GameTracker.Model
         protected const string FILENAME_CATEGORIES = "rating_categories.json";
         protected const string FILENAME_RANGES = "score_ranges.json";
         protected const string FILENAME_SETTINGS = "settings.json";
-        
-        protected readonly IDictionary<LoadSaveIdentifier, string> filepathMap = new Dictionary<LoadSaveIdentifier, string>()
-        {
-            { ID_LISTEDOBJECTS, FILENAME_GAMES },
-            { ID_PLATFORMS, FILENAME_PLATFORMS },
-            { ID_STATUSES, FILENAME_STATUSES },
-            { ID_RATINGCATEGORIES, FILENAME_CATEGORIES },
-            { ID_RANGES, FILENAME_RANGES },
-            { ID_SETTINGS, FILENAME_SETTINGS }
-        };
+        protected readonly IDictionary<LoadSaveIdentifier, string> filepathMap;
 
-        protected override IEnumerable<T> LoadISavableList<T>(LoadSaveIdentifier id)
+        public LoadSaveEngineGameJson()
+        {
+            filepathMap = new Dictionary<LoadSaveIdentifier, string>()
+            {
+                { ID_LISTEDOBJECTS, FILENAME_GAMES },
+                { ID_PLATFORMS, FILENAME_PLATFORMS },
+                { ID_STATUSES, FILENAME_STATUSES },
+                { ID_RATINGCATEGORIES, FILENAME_CATEGORIES },
+                { ID_RANGES, FILENAME_RANGES },
+                { ID_SETTINGS, FILENAME_SETTINGS }
+            };
+        }
+
+        public override IEnumerable<T> LoadISavableList<T>(LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
             string serialized = FileLoadSave.ReadStringFromFile(filename);
@@ -41,7 +45,15 @@ namespace GameTracker.Model
             return result;
         }
 
-        protected override T LoadISavable<T>(LoadSaveIdentifier id)
+        public override async Task<IEnumerable<T>> LoadISavableListAsync<T>(LoadSaveIdentifier id)
+        {
+            string filename = GetFilename(id);
+            string serialized = await FileLoadSave.ReadStringFromFileAsync(filename);
+            IEnumerable<T> result = LoadJSONArrayIntoObjects<T>(serialized);
+            return result;
+        }
+
+        public override T LoadISavable<T>(LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
             string serialized = FileLoadSave.ReadStringFromFile(filename);
@@ -51,19 +63,44 @@ namespace GameTracker.Model
             return t;
         }
 
-        protected override void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id)
+        public override async Task<T> LoadISavableAsync<T>(LoadSaveIdentifier id)
+        {
+            string filename = GetFilename(id);
+            string serialized = await FileLoadSave.ReadStringFromFileAsync(filename);
+            SavableRepresentation<TValCont> sr = SavableRepresentation<TValCont>.LoadFromJSON(serialized);
+            T t = new T();
+            if (sr != null) t.RestoreFromRepresentation(sr);
+            return t;
+        }
+
+        public override void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
             string serialized = Util.CreateJSONArray<TValCont>(list.Cast<ISavable>());
             FileLoadSave.WriteStringToFile(filename, serialized);
         }
 
-        protected override void SaveISavable<T>(T obj, LoadSaveIdentifier id)
+        public override async Task SaveISavableListAsync<T>(IEnumerable<T> list, LoadSaveIdentifier id)
+        {
+            string filename = GetFilename(id);
+            string serialized = Util.CreateJSONArray<TValCont>(list.Cast<ISavable>());
+            await FileLoadSave.WriteStringToFileAsync(filename, serialized);
+        }
+
+        public override void SaveISavable<T>(T obj, LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
             SavableRepresentation<TValCont> sr = obj.LoadIntoRepresentation<TValCont>();
             string serialized = sr.ConvertToJSON();
             FileLoadSave.WriteStringToFile(filename, serialized);
+        }
+
+        public override async Task SaveISavableAsync<T>(T obj, LoadSaveIdentifier id)
+        {
+            string filename = GetFilename(id);
+            SavableRepresentation<TValCont> sr = obj.LoadIntoRepresentation<TValCont>();
+            string serialized = sr.ConvertToJSON();
+            await FileLoadSave.WriteStringToFileAsync(filename, serialized);
         }
 
         protected IEnumerable<T> LoadJSONArrayIntoObjects<T>(string json) where T : ISavable, new()

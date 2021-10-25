@@ -14,12 +14,12 @@ namespace RatableTracker.Framework.ModuleHierarchy
     public abstract class RankingModule<TListedObj, TRange, TSettings>
         where TListedObj : ListedObject
         where TRange : ScoreRange
-        where TSettings : Settings
+        where TSettings : Settings, new()
     {
-        protected IEnumerable<TListedObj> listedObjs;
-        protected IEnumerable<TRange> ranges;
-        protected IEnumerable<ScoreRelationship> scoreRelationships;
-        protected TSettings settings;
+        protected IEnumerable<TListedObj> listedObjs = new List<TListedObj>();
+        protected IEnumerable<TRange> ranges = new List<TRange>();
+        protected IEnumerable<ScoreRelationship> scoreRelationships = new List<ScoreRelationship>();
+        protected TSettings settings = new TSettings();
 
         public IEnumerable<TListedObj> ListedObjects => listedObjs;
 
@@ -53,12 +53,25 @@ namespace RatableTracker.Framework.ModuleHierarchy
             LoadListedObjects();
         }
 
+        public virtual async Task InitAsync()
+        {
+            await LoadSettingsAsync();
+            await LoadRangesAsync();
+            await LoadListedObjectsAsync();
+        }
+
         public abstract void LoadListedObjects();
+        public abstract Task LoadListedObjectsAsync();
         public abstract void LoadRanges();
+        public abstract Task LoadRangesAsync();
         public abstract void LoadSettings();
+        public abstract Task LoadSettingsAsync();
         public abstract void SaveListedObjects();
+        public abstract Task SaveListedObjectsAsync();
         public abstract void SaveRanges();
+        public abstract Task SaveRangesAsync();
         public abstract void SaveSettings();
+        public abstract Task SaveSettingsAsync();
 
         protected T FindObject<T>(IEnumerable<T> sourceList, ObjectReference objectKey) where T : IReferable
         {

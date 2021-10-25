@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RatableTracker.Framework.LoadSave;
 
 namespace RatableTracker.Framework.Interfaces
 {
-    public interface ILoadSaveCategorical<TRatingCat>
-        where TRatingCat : RatingCategory
+    public interface ILoadSaveCategorical
     {
-        IEnumerable<TRatingCat> LoadRatingCategories();
-        void SaveRatingCategories(IEnumerable<TRatingCat> ratingCategories);
+        LoadSaveIdentifier ID_RATINGCATEGORIES { get; }
     }
 }

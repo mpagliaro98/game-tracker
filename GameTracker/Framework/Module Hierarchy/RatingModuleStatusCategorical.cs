@@ -14,11 +14,11 @@ namespace RatableTracker.Framework.ModuleHierarchy
         : RatingModuleStatus<TListedObj, TRange, TSettings, TStatus>, IModuleCategorical<TListedObj, TRatingCat>
         where TListedObj : RatableObjectStatusCategorical
         where TRange : ScoreRange
-        where TSettings : SettingsScore
+        where TSettings : SettingsScore, new()
         where TStatus : Status
         where TRatingCat : RatingCategory
     {
-        protected IEnumerable<TRatingCat> ratingCategories;
+        protected IEnumerable<TRatingCat> ratingCategories = new List<TRatingCat>();
         public IEnumerable<TRatingCat> RatingCategories => ratingCategories;
 
         public virtual int LimitRatingCategories => 10;
@@ -29,8 +29,16 @@ namespace RatableTracker.Framework.ModuleHierarchy
             base.Init();
         }
 
+        public override async Task InitAsync()
+        {
+            await LoadRatingCategoriesAsync();
+            await base.InitAsync();
+        }
+
         public abstract void LoadRatingCategories();
+        public abstract Task LoadRatingCategoriesAsync();
         public abstract void SaveRatingCategories();
+        public abstract Task SaveRatingCategoriesAsync();
 
         public override double GetScoreOfObject(TListedObj obj)
         {

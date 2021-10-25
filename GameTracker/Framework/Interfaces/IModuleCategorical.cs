@@ -13,7 +13,9 @@ namespace RatableTracker.Framework.Interfaces
         IEnumerable<TRatingCat> RatingCategories { get; }
         int LimitRatingCategories { get; }
         void LoadRatingCategories();
+        Task LoadRatingCategoriesAsync();
         void SaveRatingCategories();
+        Task SaveRatingCategoriesAsync();
         double GetScoreOfCategory(TListedObj obj, TRatingCat cat);
         double GetScoreOfCategoryValues(IEnumerable<RatingCategoryValue> categoryValues);
         TRatingCat FindRatingCategory(ObjectReference objectKey);

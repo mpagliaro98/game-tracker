@@ -19,7 +19,7 @@ namespace GameTracker.Model
         where TStatus : CompletionStatus, ISavable, new()
         where TRatingCat : RatingCategory, ISavable, new()
     {
-        protected IEnumerable<Platform> platforms;
+        protected IEnumerable<Platform> platforms = new List<Platform>();
         protected LoadSaveEngineGame<TListedObj, TRange, TSettings, TStatus, TRatingCat> loadSaveEngine;
 
         public IEnumerable<Platform> Platforms => platforms;
@@ -32,64 +32,130 @@ namespace GameTracker.Model
             base.Init();
         }
 
+        public override async Task InitAsync()
+        {
+            await LoadPlatformsAsync();
+            await base.InitAsync();
+        }
+
         public override void LoadStatuses()
         {
-            statuses = loadSaveEngine.LoadStatuses();
+            statuses = loadSaveEngine.LoadISavableList<TStatus>(loadSaveEngine.ID_STATUSES);
+        }
+
+        public override async Task LoadStatusesAsync()
+        {
+            statuses = await loadSaveEngine.LoadISavableListAsync<TStatus>(loadSaveEngine.ID_STATUSES);
         }
 
         public void LoadPlatforms()
         {
-            platforms = loadSaveEngine.LoadPlatforms();
+            platforms = loadSaveEngine.LoadISavableList<Platform>(loadSaveEngine.ID_PLATFORMS);
+        }
+
+        public async Task LoadPlatformsAsync()
+        {
+            platforms = await loadSaveEngine.LoadISavableListAsync<Platform>(loadSaveEngine.ID_PLATFORMS);
         }
 
         public override void LoadListedObjects()
         {
-            listedObjs = loadSaveEngine.LoadListedObjects();
+            listedObjs = loadSaveEngine.LoadISavableList<TListedObj>(loadSaveEngine.ID_LISTEDOBJECTS);
+        }
+
+        public override async Task LoadListedObjectsAsync()
+        {
+            listedObjs = await loadSaveEngine.LoadISavableListAsync<TListedObj>(loadSaveEngine.ID_LISTEDOBJECTS);
         }
 
         public override void LoadRatingCategories()
         {
-            ratingCategories = loadSaveEngine.LoadRatingCategories();
+            ratingCategories = loadSaveEngine.LoadISavableList<TRatingCat>(loadSaveEngine.ID_RATINGCATEGORIES);
+        }
+
+        public override async Task LoadRatingCategoriesAsync()
+        {
+            ratingCategories = await loadSaveEngine.LoadISavableListAsync<TRatingCat>(loadSaveEngine.ID_RATINGCATEGORIES);
         }
 
         public override void LoadRanges()
         {
-            ranges = loadSaveEngine.LoadRanges();
+            ranges = loadSaveEngine.LoadISavableList<TRange>(loadSaveEngine.ID_RANGES);
+        }
+
+        public override async Task LoadRangesAsync()
+        {
+            ranges = await loadSaveEngine.LoadISavableListAsync<TRange>(loadSaveEngine.ID_RANGES);
         }
 
         public override void LoadSettings()
         {
-            settings = loadSaveEngine.LoadSettings();
+            settings = loadSaveEngine.LoadISavable<TSettings>(loadSaveEngine.ID_SETTINGS);
+        }
+
+        public override async Task LoadSettingsAsync()
+        {
+            settings = await loadSaveEngine.LoadISavableAsync<TSettings>(loadSaveEngine.ID_SETTINGS);
         }
 
         public override void SaveStatuses()
         {
-            loadSaveEngine.SaveStatuses(statuses);
+            loadSaveEngine.SaveISavableList(statuses, loadSaveEngine.ID_STATUSES);
+        }
+
+        public override async Task SaveStatusesAsync()
+        {
+            await loadSaveEngine.SaveISavableListAsync(statuses, loadSaveEngine.ID_STATUSES);
         }
 
         public void SavePlatforms()
         {
-            loadSaveEngine.SavePlatforms(platforms);
+            loadSaveEngine.SaveISavableList(platforms, loadSaveEngine.ID_PLATFORMS);
+        }
+
+        public async Task SavePlatformsAsync()
+        {
+            await loadSaveEngine.SaveISavableListAsync(platforms, loadSaveEngine.ID_PLATFORMS);
         }
 
         public override void SaveListedObjects()
         {
-            loadSaveEngine.SaveListedObjects(listedObjs);
+            loadSaveEngine.SaveISavableList(listedObjs, loadSaveEngine.ID_LISTEDOBJECTS);
+        }
+
+        public override async Task SaveListedObjectsAsync()
+        {
+            await loadSaveEngine.SaveISavableListAsync(listedObjs, loadSaveEngine.ID_LISTEDOBJECTS);
         }
 
         public override void SaveRatingCategories()
         {
-            loadSaveEngine.SaveRatingCategories(ratingCategories);
+            loadSaveEngine.SaveISavableList(ratingCategories, loadSaveEngine.ID_RATINGCATEGORIES);
+        }
+
+        public override async Task SaveRatingCategoriesAsync()
+        {
+            await loadSaveEngine.SaveISavableListAsync(ratingCategories, loadSaveEngine.ID_RATINGCATEGORIES);
         }
 
         public override void SaveRanges()
         {
-            loadSaveEngine.SaveRanges(ranges);
+            loadSaveEngine.SaveISavableList(ranges, loadSaveEngine.ID_RANGES);
+        }
+
+        public override async Task SaveRangesAsync()
+        {
+            await loadSaveEngine.SaveISavableListAsync(ranges, loadSaveEngine.ID_RANGES);
         }
 
         public override void SaveSettings()
         {
-            loadSaveEngine.SaveSettings(settings);
+            loadSaveEngine.SaveISavable(settings, loadSaveEngine.ID_SETTINGS);
+        }
+
+        public override async Task SaveSettingsAsync()
+        {
+            await loadSaveEngine.SaveISavableAsync(settings, loadSaveEngine.ID_SETTINGS);
         }
 
         public Platform FindPlatform(ObjectReference objectKey)

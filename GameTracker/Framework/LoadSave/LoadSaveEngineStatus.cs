@@ -10,22 +10,12 @@ using RatableTracker.Framework.ObjectHierarchy;
 namespace RatableTracker.Framework.LoadSave
 {
     public abstract class LoadSaveEngineStatus<TListedObj, TRange, TSettings, TStatus>
-        : LoadSaveEngine<TListedObj, TRange, TSettings>, ILoadSaveStatus<TStatus>
+        : LoadSaveEngine<TListedObj, TRange, TSettings>, ILoadSaveStatus
         where TListedObj : ListedObjectStatus, ISavable, new()
         where TRange : ScoreRange, ISavable, new()
         where TSettings : Settings, ISavable, new()
         where TStatus : Status, ISavable, new()
     {
-        protected static LoadSaveIdentifier ID_STATUSES = new LoadSaveIdentifier("Statuses");
-
-        public virtual IEnumerable<TStatus> LoadStatuses()
-        {
-            return LoadISavableList<TStatus>(ID_STATUSES);
-        }
-
-        public virtual void SaveStatuses(IEnumerable<TStatus> statuses)
-        {
-            SaveISavableList(statuses, ID_STATUSES);
-        }
+        public LoadSaveIdentifier ID_STATUSES => new LoadSaveIdentifier("Statuses");
     }
 }

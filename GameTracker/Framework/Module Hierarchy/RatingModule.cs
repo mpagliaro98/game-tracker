@@ -15,7 +15,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
         : RankingModule<TListedObj, TRange, TSettings>
         where TListedObj : RatableObject
         where TRange : ScoreRange
-        where TSettings : SettingsScore
+        where TSettings : SettingsScore, new()
     {
         public void RecalculateScores(double minRangeOld, double maxRangeOld, double minRangeNew, double maxRangeNew)
         {

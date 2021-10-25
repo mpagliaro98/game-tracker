@@ -39,9 +39,10 @@ namespace RatableTracker.Framework.IO
 
         public async Task<string> ReadFromFileAsync(string filepath)
         {
-            using (FileStream fs = new FileStream(filepath, FileMode.Open))
-            using (StreamReader sr = new StreamReader(fs))
-                return await sr.ReadToEndAsync();
+            string text;
+            using (StreamReader reader = File.OpenText(filepath))
+                text = await reader.ReadToEndAsync();
+            return text;
         }
 
         public bool FileExists(string filepath)

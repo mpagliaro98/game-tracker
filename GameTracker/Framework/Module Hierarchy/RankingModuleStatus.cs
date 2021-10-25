@@ -14,22 +14,30 @@ namespace RatableTracker.Framework.ModuleHierarchy
         : RankingModule<TListedObj, TRange, TSettings>, IModuleStatus<TStatus>
         where TListedObj : ListedObjectStatus
         where TRange : ScoreRange
-        where TSettings : Settings
+        where TSettings : Settings, new()
         where TStatus : Status
     {
-        protected IEnumerable<TStatus> statuses;
+        protected IEnumerable<TStatus> statuses = new List<TStatus>();
         public IEnumerable<TStatus> Statuses => statuses;
 
         public virtual int LimitStatuses => 20;
 
         public override void Init()
         {
-            base.Init();
             LoadStatuses();
+            base.Init();
+        }
+
+        public override async Task InitAsync()
+        {
+            await LoadStatusesAsync();
+            await base.InitAsync();
         }
 
         public abstract void LoadStatuses();
+        public abstract Task LoadStatusesAsync();
         public abstract void SaveStatuses();
+        public abstract Task SaveStatusesAsync();
 
         public TStatus FindStatus(ObjectReference objectKey)
         {

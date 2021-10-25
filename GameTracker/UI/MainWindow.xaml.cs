@@ -63,10 +63,18 @@ namespace GameTracker.UI
             FileLoadSave.FileLoadSaveInstance = new FileLoadSaveStandard();
             GlobalSettings.Autosave = true;
             rm = new RatingModuleGame();
-            rm.Init();
             InitializeComponent();
             PlatformsButtonSortMode.Tag = savedState.platformsSortMode;
             GamesButtonSortMode.Tag = savedState.gamesSortMode;
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            mainWindow.Title = "Game Tracker (Loading...)";
+            await Task.Run(() => rm.InitAsync());
+            UpdateCurrentTab();
+            EnableNewButtons();
+            mainWindow.Title = "Game Tracker";
         }
 
         #region General Functionality and Utilities
@@ -76,6 +84,12 @@ namespace GameTracker.UI
             {
                 return;
             }
+            UpdateCurrentTab();
+            e.Handled = true;
+        }
+
+        private void UpdateCurrentTab()
+        {
             TabItem tab = (TabItem)TabsBase.SelectedItem;
             switch (tab.Name)
             {
@@ -95,7 +109,6 @@ namespace GameTracker.UI
                 default:
                     throw new Exception("Unhandled tab");
             }
-            e.Handled = true;
         }
 
         private T GetControlFromMenuItem<T>(MenuItem menuItem) where T : UIElement
@@ -153,6 +166,16 @@ namespace GameTracker.UI
         private SortMode GetSortModeFromButton(Button button)
         {
             return (SortMode)button.Tag;
+        }
+
+        private void EnableNewButtons()
+        {
+            GamesButtonNew.IsEnabled = true;
+            PlatformsButtonNew.IsEnabled = true;
+            SettingsButtonSave.IsEnabled = true;
+            SettingsButtonNewCompletionStatus.IsEnabled = true;
+            SettingsButtonNewRatingCategory.IsEnabled = true;
+            SettingsButtonNewScoreRange.IsEnabled = true;
         }
         #endregion
 

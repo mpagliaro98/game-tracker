@@ -17,16 +17,6 @@ namespace GameTracker.Model
         where TStatus : Status, ISavable, new()
         where TRatingCat : RatingCategory, ISavable, new()
     {
-        protected static LoadSaveIdentifier ID_PLATFORMS = new LoadSaveIdentifier("Platforms");
-
-        public virtual IEnumerable<Platform> LoadPlatforms()
-        {
-            return LoadISavableList<Platform>(ID_PLATFORMS);
-        }
-
-        public virtual void SavePlatforms(IEnumerable<Platform> platforms)
-        {
-            SaveISavableList(platforms, ID_PLATFORMS);
-        }
+        public LoadSaveIdentifier ID_PLATFORMS => new LoadSaveIdentifier("Platforms");
     }
 }

@@ -11,7 +11,9 @@ namespace RatableTracker.Framework.Interfaces
         int LimitStatuses { get; }
         IEnumerable<TStatus> Statuses { get; }
         void LoadStatuses();
+        Task LoadStatusesAsync();
         void SaveStatuses();
+        Task SaveStatusesAsync();
         TStatus FindStatus(ObjectReference objectKey);
         void AddStatus(TStatus obj);
         void UpdateStatus(TStatus obj, TStatus orig);

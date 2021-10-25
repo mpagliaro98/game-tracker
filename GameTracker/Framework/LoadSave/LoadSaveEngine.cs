@@ -14,43 +14,17 @@ namespace RatableTracker.Framework.LoadSave
         where TRange : ScoreRange, ISavable, new()
         where TSettings : Settings, ISavable, new()
     {
-        protected static LoadSaveIdentifier ID_LISTEDOBJECTS = new LoadSaveIdentifier("ListedObjects");
-        protected static LoadSaveIdentifier ID_RANGES = new LoadSaveIdentifier("Ranges");
-        protected static LoadSaveIdentifier ID_SETTINGS = new LoadSaveIdentifier("Settings");
+        public LoadSaveIdentifier ID_LISTEDOBJECTS => new LoadSaveIdentifier("ListedObjects");
+        public LoadSaveIdentifier ID_RANGES => new LoadSaveIdentifier("Ranges");
+        public LoadSaveIdentifier ID_SETTINGS => new LoadSaveIdentifier("Settings");
 
-        protected abstract IEnumerable<T> LoadISavableList<T>(LoadSaveIdentifier id) where T : ISavable, new();
-        protected abstract T LoadISavable<T>(LoadSaveIdentifier id) where T : ISavable, new();
-        protected abstract void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable;
-        protected abstract void SaveISavable<T>(T obj, LoadSaveIdentifier id) where T : ISavable;
-
-        public virtual IEnumerable<TListedObj> LoadListedObjects()
-        {
-            return LoadISavableList<TListedObj>(ID_LISTEDOBJECTS);
-        }
-
-        public virtual IEnumerable<TRange> LoadRanges()
-        {
-            return LoadISavableList<TRange>(ID_RANGES);
-        }
-
-        public virtual TSettings LoadSettings()
-        {
-            return LoadISavable<TSettings>(ID_SETTINGS);
-        }
-
-        public virtual void SaveListedObjects(IEnumerable<TListedObj> ratableObjects)
-        {
-            SaveISavableList(ratableObjects, ID_LISTEDOBJECTS);
-        }
-
-        public virtual void SaveRanges(IEnumerable<TRange> scoreRanges)
-        {
-            SaveISavableList(scoreRanges, ID_RANGES);
-        }
-
-        public virtual void SaveSettings(TSettings settings)
-        {
-            SaveISavable(settings, ID_SETTINGS);
-        }
+        public abstract IEnumerable<T> LoadISavableList<T>(LoadSaveIdentifier id) where T : ISavable, new();
+        public abstract Task<IEnumerable<T>> LoadISavableListAsync<T>(LoadSaveIdentifier id) where T : ISavable, new();
+        public abstract T LoadISavable<T>(LoadSaveIdentifier id) where T : ISavable, new();
+        public abstract Task<T> LoadISavableAsync<T>(LoadSaveIdentifier id) where T : ISavable, new();
+        public abstract void SaveISavableList<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable;
+        public abstract Task SaveISavableListAsync<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable;
+        public abstract void SaveISavable<T>(T obj, LoadSaveIdentifier id) where T : ISavable;
+        public abstract Task SaveISavableAsync<T>(T obj, LoadSaveIdentifier id) where T : ISavable;
     }
 }

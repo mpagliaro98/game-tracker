@@ -13,7 +13,7 @@ namespace RatableTracker.Framework
 
         public double MaxScore { get; set; } = 10;
 
-        public SettingsScore() { }
+        public SettingsScore() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
         {
