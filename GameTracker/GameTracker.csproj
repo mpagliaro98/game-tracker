@@ -37,6 +37,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AWSSDK.Core, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.Core.3.7.3.24\lib\net45\AWSSDK.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="AWSSDK.S3, Version=3.3.0.0, Culture=neutral, PublicKeyToken=885c28607f98e604, processorArchitecture=MSIL">
+      <HintPath>..\packages\AWSSDK.S3.3.7.3.17\lib\net45\AWSSDK.S3.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -83,6 +89,7 @@
     <Compile Include="Framework\Global\TConverter.cs" />
     <Compile Include="Framework\Interfaces\IFileLoadSave.cs" />
     <Compile Include="Framework\LoadSave\FileLoadSave.cs" />
+    <Compile Include="Framework\LoadSave\FileLoadSaveAWSS3.cs" />
     <Compile Include="Framework\LoadSave\FileLoadSaveStandard.cs" />
     <Compile Include="Framework\LoadSave\ILoadSaveCategorical.cs" />
     <Compile Include="Framework\LoadSave\ILoadSaveStatus.cs" />
@@ -277,6 +284,9 @@
   <ItemGroup>
     <Resource Include="Images\button_lock.png" />
     <Resource Include="Images\button_pencil.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\AWSSDK.S3.3.7.3.17\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

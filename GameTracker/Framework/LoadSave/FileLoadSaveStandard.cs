@@ -16,9 +16,7 @@ namespace RatableTracker.Framework.LoadSave
         {
             string filepath = PathController.PathController.Combine(SAVE_DIR, filename);
             PathController.PathController.CreateFileIfDoesNotExist(filepath);
-            string output = PathController.PathController.ReadFromFile(filepath);
-            System.Diagnostics.Debug.WriteLine("Read " + Encoding.UTF8.GetByteCount(output).ToString() + " bytes from " + filepath);
-            return output;
+            return PathController.PathController.ReadFromFile(filepath);
         }
 
         public void WriteStringToFile(string filename, string output)
@@ -26,7 +24,6 @@ namespace RatableTracker.Framework.LoadSave
             string filepath = PathController.PathController.Combine(SAVE_DIR, filename);
             PathController.PathController.CreateFileIfDoesNotExist(filepath);
             PathController.PathController.WriteToFile(filepath, output);
-            System.Diagnostics.Debug.WriteLine("Wrote " + Encoding.UTF8.GetByteCount(output).ToString() + " bytes to " + filepath);
         }
     }
 }
