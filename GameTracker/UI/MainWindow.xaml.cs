@@ -608,7 +608,7 @@ namespace GameTracker.UI
 
         private async Task SaveSettingsAsync()
         {
-            await rm.SaveStatusesAsync();
+            await rm.SaveSettingsAsync();
         }
         #endregion
 
