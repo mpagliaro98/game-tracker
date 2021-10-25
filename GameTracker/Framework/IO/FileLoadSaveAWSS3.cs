@@ -36,10 +36,22 @@ namespace RatableTracker.Framework.IO
             return ReadFromS3Bucket(BUCKET_NAME, filename);
         }
 
+        public async Task<string> ReadStringFromFileAsync(string filename)
+        {
+            CreateBucketIfDoesNotExist(BUCKET_NAME);
+            return await ReadFromS3BucketAsync(BUCKET_NAME, filename);
+        }
+
         public void WriteStringToFile(string filename, string output)
         {
             CreateBucketIfDoesNotExist(BUCKET_NAME);
             WriteToS3Bucket(BUCKET_NAME, filename, output);
+        }
+
+        public async Task WriteStringToFileAsync(string filename, string output)
+        {
+            CreateBucketIfDoesNotExist(BUCKET_NAME);
+            await WriteToS3BucketAsync(BUCKET_NAME, filename, output);
         }
 
         private string ReadFromS3Bucket(string bucketName, string keyName)
@@ -62,6 +74,26 @@ namespace RatableTracker.Framework.IO
             return content;
         }
 
+        private async Task<string> ReadFromS3BucketAsync(string bucketName, string keyName)
+        {
+            GetObjectRequest request = new GetObjectRequest();
+            request.BucketName = bucketName;
+            request.Key = keyName;
+            string content;
+            try
+            {
+                GetObjectResponse response = await client.GetObjectAsync(request);
+                StreamReader reader = new StreamReader(response.ResponseStream);
+                content = reader.ReadToEnd();
+            }
+            catch (AmazonS3Exception)
+            {
+                // Key does not exist yet
+                content = "";
+            }
+            return content;
+        }
+
         private void WriteToS3Bucket(string bucketName, string keyName, string content)
         {
             PutObjectRequest request = new PutObjectRequest();
@@ -69,6 +101,15 @@ namespace RatableTracker.Framework.IO
             request.Key = keyName;
             request.ContentBody = content;
             client.PutObject(request);
+        }
+
+        private async Task WriteToS3BucketAsync(string bucketName, string keyName, string content)
+        {
+            PutObjectRequest request = new PutObjectRequest();
+            request.BucketName = bucketName;
+            request.Key = keyName;
+            request.ContentBody = content;
+            await client.PutObjectAsync(request);
         }
 
         private void CreateBucketIfDoesNotExist(string bucketName)

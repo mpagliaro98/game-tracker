@@ -14,16 +14,30 @@ namespace RatableTracker.Framework.IO
 
         public string ReadStringFromFile(string filename)
         {
-            string filepath = IO.PathController.Combine(SAVE_DIR, filename);
-            IO.PathController.CreateFileIfDoesNotExist(filepath);
-            return IO.PathController.ReadFromFile(filepath);
+            string filepath = PathController.Combine(SAVE_DIR, filename);
+            PathController.CreateFileIfDoesNotExist(filepath);
+            return PathController.ReadFromFile(filepath);
+        }
+
+        public async Task<string> ReadStringFromFileAsync(string filename)
+        {
+            string filepath = PathController.Combine(SAVE_DIR, filename);
+            PathController.CreateFileIfDoesNotExist(filepath);
+            return await PathController.ReadFromFileAsync(filepath);
         }
 
         public void WriteStringToFile(string filename, string output)
         {
-            string filepath = IO.PathController.Combine(SAVE_DIR, filename);
-            IO.PathController.CreateFileIfDoesNotExist(filepath);
-            IO.PathController.WriteToFile(filepath, output);
+            string filepath = PathController.Combine(SAVE_DIR, filename);
+            PathController.CreateFileIfDoesNotExist(filepath);
+            PathController.WriteToFile(filepath, output);
+        }
+
+        public async Task WriteStringToFileAsync(string filename, string output)
+        {
+            string filepath = PathController.Combine(SAVE_DIR, filename);
+            PathController.CreateFileIfDoesNotExist(filepath);
+            await PathController.WriteToFileAsync(filepath, output);
         }
     }
 }

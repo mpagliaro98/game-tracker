@@ -26,9 +26,19 @@ namespace RatableTracker.Framework.IO
             PathControllerInstance.WriteToFile(filepath, text);
         }
 
+        public static async Task WriteToFileAsync(string filepath, string text)
+        {
+            await PathControllerInstance.WriteToFileAsync(filepath, text);
+        }
+
         public static string ReadFromFile(string filepath)
         {
             return PathControllerInstance.ReadFromFile(filepath);
+        }
+
+        public static async Task<string> ReadFromFileAsync(string filepath)
+        {
+            return await PathControllerInstance.ReadFromFileAsync(filepath);
         }
 
         public static bool FileExists(string filepath)

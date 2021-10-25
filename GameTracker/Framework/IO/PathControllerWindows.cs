@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,9 +25,23 @@ namespace RatableTracker.Framework.IO
             System.IO.File.WriteAllText(filepath, text);
         }
 
+        public async Task WriteToFileAsync(string filepath, string text)
+        {
+            using (FileStream fs = new FileStream(filepath, FileMode.Open))
+            using (StreamWriter sw = new StreamWriter(fs))
+                await sw.WriteAsync(text);
+        }
+
         public string ReadFromFile(string filepath)
         {
             return System.IO.File.ReadAllText(filepath);
+        }
+
+        public async Task<string> ReadFromFileAsync(string filepath)
+        {
+            using (FileStream fs = new FileStream(filepath, FileMode.Open))
+            using (StreamReader sr = new StreamReader(fs))
+                return await sr.ReadToEndAsync();
         }
 
         public bool FileExists(string filepath)
