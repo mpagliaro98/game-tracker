@@ -72,6 +72,8 @@ namespace RatableTracker.Framework.ModuleHierarchy
         public abstract Task SaveRangesAsync();
         public abstract void SaveSettings();
         public abstract Task SaveSettingsAsync();
+        public abstract void TransferSaveFiles(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to);
+        public abstract Task TransferSaveFilesAsync(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to);
 
         protected T FindObject<T>(IEnumerable<T> sourceList, ObjectReference objectKey) where T : IReferable
         {

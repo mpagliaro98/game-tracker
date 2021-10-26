@@ -87,12 +87,12 @@
     <Compile Include="Framework\Global\Extensions.cs" />
     <Compile Include="Framework\Global\GlobalSettings.cs" />
     <Compile Include="Framework\Global\TConverter.cs" />
-    <Compile Include="Framework\Interfaces\IFileLoadSave.cs" />
+    <Compile Include="Framework\Interfaces\IContentLoadSave.cs" />
     <Compile Include="Framework\Interfaces\ILoadSaveCategorical.cs" />
     <Compile Include="Framework\Interfaces\ILoadSaveStatus.cs" />
-    <Compile Include="Framework\IO\FileLoadSave.cs" />
-    <Compile Include="Framework\IO\FileLoadSaveAWSS3.cs" />
-    <Compile Include="Framework\IO\FileLoadSaveLocal.cs" />
+    <Compile Include="Framework\IO\ContentLoadSave.cs" />
+    <Compile Include="Framework\IO\ContentLoadSaveAWSS3.cs" />
+    <Compile Include="Framework\IO\ContentLoadSaveLocal.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngineRated.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngineRatedCategorical.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngineRatedStatus.cs" />

@@ -12,13 +12,13 @@ using Amazon;
 
 namespace RatableTracker.Framework.IO
 {
-    public class FileLoadSaveAWSS3 : IFileLoadSave
+    public class ContentLoadSaveAWSS3 : IContentLoadSave<string, string>
     {
         private const string BUCKET_NAME = "gametrackersavefiles";
 
         private readonly AmazonS3Client client;
 
-        public FileLoadSaveAWSS3(string filenameAWSKeys)
+        public ContentLoadSaveAWSS3(string filenameAWSKeys)
         {
             string fileContents = IO.PathController.ReadFromFile(filenameAWSKeys);
             if (fileContents.Length <= 0)
@@ -30,28 +30,28 @@ namespace RatableTracker.Framework.IO
             client = new AmazonS3Client(credentials, RegionEndpoint.USEast1);
         }
 
-        public string ReadStringFromFile(string filename)
+        public string Read(string key)
         {
             CreateBucketIfDoesNotExist(BUCKET_NAME);
-            return ReadFromS3Bucket(BUCKET_NAME, filename);
+            return ReadFromS3Bucket(BUCKET_NAME, key);
         }
 
-        public async Task<string> ReadStringFromFileAsync(string filename)
+        public async Task<string> ReadAsync(string key)
         {
             CreateBucketIfDoesNotExist(BUCKET_NAME);
-            return await ReadFromS3BucketAsync(BUCKET_NAME, filename);
+            return await ReadFromS3BucketAsync(BUCKET_NAME, key);
         }
 
-        public void WriteStringToFile(string filename, string output)
+        public void Write(string key, string output)
         {
             CreateBucketIfDoesNotExist(BUCKET_NAME);
-            WriteToS3Bucket(BUCKET_NAME, filename, output);
+            WriteToS3Bucket(BUCKET_NAME, key, output);
         }
 
-        public async Task WriteStringToFileAsync(string filename, string output)
+        public async Task WriteAsync(string key, string output)
         {
             CreateBucketIfDoesNotExist(BUCKET_NAME);
-            await WriteToS3BucketAsync(BUCKET_NAME, filename, output);
+            await WriteToS3BucketAsync(BUCKET_NAME, key, output);
         }
 
         private string ReadFromS3Bucket(string bucketName, string keyName)
