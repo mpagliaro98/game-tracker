@@ -5,15 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Framework;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework.IO;
 
 namespace GameTracker.Model
 {
     public class RatingModuleGame
         : RatingModuleGameTemplate<RatableGame, ScoreRange, SettingsScore, CompletionStatus, RatingCategoryWeighted>
     {
-        public RatingModuleGame()
+        public RatingModuleGame(LoadSaveEngineGame<RatableGame, ScoreRange, SettingsScore, CompletionStatus, RatingCategoryWeighted> engine)
         {
-            loadSaveEngine = new LoadSaveEngineGameJson<ValueContainer>();
+            loadSaveEngine = engine;
         }
     }
 }

@@ -16,6 +16,7 @@ using GameTracker.Model;
 using RatableTracker.Framework.IO;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
+using RatableTracker.Framework.LoadSave;
 
 namespace GameTracker.UI
 {
@@ -60,9 +61,12 @@ namespace GameTracker.UI
         public MainWindow()
         {
             PathController.PathControllerInstance = new PathControllerWindows();
-            ContentLoadSave.ContentLoadSaveInstance = new ContentLoadSaveLocal();
             GlobalSettings.Autosave = false;
-            rm = new RatingModuleGame();
+            LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
+            {
+                ContentLoadSaveInstance = new ContentLoadSaveLocal()
+            };
+            rm = new RatingModuleGame(engine);
             InitializeComponent();
             PlatformsButtonSortMode.Tag = savedState.platformsSortMode;
             GamesButtonSortMode.Tag = savedState.gamesSortMode;
@@ -70,10 +74,16 @@ namespace GameTracker.UI
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            await LoadAllData();
+        }
+
+        private async Task LoadAllData()
+        {
+            EnableNewButtons(false);
             mainWindow.Title = "Game Tracker (Loading...)";
             await Task.Run(() => rm.InitAsync());
             UpdateCurrentTab();
-            EnableNewButtons();
+            EnableNewButtons(true);
             mainWindow.Title = "Game Tracker";
         }
 
@@ -178,14 +188,14 @@ namespace GameTracker.UI
             return (SortMode)button.Tag;
         }
 
-        private void EnableNewButtons()
+        private void EnableNewButtons(bool state)
         {
-            GamesButtonNew.IsEnabled = true;
-            PlatformsButtonNew.IsEnabled = true;
-            SettingsButtonSave.IsEnabled = true;
-            SettingsButtonNewCompletionStatus.IsEnabled = true;
-            SettingsButtonNewRatingCategory.IsEnabled = true;
-            SettingsButtonNewScoreRange.IsEnabled = true;
+            GamesButtonNew.IsEnabled = state;
+            PlatformsButtonNew.IsEnabled = state;
+            SettingsButtonSave.IsEnabled = state;
+            SettingsButtonNewCompletionStatus.IsEnabled = state;
+            SettingsButtonNewRatingCategory.IsEnabled = state;
+            SettingsButtonNewScoreRange.IsEnabled = state;
         }
         #endregion
 

@@ -90,7 +90,6 @@
     <Compile Include="Framework\Interfaces\IContentLoadSave.cs" />
     <Compile Include="Framework\Interfaces\ILoadSaveCategorical.cs" />
     <Compile Include="Framework\Interfaces\ILoadSaveStatus.cs" />
-    <Compile Include="Framework\IO\ContentLoadSave.cs" />
     <Compile Include="Framework\IO\ContentLoadSaveAWSS3.cs" />
     <Compile Include="Framework\IO\ContentLoadSaveLocal.cs" />
     <Compile Include="Framework\IO\ContentLoadSaveTransferBase.cs" />

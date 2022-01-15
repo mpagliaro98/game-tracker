@@ -25,6 +25,8 @@ namespace GameTracker.Model
         protected readonly IDictionary<LoadSaveIdentifier, string> filepathMap;
         protected static IEnumerable<string> LIST_OF_FILENAMES = new List<string>() { FILENAME_CATEGORIES, FILENAME_GAMES, FILENAME_PLATFORMS, FILENAME_RANGES, FILENAME_SETTINGS, FILENAME_STATUSES };
 
+        public IContentLoadSave<string, string> ContentLoadSaveInstance { get; set; } = new ContentLoadSaveLocal();
+
         public LoadSaveEngineGameJson()
         {
             filepathMap = new Dictionary<LoadSaveIdentifier, string>()
@@ -41,7 +43,7 @@ namespace GameTracker.Model
         public override IEnumerable<T> LoadISavableList<T>(LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
-            string serialized = ContentLoadSave.Read(filename);
+            string serialized = ContentLoadSaveInstance.Read(filename);
             IEnumerable<T> result = LoadJSONArrayIntoObjects<T>(serialized);
             return result;
         }
@@ -49,7 +51,7 @@ namespace GameTracker.Model
         public override async Task<IEnumerable<T>> LoadISavableListAsync<T>(LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
-            string serialized = await ContentLoadSave.ReadAsync(filename);
+            string serialized = await ContentLoadSaveInstance.ReadAsync(filename);
             IEnumerable<T> result = LoadJSONArrayIntoObjects<T>(serialized);
             return result;
         }
@@ -57,7 +59,7 @@ namespace GameTracker.Model
         public override T LoadISavable<T>(LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
-            string serialized = ContentLoadSave.Read(filename);
+            string serialized = ContentLoadSaveInstance.Read(filename);
             SavableRepresentation<TValCont> sr = SavableRepresentation<TValCont>.LoadFromJSON(serialized);
             T t = new T();
             if (sr != null) t.RestoreFromRepresentation(sr);
@@ -67,7 +69,7 @@ namespace GameTracker.Model
         public override async Task<T> LoadISavableAsync<T>(LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
-            string serialized = await ContentLoadSave.ReadAsync(filename);
+            string serialized = await ContentLoadSaveInstance.ReadAsync(filename);
             SavableRepresentation<TValCont> sr = SavableRepresentation<TValCont>.LoadFromJSON(serialized);
             T t = new T();
             if (sr != null) t.RestoreFromRepresentation(sr);
@@ -78,14 +80,14 @@ namespace GameTracker.Model
         {
             string filename = GetFilename(id);
             string serialized = Util.CreateJSONArray<TValCont>(list.Cast<ISavable>());
-            ContentLoadSave.Write(filename, serialized);
+            ContentLoadSaveInstance.Write(filename, serialized);
         }
 
         public override async Task SaveISavableListAsync<T>(IEnumerable<T> list, LoadSaveIdentifier id)
         {
             string filename = GetFilename(id);
             string serialized = Util.CreateJSONArray<TValCont>(list.Cast<ISavable>());
-            await ContentLoadSave.WriteAsync(filename, serialized);
+            await ContentLoadSaveInstance.WriteAsync(filename, serialized);
         }
 
         public override void SaveISavable<T>(T obj, LoadSaveIdentifier id)
@@ -93,7 +95,7 @@ namespace GameTracker.Model
             string filename = GetFilename(id);
             SavableRepresentation<TValCont> sr = obj.LoadIntoRepresentation<TValCont>();
             string serialized = sr.ConvertToJSON();
-            ContentLoadSave.Write(filename, serialized);
+            ContentLoadSaveInstance.Write(filename, serialized);
         }
 
         public override async Task SaveISavableAsync<T>(T obj, LoadSaveIdentifier id)
@@ -101,17 +103,19 @@ namespace GameTracker.Model
             string filename = GetFilename(id);
             SavableRepresentation<TValCont> sr = obj.LoadIntoRepresentation<TValCont>();
             string serialized = sr.ConvertToJSON();
-            await ContentLoadSave.WriteAsync(filename, serialized);
+            await ContentLoadSaveInstance.WriteAsync(filename, serialized);
         }
 
         public override void TransferSaveFiles(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
         {
-            ContentLoadSave.TransferSaveFiles(from, to, LIST_OF_FILENAMES);
+            ContentLoadSaveTransferString transfer = new ContentLoadSaveTransferString();
+            transfer.TransferSaveFiles(from, to, LIST_OF_FILENAMES);
         }
 
         public override async Task TransferSaveFilesAsync(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
         {
-            await ContentLoadSave.TransferSaveFilesAsync(from, to, LIST_OF_FILENAMES);
+            ContentLoadSaveTransferString transfer = new ContentLoadSaveTransferString();
+            await transfer.TransferSaveFilesAsync(from, to, LIST_OF_FILENAMES);
         }
 
         protected IEnumerable<T> LoadJSONArrayIntoObjects<T>(string json) where T : ISavable, new()
