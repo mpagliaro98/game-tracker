@@ -12,7 +12,7 @@ namespace RatableTracker.Framework.IO
     {
         public string BaseDirectory()
         {
-            return AppDomain.CurrentDomain.BaseDirectory;
+            return Environment.ExpandEnvironmentVariables("%LocalAppData%\\mpagliaro98\\GameTracker");
         }
 
         public string Combine(string path1, string path2)
