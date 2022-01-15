@@ -40,21 +40,15 @@ namespace RatableTracker.Framework.IO
         public static void TransferSaveFiles(IContentLoadSave<string, string> from,
             IContentLoadSave<string, string> to, IEnumerable<string> keys)
         {
-            foreach (string key in keys)
-            {
-                string content = from.Read(key);
-                to.Write(key, content);
-            }
+            ContentLoadSaveTransferString transfer = new ContentLoadSaveTransferString();
+            transfer.TransferSaveFiles(from, to, keys);
         }
 
         public static async Task TransferSaveFilesAsync(IContentLoadSave<string, string> from,
             IContentLoadSave<string, string> to, IEnumerable<string> keys)
         {
-            foreach (string key in keys)
-            {
-                string content = await from.ReadAsync(key);
-                await to.WriteAsync(key, content);
-            }
+            ContentLoadSaveTransferString transfer = new ContentLoadSaveTransferString();
+            await transfer.TransferSaveFilesAsync(from, to, keys);
         }
     }
 }

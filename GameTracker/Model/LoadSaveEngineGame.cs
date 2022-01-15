@@ -18,5 +18,8 @@ namespace GameTracker.Model
         where TRatingCat : RatingCategory, ISavable, new()
     {
         public LoadSaveIdentifier ID_PLATFORMS => new LoadSaveIdentifier("Platforms");
+
+        public abstract void TransferSaveFiles(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to);
+        public abstract Task TransferSaveFilesAsync(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to);
     }
 }

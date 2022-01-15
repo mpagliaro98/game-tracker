@@ -158,12 +158,12 @@ namespace GameTracker.Model
             await loadSaveEngine.SaveISavableAsync(settings, loadSaveEngine.ID_SETTINGS);
         }
 
-        public override void TransferSaveFiles(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
+        public virtual void TransferSaveFiles(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
         {
             loadSaveEngine.TransferSaveFiles(from, to);
         }
 
-        public override async Task TransferSaveFilesAsync(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
+        public virtual async Task TransferSaveFilesAsync(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
         {
             await loadSaveEngine.TransferSaveFilesAsync(from, to);
         }

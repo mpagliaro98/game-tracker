@@ -23,6 +23,7 @@ namespace GameTracker.Model
         protected const string FILENAME_RANGES = "score_ranges.json";
         protected const string FILENAME_SETTINGS = "settings.json";
         protected readonly IDictionary<LoadSaveIdentifier, string> filepathMap;
+        protected static IEnumerable<string> LIST_OF_FILENAMES = new List<string>() { FILENAME_CATEGORIES, FILENAME_GAMES, FILENAME_PLATFORMS, FILENAME_RANGES, FILENAME_SETTINGS, FILENAME_STATUSES };
 
         public LoadSaveEngineGameJson()
         {
@@ -105,14 +106,12 @@ namespace GameTracker.Model
 
         public override void TransferSaveFiles(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
         {
-            IEnumerable<string> filenames = new List<string> { FILENAME_CATEGORIES, FILENAME_GAMES, FILENAME_PLATFORMS, FILENAME_RANGES, FILENAME_SETTINGS, FILENAME_STATUSES };
-            ContentLoadSave.TransferSaveFiles(from, to, filenames);
+            ContentLoadSave.TransferSaveFiles(from, to, LIST_OF_FILENAMES);
         }
 
         public override async Task TransferSaveFilesAsync(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to)
         {
-            IEnumerable<string> filenames = new List<string> { FILENAME_CATEGORIES, FILENAME_GAMES, FILENAME_PLATFORMS, FILENAME_RANGES, FILENAME_SETTINGS, FILENAME_STATUSES };
-            await ContentLoadSave.TransferSaveFilesAsync(from, to, filenames);
+            await ContentLoadSave.TransferSaveFilesAsync(from, to, LIST_OF_FILENAMES);
         }
 
         protected IEnumerable<T> LoadJSONArrayIntoObjects<T>(string json) where T : ISavable, new()

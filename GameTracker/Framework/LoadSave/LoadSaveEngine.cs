@@ -26,7 +26,5 @@ namespace RatableTracker.Framework.LoadSave
         public abstract Task SaveISavableListAsync<T>(IEnumerable<T> list, LoadSaveIdentifier id) where T : ISavable;
         public abstract void SaveISavable<T>(T obj, LoadSaveIdentifier id) where T : ISavable;
         public abstract Task SaveISavableAsync<T>(T obj, LoadSaveIdentifier id) where T : ISavable;
-        public abstract void TransferSaveFiles(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to);
-        public abstract Task TransferSaveFilesAsync(IContentLoadSave<string, string> from, IContentLoadSave<string, string> to);
     }
 }

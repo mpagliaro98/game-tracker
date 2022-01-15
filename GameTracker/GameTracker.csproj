@@ -93,6 +93,8 @@
     <Compile Include="Framework\IO\ContentLoadSave.cs" />
     <Compile Include="Framework\IO\ContentLoadSaveAWSS3.cs" />
     <Compile Include="Framework\IO\ContentLoadSaveLocal.cs" />
+    <Compile Include="Framework\IO\ContentLoadSaveTransferBase.cs" />
+    <Compile Include="Framework\IO\ContentLoadSaveTransferString.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngineRated.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngineRatedCategorical.cs" />
     <Compile Include="Framework\LoadSave\LoadSaveEngineRatedStatus.cs" />
