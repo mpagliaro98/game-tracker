@@ -75,6 +75,15 @@ namespace GameTracker.UI
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadAllData();
+            if (rm.Settings.IsUsingAWS())
+            {
+                LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
+                {
+                    ContentLoadSaveInstance = new ContentLoadSaveAWSS3(rm.Settings.AWSKeyFilePath)
+                };
+                rm = new RatingModuleGame(engine);
+                await LoadAllData();
+            }
         }
 
         private async Task LoadAllData()

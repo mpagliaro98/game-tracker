@@ -13,7 +13,7 @@ namespace GameTracker.Model
         : LoadSaveEngineRatedStatusCategorical<TListedObj, TRange, TSettings, TStatus, TRatingCat>
         where TListedObj : RatableGame, ISavable, new()
         where TRange : ScoreRange, ISavable, new()
-        where TSettings : SettingsScore, ISavable, new()
+        where TSettings : SettingsGame, ISavable, new()
         where TStatus : Status, ISavable, new()
         where TRatingCat : RatingCategory, ISavable, new()
     {

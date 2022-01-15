@@ -15,7 +15,7 @@ namespace GameTracker.Model
         : RatingModuleStatusCategorical<TListedObj, TRange, TSettings, TStatus, TRatingCat>
         where TListedObj : RatableGame, ISavable, new()
         where TRange : ScoreRange, ISavable, new()
-        where TSettings : SettingsScore, ISavable, new()
+        where TSettings : SettingsGame, ISavable, new()
         where TStatus : CompletionStatus, ISavable, new()
         where TRatingCat : RatingCategory, ISavable, new()
     {
