@@ -13,7 +13,7 @@ using RatableTracker.Framework.IO;
 namespace GameTracker.Model
 {
     public class LoadSaveEngineGameJson<TValCont>
-        : LoadSaveEngineGame<RatableGame, ScoreRange, SettingsGame, CompletionStatus, RatingCategoryWeighted>
+        : LoadSaveEngineGame<RatableGame, ScoreRange, SettingsScore, CompletionStatus, RatingCategoryWeighted>
         where TValCont : IValueContainer<TValCont>, new()
     {
         protected const string FILENAME_PLATFORMS = "platforms.json";

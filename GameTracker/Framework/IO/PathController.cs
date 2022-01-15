@@ -65,5 +65,10 @@ namespace RatableTracker.Framework.IO
         {
             PathControllerInstance.CreateFileIfDoesNotExist(filepath);
         }
+
+        public static void DeleteFile(string filepath)
+        {
+            PathControllerInstance.DeleteFile(filepath);
+        }
     }
 }

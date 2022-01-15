@@ -15,12 +15,14 @@ namespace RatableTracker.Framework.IO
     public class ContentLoadSaveAWSS3 : IContentLoadSave<string, string>
     {
         private const string BUCKET_NAME = "gametrackersavefiles";
+        private const string KEY_FILENAME = "awskeys.dat";
+        private static string KEY_FILE_PATH = PathController.Combine(PathController.BaseDirectory(), KEY_FILENAME);
 
         private readonly AmazonS3Client client;
 
-        public ContentLoadSaveAWSS3(string filenameAWSKeys)
+        public ContentLoadSaveAWSS3()
         {
-            string fileContents = IO.PathController.ReadFromFile(filenameAWSKeys);
+            string fileContents = IO.PathController.ReadFromFile(KEY_FILE_PATH);
             if (fileContents.Length <= 0)
                 throw new FederatedAuthenticationFailureException("Invalid AWS credentials");
             string[] fileLines = fileContents.Split('\n');
@@ -128,6 +130,22 @@ namespace RatableTracker.Framework.IO
             {
                 client.PutBucket(bucketName);
             }
+        }
+
+        public static bool KeyFileExists()
+        {
+            return PathController.FileExists(KEY_FILE_PATH);
+        }
+
+        public static void CreateKeyFile(string keyFileContent)
+        {
+            PathController.CreateFileIfDoesNotExist(KEY_FILE_PATH);
+            PathController.WriteToFile(KEY_FILE_PATH, keyFileContent);
+        }
+
+        public static void DeleteKeyFile()
+        {
+            PathController.DeleteFile(KEY_FILE_PATH);
         }
     }
 }

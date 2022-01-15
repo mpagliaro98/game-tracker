@@ -17,6 +17,7 @@ using RatableTracker.Framework.IO;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
 using RatableTracker.Framework.LoadSave;
+using RatableTracker.Framework.Interfaces;
 
 namespace GameTracker.UI
 {
@@ -62,9 +63,14 @@ namespace GameTracker.UI
         {
             PathController.PathControllerInstance = new PathControllerWindows();
             GlobalSettings.Autosave = false;
+            IContentLoadSave<string, string> cls;
+            if (ContentLoadSaveAWSS3.KeyFileExists())
+                cls = new ContentLoadSaveAWSS3();
+            else
+                cls = new ContentLoadSaveLocal();
             LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
             {
-                ContentLoadSaveInstance = new ContentLoadSaveLocal()
+                ContentLoadSaveInstance = cls
             };
             rm = new RatingModuleGame(engine);
             InitializeComponent();
@@ -75,15 +81,6 @@ namespace GameTracker.UI
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadAllData();
-            if (rm.Settings.IsUsingAWS())
-            {
-                LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
-                {
-                    ContentLoadSaveInstance = new ContentLoadSaveAWSS3(rm.Settings.AWSKeyFilePath)
-                };
-                rm = new RatingModuleGame(engine);
-                await LoadAllData();
-            }
         }
 
         private async Task LoadAllData()

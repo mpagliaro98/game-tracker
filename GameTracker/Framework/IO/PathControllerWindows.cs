@@ -74,5 +74,10 @@ namespace RatableTracker.Framework.IO
                 fs.Close();
             }
         }
+
+        public void DeleteFile(string filepath)
+        {
+            File.Delete(filepath);
+        }
     }
 }

@@ -10,9 +10,9 @@ using RatableTracker.Framework.IO;
 namespace GameTracker.Model
 {
     public class RatingModuleGame
-        : RatingModuleGameTemplate<RatableGame, ScoreRange, SettingsGame, CompletionStatus, RatingCategoryWeighted>
+        : RatingModuleGameTemplate<RatableGame, ScoreRange, SettingsScore, CompletionStatus, RatingCategoryWeighted>
     {
-        public RatingModuleGame(LoadSaveEngineGame<RatableGame, ScoreRange, SettingsGame, CompletionStatus, RatingCategoryWeighted> engine)
+        public RatingModuleGame(LoadSaveEngineGame<RatableGame, ScoreRange, SettingsScore, CompletionStatus, RatingCategoryWeighted> engine)
         {
             loadSaveEngine = engine;
         }

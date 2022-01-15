@@ -125,7 +125,6 @@
     <Compile Include="Framework\Global\Util.cs" />
     <Compile Include="Model\Partial\Util.cs" />
     <Compile Include="Model\RatingModuleGame.cs" />
-    <Compile Include="Model\SettingsGame.cs" />
     <Compile Include="UI\IListBoxItemGame.cs" />
     <Compile Include="UI\InvertBooleanConverter.cs" />
     <Compile Include="UI\ListBoxItemCompletionStatus.xaml.cs">
