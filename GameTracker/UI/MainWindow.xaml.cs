@@ -592,7 +592,7 @@ namespace GameTracker.UI
         {
             SettingsTextboxMin.Text = rm.Settings.MinScore.ToString();
             SettingsTextboxMax.Text = rm.Settings.MaxScore.ToString();
-            SettingsAWSButton.Content = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Transfer save files to AWS";
+            SettingsAWSButton.Content = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
         private void ResetSettingsLabels()
@@ -630,9 +630,13 @@ namespace GameTracker.UI
             if (ContentLoadSaveAWSS3.KeyFileExists())
             {
                 // Remove key file
+                var result = MessageBox.Show("Transfer AWS save files to local? This will overwrite anything currently on this device.", "Overwrite local?", MessageBoxButton.YesNo);
                 IContentLoadSave<string, string> cls = new ContentLoadSaveLocal();
-                IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
-                await rm.TransferSaveFilesAsync(from, cls);
+                if (result == MessageBoxResult.Yes)
+                {
+                    IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
+                    await rm.TransferSaveFilesAsync(from, cls);
+                }
                 ContentLoadSaveAWSS3.DeleteKeyFile();
                 LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
                 {
@@ -647,12 +651,16 @@ namespace GameTracker.UI
                 OpenFileDialog fileDialog = new OpenFileDialog();
                 if (fileDialog.ShowDialog() == true)
                 {
+                    var result = MessageBox.Show("Transfer local save files to AWS? This will overwrite anything currently on your AWS account.", "Overwrite AWS?", MessageBoxButton.YesNo);
                     try
                     {
                         ContentLoadSaveAWSS3.CreateKeyFile(fileDialog.FileName);
                         IContentLoadSave<string, string> cls = new ContentLoadSaveAWSS3();
-                        IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
-                        await rm.TransferSaveFilesAsync(from, cls);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
+                            await rm.TransferSaveFilesAsync(from, cls);
+                        }
                         LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
                         {
                             ContentLoadSaveInstance = cls
