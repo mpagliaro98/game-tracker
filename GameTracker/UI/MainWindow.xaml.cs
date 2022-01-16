@@ -240,8 +240,11 @@ namespace GameTracker.UI
             foreach (RatingCategory cat in cats)
             {
                 GridCategories.ColumnDefinitions.Add(new ColumnDefinition());
-                Label label = new Label();
-                label.Content = cat.Name;
+                var label = new TextBlock();
+                label.Text = cat.Name;
+                label.TextWrapping = TextWrapping.Wrap;
+                label.MaxHeight = 35;
+                label.VerticalAlignment = VerticalAlignment.Center;
                 TextBlock tb = new TextBlock();
                 tb.Text = cat.Comment;
                 tb.TextWrapping = TextWrapping.Wrap;

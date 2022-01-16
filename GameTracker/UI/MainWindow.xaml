@@ -62,11 +62,11 @@
                                 <ColumnDefinition Width="0.5*" />
                                 <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
-                            <Label Content="Name" />
-                            <Label Content="Platform" Grid.Column="1" />
-                            <Label Content="Completion Status" Grid.Column="2" />
+                            <Label Content="Name" VerticalAlignment="Center" />
+                            <Label Content="Platform" Grid.Column="1" VerticalAlignment="Center" />
+                            <Label Content="Completion Status" Grid.Column="2" VerticalAlignment="Center" />
                             <Grid x:Name="GridCategories" Grid.Column="3" />
-                            <Label Content="Final Score" Grid.Column="4" />
+                            <Label Content="Final Score" Grid.Column="4" VerticalAlignment="Center" />
                         </Grid>
                     </StackPanel>
                     <local:ScalableListBox x:Name="GamesListbox" DockPanel.Dock="Bottom" Margin="5" />
