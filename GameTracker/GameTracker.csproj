@@ -125,10 +125,14 @@
     <Compile Include="Framework\Global\Util.cs" />
     <Compile Include="Model\Partial\Util.cs" />
     <Compile Include="Model\RatingModuleGame.cs" />
+    <Compile Include="UI\GameDisplayMode.cs" />
     <Compile Include="UI\IListBoxItemGame.cs" />
     <Compile Include="UI\InvertBooleanConverter.cs" />
     <Compile Include="UI\ListBoxItemCompletionStatus.xaml.cs">
       <DependentUpon>ListBoxItemCompletionStatus.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\ListBoxItemGameExpanded.xaml.cs">
+      <DependentUpon>ListBoxItemGameExpanded.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\ListBoxItemGameSmall.xaml.cs">
       <DependentUpon>ListBoxItemGameSmall.xaml</DependentUpon>
@@ -162,6 +166,10 @@
       <DependentUpon>SubWindowScoreRange.xaml</DependentUpon>
     </Compile>
     <Page Include="UI\ListBoxItemCompletionStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ListBoxItemGameExpanded.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -56,6 +56,7 @@ namespace GameTracker.UI
             public Func<Platform, object> platformsSortFunc = null;
             public SortMode platformsSortMode = SortMode.ASCENDING;
             public bool gamesSortCatCreated = false;
+            public GameDisplayMode displayMode = GameDisplayMode.DISPLAY_SMALL;
         }
 
         private SavedState savedState = new SavedState();
@@ -219,7 +220,24 @@ namespace GameTracker.UI
             GamesListbox.ClearItems();
             foreach (RatableGame rg in GetGamesView())
             {
-                ListBoxItemGameSmall item = new ListBoxItemGameSmall(rm, rg);
+                UserControl item;
+                switch (savedState.displayMode)
+                {
+                    case GameDisplayMode.DISPLAY_SMALL:
+                        item = new ListBoxItemGameSmall(rm, rg);
+                        GamesTop.Visibility = Visibility.Visible;
+                        GamesTopExpanded.Visibility = Visibility.Collapsed;
+                        break;
+                    case GameDisplayMode.DISPLAY_EXPANDED:
+                        item = new ListBoxItemGameExpanded(rm, rg);
+                        GamesTop.Visibility = Visibility.Collapsed;
+                        GamesTopExpanded.Visibility = Visibility.Visible;
+                        break;
+                    case GameDisplayMode.DISPLAY_BOXES:
+                        throw new NotImplementedException();
+                    default:
+                        throw new NotImplementedException();
+                }
                 item.MouseDoubleClick += GameEdit;
                 GamesListbox.AddItem(item);
 
@@ -431,6 +449,30 @@ namespace GameTracker.UI
             Button button = (Button)sender;
             ToggleSortModeButton(button);
             GamesSortRefresh();
+        }
+
+        private void GamesButtonList_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeGameDisplayMode(GameDisplayMode.DISPLAY_SMALL);
+        }
+
+        private void GamesButtonExpanded_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeGameDisplayMode(GameDisplayMode.DISPLAY_EXPANDED);
+        }
+
+        private void GamesButtonBoxes_Click(object sender, RoutedEventArgs e)
+        {
+            ChangeGameDisplayMode(GameDisplayMode.DISPLAY_BOXES);
+        }
+
+        private void ChangeGameDisplayMode(GameDisplayMode mode)
+        {
+            if (savedState.displayMode != mode)
+            {
+                savedState.displayMode = mode;
+                UpdateGamesUI();
+            }
         }
         #endregion
 
