@@ -18,6 +18,7 @@ using RatableTracker.Framework;
 using RatableTracker.Framework.Global;
 using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework.Interfaces;
+using Microsoft.Win32;
 
 namespace GameTracker.UI
 {
@@ -591,6 +592,7 @@ namespace GameTracker.UI
         {
             SettingsTextboxMin.Text = rm.Settings.MinScore.ToString();
             SettingsTextboxMax.Text = rm.Settings.MaxScore.ToString();
+            SettingsAWSButton.Content = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Transfer save files to AWS";
         }
 
         private void ResetSettingsLabels()
@@ -620,6 +622,51 @@ namespace GameTracker.UI
             UpdateSettingsUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
             await SaveSettingsAsync();
+        }
+
+        private async void SettingsAWSButton_Click(object sender, RoutedEventArgs e)
+        {
+            mainWindow.IsEnabled = false;
+            if (ContentLoadSaveAWSS3.KeyFileExists())
+            {
+                // Remove key file
+                IContentLoadSave<string, string> cls = new ContentLoadSaveLocal();
+                IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
+                await rm.TransferSaveFilesAsync(from, cls);
+                ContentLoadSaveAWSS3.DeleteKeyFile();
+                LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
+                {
+                    ContentLoadSaveInstance = cls
+                };
+                rm = new RatingModuleGame(engine);
+                await LoadAllData();
+            }
+            else
+            {
+                // Add a key file
+                OpenFileDialog fileDialog = new OpenFileDialog();
+                if (fileDialog.ShowDialog() == true)
+                {
+                    try
+                    {
+                        ContentLoadSaveAWSS3.CreateKeyFile(fileDialog.FileName);
+                        IContentLoadSave<string, string> cls = new ContentLoadSaveAWSS3();
+                        IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
+                        await rm.TransferSaveFilesAsync(from, cls);
+                        LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
+                        {
+                            ContentLoadSaveInstance = cls
+                        };
+                        rm = new RatingModuleGame(engine);
+                        await LoadAllData();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Something went wrong.\n" + ex.Message, "Error");
+                    }
+                }
+            }
+            mainWindow.IsEnabled = true;
         }
 
         private async Task SaveSettingsAsync()

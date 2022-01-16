@@ -137,10 +137,11 @@ namespace RatableTracker.Framework.IO
             return PathController.FileExists(KEY_FILE_PATH);
         }
 
-        public static void CreateKeyFile(string keyFileContent)
+        public static void CreateKeyFile(string keyFilePath)
         {
             PathController.CreateFileIfDoesNotExist(KEY_FILE_PATH);
-            PathController.WriteToFile(KEY_FILE_PATH, keyFileContent);
+            string fileContents = PathController.ReadFromFile(keyFilePath);
+            PathController.WriteToFile(KEY_FILE_PATH, fileContents);
         }
 
         public static void DeleteKeyFile()

@@ -144,15 +144,25 @@
                             <ColumnDefinition Width='1*' />
                             <ColumnDefinition Width='1*' />
                         </Grid.ColumnDefinitions>
-                        <StackPanel x:Name="SettingsLayout">
-                            <Label x:Name="SettingsLabelMin" Content="Minimum Score" />
-                            <TextBox x:Name="SettingsTextboxMin" Margin="5,0" Width="150" HorizontalAlignment="Left" />
-                            <Label x:Name="SettingsLabelMax" Content="Maximum Score" />
-                            <TextBox x:Name="SettingsTextboxMax" Margin="5,0" Width="150" HorizontalAlignment="Left" />
-                            <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" IsEnabled="False" />
-                            <Label x:Name="SettingsLabelError" Content="Values are formatted incorrectly" Foreground="Red" />
-                            <Label x:Name="SettingsLabelSuccess" Content="Settings successfully saved" Foreground="Lime" />
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width='1*' />
+                                <ColumnDefinition Width='1*' />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel x:Name="SettingsLayout">
+                                <Label x:Name="SettingsLabelMin" Content="Minimum Score" />
+                                <TextBox x:Name="SettingsTextboxMin" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                                <Label x:Name="SettingsLabelMax" Content="Maximum Score" />
+                                <TextBox x:Name="SettingsTextboxMax" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                                <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" IsEnabled="False" />
+                                <Label x:Name="SettingsLabelError" Content="Values are formatted incorrectly" Foreground="Red" />
+                                <Label x:Name="SettingsLabelSuccess" Content="Settings successfully saved" Foreground="Lime" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Click the button below to transfer your saved data to AWS. Doing so will allow you to access your data on any platform Game Tracker supports. You will need an AWS account, then you must generate your unique key and secret key on AWS. Once you download that key file, click the button below and select that file." TextWrapping="Wrap" HorizontalAlignment="Center" Margin="5" />
+                                <Button x:Name="SettingsAWSButton" Margin="5" Height="30" Width="170" Click="SettingsAWSButton_Click" />
+                            </StackPanel>
+                        </Grid>
                         <DockPanel x:Name="SettingsCompletionStatusesLayout" Grid.Column="1">
                             <DockPanel DockPanel.Dock="Top">
                                 <Label x:Name="SettingsLabelCompletionStatuses" Content="Completion Statuses" />
