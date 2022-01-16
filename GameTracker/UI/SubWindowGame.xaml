@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
-        Title="Game" Height="550" Width="900">
+        Title="Game" Height="550" Width="900" MinHeight="550" MinWidth="900">
     <Window.Resources>
         <BitmapImage x:Key="ButtonEdit" UriSource="../Images/button_pencil.png" />
         <BitmapImage x:Key="ButtonLock" UriSource="../Images/button_lock.png" />
@@ -14,9 +14,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="2.5*" />
             <RowDefinition Height="1.5*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1.5*" />
+            <RowDefinition Height="0.8*" />
+            <RowDefinition Height="0.85*" />
+            <RowDefinition Height="2.2*" />
             <RowDefinition Height="0.8*" />
         </Grid.RowDefinitions>
         <Grid>
@@ -118,7 +118,7 @@
         </Grid>
         <StackPanel VerticalAlignment="Center" Grid.Row="4">
             <Label Content="Comments" />
-            <TextBox x:Name="TextBoxComments" Margin="5,0" TextWrapping="Wrap" AcceptsReturn="True" MinHeight="50" />
+            <TextBox x:Name="TextBoxComments" Margin="5,0" TextWrapping="Wrap" AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto" />
         </StackPanel>
         <StackPanel Grid.Row="5" HorizontalAlignment="Center">
             <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonSave_Click" />
