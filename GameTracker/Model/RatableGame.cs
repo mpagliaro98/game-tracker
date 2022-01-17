@@ -34,6 +34,13 @@ namespace GameTracker.Model
 
         public DateTime FinishedOn { get; set; } = DateTime.MinValue;
 
+        public bool IsRemaster { get; set; } = false;
+
+        private ObjectReference originalGame = new ObjectReference();
+        public ObjectReference RefOriginalGame => originalGame;
+
+        public bool UseOriginalGameScore { get; set; } = false;
+
         public RatableGame() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
@@ -47,6 +54,9 @@ namespace GameTracker.Model
             sr.SaveValue("acquiredOn", AcquiredOn);
             sr.SaveValue("startedOn", StartedOn);
             sr.SaveValue("finishedOn", FinishedOn);
+            sr.SaveValue("isRemaster", IsRemaster);
+            sr.SaveValue("originalGame", originalGame);
+            sr.SaveValue("useOriginalGameScore", UseOriginalGameScore);
             return sr;
         }
 
@@ -81,6 +91,15 @@ namespace GameTracker.Model
                     case "finishedOn":
                         FinishedOn = sr.GetDateTime(key);
                         break;
+                    case "isRemaster":
+                        IsRemaster = sr.GetBool(key);
+                        break;
+                    case "originalGame":
+                        originalGame = sr.GetISavable<ObjectReference>(key);
+                        break;
+                    case "useOriginalGameScore":
+                        UseOriginalGameScore = sr.GetBool(key);
+                        break;
                     default:
                         break;
                 }
@@ -105,6 +124,16 @@ namespace GameTracker.Model
         public void RemovePlatformPlayedOn()
         {
             platformPlayedOn.ClearReference();
+        }
+
+        public void SetOriginalGame<T>(T obj) where T : RatableGame, IReferable
+        {
+            originalGame.SetReference(obj);
+        }
+
+        public void RemoveOriginalGame()
+        {
+            originalGame.ClearReference();
         }
     }
 }

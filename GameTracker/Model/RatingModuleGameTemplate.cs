@@ -168,6 +168,32 @@ namespace GameTracker.Model
             await loadSaveEngine.TransferSaveFilesAsync(from, to);
         }
 
+        public override double GetScoreOfObject(TListedObj obj)
+        {
+            if (obj.IsRemaster && obj.UseOriginalGameScore)
+            {
+                var originalGame = FindListedObject(obj.RefOriginalGame);
+                return GetScoreOfObject(originalGame);
+            }
+            else
+            {
+                return base.GetScoreOfObject(obj);
+            }
+        }
+
+        public override double GetScoreOfCategory(TListedObj obj, TRatingCat cat)
+        {
+            if (obj.IsRemaster && obj.UseOriginalGameScore)
+            {
+                var originalGame = FindListedObject(obj.RefOriginalGame);
+                return GetScoreOfCategory(originalGame, cat);
+            }
+            else
+            {
+                return base.GetScoreOfCategory(obj, cat);
+            }
+        }
+
         public Platform FindPlatform(ObjectReference objectKey)
         {
             return FindObject(platforms, objectKey);
@@ -209,6 +235,14 @@ namespace GameTracker.Model
                 throw new ValidationException("Completion comment cannot be longer than " + RatableGame.MaxLengthCompletionComment.ToString());
             if (obj.TimeSpent.Length > RatableGame.MaxLengthTimeSpent)
                 throw new ValidationException("Time spent cannot be longer than " + RatableGame.MaxLengthTimeSpent.ToString());
+            try
+            {
+                GetScoreOfObject(obj);
+            }
+            catch (StackOverflowException)
+            {
+                throw new ValidationException("Cannot set the original game to a game that references this one");
+            }
         }
 
         public virtual void ValidatePlatform(Platform obj)

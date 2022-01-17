@@ -43,26 +43,22 @@ namespace GameTracker.UI
             LabelPlatform.Content = platform != null ? platform.Name : "";
             LabelStatus.Content = completionStatus != null ? completionStatus.Name : "";
             if (completionStatus != null) LabelStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
-            BuildCategories(rm.RatingCategories, rg.CategoryValues);
+            BuildCategories(rm, rg);
             LabelFinalScore.Content = rm.GetScoreOfObject(rg).ToString(DECIMAL_FORMAT);
             LabelFinalScore.Background = new SolidColorBrush(rm.GetRangeColorFromObject(rg).ToMediaColor());
         }
 
-        private void BuildCategories(IEnumerable<RatingCategory> cats, IEnumerable<RatingCategoryValue> vals)
+        private void BuildCategories(RatingModuleGame rm, RatableGame rg)
         {
             int i = 0;
-            foreach (RatingCategory cat in cats)
+            foreach (RatingCategoryWeighted cat in rm.RatingCategories)
             {
                 GridCategories.ColumnDefinitions.Add(new ColumnDefinition());
-                var matches = vals.Where(val => val.RefRatingCategory.IsReferencedObject(cat));
-                if (matches.Count() > 0)
-                {
-                    RatingCategoryValue pointValue = matches.First();
-                    Label label = new Label();
-                    label.Content = pointValue.PointValue.ToString(DECIMAL_FORMAT);
-                    Grid.SetColumn(label, i);
-                    GridCategories.Children.Add(label);
-                }
+                double score = rm.GetScoreOfCategory(rg, cat);
+                Label label = new Label();
+                label.Content = score.ToString(DECIMAL_FORMAT);
+                Grid.SetColumn(label, i);
+                GridCategories.Children.Add(label);
                 i++;
             }
         }

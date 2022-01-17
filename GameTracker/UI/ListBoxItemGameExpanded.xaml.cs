@@ -48,13 +48,13 @@ namespace GameTracker.UI
             TextBlockStatus.Text = completionStatus != null ? completionStatus.Name : "";
             if (completionStatus != null)
                 TextBlockStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
-            BuildCategories(rm, rm.RatingCategories, rg.CategoryValues);
+            BuildCategories(rm, rg);
             TextBlockFinalScore.Text = rm.GetScoreOfObject(rg).ToString(DECIMAL_FORMAT);
             TextBlockFinalScore.Background = new SolidColorBrush(rm.GetRangeColorFromObject(rg).ToMediaColor());
             TextBlockComment.Text = rg.Comment;
         }
 
-        private void BuildCategories(RatingModuleGame rm, IEnumerable<RatingCategory> cats, IEnumerable<RatingCategoryValue> vals)
+        private void BuildCategories(RatingModuleGame rm, RatableGame rg)
         {
             for (int i = 0; i < rm.RatingCategories.Count(); i+=2)
             {
@@ -79,37 +79,32 @@ namespace GameTracker.UI
             }
 
             int slot = 0;
-            foreach (RatingCategory cat in cats)
+            foreach (RatingCategoryWeighted cat in rm.RatingCategories)
             {
-                var matches = vals.Where(val => val.RefRatingCategory.IsReferencedObject(cat));
-                if (matches.Count() > 0)
+                double score = rm.GetScoreOfCategory(rg, cat);
+                StackPanel panel = new StackPanel
                 {
-                    RatingCategoryValue pointValue = matches.First();
-                    var category = rm.FindRatingCategory(pointValue.RefRatingCategory);
-                    StackPanel panel = new StackPanel
-                    {
-                        Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0xF4, G = 0xF4, B = 0xF4 }),
-                        Margin = new Thickness(2)
-                    };
-                    TextBlock tb = new TextBlock()
-                    {
-                        Text = category.Name,
-                        TextTrimming = TextTrimming.CharacterEllipsis,
-                        FontSize = 8,
-                        TextAlignment = TextAlignment.Center
-                    };
-                    Label label = new Label
-                    {
-                        Content = pointValue.PointValue.ToString(DECIMAL_FORMAT),
-                        HorizontalAlignment = HorizontalAlignment.Center,
-                        FontSize = 16
-                    };
-                    panel.Children.Add(tb);
-                    panel.Children.Add(label);
-                    Grid.SetColumn(panel, slot / 2);
-                    Grid.SetRow(panel, slot % 2);
-                    GridCategories.Children.Add(panel);
-                }
+                    Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0xF4, G = 0xF4, B = 0xF4 }),
+                    Margin = new Thickness(2)
+                };
+                TextBlock tb = new TextBlock()
+                {
+                    Text = cat.Name,
+                    TextTrimming = TextTrimming.CharacterEllipsis,
+                    FontSize = 8,
+                    TextAlignment = TextAlignment.Center
+                };
+                Label label = new Label
+                {
+                    Content = score.ToString(DECIMAL_FORMAT),
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    FontSize = 16
+                };
+                panel.Children.Add(tb);
+                panel.Children.Add(label);
+                Grid.SetColumn(panel, slot / 2);
+                Grid.SetRow(panel, slot % 2);
+                GridCategories.Children.Add(panel);
                 slot++;
             }
         }

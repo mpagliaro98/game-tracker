@@ -40,7 +40,9 @@ namespace GameTracker.UI
             ComboBoxPlatformPlayedOn.SelectedIndex = 0;
             bool defaultIgnore = new RatableGame().IgnoreCategories;
             CreateRatingCategories(rm.RatingCategories,
-                orig == null ? new List<RatingCategoryValue>() : orig.CategoryValues, rm.Settings,
+                orig == null ? new List<RatingCategoryValue>() :
+                    orig.IsRemaster && orig.UseOriginalGameScore ? rm.FindListedObject(orig.RefOriginalGame).CategoryValues : orig.CategoryValues,
+                rm.Settings,
                 orig == null ? !defaultIgnore : !orig.IgnoreCategories);
             UpdateScoreEditButton(orig == null ? !defaultIgnore : !orig.IgnoreCategories);
             switch (mode)
