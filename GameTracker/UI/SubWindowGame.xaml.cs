@@ -35,9 +35,11 @@ namespace GameTracker.UI
             FillComboboxStatuses(ComboBoxStatus);
             FillComboboxPlatforms(ComboBoxPlatform);
             FillComboboxPlatforms(ComboBoxPlatformPlayedOn);
+            FillComboboxGames(ComboboxOriginalGame);
             ComboBoxStatus.SelectedIndex = 0;
             ComboBoxPlatform.SelectedIndex = 0;
             ComboBoxPlatformPlayedOn.SelectedIndex = 0;
+            ComboboxOriginalGame.SelectedIndex = 0;
             bool defaultIgnore = new RatableGame().IgnoreCategories;
             CreateRatingCategories(rm.RatingCategories,
                 orig == null ? new List<RatingCategoryValue>() :
@@ -58,6 +60,7 @@ namespace GameTracker.UI
                     if (orig.RefStatus.HasReference()) ComboBoxStatus.SelectedItem = rm.FindStatus(orig.RefStatus);
                     if (orig.RefPlatform.HasReference()) ComboBoxPlatform.SelectedItem = rm.FindPlatform(orig.RefPlatform);
                     if (orig.RefPlatformPlayedOn.HasReference()) ComboBoxPlatformPlayedOn.SelectedItem = rm.FindPlatform(orig.RefPlatformPlayedOn);
+                    if (orig.RefOriginalGame.HasReference()) ComboboxOriginalGame.SelectedItem = rm.FindListedObject(orig.RefOriginalGame);
                     TextboxCompletionCriteria.Text = orig.CompletionCriteria;
                     TextboxCompletionComment.Text = orig.CompletionComment;
                     TextboxTimeSpent.Text = orig.TimeSpent;
@@ -66,10 +69,13 @@ namespace GameTracker.UI
                     if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
                     TextBoxComments.Text = orig.Comment;
                     TextBoxFinalScore.Text = rm.GetScoreOfObject(orig).ToString("0.##");
+                    CheckboxRemaster.IsChecked = orig.IsRemaster;
+                    CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
                     break;
                 default:
                     throw new Exception("Unhandled mode");
             }
+            UpdateRemasterFields();
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -87,7 +93,7 @@ namespace GameTracker.UI
             if (!ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
                 out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
                 out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
-                out string comment)) return;
+                out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore)) return;
             if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
                 out bool ignoreCategories)) return;
             var game = new RatableGame()
@@ -102,7 +108,9 @@ namespace GameTracker.UI
                 Comment = comment,
                 IgnoreCategories = ignoreCategories,
                 FinalScoreManual = finalScore,
-                CategoryValues = vals
+                CategoryValues = vals,
+                IsRemaster = isRemaster,
+                UseOriginalGameScore = useOriginalGameScore
             };
             if (status != null)
                 game.SetStatus(status);
@@ -116,6 +124,10 @@ namespace GameTracker.UI
                 game.SetPlatformPlayedOn(platformPlayedOn);
             else
                 game.RemovePlatformPlayedOn();
+            if (originalGame != null)
+                game.SetOriginalGame(originalGame);
+            else
+                game.RemoveOriginalGame();
             try
             {
                 if (orig == null)
@@ -135,7 +147,7 @@ namespace GameTracker.UI
         private bool ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
             out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
             out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
-            out string comment)
+            out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore)
         {
             name = TextboxName.Text;
             status = ComboBoxStatus.SelectedIndex == 0 ? null : (CompletionStatus)ComboBoxStatus.SelectedItem;
@@ -148,6 +160,9 @@ namespace GameTracker.UI
             startedOn = DatePickerStarted.SelectedDate.HasValue ? DatePickerStarted.SelectedDate.Value : DateTime.MinValue;
             finishedOn = DatePickerFinished.SelectedDate.HasValue ? DatePickerFinished.SelectedDate.Value : DateTime.MinValue;
             comment = TextBoxComments.Text;
+            isRemaster = CheckboxRemaster.IsChecked.Value;
+            originalGame = isRemaster && ComboboxOriginalGame.SelectedIndex > 0 ? (RatableGame)ComboboxOriginalGame.SelectedItem : null;
+            useOriginalGameScore = isRemaster && originalGame != null ? CheckboxUseOriginalGameScore.IsChecked.Value : false;
             if (name == "")
             {
                 LabelError.Visibility = Visibility.Visible;
@@ -160,6 +175,13 @@ namespace GameTracker.UI
         private bool ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
             out bool ignoreCategories)
         {
+            if (CheckboxRemaster.IsChecked.Value && ComboboxOriginalGame.SelectedIndex > 0 && CheckboxUseOriginalGameScore.IsChecked.Value)
+            {
+                vals = orig == null ? new List<RatingCategoryValue>() : orig.CategoryValues;
+                finalScore = orig == null ? rm.Settings.MinScore : orig.FinalScoreManual;
+                ignoreCategories = orig == null ? new RatableGame().IgnoreCategories : orig.IgnoreCategories;
+                return true;
+            }
             vals = GetCategoryValueInputs(rm.RatingCategories);
             ignoreCategories = TextBoxFinalScore.IsEnabled;
             if (!double.TryParse(TextBoxFinalScore.Text, out finalScore))
@@ -203,6 +225,18 @@ namespace GameTracker.UI
             foreach (Platform platform in rm.Platforms)
             {
                 cb.Items.Add(platform);
+            }
+        }
+
+        private void FillComboboxGames(ComboBox cb)
+        {
+            cb.Items.Clear();
+            var item = new ComboBoxItem();
+            item.Content = "--Select the game this is a remaster of--";
+            cb.Items.Add(item);
+            foreach (RatableGame game in rm.ListedObjects.OrderBy(ro => ro.Name))
+            {
+                cb.Items.Add(game);
             }
         }
 
@@ -363,6 +397,37 @@ namespace GameTracker.UI
         private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             UpdateFinalScoreTextBox();
+        }
+
+        private void CheckboxRemaster_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateRemasterFields();
+        }
+
+        private void ComboboxOriginalGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            UpdateRemasterFields();
+        }
+
+        private void CheckboxUseOriginalGameScore_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateRemasterFields();
+        }
+
+        private void UpdateRemasterFields()
+        {
+            ComboboxOriginalGame.Visibility = CheckboxRemaster.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
+            CheckboxUseOriginalGameScore.Visibility = CheckboxRemaster.IsChecked.Value && ComboboxOriginalGame.SelectedIndex > 0 ? Visibility.Visible : Visibility.Hidden;
+            bool useOriginalGame = CheckboxRemaster.IsChecked.Value && ComboboxOriginalGame.SelectedIndex > 0 && CheckboxUseOriginalGameScore.IsChecked.Value;
+            GridRatingCategories.IsEnabled = !useOriginalGame;
+            GridFinalScore.IsEnabled = !useOriginalGame;
+
+            bool defaultIgnore = new RatableGame().IgnoreCategories;
+            RatableGame originalGame = ComboboxOriginalGame.SelectedIndex > 0 ? (RatableGame)ComboboxOriginalGame.SelectedItem : null;
+            CreateRatingCategories(rm.RatingCategories,
+                useOriginalGame ? originalGame.CategoryValues : orig == null ? new List<RatingCategoryValue>() : orig.CategoryValues,
+                rm.Settings, orig == null ? !defaultIgnore : !orig.IgnoreCategories);
+            UpdateScoreEditButton(orig == null ? !defaultIgnore : !orig.IgnoreCategories);
         }
     }
 }

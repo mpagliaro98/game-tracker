@@ -106,6 +106,11 @@ namespace GameTracker.Model
             }
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public void SetPlatform<T>(T obj) where T : Platform, IReferable
         {
             platform.SetReference(obj);
