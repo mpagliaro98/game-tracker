@@ -218,6 +218,30 @@ namespace GameTracker.UI
         private void UpdateGamesUI()
         {
             GamesListbox.ClearItems();
+            GamesListBoxWrap.Items.Clear();
+            switch (savedState.displayMode)
+            {
+                case GameDisplayMode.DISPLAY_SMALL:
+                    GamesTop.Visibility = Visibility.Visible;
+                    GamesTopExpanded.Visibility = Visibility.Collapsed;
+                    GamesListbox.Visibility = Visibility.Visible;
+                    GamesListBoxWrap.Visibility = Visibility.Collapsed;
+                    break;
+                case GameDisplayMode.DISPLAY_EXPANDED:
+                    GamesTop.Visibility = Visibility.Collapsed;
+                    GamesTopExpanded.Visibility = Visibility.Visible;
+                    GamesListbox.Visibility = Visibility.Visible;
+                    GamesListBoxWrap.Visibility = Visibility.Collapsed;
+                    break;
+                case GameDisplayMode.DISPLAY_BOXES:
+                    GamesTop.Visibility = Visibility.Collapsed;
+                    GamesTopExpanded.Visibility = Visibility.Collapsed;
+                    GamesListbox.Visibility = Visibility.Collapsed;
+                    GamesListBoxWrap.Visibility = Visibility.Visible;
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
             foreach (RatableGame rg in GetGamesView())
             {
                 UserControl item;
@@ -225,21 +249,21 @@ namespace GameTracker.UI
                 {
                     case GameDisplayMode.DISPLAY_SMALL:
                         item = new ListBoxItemGameSmall(rm, rg);
-                        GamesTop.Visibility = Visibility.Visible;
-                        GamesTopExpanded.Visibility = Visibility.Collapsed;
                         break;
                     case GameDisplayMode.DISPLAY_EXPANDED:
                         item = new ListBoxItemGameExpanded(rm, rg);
-                        GamesTop.Visibility = Visibility.Collapsed;
-                        GamesTopExpanded.Visibility = Visibility.Visible;
                         break;
                     case GameDisplayMode.DISPLAY_BOXES:
-                        throw new NotImplementedException();
+                        item = new ListBoxItemGameBox(rm, rg);
+                        break;
                     default:
                         throw new NotImplementedException();
                 }
                 item.MouseDoubleClick += GameEdit;
-                GamesListbox.AddItem(item);
+                if (savedState.displayMode == GameDisplayMode.DISPLAY_BOXES)
+                    GamesListBoxWrap.Items.Add(item);
+                else
+                    GamesListbox.AddItem(item);
 
                 item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
             }

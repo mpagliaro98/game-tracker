@@ -86,7 +86,16 @@
                             <Label Content="Comments" Grid.Column="6" VerticalAlignment="Center" />
                         </Grid>
                     </StackPanel>
-                    <local:ScalableListBox x:Name="GamesListbox" DockPanel.Dock="Bottom" Margin="5" />
+                    <Grid DockPanel.Dock="Bottom">
+                        <local:ScalableListBox x:Name="GamesListbox" Margin="5" />
+                        <ListBox x:Name="GamesListBoxWrap" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </Grid>
                 </DockPanel>
             </TabItem>
             <TabItem x:Name="TabPlatforms" Header="Platforms">

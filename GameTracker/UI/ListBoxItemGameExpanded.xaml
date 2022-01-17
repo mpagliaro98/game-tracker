@@ -28,13 +28,6 @@
             </Grid>
             <TextBlock x:Name="TextBlockStatus" TextWrapping="Wrap" MaxHeight="90" Grid.Column="3" VerticalAlignment="Center" Margin="5" Padding="5" />
             <Grid x:Name="GridCategories" Grid.Column="4" />
-            <!--<ListBox x:Name="ListboxCategories" Grid.Column="4" Margin="5" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" BorderThickness="0" Background="Transparent">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Vertical" Height="90" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>-->
             <TextBox x:Name="TextBlockFinalScore" Height="90" Grid.Column="5" TextAlignment="Center" VerticalContentAlignment="Center" FontSize="30" Margin="5" BorderThickness="0" IsReadOnly="True" Cursor="Arrow" />
             <TextBlock x:Name="TextBlockComment" TextWrapping="Wrap" MaxHeight="100" Grid.Column="6" TextTrimming="CharacterEllipsis" />
         </Grid>

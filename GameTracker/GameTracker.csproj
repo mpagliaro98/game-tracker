@@ -131,6 +131,9 @@
     <Compile Include="UI\ListBoxItemCompletionStatus.xaml.cs">
       <DependentUpon>ListBoxItemCompletionStatus.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\ListBoxItemGameBox.xaml.cs">
+      <DependentUpon>ListBoxItemGameBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\ListBoxItemGameExpanded.xaml.cs">
       <DependentUpon>ListBoxItemGameExpanded.xaml</DependentUpon>
     </Compile>
@@ -166,6 +169,10 @@
       <DependentUpon>SubWindowScoreRange.xaml</DependentUpon>
     </Compile>
     <Page Include="UI\ListBoxItemCompletionStatus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\ListBoxItemGameBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
