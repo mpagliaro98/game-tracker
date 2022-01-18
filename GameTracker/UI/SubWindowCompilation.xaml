@@ -1,0 +1,87 @@
+﻿<Window x:Class="GameTracker.UI.SubWindowCompilation"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GameTracker.UI"
+        mc:Ignorable="d"
+        Title="Compilation" Height="600" Width="900" MinHeight="600" MinWidth="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2.5*" />
+            <RowDefinition Height="1.5*" />
+            <RowDefinition Height="4.2*" />
+            <RowDefinition Height="0.8*" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Image x:Name="ImageGame" Margin="10" />
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <Label Content="Name" />
+                    <TextBox x:Name="TextboxName" Margin="5,0" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <Label Content="Platform" />
+                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" SelectionChanged="ComboBoxPlatform_SelectionChanged" />
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+                <StackPanel VerticalAlignment="Center">
+                    <Label Content="Completion Status" />
+                    <ComboBox x:Name="ComboBoxStatus" Margin="5,0" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" VerticalAlignment="Center">
+                    <Label Content="Platform Played On" />
+                    <ComboBox x:Name="ComboBoxPlatformPlayedOn" Margin="5,0" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2.5*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Grid x:Name="GridRatingCategories" />
+            <Grid x:Name="GridFinalScore" Grid.Column="1" Margin="5" Background="#FFF1F1F1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <DockPanel>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                        <Label Content="Final Score" />
+                    </StackPanel>
+                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" IsReadOnly="True" />
+                </DockPanel>
+                <TextBlock x:Name="TextBlockStats" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" />
+            </Grid>
+        </Grid>
+        <DockPanel Grid.Row="2">
+            <Label Content="Games in this compilation" DockPanel.Dock="Top" />
+            <ListBox x:Name="GamesListBoxWrap" Margin="5" DockPanel.Dock="Bottom">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+        </DockPanel>
+        <StackPanel Grid.Row="3" HorizontalAlignment="Center">
+            <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
+            <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" HorizontalAlignment="Center" />
+        </StackPanel>
+    </Grid>
+</Window>

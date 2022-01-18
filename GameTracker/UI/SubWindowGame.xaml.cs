@@ -474,6 +474,15 @@ namespace GameTracker.UI
         private void UpdateCompilationFields()
         {
             TextboxCompilation.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
+            ButtonCompilationLink.Visibility = CheckboxCompilation.IsChecked.Value && orig != null && orig.RefCompilation.HasReference() ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        private void ButtonCompilationLink_Click(object sender, RoutedEventArgs e)
+        {
+            Hide();
+            Window window = new SubWindowCompilation(rm, SubWindowMode.MODE_VIEW, rm.FindGameCompilation(orig.RefCompilation));
+            window.ShowDialog();
+            Show();
         }
     }
 }

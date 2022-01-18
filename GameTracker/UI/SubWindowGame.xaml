@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTracker.UI"
         mc:Ignorable="d"
-        Title="Game" Height="550" Width="900" MinHeight="550" MinWidth="900">
+        Title="Game" Height="600" Width="900" MinHeight="600" MinWidth="900">
     <Window.Resources>
         <BitmapImage x:Key="ButtonEdit" UriSource="../Images/button_pencil.png" />
         <BitmapImage x:Key="ButtonLock" UriSource="../Images/button_lock.png" />
@@ -17,7 +17,7 @@
             <RowDefinition Height="0.8*" />
             <RowDefinition Height="0.85*" />
             <RowDefinition Height="2.2*" />
-            <RowDefinition Height="0.8*" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
@@ -69,12 +69,18 @@
                     <ComboBox x:Name="ComboBoxPlatformPlayedOn" Margin="5,0" />
                 </StackPanel>
                 <Grid Grid.Row="2" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
                     <CheckBox x:Name="CheckboxCompilation" Content="Part of a compilation" Checked="CheckboxCompilation_Checked" Unchecked="CheckboxCompilation_Checked" />
-                    <TextBox x:Name="TextboxCompilation" Grid.Row="1" ToolTip="Name of the compilation" />
+                    <Button x:Name="ButtonCompilationLink" Grid.Column="1" Content="Go to compilation" Visibility="Hidden" Click="ButtonCompilationLink_Click" />
+                    <TextBox x:Name="TextboxCompilation" Grid.Row="1" Grid.ColumnSpan="2" ToolTip="Name of the compilation" />
+                    
                 </Grid>
             </Grid>
         </Grid>

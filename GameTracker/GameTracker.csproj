@@ -153,6 +153,9 @@
     <Compile Include="UI\ScalableListBox.xaml.cs">
       <DependentUpon>ScalableListBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\SubWindowCompilation.xaml.cs">
+      <DependentUpon>SubWindowCompilation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\SubWindowCompletionStatus.xaml.cs">
       <DependentUpon>SubWindowCompletionStatus.xaml</DependentUpon>
     </Compile>
@@ -214,6 +217,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\ScalableListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\SubWindowCompilation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

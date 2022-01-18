@@ -269,7 +269,10 @@ namespace GameTracker.UI
                 else
                     GamesListbox.AddItem(item);
 
-                item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
+                if (rg is GameCompilation)
+                    item.ContextMenu = EditDeleteContextMenu(GameEdit, null);
+                else
+                    item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
             }
             BuildCategoriesHeader(rm.RatingCategories);
             BuildGamesSortOptions(rm.RatingCategories);
@@ -381,7 +384,11 @@ namespace GameTracker.UI
 
         private void OpenSubWindowGame(SubWindowMode mode, RatableGame orig = null)
         {
-            var window = new SubWindowGame(rm, mode, orig);
+            Window window;
+            if (orig != null && orig is GameCompilation)
+                window = new SubWindowCompilation(rm, mode, orig as GameCompilation);
+            else
+                window = new SubWindowGame(rm, mode, orig);
             window.Closed += GameWindow_Closed;
             window.ShowDialog();
         }
