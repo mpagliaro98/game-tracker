@@ -20,21 +20,26 @@ namespace GameTracker.Model
         where TRatingCat : RatingCategory, ISavable, new()
     {
         protected IEnumerable<Platform> platforms = new List<Platform>();
+        protected IEnumerable<GameCompilation> compilations = new List<GameCompilation>();
         protected LoadSaveEngineGame<TListedObj, TRange, TSettings, TStatus, TRatingCat> loadSaveEngine;
 
         public IEnumerable<Platform> Platforms => platforms;
+
+        public IEnumerable<GameCompilation> GameCompilations => compilations;
 
         public virtual int LimitPlatforms => 1000;
 
         public override void Init()
         {
             LoadPlatforms();
+            LoadCompilations();
             base.Init();
         }
 
         public override async Task InitAsync()
         {
             await LoadPlatformsAsync();
+            await LoadCompilationsAsync();
             await base.InitAsync();
         }
 
@@ -56,6 +61,16 @@ namespace GameTracker.Model
         public async Task LoadPlatformsAsync()
         {
             platforms = await loadSaveEngine.LoadISavableListAsync<Platform>(loadSaveEngine.ID_PLATFORMS);
+        }
+
+        public void LoadCompilations()
+        {
+            compilations = loadSaveEngine.LoadISavableList<GameCompilation>(loadSaveEngine.ID_COMPILATIONS);
+        }
+
+        public async Task LoadCompilationsAsync()
+        {
+            compilations = await loadSaveEngine.LoadISavableListAsync<GameCompilation>(loadSaveEngine.ID_COMPILATIONS);
         }
 
         public override void LoadListedObjects()
@@ -118,6 +133,18 @@ namespace GameTracker.Model
             await loadSaveEngine.SaveISavableListAsync(platforms, loadSaveEngine.ID_PLATFORMS);
         }
 
+        public void SaveGameCompilations()
+        {
+            DeleteEmptyGameCompilations();
+            loadSaveEngine.SaveISavableList(compilations, loadSaveEngine.ID_COMPILATIONS);
+        }
+
+        public async Task SaveGameCompilationsAsync()
+        {
+            DeleteEmptyGameCompilations();
+            await loadSaveEngine.SaveISavableListAsync(compilations, loadSaveEngine.ID_COMPILATIONS);
+        }
+
         public override void SaveListedObjects()
         {
             loadSaveEngine.SaveISavableList(listedObjs, loadSaveEngine.ID_LISTEDOBJECTS);
@@ -170,6 +197,11 @@ namespace GameTracker.Model
 
         public override double GetScoreOfObject(TListedObj obj)
         {
+            if (obj is GameCompilation)
+            {
+                var games = FindGamesInCompilation(obj as GameCompilation);
+                return games.ForEach(rg => GetScoreOfObject(rg)).Average();
+            }
             if (obj.IsRemaster && obj.UseOriginalGameScore)
             {
                 var originalGame = FindListedObject(obj.RefOriginalGame);
@@ -183,6 +215,11 @@ namespace GameTracker.Model
 
         public override double GetScoreOfCategory(TListedObj obj, TRatingCat cat)
         {
+            if (obj is GameCompilation)
+            {
+                var games = FindGamesInCompilation(obj as GameCompilation);
+                return games.ForEach(rg => GetScoreOfCategory(rg, cat)).Average();
+            }
             if (obj.IsRemaster && obj.UseOriginalGameScore)
             {
                 var originalGame = FindListedObject(obj.RefOriginalGame);
@@ -226,6 +263,31 @@ namespace GameTracker.Model
             return SortList(platforms, keySelector, mode);
         }
 
+        public GameCompilation FindGameCompilation(ObjectReference objectKey)
+        {
+            return FindObject(compilations, objectKey);
+        }
+
+        public void AddGameCompilation(GameCompilation obj)
+        {
+            ValidateGameCompilation(obj);
+            AddToList(ref compilations, SaveGameCompilations, obj);
+        }
+
+        public void UpdateGameCompilation(GameCompilation obj, GameCompilation orig)
+        {
+            ValidateGameCompilation(obj);
+            UpdateInList(ref compilations, SaveGameCompilations, obj, orig);
+        }
+
+        public void DeleteGameCompilation(GameCompilation obj)
+        {
+            DeleteFromList(ref compilations, SaveGameCompilations, obj);
+            listedObjs.Where(ro => ro.RefCompilation.HasReference() && ro.RefCompilation.IsReferencedObject(obj))
+                .ForEach(ro => ro.RemoveCompilation());
+            if (GlobalSettings.Autosave) SaveListedObjects();
+        }
+
         public override void ValidateListedObject(TListedObj obj)
         {
             base.ValidateListedObject(obj);
@@ -251,6 +313,34 @@ namespace GameTracker.Model
                 throw new ValidationException("A name is required");
             if (obj.Name.Length > Platform.MaxLengthName)
                 throw new ValidationException("Name cannot be longer than " + Platform.MaxLengthName.ToString());
+        }
+
+        public virtual void ValidateGameCompilation(GameCompilation obj)
+        {
+            if (obj.Name == "")
+                throw new ValidationException("A name is required");
+            if (obj.Name.Length > GameCompilation.MaxLengthName)
+                throw new ValidationException("Name cannot be longer than " + GameCompilation.MaxLengthName.ToString());
+        }
+
+        protected void DeleteEmptyGameCompilations()
+        {
+            FindEmptyGameCompilations().ForEach(c => DeleteGameCompilation(c));
+        }
+
+        protected IEnumerable<GameCompilation> FindEmptyGameCompilations()
+        {
+            return compilations.Where(c => NumGamesInCompilation(c) == 0);
+        }
+
+        public IEnumerable<TListedObj> FindGamesInCompilation(GameCompilation compilation)
+        {
+            return listedObjs.Where(rg => rg.RefCompilation.HasReference() && rg.RefCompilation.IsReferencedObject(compilation));
+        }
+
+        public int NumGamesInCompilation(GameCompilation compilation)
+        {
+            return FindGamesInCompilation(compilation).Count();
         }
 
         public IEnumerable<TListedObj> GetGamesOnPlatform(Platform platform)

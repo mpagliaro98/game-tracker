@@ -24,6 +24,18 @@ namespace RatableTracker.Framework.Global
             }
         }
 
+        public static IEnumerable<T2> ForEach<T1, T2>(this IEnumerable<T1> source, Func<T1, T2> action)
+        {
+            source.ThrowIfNull("source");
+            action.ThrowIfNull("action");
+            List<T2> results = new List<T2>();
+            foreach (T1 element in source)
+            {
+                results.Add(action(element));
+            }
+            return results;
+        }
+
         public static System.Drawing.Color ToDrawingColor(this System.Windows.Media.Color? color)
         {
             var colorInput = color ?? new System.Windows.Media.Color();

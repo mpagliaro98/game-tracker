@@ -68,6 +68,14 @@
                     <Label Content="Platform Played On" />
                     <ComboBox x:Name="ComboBoxPlatformPlayedOn" Margin="5,0" />
                 </StackPanel>
+                <Grid Grid.Row="2" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <CheckBox x:Name="CheckboxCompilation" Content="Part of a compilation" Checked="CheckboxCompilation_Checked" Unchecked="CheckboxCompilation_Checked" />
+                    <TextBox x:Name="TextboxCompilation" Grid.Row="1" ToolTip="Name of the compilation" />
+                </Grid>
             </Grid>
         </Grid>
         <Grid Grid.Row="1">

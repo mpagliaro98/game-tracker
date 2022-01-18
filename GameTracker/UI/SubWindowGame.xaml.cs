@@ -71,11 +71,14 @@ namespace GameTracker.UI
                     TextBoxFinalScore.Text = rm.GetScoreOfObject(orig).ToString("0.##");
                     CheckboxRemaster.IsChecked = orig.IsRemaster;
                     CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
+                    CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
+                    if (orig.RefCompilation.HasReference()) TextboxCompilation.Text = rm.FindGameCompilation(orig.RefCompilation).Name;
                     break;
                 default:
                     throw new Exception("Unhandled mode");
             }
             UpdateRemasterFields();
+            UpdateCompilationFields();
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -93,7 +96,8 @@ namespace GameTracker.UI
             if (!ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
                 out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
                 out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
-                out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore)) return;
+                out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
+                out string compilationName)) return;
             if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
                 out bool ignoreCategories)) return;
             var game = new RatableGame()
@@ -128,8 +132,32 @@ namespace GameTracker.UI
                 game.SetOriginalGame(originalGame);
             else
                 game.RemoveOriginalGame();
+            bool newCompilation = false;
+            GameCompilation comp = null;
+            if (CheckboxCompilation.IsChecked.Value)
+            {
+                string compName = TextboxCompilation.Text.Trim();
+                var matches = rm.GameCompilations.Where(c => c.Name == compName);
+                if (matches.Count() >= 1)
+                {
+                    comp = matches.First();
+                }
+                else
+                {
+                    comp = new GameCompilation()
+                    {
+                        Name = compName
+                    };
+                    newCompilation = true;
+                }
+                game.SetCompilation(comp);
+            }
+            else
+                game.RemoveCompilation();
             try
             {
+                if (newCompilation)
+                    rm.AddGameCompilation(comp);
                 if (orig == null)
                     rm.AddListedObject(game);
                 else
@@ -147,7 +175,8 @@ namespace GameTracker.UI
         private bool ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
             out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
             out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
-            out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore)
+            out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
+            out string compilationName)
         {
             name = TextboxName.Text;
             status = ComboBoxStatus.SelectedIndex == 0 ? null : (CompletionStatus)ComboBoxStatus.SelectedItem;
@@ -163,10 +192,17 @@ namespace GameTracker.UI
             isRemaster = CheckboxRemaster.IsChecked.Value;
             originalGame = isRemaster && ComboboxOriginalGame.SelectedIndex > 0 ? (RatableGame)ComboboxOriginalGame.SelectedItem : null;
             useOriginalGameScore = isRemaster && originalGame != null ? CheckboxUseOriginalGameScore.IsChecked.Value : false;
+            compilationName = CheckboxCompilation.IsChecked.Value ? TextboxCompilation.Text : "";
             if (name == "")
             {
                 LabelError.Visibility = Visibility.Visible;
                 LabelError.Content = "A name is required";
+                return false;
+            }
+            if (CheckboxCompilation.IsChecked.Value && compilationName == "")
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "A compilation name is required if the compilation checkbox is checked";
                 return false;
             }
             return true;
@@ -428,6 +464,16 @@ namespace GameTracker.UI
                 useOriginalGame ? originalGame.CategoryValues : orig == null ? new List<RatingCategoryValue>() : orig.CategoryValues,
                 rm.Settings, orig == null ? !defaultIgnore : !orig.IgnoreCategories);
             UpdateScoreEditButton(orig == null ? !defaultIgnore : !orig.IgnoreCategories);
+        }
+
+        private void CheckboxCompilation_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateCompilationFields();
+        }
+
+        private void UpdateCompilationFields()
+        {
+            TextboxCompilation.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
         }
     }
 }

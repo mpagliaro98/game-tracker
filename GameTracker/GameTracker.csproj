@@ -116,6 +116,7 @@
     <Compile Include="Framework\SettingsScore.cs" />
     <Compile Include="Framework\SortMode.cs" />
     <Compile Include="Model\CompletionStatus.cs" />
+    <Compile Include="Model\GameCompilation.cs" />
     <Compile Include="Model\Partial\Extensions.cs" />
     <Compile Include="Model\Partial\IValueContainer.cs" />
     <Compile Include="Model\Partial\SavableRepresentation.cs" />

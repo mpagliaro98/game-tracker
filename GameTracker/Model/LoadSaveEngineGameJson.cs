@@ -22,8 +22,10 @@ namespace GameTracker.Model
         protected const string FILENAME_CATEGORIES = "rating_categories.json";
         protected const string FILENAME_RANGES = "score_ranges.json";
         protected const string FILENAME_SETTINGS = "settings.json";
+        protected const string FILENAME_COMPILATIONS = "compilations.json";
         protected readonly IDictionary<LoadSaveIdentifier, string> filepathMap;
-        protected static IEnumerable<string> LIST_OF_FILENAMES = new List<string>() { FILENAME_CATEGORIES, FILENAME_GAMES, FILENAME_PLATFORMS, FILENAME_RANGES, FILENAME_SETTINGS, FILENAME_STATUSES };
+        protected static IEnumerable<string> LIST_OF_FILENAMES = new List<string>() { FILENAME_CATEGORIES, FILENAME_GAMES,
+            FILENAME_PLATFORMS, FILENAME_RANGES, FILENAME_SETTINGS, FILENAME_STATUSES, FILENAME_COMPILATIONS };
 
         public IContentLoadSave<string, string> ContentLoadSaveInstance { get; set; } = new ContentLoadSaveLocal();
 
@@ -36,7 +38,8 @@ namespace GameTracker.Model
                 { ID_STATUSES, FILENAME_STATUSES },
                 { ID_RATINGCATEGORIES, FILENAME_CATEGORIES },
                 { ID_RANGES, FILENAME_RANGES },
-                { ID_SETTINGS, FILENAME_SETTINGS }
+                { ID_SETTINGS, FILENAME_SETTINGS },
+                { ID_COMPILATIONS, FILENAME_COMPILATIONS }
             };
         }
 

@@ -41,6 +41,11 @@ namespace GameTracker.Model
 
         public bool UseOriginalGameScore { get; set; } = false;
 
+        private ObjectReference compilation = new ObjectReference();
+        public ObjectReference RefCompilation => compilation;
+
+        public bool IsPartOfCompilation { get { return RefCompilation.HasReference(); } }
+
         public RatableGame() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
@@ -57,6 +62,7 @@ namespace GameTracker.Model
             sr.SaveValue("isRemaster", IsRemaster);
             sr.SaveValue("originalGame", originalGame);
             sr.SaveValue("useOriginalGameScore", UseOriginalGameScore);
+            sr.SaveValue("compilation", compilation);
             return sr;
         }
 
@@ -100,6 +106,9 @@ namespace GameTracker.Model
                     case "useOriginalGameScore":
                         UseOriginalGameScore = sr.GetBool(key);
                         break;
+                    case "compilation":
+                        compilation = sr.GetISavable<ObjectReference>(key);
+                        break;
                     default:
                         break;
                 }
@@ -139,6 +148,16 @@ namespace GameTracker.Model
         public void RemoveOriginalGame()
         {
             originalGame.ClearReference();
+        }
+
+        public void SetCompilation<T>(T obj) where T : GameCompilation, IReferable
+        {
+            compilation.SetReference(obj);
+        }
+
+        public void RemoveCompilation()
+        {
+            compilation.ClearReference();
         }
     }
 }

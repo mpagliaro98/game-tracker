@@ -39,7 +39,7 @@ namespace GameTracker.UI
             var completionStatus = rm.FindStatus(rg.RefStatus);
 
             TextBlockName.Text = rg.Name;
-            TextBlockPlatform.Text = platform.Name;
+            TextBlockPlatform.Text = platform != null ? platform.Name : "";
             TextBlockStatus.Text = completionStatus != null ? completionStatus.Name : "";
             if (completionStatus != null)
                 TextBlockStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());

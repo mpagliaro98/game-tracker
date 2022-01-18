@@ -386,11 +386,17 @@ namespace GameTracker.UI
         {
             UpdateGamesUI();
             await SaveListedObjectsAsync();
+            await SaveGameCompilationsAsync();
         }
 
         private async Task SaveListedObjectsAsync()
         {
             await rm.SaveListedObjectsAsync();
+        }
+
+        private async Task SaveGameCompilationsAsync()
+        {
+            await rm.SaveGameCompilationsAsync();
         }
 
         private void GamesButtonSort_Click(object sender, RoutedEventArgs e)
