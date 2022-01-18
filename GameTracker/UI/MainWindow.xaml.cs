@@ -210,7 +210,11 @@ namespace GameTracker.UI
         #region Games Tab
         private IEnumerable<RatableGame> GetGamesView()
         {
-            IEnumerable<RatableGame> temp = rm.ListedObjects;
+            IEnumerable<RatableGame> temp;
+            if (CheckboxShowCompilations.IsChecked.Value)
+                temp = rm.ListedObjects.Where(rg => !rg.IsPartOfCompilation).Concat(rm.GameCompilations);
+            else
+                temp = rm.ListedObjects;
             if (savedState.gamesSortFunc != null) temp = rm.SortListedObjects(savedState.gamesSortFunc, savedState.gamesSortMode);
             return temp;
         }
@@ -503,6 +507,11 @@ namespace GameTracker.UI
                 savedState.displayMode = mode;
                 UpdateGamesUI();
             }
+        }
+
+        private void CheckboxShowCompilations_Checked(object sender, RoutedEventArgs e)
+        {
+            UpdateGamesUI();
         }
         #endregion
 
