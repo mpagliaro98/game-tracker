@@ -10,7 +10,7 @@ namespace RatableTracker.Framework.IO
 {
     public class PathControllerWindows : IPathController
     {
-        public string BaseDirectory()
+        public virtual string BaseDirectory()
         {
             return Environment.ExpandEnvironmentVariables("%LocalAppData%\\mpagliaro98\\GameTracker");
         }
