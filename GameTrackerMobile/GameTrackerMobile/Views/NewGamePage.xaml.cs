@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using GameTrackerMobile.Models;
+using GameTracker.Model;
 using GameTrackerMobile.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace GameTrackerMobile.Views
 {
-    public partial class NewItemPage : ContentPage
+    public partial class NewGamePage : ContentPage
     {
-        public Item Item { get; set; }
+        public RatableGame Item { get; set; }
 
-        public NewItemPage()
+        public NewGamePage()
         {
             InitializeComponent();
-            BindingContext = new NewItemViewModel();
+            BindingContext = new NewGameViewModel();
         }
     }
 }

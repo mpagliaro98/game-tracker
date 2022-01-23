@@ -13,7 +13,7 @@ namespace GameTrackerMobile
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
+            DependencyService.Register<GameDataStore>();
             MainPage = new AppShell();
         }
 

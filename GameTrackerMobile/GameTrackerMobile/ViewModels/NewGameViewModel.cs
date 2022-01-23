@@ -2,40 +2,31 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
-using GameTrackerMobile.Models;
+using GameTracker.Model;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.ViewModels
 {
-    public class NewItemViewModel : BaseViewModel
+    public class NewGameViewModel : BaseViewModel<RatableGame>
     {
-        private string text;
-        private string description;
+        private string name;
 
-        public NewItemViewModel()
+        public NewGameViewModel()
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
-            this.PropertyChanged +=
-                (_, __) => SaveCommand.ChangeCanExecute();
+            this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
         }
 
         private bool ValidateSave()
         {
-            return !String.IsNullOrWhiteSpace(text)
-                && !String.IsNullOrWhiteSpace(description);
+            return !String.IsNullOrWhiteSpace(name);
         }
 
-        public string Text
+        public string Name
         {
-            get => text;
-            set => SetProperty(ref text, value);
-        }
-
-        public string Description
-        {
-            get => description;
-            set => SetProperty(ref description, value);
+            get => name;
+            set => SetProperty(ref name, value);
         }
 
         public Command SaveCommand { get; }
@@ -49,11 +40,9 @@ namespace GameTrackerMobile.ViewModels
 
         private async void OnSave()
         {
-            Item newItem = new Item()
+            RatableGame newItem = new RatableGame()
             {
-                Id = Guid.NewGuid().ToString(),
-                Text = Text,
-                Description = Description
+                Name = Name
             };
 
             await DataStore.AddItemAsync(newItem);

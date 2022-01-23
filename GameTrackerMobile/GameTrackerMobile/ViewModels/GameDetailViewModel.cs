@@ -1,32 +1,28 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using GameTrackerMobile.Models;
+using GameTracker.Model;
+using RatableTracker.Framework;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class ItemDetailViewModel : BaseViewModel
+    public class GameDetailViewModel : BaseViewModel<RatableGame>
     {
-        private string itemId;
-        private string text;
-        private string description;
+        private RatableGame item;
+
+        private ObjectReference itemId;
+        private string name;
         public string Id { get; set; }
 
-        public string Text
+        public string Name
         {
-            get => text;
-            set => SetProperty(ref text, value);
+            get => item.Name;
+            set => SetProperty(ref name, value);
         }
 
-        public string Description
-        {
-            get => description;
-            set => SetProperty(ref description, value);
-        }
-
-        public string ItemId
+        public ObjectReference ItemId
         {
             get
             {
@@ -39,14 +35,12 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
-        public async void LoadItemId(string itemId)
+        public async void LoadItemId(ObjectReference itemId)
         {
             try
             {
                 var item = await DataStore.GetItemAsync(itemId);
-                Id = item.Id;
-                Text = item.Text;
-                Description = item.Description;
+                this.item = item;
             }
             catch (Exception)
             {

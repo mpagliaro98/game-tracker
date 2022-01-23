@@ -4,12 +4,12 @@ using Xamarin.Forms;
 
 namespace GameTrackerMobile.Views
 {
-    public partial class ItemDetailPage : ContentPage
+    public partial class GameDetailPage : ContentPage
     {
-        public ItemDetailPage()
+        public GameDetailPage()
         {
             InitializeComponent();
-            BindingContext = new ItemDetailViewModel();
+            BindingContext = new GameDetailViewModel();
         }
     }
 }

@@ -11,8 +11,8 @@ namespace GameTrackerMobile
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(ItemDetailPage), typeof(ItemDetailPage));
-            Routing.RegisterRoute(nameof(NewItemPage), typeof(NewItemPage));
+            Routing.RegisterRoute(nameof(GameDetailPage), typeof(GameDetailPage));
+            Routing.RegisterRoute(nameof(NewGamePage), typeof(NewGamePage));
         }
 
     }

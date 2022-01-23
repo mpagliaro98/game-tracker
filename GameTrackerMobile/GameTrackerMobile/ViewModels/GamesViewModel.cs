@@ -2,28 +2,39 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using GameTrackerMobile.Models;
+using GameTracker.Model;
 using GameTrackerMobile.Views;
+using RatableTracker.Framework;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.ViewModels
 {
-    public class ItemsViewModel : BaseViewModel
+    public class GamesViewModel : BaseViewModel<RatableGame>
     {
-        private Item _selectedItem;
+        private RatableGame _selectedItem;
 
-        public ObservableCollection<Item> Items { get; }
+        public ObservableCollection<RatableGame> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
-        public Command<Item> ItemTapped { get; }
+        public Command<RatableGame> ItemTapped { get; }
 
-        public ItemsViewModel()
+        public RatableGame SelectedItem
         {
-            Title = "Browse";
-            Items = new ObservableCollection<Item>();
+            get => _selectedItem;
+            set
+            {
+                SetProperty(ref _selectedItem, value);
+                OnItemSelected(value);
+            }
+        }
+
+        public GamesViewModel()
+        {
+            Title = "Games";
+            Items = new ObservableCollection<RatableGame>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            ItemTapped = new Command<Item>(OnItemSelected);
+            ItemTapped = new Command<RatableGame>(OnItemSelected);
 
             AddItemCommand = new Command(OnAddItem);
         }
@@ -57,28 +68,18 @@ namespace GameTrackerMobile.ViewModels
             SelectedItem = null;
         }
 
-        public Item SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
-        }
-
         private async void OnAddItem(object obj)
         {
-            await Shell.Current.GoToAsync(nameof(NewItemPage));
+            await Shell.Current.GoToAsync(nameof(NewGamePage));
         }
 
-        async void OnItemSelected(Item item)
+        async void OnItemSelected(RatableGame item)
         {
             if (item == null)
                 return;
 
             // This will push the ItemDetailPage onto the navigation stack
-            await Shell.Current.GoToAsync($"{nameof(ItemDetailPage)}?{nameof(ItemDetailViewModel.ItemId)}={item.Id}");
+            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={new ObjectReference(item)}");
         }
     }
 }

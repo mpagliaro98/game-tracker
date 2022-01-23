@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using GameTrackerMobile.Models;
 using GameTrackerMobile.Services;
+using RatableTracker.Framework.Interfaces;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.ViewModels
 {
-    public class BaseViewModel : INotifyPropertyChanged
+    public class BaseViewModel<T> : INotifyPropertyChanged where T : IReferable
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
+        public IDataStore<T> DataStore => DependencyService.Get<IDataStore<T>>();
 
         bool isBusy = false;
         public bool IsBusy

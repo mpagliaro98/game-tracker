@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,12 +11,21 @@ using Xamarin.Forms.Xaml;
 namespace GameTrackerMobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class LoginPage : ContentPage
+    public partial class GamesPage : ContentPage
     {
-        public LoginPage()
+        GamesViewModel _viewModel;
+
+        public GamesPage()
         {
             InitializeComponent();
-            this.BindingContext = new LoginViewModel();
+            
+            BindingContext = _viewModel = new GamesViewModel();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            _viewModel.OnAppearing();
         }
     }
 }
