@@ -1,0 +1,219 @@
+﻿<Window x:Name="mainWindow" x:Class="GameTrackerWPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:GameTrackerWPF"
+        mc:Ignorable="d"
+        Title="Game Tracker" Height="600" Width="1100" MinHeight="600" MinWidth="1100" Loaded="Window_Loaded" Closed="mainWindow_Closed">
+    <Window.Resources>
+        <BitmapImage x:Key="ButtonSearch" UriSource="../Images/button_search.png" />
+        <BitmapImage x:Key="ButtonSort" UriSource="../Images/button_sort.png" />
+        <BitmapImage x:Key="ButtonUp" UriSource="../Images/button_up.png" />
+        <BitmapImage x:Key="ButtonDown" UriSource="../Images/button_down.png" />
+        <BitmapImage x:Key="ButtonList" UriSource="../Images/button_list.png" />
+        <BitmapImage x:Key="ButtonExpanded" UriSource="../Images/button_larger.png" />
+        <BitmapImage x:Key="ButtonBoxes" UriSource="../Images/button_squares.png" />
+    </Window.Resources>
+    <DockPanel>
+        <TabControl x:Name="TabsBase" SelectionChanged="TabsBase_SelectionChanged">
+            <TabItem x:Name="TabGames" Header="Games">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
+                            <Button x:Name="GamesButtonNew" Content="New" HorizontalAlignment="Left" Margin="5,0,0,0" Width="40" Click="GamesButtonNew_Click" IsEnabled="False" />
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
+                                <CheckBox x:Name="CheckboxShowCompilations" Content="Show compilations in the list" VerticalAlignment="Center" Margin="0,0,20,0" Checked="CheckboxShowCompilations_Checked" Unchecked="CheckboxShowCompilations_Checked" />
+                                <Button x:Name="GamesButtonList" ToolTip="List" Margin="0,0,5,0" Click="GamesButtonList_Click">
+                                    <Image Source="{StaticResource ButtonList}" />
+                                </Button>
+                                <Button x:Name="GamesButtonExpanded" ToolTip="Expanded" Margin="0,0,5,0" Click="GamesButtonExpanded_Click">
+                                    <Image Source="{StaticResource ButtonExpanded}" />
+                                </Button>
+                                <Button x:Name="GamesButtonBoxes" ToolTip="Boxes" Margin="0,0,20,0" Click="GamesButtonBoxes_Click">
+                                    <Image Source="{StaticResource ButtonBoxes}" />
+                                </Button>
+                                <Button x:Name="GamesButtonSortMode" ToolTip="Ascending" Margin="0,0,5,0" Click="GamesButtonSortMode_Click">
+                                    <Image Source="{StaticResource ButtonUp}" />
+                                </Button>
+                                <Button x:Name="GamesButtonSort" ToolTip="Sort" Margin="0,0,5,0" Click="GamesButtonSort_Click">
+                                    <Image Source="{StaticResource ButtonSort}" />
+                                    <Button.ContextMenu>
+                                        <ContextMenu />
+                                    </Button.ContextMenu>
+                                </Button>
+                                <Button x:Name="GamesButtonSearch" ToolTip="Search">
+                                    <Image Source="{StaticResource ButtonSearch}" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Grid x:Name="GamesTop" Margin="5,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="0.7*" />
+                                <ColumnDefinition Width="0.7*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="20" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Name" VerticalAlignment="Center" />
+                            <Label Content="Platform" Grid.Column="1" VerticalAlignment="Center" />
+                            <Label Content="Completion Status" Grid.Column="2" VerticalAlignment="Center" />
+                            <Grid x:Name="GridCategories" Grid.Column="3" />
+                            <Label Content="Final Score" Grid.Column="4" VerticalAlignment="Center" />
+                        </Grid>
+                        <Grid x:Name="GamesTopExpanded" Margin="5,0" Visibility="Collapsed">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="0.7*" />
+                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="0.8*" />
+                                <ColumnDefinition Width="1.4*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Name" Grid.Column="1" VerticalAlignment="Center" />
+                            <Label Content="Platform" Grid.Column="2" VerticalAlignment="Center" />
+                            <Label Content="Status" Grid.Column="3" VerticalAlignment="Center" />
+                            <Label Content="Categories" Grid.Column="4" VerticalAlignment="Center" />
+                            <Label Content="Final Score" Grid.Column="5" VerticalAlignment="Center" />
+                            <Label Content="Comments" Grid.Column="6" VerticalAlignment="Center" />
+                        </Grid>
+                    </StackPanel>
+                    <Grid DockPanel.Dock="Bottom">
+                        <local:ScalableListBox x:Name="GamesListbox" Margin="5" />
+                        <ListBox x:Name="GamesListBoxWrap" Margin="5" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Visibility="Collapsed">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+            <TabItem x:Name="TabPlatforms" Header="Platforms">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20" />
+                            </Grid.RowDefinitions>
+                            <Button x:Name="PlatformsButtonNew" Content="New" HorizontalAlignment="Left" Margin="5,0,0,0" Width="40" Click="PlatformsButtonNew_Click" IsEnabled="False" />
+                            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
+                                <Button x:Name="PlatformsButtonSortMode" ToolTip="Ascending" Margin="0,0,5,0" Click="PlatformsButtonSortMode_Click">
+                                    <Image Source="{StaticResource ButtonUp}" />
+                                </Button>
+                                <Button x:Name="PlatformsButtonSort" ToolTip="Sort" Margin="0,0,5,0" Click="PlatformsButtonSort_Click">
+                                    <Image Source="{StaticResource ButtonSort}" />
+                                    <Button.ContextMenu>
+                                        <ContextMenu>
+                                            <MenuItem Name="PlatformsSortName" Header="Name" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortNumGames" Header="# Games" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortAverage" Header="Average Score" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortHighest" Header="Highest Score" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortLowest" Header="Lowest Score" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortPercentFinished" Header="% Finished" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortRelease" Header="Release Year" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                            <MenuItem Name="PlatformsSortAcquired" Header="Acquired Year" IsCheckable="True" Checked="PlatformsSort_Checked" Unchecked="PlatformsSort_Unchecked" />
+                                        </ContextMenu>
+                                    </Button.ContextMenu>
+                                </Button>
+                                <Button x:Name="PlatformsButtonSearch" ToolTip="Search">
+                                    <Image Source="{StaticResource ButtonSearch}" />
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Grid x:Name="PlatformsTop" Margin="5,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="0.4*" />
+                                <ColumnDefinition Width="0.4*" />
+                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="0.8*" />
+                                <ColumnDefinition Width="0.8*" />
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Name" Grid.Column="1" />
+                            <Label Content="# Games" Grid.Column="2" />
+                            <Label Content="Average Score" Grid.Column="3" />
+                            <Label Content="Highest" Grid.Column="4" />
+                            <Label Content="Lowest" Grid.Column="5" />
+                            <Label Content="% Finished" Grid.Column="6" />
+                            <Label Content="Top Games" Grid.Column="7" />
+                            <Label Content="Bottom Games" Grid.Column="8" />
+                        </Grid>
+                    </StackPanel>
+                    <local:ScalableListBox x:Name="PlatformsListbox" DockPanel.Dock="Bottom" Margin="5" SmoothScrolling="True" />
+                </DockPanel>
+            </TabItem>
+            <TabItem x:Name="TabSettings" Header="Settings">
+                <DockPanel>
+                    <Grid x:Name="SettingsTop" DockPanel.Dock="Top" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width='1*' />
+                            <ColumnDefinition Width='1*' />
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width='1*' />
+                                <ColumnDefinition Width='1*' />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel x:Name="SettingsLayout">
+                                <Label x:Name="SettingsLabelMin" Content="Minimum Score" />
+                                <TextBox x:Name="SettingsTextboxMin" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                                <Label x:Name="SettingsLabelMax" Content="Maximum Score" />
+                                <TextBox x:Name="SettingsTextboxMax" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                                <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" IsEnabled="False" />
+                                <Label x:Name="SettingsLabelError" Content="Values are formatted incorrectly" Foreground="Red" />
+                                <Label x:Name="SettingsLabelSuccess" Content="Settings successfully saved" Foreground="Lime" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="Click the button below to transfer your saved data to AWS. Doing so will allow you to access your data on any platform Game Tracker supports. You will need an AWS account, then you must generate your unique key and secret key on AWS. Once you download that key file, click the button below and select that file." TextWrapping="Wrap" HorizontalAlignment="Center" Margin="5" />
+                                <Button x:Name="SettingsAWSButton" Margin="5" Height="30" Width="210" Click="SettingsAWSButton_Click" />
+                            </StackPanel>
+                        </Grid>
+                        <DockPanel x:Name="SettingsCompletionStatusesLayout" Grid.Column="1">
+                            <DockPanel DockPanel.Dock="Top">
+                                <Label x:Name="SettingsLabelCompletionStatuses" Content="Completion Statuses" />
+                                <Button x:Name="SettingsButtonNewCompletionStatus" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewCompletionStatus_Click" IsEnabled="False" />
+                            </DockPanel>
+                            <local:ScalableListBox x:Name="SettingsListboxCompletionStatuses" DockPanel.Dock="Bottom" Margin="5,2,5,5" SmoothScrolling="True" />
+                        </DockPanel>
+                        <DockPanel x:Name="SettingsScoreRangesLayout" Grid.Row="1">
+                            <DockPanel DockPanel.Dock="Top">
+                                <Label x:Name="SettingsLabelScoreRanges" Content="Score Ranges" />
+                                <Button x:Name="SettingsButtonNewScoreRange" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewScoreRange_Click" IsEnabled="False" />
+                            </DockPanel>
+                            <local:ScalableListBox x:Name="SettingsListboxScoreRanges" DockPanel.Dock="Bottom" Margin="5,2,5,5" SmoothScrolling="True" />
+                        </DockPanel>
+                        <DockPanel x:Name="SettingsRatingCategoriesLayout" Grid.Row="1" Grid.Column="1">
+                            <DockPanel DockPanel.Dock="Top">
+                                <Label x:Name="SettingsLabelRatingCategories" Content="Rating Categories" DockPanel.Dock="Left" />
+                                <Button x:Name="SettingsButtonNewRatingCategory" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewRatingCategory_Click" IsEnabled="False" />
+                            </DockPanel>
+                            <local:ScalableListBox x:Name="SettingsListboxRatingCategories" DockPanel.Dock="Bottom" Margin="5,2,5,5" SmoothScrolling="True" />
+                        </DockPanel>
+                    </Grid>
+                </DockPanel>
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</Window>
