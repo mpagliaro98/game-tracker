@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using GameTracker.Model;
-using RatableTracker.Framework.Global;
 using RatableTracker.Framework.Interfaces;
-using RatableTracker.Framework.IO;
-using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework;
 
 namespace GameTrackerMobile.Services
@@ -17,19 +14,7 @@ namespace GameTrackerMobile.Services
 
         public BaseDataStore()
         {
-            PathController.PathControllerInstance = new PathControllerMobile();
-            GlobalSettings.Autosave = true;
-            IContentLoadSave<string, string> cls;
-            //if (ContentLoadSaveAWSS3.KeyFileExists())
-            //    cls = new ContentLoadSaveAWSS3();
-            //else
-            cls = new ContentLoadSaveLocal();
-            LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
-            {
-                ContentLoadSaveInstance = cls
-            };
-            rm = new RatingModuleGame(engine);
-            rm.Init();
+            rm = ModuleService.GetActiveModule();
         }
 
         public abstract Task<bool> AddItemAsync(T item);

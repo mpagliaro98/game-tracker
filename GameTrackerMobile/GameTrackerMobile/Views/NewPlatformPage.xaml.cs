@@ -10,20 +10,12 @@ using Xamarin.Forms.Xaml;
 namespace GameTrackerMobile.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class PlatformsPage : ContentPage
+    public partial class NewPlatformPage : ContentPage
     {
-        PlatformsViewModel _viewModel;
-
-        public PlatformsPage()
+        public NewPlatformPage()
         {
             InitializeComponent();
-            BindingContext = _viewModel = new PlatformsViewModel();
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            _viewModel.OnAppearing();
+            BindingContext = new NewPlatformViewModel();
         }
     }
 }

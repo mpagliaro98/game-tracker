@@ -10,8 +10,6 @@ namespace GameTrackerMobile.Views
 {
     public partial class NewGamePage : ContentPage
     {
-        public RatableGame Item { get; set; }
-
         public NewGamePage()
         {
             InitializeComponent();
