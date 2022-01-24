@@ -10,28 +10,30 @@ namespace GameTrackerMobile.ViewModels
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public class GameDetailViewModel : BaseViewModel<RatableGame>
     {
-        private RatableGame item;
+        private RatableGame item = new RatableGame();
 
-        private ObjectReference itemId;
-        private string name;
-        public string Id { get; set; }
-
-        public string Name
-        {
-            get => item.Name;
-            set => SetProperty(ref name, value);
-        }
-
-        public ObjectReference ItemId
+        public RatableGame Item
         {
             get
             {
-                return itemId;
+                return item;
             }
             set
             {
-                itemId = value;
-                LoadItemId(value);
+                SetProperty(ref item, value);
+            }
+        }
+
+        public string ItemId
+        {
+            get
+            {
+                return new ObjectReference(item).ToString();
+            }
+            set
+            {
+                ObjectReference key = (ObjectReference)value;
+                LoadItemId(key);
             }
         }
 
@@ -40,7 +42,7 @@ namespace GameTrackerMobile.ViewModels
             try
             {
                 var item = await DataStore.GetItemAsync(itemId);
-                this.item = item;
+                Item = item;
             }
             catch (Exception)
             {

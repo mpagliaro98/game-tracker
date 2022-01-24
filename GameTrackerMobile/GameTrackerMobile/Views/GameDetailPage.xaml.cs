@@ -11,5 +11,10 @@ namespace GameTrackerMobile.Views
             InitializeComponent();
             BindingContext = new GameDetailViewModel();
         }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+        }
     }
 }

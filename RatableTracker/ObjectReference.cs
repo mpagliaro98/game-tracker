@@ -66,5 +66,17 @@ namespace RatableTracker.Framework
         {
             return !objectKey.Equals(Guid.Empty);
         }
+
+        public override string ToString()
+        {
+            return ObjectKey.ToString();
+        }
+
+        public static explicit operator ObjectReference(string str)
+        {
+            if (str == null) return null;
+            Guid guid = new Guid(str);
+            return new ObjectReference(guid);
+        }
     }
 }
