@@ -1,14 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using GameTracker.Model;
+using RatableTracker.Framework;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.ViewModels
 {
+    [QueryProperty(nameof(ItemId), nameof(ItemId))]
     class NewPlatformViewModel : BaseViewModel<Platform>
     {
+        private Platform item;
+
+        public string ItemId
+        {
+            get => new ObjectReference(item).ToString();
+            set
+            {
+                ObjectReference key = (ObjectReference)value;
+                LoadItemId(key);
+            }
+        }
+
+        public Platform Item
+        {
+            get => item;
+            set
+            {
+                SetProperty(ref item, value);
+                Name = item.Name;
+                // add each field here
+            }
+        }
+
         private string name;
+
+        public string Name
+        {
+            get => name;
+            set => SetProperty(ref name, value);
+        }
+
+        public Command SaveCommand { get; }
+        public Command CancelCommand { get; }
 
         public NewPlatformViewModel()
         {
@@ -22,18 +57,8 @@ namespace GameTrackerMobile.ViewModels
             return !String.IsNullOrWhiteSpace(name);
         }
 
-        public string Name
-        {
-            get => name;
-            set => SetProperty(ref name, value);
-        }
-
-        public Command SaveCommand { get; }
-        public Command CancelCommand { get; }
-
         private async void OnCancel()
         {
-            // This will pop the current page off the navigation stack
             await Shell.Current.GoToAsync("..");
         }
 
@@ -44,10 +69,27 @@ namespace GameTrackerMobile.ViewModels
                 Name = Name
             };
 
-            await DataStore.AddItemAsync(newItem);
-
-            // This will pop the current page off the navigation stack
+            if (Item == null)
+                await DataStore.AddItemAsync(newItem);
+            else
+            {
+                newItem.OverwriteReferenceKey(Item);
+                await DataStore.UpdateItemAsync(newItem);
+            }
+            
             await Shell.Current.GoToAsync("..");
+        }
+
+        public async void LoadItemId(ObjectReference itemId)
+        {
+            try
+            {
+                Item = await DataStore.GetItemAsync(itemId);
+            }
+            catch (Exception)
+            {
+                Debug.WriteLine("Failed to Load Item");
+            }
         }
     }
 }

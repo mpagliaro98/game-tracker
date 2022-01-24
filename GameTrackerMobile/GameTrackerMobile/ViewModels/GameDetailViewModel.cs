@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using GameTracker.Model;
+using GameTrackerMobile.Views;
 using RatableTracker.Framework;
 using Xamarin.Forms;
 
@@ -12,24 +13,17 @@ namespace GameTrackerMobile.ViewModels
     {
         private RatableGame item = new RatableGame();
 
+        public Command EditCommand { get; }
+
         public RatableGame Item
         {
-            get
-            {
-                return item;
-            }
-            set
-            {
-                SetProperty(ref item, value);
-            }
+            get => item;
+            set => SetProperty(ref item, value);
         }
 
         public string ItemId
         {
-            get
-            {
-                return new ObjectReference(item).ToString();
-            }
+            get => new ObjectReference(item).ToString();
             set
             {
                 ObjectReference key = (ObjectReference)value;
@@ -37,17 +31,27 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
+        public GameDetailViewModel()
+        {
+            EditCommand = new Command(OnEdit);
+        }
+
         public async void LoadItemId(ObjectReference itemId)
         {
             try
             {
-                var item = await DataStore.GetItemAsync(itemId);
-                Item = item;
+                Item = await DataStore.GetItemAsync(itemId);
             }
             catch (Exception)
             {
                 Debug.WriteLine("Failed to Load Item");
             }
+        }
+
+        async void OnEdit()
+        {
+            await Shell.Current.GoToAsync("..");
+            await Shell.Current.GoToAsync($"{nameof(NewGamePage)}?{nameof(NewGameViewModel.ItemId)}={new ObjectReference(item)}");
         }
     }
 }
