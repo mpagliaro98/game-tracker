@@ -2,7 +2,7 @@
 <Shell xmlns="http://xamarin.com/schemas/2014/forms" 
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:local="clr-namespace:GameTrackerMobile.Views"
-       Title="GameTrackerMobile"
+       Title="Game Tracker"
        x:Class="GameTrackerMobile.AppShell">
 
     <!--
@@ -31,8 +31,8 @@
 
     <TabBar>
         <ShellContent Title="Games" Icon="icon_about.png" Route="GamesPage" ContentTemplate="{DataTemplate local:GamesPage}" />
-        <ShellContent Title="Platforms" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:GamesPage}" />
-        <ShellContent Title="Settings" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:GamesPage}" />
+        <ShellContent Title="Platforms" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:PlatformsPage}" />
+        <ShellContent Title="Settings" Icon="icon_feed.png" ContentTemplate="{DataTemplate local:SettingsPage}" />
     </TabBar>
 
     <!--
