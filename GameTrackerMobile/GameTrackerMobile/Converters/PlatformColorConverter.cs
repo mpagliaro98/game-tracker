@@ -16,8 +16,8 @@ namespace GameTrackerMobile.Converters
             ObjectReference key = (ObjectReference)value;
             RatingModuleGame rm = ModuleService.GetActiveModule();
             Platform platform = rm.FindPlatform(key);
-            var color = platform.Color;
-            return "Red";
+            RatableTracker.Framework.Color color = platform.Color;
+            return color.ToXamarinColor();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
