@@ -84,7 +84,7 @@ namespace GameTrackerWPF
                 double score = rm.GetScoreOfCategory(rg, cat);
                 StackPanel panel = new StackPanel
                 {
-                    Background = new SolidColorBrush(new Color() { A = 0xFF, R = 0xF4, G = 0xF4, B = 0xF4 }),
+                    Background = new SolidColorBrush(new System.Windows.Media.Color() { A = 0xFF, R = 0xF4, G = 0xF4, B = 0xF4 }),
                     Margin = new Thickness(2)
                 };
                 TextBlock tb = new TextBlock()

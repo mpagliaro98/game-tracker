@@ -101,16 +101,16 @@ namespace RatableTracker.Framework.ModuleHierarchy
             return FindObject(scoreRelationships, objectKey);
         }
 
-        public virtual System.Drawing.Color GetRangeColorFromObject(TListedObj obj)
+        public virtual Color GetRangeColorFromObject(TListedObj obj)
         {
             int rank = GetRankOfObject(obj);
             return GetRangeColorFromValue(rank);
         }
 
-        public virtual System.Drawing.Color GetRangeColorFromValue(double val)
+        public virtual Color GetRangeColorFromValue(double val)
         {
             TRange range = ApplyRange(val);
-            return range == null ? new System.Drawing.Color() : range.Color;
+            return range == null ? new Color() : range.Color;
         }
 
         protected TRange ApplyRange(double val)

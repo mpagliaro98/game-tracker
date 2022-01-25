@@ -1,12 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GameTrackerMobile.Views.SettingsPage">
+             x:Class="GameTrackerMobile.Views.SettingsPage"
+             Title="Settings">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+            <Button Text="General Settings" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"></Button>
+            <Button Text="Configure Statuses" HorizontalOptions="FillAndExpand"></Button>
+            <Button Text="Configure Rating Categories" HorizontalOptions="FillAndExpand"></Button>
+            <Button Text="Configure Score Ranges" HorizontalOptions="FillAndExpand"></Button>
+            <Button Text="About" HorizontalOptions="FillAndExpand"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

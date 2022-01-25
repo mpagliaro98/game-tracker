@@ -64,7 +64,7 @@ namespace GameTrackerWPF
         private void SaveResult()
         {
             if (!ValidateInputs(out string name, out bool useAsFinished,
-                out bool excludeFromStats, out System.Drawing.Color color)) return;
+                out bool excludeFromStats, out RatableTracker.Framework.Color color)) return;
             var status = new CompletionStatus()
             {
                 Name = name,
@@ -89,7 +89,7 @@ namespace GameTrackerWPF
         }
 
         private bool ValidateInputs(out string name, out bool useAsFinished, out bool excludeFromStats,
-            out System.Drawing.Color color)
+            out RatableTracker.Framework.Color color)
         {
             name = TextboxName.Text;
             useAsFinished = CheckboxUseAsFinished.IsChecked.Value;

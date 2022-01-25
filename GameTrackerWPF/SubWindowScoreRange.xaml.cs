@@ -68,7 +68,7 @@ namespace GameTrackerWPF
         private void SaveResult()
         {
             if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
-                out ScoreRelationship sr, out System.Drawing.Color color)) return;
+                out ScoreRelationship sr, out RatableTracker.Framework.Color color)) return;
             var range = new ScoreRange()
             {
                 Name = name,
@@ -93,7 +93,7 @@ namespace GameTrackerWPF
         }
 
         private bool ValidateInputs(out string name, out IEnumerable<double> valueList, out ScoreRelationship sr,
-            out System.Drawing.Color color)
+            out RatableTracker.Framework.Color color)
         {
             name = TextboxName.Text;
             valueList = new List<double>();

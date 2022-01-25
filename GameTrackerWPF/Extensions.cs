@@ -43,26 +43,26 @@ namespace GameTrackerWPF
             return foundChild;
         }
 
-        public static System.Drawing.Color ToDrawingColor(this System.Windows.Media.Color? color)
+        public static RatableTracker.Framework.Color ToDrawingColor(this Color? color)
         {
-            var colorInput = color ?? new System.Windows.Media.Color();
-            return System.Drawing.Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
+            var colorInput = color ?? new Color();
+            return RatableTracker.Framework.Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
         }
 
-        public static System.Drawing.Color ToDrawingColor(this System.Windows.Media.Color color)
+        public static RatableTracker.Framework.Color ToDrawingColor(this Color color)
         {
-            return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
+            return RatableTracker.Framework.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
-        public static System.Windows.Media.Color ToMediaColor(this System.Drawing.Color? color)
+        public static Color ToMediaColor(this RatableTracker.Framework.Color? color)
         {
-            var colorInput = color ?? new System.Drawing.Color();
-            return System.Windows.Media.Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
+            var colorInput = color ?? new RatableTracker.Framework.Color();
+            return Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
         }
 
-        public static System.Windows.Media.Color ToMediaColor(this System.Drawing.Color color)
+        public static Color ToMediaColor(this RatableTracker.Framework.Color color)
         {
-            return System.Windows.Media.Color.FromArgb(color.A, color.R, color.G, color.B);
+            return Color.FromArgb(color.A, color.R, color.G, color.B);
         }
     }
 }

@@ -62,7 +62,7 @@ namespace GameTrackerWPF
 
         private void SaveResult()
         {
-            if (!ValidateInputs(out string name, out System.Drawing.Color color,
+            if (!ValidateInputs(out string name, out RatableTracker.Framework.Color color,
                 out int releaseYear, out int acquiredYear)) return;
             var platform = new Platform()
             {
@@ -87,7 +87,7 @@ namespace GameTrackerWPF
             Close();
         }
 
-        private bool ValidateInputs(out string name, out System.Drawing.Color color,
+        private bool ValidateInputs(out string name, out RatableTracker.Framework.Color color,
             out int releaseYear, out int acquiredYear)
         {
             name = TextboxName.Text;

@@ -287,7 +287,7 @@ namespace GameTrackerWPF
                 GridRatingCategories.ColumnDefinitions.Add(new ColumnDefinition());
                 DockPanel dock = new DockPanel
                 {
-                    Background = new SolidColorBrush(new Color { A = 0xFF, R = 0xF1, G = 0xF1, B = 0xF1 }),
+                    Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF1, G = 0xF1, B = 0xF1 }),
                     Margin = new Thickness { Bottom = 5, Left = 5, Top = 5, Right = 5 }
                 };
                 TextBlock tb = new TextBlock
@@ -310,7 +310,7 @@ namespace GameTrackerWPF
                     Name = "TextBoxValue",
                     Margin = new Thickness { Bottom = 5, Left = 5, Right = 5 },
                     BorderThickness = new Thickness { Top = 0, Left = 0, Bottom = 0, Right = 0 },
-                    Background = new SolidColorBrush(new Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9}),
+                    Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9}),
                     FontSize = 32,
                     IsEnabled = isEnabled,
                     Text = match == null ? settings.MinScore.ToString("0.##") : match.PointValue.ToString()
@@ -389,10 +389,10 @@ namespace GameTrackerWPF
 
         private void UpdateFinalScoreColor(double score)
         {
-            System.Drawing.Color color = rm.GetRangeColorFromValue(score);
-            if (color.Equals(new System.Drawing.Color()))
+            RatableTracker.Framework.Color color = rm.GetRangeColorFromValue(score);
+            if (color.Equals(new RatableTracker.Framework.Color()))
             {
-                TextBoxFinalScore.Background = new SolidColorBrush(new Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
+                TextBoxFinalScore.Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
             }
             else
             {
