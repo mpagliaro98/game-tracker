@@ -4,6 +4,7 @@
              x:Class="GameTrackerMobile.Views.GameDetailPage"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Delete" />
         <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
     </ContentPage.ToolbarItems>
 

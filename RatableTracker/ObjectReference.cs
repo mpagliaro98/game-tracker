@@ -15,6 +15,11 @@ namespace RatableTracker.Framework
 
         public ObjectReference() { }
 
+        public ObjectReference(bool init = false)
+        {
+            if (init) objectKey = Guid.NewGuid();
+        }
+
         public ObjectReference(Guid key)
         {
             objectKey = key;
@@ -49,12 +54,12 @@ namespace RatableTracker.Framework
 
         public bool IsReferencedObject(IReferable obj)
         {
-            return obj.ReferenceKey.Equals(ObjectKey);
+            return Equals(obj.ReferenceKey);
         }
 
         public void SetReference(IReferable obj)
         {
-            objectKey = obj.ReferenceKey;
+            objectKey = obj.ReferenceKey.ObjectKey;
         }
 
         public void ClearReference()
@@ -67,9 +72,22 @@ namespace RatableTracker.Framework
             return !objectKey.Equals(Guid.Empty);
         }
 
+        public override int GetHashCode()
+        {
+            return objectKey.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null) return false;
+            if (obj.GetType() != typeof(ObjectReference)) return false;
+            ObjectReference key = (ObjectReference)obj;
+            return objectKey.Equals(key.objectKey);
+        }
+
         public override string ToString()
         {
-            return ObjectKey.ToString();
+            return ObjectKey.ToString("N");
         }
 
         public static explicit operator ObjectReference(string str)

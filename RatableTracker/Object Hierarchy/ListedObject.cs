@@ -18,8 +18,8 @@ namespace RatableTracker.Framework.ObjectHierarchy
 
         public string Comment { get; set; } = "";
 
-        private Guid referenceKey = Guid.NewGuid();
-        public Guid ReferenceKey => referenceKey;
+        private ObjectReference referenceKey = new ObjectReference(true);
+        public ObjectReference ReferenceKey => referenceKey;
 
         public ListedObject() { }
 
@@ -39,7 +39,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
                 switch (key)
                 {
                     case "referenceKey":
-                        referenceKey = sr.GetGuid(key);
+                        referenceKey = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "name":
                         Name = sr.GetString(key);

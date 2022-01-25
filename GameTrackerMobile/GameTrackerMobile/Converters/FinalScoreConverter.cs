@@ -9,16 +9,15 @@ using Xamarin.Forms;
 
 namespace GameTrackerMobile.Converters
 {
-    public class PlatformColorConverter : IValueConverter
+    public class FinalScoreConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             ObjectReference key = (ObjectReference)value;
             RatingModuleGame rm = ModuleService.GetActiveModule();
-            Platform platform = rm.FindPlatform(key);
-            if (platform == null) return new Xamarin.Forms.Color();
-            RatableTracker.Framework.Color color = platform.Color;
-            return color.ToXamarinColor();
+            RatableGame game = rm.FindListedObject(key);
+            double score = rm.GetScoreOfObject(game);
+            return score.ToString("0.##");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

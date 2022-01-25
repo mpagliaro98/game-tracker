@@ -335,7 +335,7 @@ namespace GameTrackerWPF
                 item = new MenuItem
                 {
                     Header = cat.Name,
-                    Name = "z" + cat.ReferenceKey.ToString("N"),
+                    Name = "z" + cat.ReferenceKey.ToString(),
                     IsCheckable = true
                 };
                 item.Checked += GamesSort_Checked;

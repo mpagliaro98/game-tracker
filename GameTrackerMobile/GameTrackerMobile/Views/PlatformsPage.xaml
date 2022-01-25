@@ -6,6 +6,8 @@
              xmlns:model="clr-namespace:GameTracker.Model;assembly=GameTracker"  
              Title="Platforms">
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Sort" />
+        <ToolbarItem Text="Search" />
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />
     </ContentPage.ToolbarItems>
     <!--

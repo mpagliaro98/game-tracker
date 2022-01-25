@@ -20,8 +20,8 @@ namespace RatableTracker.Framework
         protected double weight = 1.0;
         public double Weight => weight;
 
-        private Guid referenceKey = Guid.NewGuid();
-        public Guid ReferenceKey => referenceKey;
+        private ObjectReference referenceKey = new ObjectReference(true);
+        public ObjectReference ReferenceKey => referenceKey;
 
         public RatingCategory() { }
 
@@ -42,7 +42,7 @@ namespace RatableTracker.Framework
                 switch (key)
                 {
                     case "referenceKey":
-                        referenceKey = sr.GetGuid(key);
+                        referenceKey = sr.GetISavable<ObjectReference>(key);
                         break;
                     case "name":
                         Name = sr.GetString(key);
