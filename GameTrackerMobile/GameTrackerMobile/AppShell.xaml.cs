@@ -15,6 +15,9 @@ namespace GameTrackerMobile
             Routing.RegisterRoute(nameof(NewGamePage), typeof(NewGamePage));
             Routing.RegisterRoute(nameof(PlatformDetailPage), typeof(PlatformDetailPage));
             Routing.RegisterRoute(nameof(NewPlatformPage), typeof(NewPlatformPage));
+            Routing.RegisterRoute(nameof(StatusPage), typeof(StatusPage));
+            Routing.RegisterRoute(nameof(StatusDetailPage), typeof(StatusDetailPage));
+            Routing.RegisterRoute(nameof(NewStatusPage), typeof(NewStatusPage));
         }
 
     }
