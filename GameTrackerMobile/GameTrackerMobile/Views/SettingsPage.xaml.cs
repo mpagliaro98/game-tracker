@@ -31,5 +31,15 @@ namespace GameTrackerMobile.Views
         {
             await Shell.Current.GoToAsync(nameof(ScoreRangePage));
         }
+
+        private async void generalSettingsButton_Clicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(SettingsEditPage));
+        }
+
+        private async void aboutButton_Clicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(AboutPage));
+        }
     }
 }

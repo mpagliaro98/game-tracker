@@ -5,11 +5,11 @@
              Title="Settings">
     <ContentPage.Content>
         <StackLayout>
-            <Button x:Name="generalSettingsButton" Text="General Settings" HorizontalOptions="FillAndExpand" Margin="0,5,0,0"></Button>
+            <Button x:Name="generalSettingsButton" Text="General Settings" HorizontalOptions="FillAndExpand" Clicked="generalSettingsButton_Clicked" Margin="0,5,0,0"></Button>
             <Button x:Name="statusButton" Text="Configure Statuses" HorizontalOptions="FillAndExpand" Clicked="statusButton_Clicked"></Button>
             <Button x:Name="categoryButton" Text="Configure Rating Categories" HorizontalOptions="FillAndExpand" Clicked="categoryButton_Clicked"></Button>
             <Button x:Name="rangesButton" Text="Configure Score Ranges" HorizontalOptions="FillAndExpand" Clicked="rangesButton_Clicked"></Button>
-            <Button x:Name="aboutButton" Text="About" HorizontalOptions="FillAndExpand"></Button>
+            <Button x:Name="aboutButton" Text="About" HorizontalOptions="FillAndExpand" Clicked="aboutButton_Clicked"></Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>
