@@ -16,6 +16,7 @@ namespace GameTrackerMobile
             DependencyService.Register<GameDataStore>();
             DependencyService.Register<PlatformDataStore>();
             DependencyService.Register<StatusDataStore>();
+            DependencyService.Register<CategoryDataStore>();
             MainPage = new AppShell();
         }
 

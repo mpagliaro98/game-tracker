@@ -21,5 +21,10 @@ namespace GameTrackerMobile.Views
         {
             await Shell.Current.GoToAsync(nameof(StatusPage));
         }
+
+        private async void categoryButton_Clicked(object sender, EventArgs e)
+        {
+            await Shell.Current.GoToAsync(nameof(CategoryPage));
+        }
     }
 }
