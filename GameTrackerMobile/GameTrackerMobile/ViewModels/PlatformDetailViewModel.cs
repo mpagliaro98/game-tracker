@@ -5,6 +5,7 @@ using System.Text;
 using GameTracker.Model;
 using GameTrackerMobile.Views;
 using RatableTracker.Framework;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.ViewModels
@@ -15,6 +16,7 @@ namespace GameTrackerMobile.ViewModels
         private Platform item = new Platform();
 
         public Command EditCommand { get; }
+        public Command DeleteCommand { get; }
 
         public Platform Item
         {
@@ -35,6 +37,7 @@ namespace GameTrackerMobile.ViewModels
         public PlatformDetailViewModel()
         {
             EditCommand = new Command(OnEdit);
+            DeleteCommand = new Command(OnDelete);
         }
 
         public async void LoadItemId(ObjectReference itemId)
@@ -53,6 +56,18 @@ namespace GameTrackerMobile.ViewModels
         {
             await Shell.Current.GoToAsync("..");
             await Shell.Current.GoToAsync($"{nameof(NewPlatformPage)}?{nameof(NewPlatformViewModel.ItemId)}={new ObjectReference(item)}");
+        }
+
+        async void OnDelete()
+        {
+            var popup = new PopupPage("Attention", "Are you sure you would like to delete this platform?", PopupViewModel.EnumInputType.YesNo);
+            await PopupNavigation.Instance.PushAsync(popup);
+            var ret = await popup.PopupClosedTask;
+            if (ret.Item1.ToString().ToUpper() == "YES")
+            {
+                await DataStore.DeleteItemAsync(Item);
+                await Shell.Current.GoToAsync("..");
+            }
         }
     }
 }
