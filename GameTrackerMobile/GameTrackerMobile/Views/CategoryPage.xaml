@@ -36,9 +36,7 @@
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
                         <Label Grid.Column="1" Text="{Binding Weight, StringFormat='Weight: \{0\}'}"
-                            Style="{DynamicResource ListItemTextStyle}"
-                            LineBreakMode="TailTruncation" 
-                            FontSize="16" />
+                            LineBreakMode="TailTruncation" />
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"

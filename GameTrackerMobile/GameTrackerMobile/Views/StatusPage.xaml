@@ -38,8 +38,8 @@
                             LineBreakMode="TailTruncation" 
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
-                        <Label Text="F" Grid.Column="1" FontSize="16" IsVisible="{Binding UseAsFinished}" />
-                        <Label Text="E" Grid.Column="2" FontSize="16" IsVisible="{Binding ExcludeFromStats}" />
+                        <Label Text="F" Grid.Column="1" IsVisible="{Binding UseAsFinished}" />
+                        <Label Text="E" Grid.Column="2" IsVisible="{Binding ExcludeFromStats}" />
                         <Rectangle Grid.Column="3" BackgroundColor="{Binding Color, Converter={StaticResource frameworkToXamarinColorConverter}}" />
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 

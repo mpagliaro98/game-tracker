@@ -38,9 +38,7 @@
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
                         <Label Grid.Column="1" Text="{Binding ReferenceKey, Converter={StaticResource scoreRelationshipConverter}}"
-                            Style="{DynamicResource ListItemTextStyle}"
-                            LineBreakMode="TailTruncation" 
-                            FontSize="16" />
+                            LineBreakMode="TailTruncation" />
                         <Rectangle Grid.Column="2" BackgroundColor="{Binding Color, Converter={StaticResource frameworkToXamarinColorConverter}}" />
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
