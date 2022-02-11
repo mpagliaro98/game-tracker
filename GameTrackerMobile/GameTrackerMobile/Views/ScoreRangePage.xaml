@@ -4,7 +4,14 @@
              x:Class="GameTrackerMobile.Views.ScoreRangePage"
              xmlns:local="clr-namespace:GameTrackerMobile.ViewModels"  
              xmlns:model="clr-namespace:RatableTracker.Framework;assembly=RatableTracker"  
+             xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
              Title="Score Ranges">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ScoreRelationshipConverter x:Key="scoreRelationshipConverter" />
+            <converters:FrameworkToXamarinColorConverter x:Key="frameworkToXamarinColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Sort" />
         <ToolbarItem Text="Search" />
@@ -20,23 +27,28 @@
                 SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <StackLayout Padding="10" x:DataType="model:ScoreRange">
-                        <Label Text="{Binding Name}" 
-                            LineBreakMode="NoWrap" 
+                    <Grid Padding="5" x:DataType="model:ScoreRange">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="35" />
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{Binding Name}"
+                            LineBreakMode="TailTruncation" 
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
-                        <!--<Label Text="{Binding Description}" 
-                            LineBreakMode="NoWrap"
-                            Style="{DynamicResource ListItemDetailTextStyle}"
-                            FontSize="13" />-->
-                        <StackLayout.GestureRecognizers>
+                        <Label Grid.Column="1" Text="{Binding ReferenceKey, Converter={StaticResource scoreRelationshipConverter}}"
+                            Style="{DynamicResource ListItemTextStyle}"
+                            FontSize="16" />
+                        <Rectangle Grid.Column="2" BackgroundColor="{Binding Color, Converter={StaticResource frameworkToXamarinColorConverter}}" />
+                        <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type local:ScoreRangeViewModel}}, Path=ItemTapped}"		
                                 CommandParameter="{Binding .}">
                             </TapGestureRecognizer>
-                        </StackLayout.GestureRecognizers>
-                    </StackLayout>
+                        </Grid.GestureRecognizers>
+                    </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
