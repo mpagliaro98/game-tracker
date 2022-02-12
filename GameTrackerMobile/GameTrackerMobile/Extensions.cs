@@ -9,14 +9,14 @@ namespace GameTrackerMobile
         public static RatableTracker.Framework.Color ToFrameworkColor(this Xamarin.Forms.Color? color)
         {
             var colorInput = color ?? new Xamarin.Forms.Color();
-            return RatableTracker.Framework.Color.FromArgb(Convert.ToByte(colorInput.A), Convert.ToByte(colorInput.R),
-                Convert.ToByte(colorInput.G), Convert.ToByte(colorInput.B));
+            return RatableTracker.Framework.Color.FromArgb(Convert.ToByte(colorInput.A * 255), Convert.ToByte(colorInput.R * 255),
+                Convert.ToByte(colorInput.G * 255), Convert.ToByte(colorInput.B * 255));
         }
 
         public static RatableTracker.Framework.Color ToFrameworkColor(this Xamarin.Forms.Color color)
         {
-            return RatableTracker.Framework.Color.FromArgb(Convert.ToByte(color.A), Convert.ToByte(color.R),
-                Convert.ToByte(color.G), Convert.ToByte(color.B));
+            return RatableTracker.Framework.Color.FromArgb(Convert.ToByte(color.A * 255), Convert.ToByte(color.R * 255),
+                Convert.ToByte(color.G * 255), Convert.ToByte(color.B * 255));
         }
 
         public static Xamarin.Forms.Color ToXamarinColor(this RatableTracker.Framework.Color? color)

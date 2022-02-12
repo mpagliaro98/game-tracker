@@ -30,16 +30,39 @@ namespace GameTrackerMobile.ViewModels
             {
                 SetProperty(ref item, value);
                 Name = item.Name;
-                // add each field here
+                UseAsFinished = item.UseAsFinished;
+                ExcludeFromStats = item.ExcludeFromStats;
+                Color = item.Color.ToXamarinColor();
             }
         }
 
         private string name;
+        private bool useAsFinished;
+        private bool excludeFromStats;
+        private Xamarin.Forms.Color color;
 
         public string Name
         {
             get => name;
             set => SetProperty(ref name, value);
+        }
+
+        public bool UseAsFinished
+        {
+            get => useAsFinished;
+            set => SetProperty(ref useAsFinished, value);
+        }
+
+        public bool ExcludeFromStats
+        {
+            get => excludeFromStats;
+            set => SetProperty(ref excludeFromStats, value);
+        }
+
+        public Xamarin.Forms.Color Color
+        {
+            get => color;
+            set => SetProperty(ref color, value);
         }
 
         public Command SaveCommand { get; }
@@ -66,7 +89,10 @@ namespace GameTrackerMobile.ViewModels
         {
             CompletionStatus newItem = new CompletionStatus()
             {
-                Name = Name
+                Name = Name,
+                UseAsFinished = UseAsFinished,
+                ExcludeFromStats = ExcludeFromStats,
+                Color = Color.ToFrameworkColor()
             };
 
             if (Item == null)

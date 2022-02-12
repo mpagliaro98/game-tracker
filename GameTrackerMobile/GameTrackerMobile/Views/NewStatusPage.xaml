@@ -2,16 +2,21 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GameTrackerMobile.Views.NewStatusPage"
+             xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker"
              Shell.PresentationMode="ModalAnimated"
              Title="New Item"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true">
     <ContentPage.Content>
         <StackLayout Spacing="3" Padding="15">
-            <Label Text="Text" FontSize="Medium" />
-            <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" />
-            <Label Text="Description" FontSize="Medium" />
-            <!--<Editor Text="{Binding Description, Mode=TwoWay}" AutoSize="TextChanges" FontSize="Medium" Margin="0" />-->
+            <Label Text="Text" FontSize="Small" />
+            <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Mark as finished:" FontSize="Small" />
+            <CheckBox IsChecked="{Binding UseAsFinished, Mode=TwoWay}" Margin="0,0,0,10" />
+            <Label Text="Exclude from stats:" FontSize="Small" />
+            <CheckBox IsChecked="{Binding ExcludeFromStats, Mode=TwoWay}" Margin="0,0,0,10" />
+            <Label Text="Color:" FontSize="Small" />
+            <colorpicker:ColorWheel x:Name="colors" SelectedColor="{Binding Color, Mode=TwoWay}" ShowAlphaSlider="True" />
             <StackLayout Orientation="Horizontal">
                 <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
                 <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
