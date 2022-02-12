@@ -59,9 +59,7 @@ namespace GameTrackerMobile.ViewModels
 
         async void OnDelete()
         {
-            var popup = new PopupPage("Attention", "Are you sure you would like to delete this game?", PopupViewModel.EnumInputType.YesNo);
-            await PopupNavigation.Instance.PushAsync(popup);
-            var ret = await popup.PopupClosedTask;
+            var ret = await Util.ShowPopupAsync("Attention", "Are you sure you would like to delete this game?", PopupViewModel.EnumInputType.YesNo);
             if (ret.Item1.ToString().ToUpper() == "YES")
             {
                 await DataStore.DeleteItemAsync(Item);
