@@ -15,14 +15,16 @@
         <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
     </ContentPage.ToolbarItems>
 
-    <StackLayout Spacing="10" Padding="15">
-        <Label Text="Name:" FontSize="Small" />
-        <Label Text="{Binding Item.Name}" FontSize="Medium" Padding="0,0,0,10" />
-        <Label Text="Mark as finished:" FontSize="Small" />
-        <CheckBox IsEnabled="False" IsChecked="{Binding Item.UseAsFinished}" Margin="0,0,0,10" />
-        <Label Text="Exclude from stats:" FontSize="Small" />
-        <CheckBox IsEnabled="False" IsChecked="{Binding Item.ExcludeFromStats}" Margin="0,0,0,10" />
-        <Label Text="Color:" FontSize="Small" />
-        <Rectangle BackgroundColor="{Binding Item.Color, Converter={StaticResource frameworkToXamarinColorConverter}}" HeightRequest="50" WidthRequest="50" />
-    </StackLayout>
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Name:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Medium" Padding="0,0,0,10" />
+            <Label Text="Mark as finished:" FontSize="Small" />
+            <CheckBox IsEnabled="False" IsChecked="{Binding Item.UseAsFinished}" Margin="0,0,0,10" />
+            <Label Text="Exclude from stats:" FontSize="Small" />
+            <CheckBox IsEnabled="False" IsChecked="{Binding Item.ExcludeFromStats}" Margin="0,0,0,10" />
+            <Label Text="Color:" FontSize="Small" />
+            <Rectangle BackgroundColor="{Binding Item.Color, Converter={StaticResource frameworkToXamarinColorConverter}}" HeightRequest="50" WidthRequest="50" />
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

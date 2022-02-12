@@ -16,13 +16,15 @@
         <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
     </ContentPage.ToolbarItems>
 
-    <StackLayout Spacing="10" Padding="15">
-        <Label Text="Text:" FontSize="Small" />
-        <Label Text="{Binding Item.Name}" FontSize="Medium" Margin="0,0,0,10" />
-        <Label Text="Range:" FontSize="Small" />
-        <Label Text="{Binding Item.ReferenceKey, Converter={StaticResource scoreRelationshipConverter}}" FontSize="Medium" Margin="0,0,0,10" />
-        <Label Text="Color:" FontSize="Small" />
-        <Rectangle BackgroundColor="{Binding Item.Color, Converter={StaticResource frameworkToXamarinColorConverter}}" HeightRequest="50" WidthRequest="50" />
-    </StackLayout>
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Text:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Range:" FontSize="Small" />
+            <Label Text="{Binding Item.ReferenceKey, Converter={StaticResource scoreRelationshipConverter}}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Color:" FontSize="Small" />
+            <Rectangle BackgroundColor="{Binding Item.Color, Converter={StaticResource frameworkToXamarinColorConverter}}" HeightRequest="50" WidthRequest="50" />
+        </StackLayout>
+    </ScrollView>
 
 </ContentPage>
