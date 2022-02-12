@@ -2,7 +2,18 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GameTrackerMobile.Views.GameDetailPage"
+             xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
+             xmlns:local="clr-namespace:GameTrackerMobile.ViewModels"
              Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PlatformColorConverter x:Key="platformColorConverter" />
+            <converters:StatusColorConverter x:Key="statusColorConverter" />
+            <converters:StringEmptyConverter x:Key="stringEmptyConverter" />
+            <converters:DateEmptyConverter x:Key="dateEmptyConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Delete" Command="{Binding DeleteCommand}" />
         <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
@@ -11,9 +22,115 @@
     <ScrollView>
         <StackLayout Spacing="10" Padding="15">
             <Label Text="Name:" FontSize="Small" />
-            <Label Text="{Binding Item.Name}" FontSize="Medium" Margin="0,0,0,10" />
-            <Label Text="Description:" FontSize="Small" />
-            <!--<Label Text="{Binding Description}" FontSize="Medium"/>-->
+            <Label Text="{Binding Item.Name}" FontSize="Large" Margin="0,0,0,10" />
+            
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasCompletionStatus}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Completion Status:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding Item.RefStatus, Converter={StaticResource statusColorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+            
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatform}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding Item.RefPlatform, Converter={StaticResource platformColorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+            
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatformPlayedOn}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding Item.RefPlatformPlayedOn, Converter={StaticResource platformColorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasOriginalGame}">
+                <Label Text="Is a Remake/Remaster Of:" FontSize="Small" />
+                <Label Text="{Binding OriginalGame.Name}" FontSize="Medium" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasCompilation}">
+                <Label Text="Part of Compilation:" FontSize="Small" />
+                <Label Text="{Binding Compilation.Name}" FontSize="Medium" />
+            </StackLayout>
+
+            <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">
+                <Label Text="Category Scores:" FontSize="Small" />
+                <ScrollView Orientation="Horizontal" Margin="0,0,0,10">
+                    <StackLayout Orientation="Horizontal" VerticalOptions="Start" BindableLayout.ItemsSource="{Binding CategoryValues}">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="local:CategoryValueContainer">
+                                <StackLayout Orientation="Vertical" Margin="0,0,5,0">
+                                    <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                    <Label Text="{Binding CategoryValue}" FontSize="Medium" />
+                                </StackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </ScrollView>
+
+                <Label Text="Final Score:" FontSize="Small" />
+                <Label Text="{Binding FinalScore}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
+
+                <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.CompletionCriteria, Converter={StaticResource stringEmptyConverter}}">
+                <Label Text="Completion Criteria:" FontSize="Small" />
+                <Label Text="{Binding Item.CompletionCriteria}" FontSize="Medium" LineBreakMode="WordWrap" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.CompletionComment, Converter={StaticResource stringEmptyConverter}}">
+                <Label Text="Completion Comment:" FontSize="Small" />
+                <Label Text="{Binding Item.CompletionComment}" FontSize="Medium" LineBreakMode="WordWrap" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.TimeSpent, Converter={StaticResource stringEmptyConverter}}">
+                <Label Text="Time Spent:" FontSize="Small" />
+                <Label Text="{Binding Item.TimeSpent}" FontSize="Medium" LineBreakMode="WordWrap" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.AcquiredOn, Converter={StaticResource dateEmptyConverter}}">
+                <Label Text="Acquired On:" FontSize="Small" />
+                <Label Text="{Binding Item.AcquiredOn}" FontSize="Medium" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.StartedOn, Converter={StaticResource dateEmptyConverter}}">
+                <Label Text="Started On:" FontSize="Small" />
+                <Label Text="{Binding Item.StartedOn}" FontSize="Medium" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.FinishedOn, Converter={StaticResource dateEmptyConverter}}">
+                <Label Text="Finished On:" FontSize="Small" />
+                <Label Text="{Binding Item.FinishedOn}" FontSize="Medium" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.Comment, Converter={StaticResource stringEmptyConverter}}">
+                <Label Text="Comment:" FontSize="Small" />
+                <Label Text="{Binding Item.Comment}" FontSize="Medium" LineBreakMode="WordWrap" />
+            </StackLayout>
         </StackLayout>
     </ScrollView>
 
