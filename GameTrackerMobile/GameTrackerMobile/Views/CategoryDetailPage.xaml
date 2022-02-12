@@ -8,11 +8,13 @@
         <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
     </ContentPage.ToolbarItems>
 
-    <StackLayout Spacing="20" Padding="15">
-        <Label Text="Text:" FontSize="Medium" />
-        <Label Text="{Binding Item.Name}" FontSize="Small"/>
-        <Label Text="Description:" FontSize="Medium" />
-        <!--<Label Text="{Binding Description}" FontSize="Small"/>-->
+    <StackLayout Spacing="10" Padding="15">
+        <Label Text="Text:" FontSize="Small" />
+        <Label Text="{Binding Item.Name}" FontSize="Medium" Margin="0,0,0,10" />
+        <Label Text="Weight:" FontSize="Small" />
+        <Label Text="{Binding Item.Weight}" FontSize="Medium" Margin="0,0,0,10" />
+        <Label Text="Comment:" FontSize="Small" />
+        <Label Text="{Binding Item.Comment}" FontSize="Medium" LineBreakMode="WordWrap"  Margin="0,0,0,10" />
     </StackLayout>
 
 </ContentPage>

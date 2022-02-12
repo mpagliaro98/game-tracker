@@ -29,16 +29,31 @@ namespace GameTrackerMobile.ViewModels
             {
                 SetProperty(ref item, value);
                 Name = item.Name;
-                // add each field here
+                Weight = item.Weight;
+                Comment = item.Comment;
             }
         }
 
         private string name;
+        private double weight;
+        private string comment;
 
         public string Name
         {
             get => name;
             set => SetProperty(ref name, value);
+        }
+
+        public double Weight
+        {
+            get => weight;
+            set => SetProperty(ref weight, value);
+        }
+
+        public string Comment
+        {
+            get => comment;
+            set => SetProperty(ref comment, value);
         }
 
         public Command SaveCommand { get; }
@@ -65,8 +80,10 @@ namespace GameTrackerMobile.ViewModels
         {
             RatingCategoryWeighted newItem = new RatingCategoryWeighted()
             {
-                Name = Name
+                Name = Name,
+                Comment = Comment
             };
+            newItem.SetWeight(Weight);
 
             if (Item == null)
                 await DataStore.AddItemAsync(newItem);
