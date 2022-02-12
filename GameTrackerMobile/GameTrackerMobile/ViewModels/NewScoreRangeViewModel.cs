@@ -1,4 +1,6 @@
-﻿using RatableTracker.Framework;
+﻿using GameTrackerMobile.Services;
+using RatableTracker.Framework;
+using RatableTracker.Framework.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -67,6 +69,16 @@ namespace GameTrackerMobile.ViewModels
             {
                 Name = Name
             };
+
+            try
+            {
+                ModuleService.GetActiveModule().ValidateRange(Item);
+            }
+            catch (ValidationException e)
+            {
+                await Util.ShowPopupAsync("Error", e.Message, PopupViewModel.EnumInputType.Ok);
+                return;
+            }
 
             if (Item == null)
                 await DataStore.AddItemAsync(newItem);

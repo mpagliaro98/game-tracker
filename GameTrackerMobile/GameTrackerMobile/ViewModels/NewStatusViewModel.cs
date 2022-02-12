@@ -1,5 +1,7 @@
 ﻿using GameTracker.Model;
+using GameTrackerMobile.Services;
 using RatableTracker.Framework;
+using RatableTracker.Framework.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -94,6 +96,16 @@ namespace GameTrackerMobile.ViewModels
                 ExcludeFromStats = ExcludeFromStats,
                 Color = Color.ToFrameworkColor()
             };
+
+            try
+            {
+                ModuleService.GetActiveModule().ValidateStatus(Item);
+            }
+            catch (ValidationException e)
+            {
+                await Util.ShowPopupAsync("Error", e.Message, PopupViewModel.EnumInputType.Ok);
+                return;
+            }
 
             if (Item == null)
                 await DataStore.AddItemAsync(newItem);
