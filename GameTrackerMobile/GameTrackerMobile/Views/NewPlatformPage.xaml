@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GameTrackerMobile.Views.NewPlatformPage"
+             xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker"
              Shell.PresentationMode="ModalAnimated"
              Title="New Item"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
@@ -9,10 +10,14 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Spacing="3" Padding="15">
-                <Label Text="Text" FontSize="Medium" />
-                <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" />
-                <Label Text="Description" FontSize="Medium" />
-                <!--<Editor Text="{Binding Description, Mode=TwoWay}" AutoSize="TextChanges" FontSize="Medium" Margin="0" />-->
+                <Label Text="Name:" FontSize="Small" />
+                <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" />
+                <Label Text="Release Year:" FontSize="Small" />
+                <Entry Text="{Binding ReleaseYear, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
+                <Label Text="Acquired Year:" FontSize="Small" />
+                <Entry Text="{Binding AcquiredYear, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
+                <Label Text="Color:" FontSize="Small" />
+                <colorpicker:ColorWheel x:Name="colors" SelectedColor="{Binding Color, Mode=TwoWay}" ShowAlphaSlider="True" Margin="0,0,0,10" />
                 <StackLayout Orientation="Horizontal">
                     <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
                     <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>

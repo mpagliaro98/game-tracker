@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using GameTracker.Model;
+using GameTrackerMobile.Services;
 using GameTrackerMobile.Views;
 using RatableTracker.Framework;
 using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
+using System.Linq;
+using RatableTracker.Framework.Global;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -21,7 +24,18 @@ namespace GameTrackerMobile.ViewModels
         public Platform Item
         {
             get => item;
-            set => SetProperty(ref item, value);
+            set 
+            {
+                SetProperty(ref item, value);
+                OnPropertyChanged("NumGames");
+                OnPropertyChanged("AverageScore");
+                OnPropertyChanged("HighestScore");
+                OnPropertyChanged("LowestScore");
+                OnPropertyChanged("PercentageFinished");
+                OnPropertyChanged("RatioFinished");
+                OnPropertyChanged("TopGames");
+                OnPropertyChanged("BottomGames");
+            }
         }
 
         public string ItemId
@@ -32,6 +46,65 @@ namespace GameTrackerMobile.ViewModels
                 ObjectReference key = (ObjectReference)value;
                 LoadItemId(key);
             }
+        }
+
+        public int NumGames
+        {
+            get => ModuleService.GetActiveModule().GetNumGamesByPlatform(Item);
+        }
+
+        public double AverageScore
+        {
+            get => ModuleService.GetActiveModule().GetAverageScoreOfGamesByPlatform(Item);
+        }
+
+        public double HighestScore
+        {
+            get => ModuleService.GetActiveModule().GetHighestScoreFromGamesByPlatform(Item);
+        }
+
+        public double LowestScore
+        {
+            get => ModuleService.GetActiveModule().GetLowestScoreFromGamesByPlatform(Item);
+        }
+
+        public string PercentageFinished
+        {
+            get => ModuleService.GetActiveModule().GetPercentageGamesFinishedByPlatform(Item).ToString("0.##") + "% finished";
+        }
+
+        public string RatioFinished
+        {
+            get => ModuleService.GetActiveModule().GetNumGamesFinishedByPlatform(Item).ToString() + "/" +
+                ModuleService.GetActiveModule().GetNumGamesFinishableByPlatform(Item).ToString() + " games";
+        }
+
+        public string TopGames
+        {
+            get
+            {
+                var top = ModuleService.GetActiveModule().GetTopGamesByPlatform(Item, 5);
+                return string.Join("\n", top.ForEach(game => game.Name));
+            }
+        }
+
+        public string BottomGames
+        {
+            get
+            {
+                var top = ModuleService.GetActiveModule().GetBottomGamesByPlatform(Item, 3);
+                return string.Join("\n", top.ForEach(game => game.Name));
+            }
+        }
+
+        public string ReleaseYear
+        {
+            get => Item.ReleaseYear == 0 ? "N/A" : Item.ReleaseYear.ToString();
+        }
+
+        public string AcquiredYear
+        {
+            get => Item.AcquiredYear == 0 ? "N/A" : Item.AcquiredYear.ToString();
         }
 
         public PlatformDetailViewModel()

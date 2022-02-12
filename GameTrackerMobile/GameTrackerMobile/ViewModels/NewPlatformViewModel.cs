@@ -32,16 +32,39 @@ namespace GameTrackerMobile.ViewModels
             {
                 SetProperty(ref item, value);
                 Name = item.Name;
-                // add each field here
+                ReleaseYear = item.ReleaseYear;
+                AcquiredYear = item.AcquiredYear;
+                Color = item.Color.ToXamarinColor();
             }
         }
 
         private string name;
+        private int releaseYear;
+        private int acquiredYear;
+        private Xamarin.Forms.Color color;
 
         public string Name
         {
             get => name;
             set => SetProperty(ref name, value);
+        }
+
+        public int ReleaseYear
+        {
+            get => releaseYear;
+            set => SetProperty(ref releaseYear, value);
+        }
+
+        public int AcquiredYear
+        {
+            get => acquiredYear;
+            set => SetProperty(ref acquiredYear, value);
+        }
+
+        public Xamarin.Forms.Color Color
+        {
+            get => color;
+            set => SetProperty(ref color, value);
         }
 
         public Command SaveCommand { get; }
@@ -68,7 +91,10 @@ namespace GameTrackerMobile.ViewModels
         {
             Platform newItem = new Platform()
             {
-                Name = Name
+                Name = Name,
+                ReleaseYear = ReleaseYear,
+                AcquiredYear = AcquiredYear,
+                Color = Color.ToFrameworkColor()
             };
 
             try
