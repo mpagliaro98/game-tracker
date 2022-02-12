@@ -74,7 +74,7 @@ namespace GameTrackerMobile.ViewModels
 
             try
             {
-                ModuleService.GetActiveModule().ValidateListedObject(Item);
+                ModuleService.GetActiveModule().ValidateListedObject(newItem);
             }
             catch (ValidationException e)
             {

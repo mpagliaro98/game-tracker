@@ -1,6 +1,7 @@
 ﻿using GameTracker.Model;
 using GameTrackerMobile.Services;
 using RatableTracker.Framework;
+using RatableTracker.Framework.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,7 +17,16 @@ namespace GameTrackerMobile.Converters
         {
             ObjectReference key = (ObjectReference)value;
             RatingModuleGame rm = ModuleService.GetActiveModule();
-            ScoreRange range = rm.FindRange(key);
+            ScoreRange range;
+            try
+            {
+                range = rm.FindRange(key);
+                
+            }
+            catch (ReferenceNotFoundException)
+            {
+                return "";
+            }
             if (range == null) return "";
             string result = rm.FindScoreRelationship(range.RefScoreRelationship).Name + " " + GetRelationshipValues(range.ValueList);
             return result;

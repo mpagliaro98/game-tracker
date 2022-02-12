@@ -99,7 +99,7 @@ namespace GameTrackerMobile.ViewModels
 
             try
             {
-                ModuleService.GetActiveModule().ValidateStatus(Item);
+                ModuleService.GetActiveModule().ValidateStatus(newItem);
             }
             catch (ValidationException e)
             {

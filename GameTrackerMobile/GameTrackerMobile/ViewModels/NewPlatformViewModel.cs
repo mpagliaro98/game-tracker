@@ -73,7 +73,7 @@ namespace GameTrackerMobile.ViewModels
 
             try
             {
-                ModuleService.GetActiveModule().ValidatePlatform(Item);
+                ModuleService.GetActiveModule().ValidatePlatform(newItem);
             }
             catch (ValidationException e)
             {

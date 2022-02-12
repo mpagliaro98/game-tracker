@@ -2,17 +2,27 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GameTrackerMobile.Views.ScoreRangeDetailPage"
+             xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
              Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FrameworkToXamarinColorConverter x:Key="frameworkToXamarinColorConverter" />
+            <converters:ScoreRelationshipConverter x:Key="scoreRelationshipConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Delete" Command="{Binding DeleteCommand}" />
         <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
     </ContentPage.ToolbarItems>
 
-    <StackLayout Spacing="20" Padding="15">
-        <Label Text="Text:" FontSize="Medium" />
-        <Label Text="{Binding Item.Name}" FontSize="Small"/>
-        <Label Text="Description:" FontSize="Medium" />
-        <!--<Label Text="{Binding Description}" FontSize="Small"/>-->
+    <StackLayout Spacing="10" Padding="15">
+        <Label Text="Text:" FontSize="Small" />
+        <Label Text="{Binding Item.Name}" FontSize="Medium" Margin="0,0,0,10" />
+        <Label Text="Range:" FontSize="Small" />
+        <Label Text="{Binding Item.ReferenceKey, Converter={StaticResource scoreRelationshipConverter}}" FontSize="Medium" Margin="0,0,0,10" />
+        <Label Text="Color:" FontSize="Small" />
+        <Rectangle BackgroundColor="{Binding Item.Color, Converter={StaticResource frameworkToXamarinColorConverter}}" HeightRequest="50" WidthRequest="50" />
     </StackLayout>
 
 </ContentPage>

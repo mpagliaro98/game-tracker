@@ -89,7 +89,7 @@ namespace GameTrackerMobile.ViewModels
 
             try
             {
-                ModuleService.GetActiveModule().ValidateRatingCategory(Item);
+                ModuleService.GetActiveModule().ValidateRatingCategory(newItem);
             }
             catch (ValidationException e)
             {
