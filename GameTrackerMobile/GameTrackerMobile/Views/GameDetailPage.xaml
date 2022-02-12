@@ -9,11 +9,11 @@
     </ContentPage.ToolbarItems>
 
     <ScrollView>
-        <StackLayout Spacing="20" Padding="15">
-            <Label Text="Text:" FontSize="Medium" />
-            <Label Text="{Binding Item.Name}" FontSize="Small"/>
-            <Label Text="Description:" FontSize="Medium" />
-            <!--<Label Text="{Binding Description}" FontSize="Small"/>-->
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Name:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Description:" FontSize="Small" />
+            <!--<Label Text="{Binding Description}" FontSize="Medium"/>-->
         </StackLayout>
     </ScrollView>
 
