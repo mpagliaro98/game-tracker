@@ -11,6 +11,7 @@
             <converters:StatusColorConverter x:Key="statusColorConverter" />
             <converters:StringEmptyConverter x:Key="stringEmptyConverter" />
             <converters:DateEmptyConverter x:Key="dateEmptyConverter" />
+            <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     
@@ -77,19 +78,21 @@
             </StackLayout>
 
             <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">
-                <Label Text="Category Scores:" FontSize="Small" />
-                <ScrollView Orientation="Horizontal" Margin="0,0,0,10">
-                    <StackLayout Orientation="Horizontal" VerticalOptions="Start" BindableLayout.ItemsSource="{Binding CategoryValues}">
-                        <BindableLayout.ItemTemplate>
-                            <DataTemplate x:DataType="local:CategoryValueContainer">
-                                <StackLayout Orientation="Vertical" Margin="0,0,5,0">
-                                    <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
-                                    <Label Text="{Binding CategoryValue}" FontSize="Medium" />
-                                </StackLayout>
-                            </DataTemplate>
-                        </BindableLayout.ItemTemplate>
-                    </StackLayout>
-                </ScrollView>
+                <StackLayout IsVisible="{Binding ShowCategoryValues}">
+                    <Label Text="Category Scores:" FontSize="Small" />
+                    <ScrollView Orientation="Horizontal" Margin="0,0,0,10">
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Start" BindableLayout.ItemsSource="{Binding CategoryValues}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="local:CategoryValueContainer">
+                                    <StackLayout Orientation="Vertical" Margin="0,0,5,0">
+                                        <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                        <Label Text="{Binding CategoryValue}" FontSize="Medium" />
+                                    </StackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
+                </StackLayout>
 
                 <Label Text="Final Score:" FontSize="Small" />
                 <Label Text="{Binding FinalScore}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />

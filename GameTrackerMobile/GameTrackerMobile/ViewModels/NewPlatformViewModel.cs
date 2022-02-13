@@ -38,7 +38,7 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
-        private string name;
+        private string name = "";
         private int releaseYear;
         private int acquiredYear;
         private Xamarin.Forms.Color color;

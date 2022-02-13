@@ -8,6 +8,7 @@ using GameTrackerMobile.Services;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Exceptions;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -33,16 +34,212 @@ namespace GameTrackerMobile.ViewModels
             {
                 SetProperty(ref item, value);
                 Name = item.Name;
-                // add each field here
+                CompletionStatus = ModuleService.GetActiveModule().FindStatus(item.RefStatus);
+                Platform = ModuleService.GetActiveModule().FindPlatform(item.RefPlatform);
+                PlatformPlayedOn = ModuleService.GetActiveModule().FindPlatform(item.RefPlatformPlayedOn);
+                CompletionCriteria = item.CompletionCriteria;
+                CompletionComment = item.CompletionComment;
+                TimeSpent = item.TimeSpent;
+                AcquiredOn = item.AcquiredOn;
+                StartedOn = item.StartedOn;
+                FinishedOn = item.FinishedOn;
+                Comment = item.Comment;
+                IsRemaster = item.IsRemaster;
+                IsPartOfCompilation = item.IsPartOfCompilation;
+                OriginalGame = ModuleService.GetActiveModule().FindListedObject(item.RefOriginalGame);
+                UseOriginalGameScore = item.UseOriginalGameScore;
+                CompName = item.RefCompilation.HasReference() ? ModuleService.GetActiveModule().FindGameCompilation(item.RefCompilation).Name : "";
+                ManualFinalScore = item.IgnoreCategories;
+                CategoryValues = InitCategoryValues();
+                FinalScore = ModuleService.GetActiveModule().GetScoreOfObject(item);
             }
         }
 
-        private string name;
+        private string name = "";
+        private CompletionStatus status;
+        private Platform platform;
+        private Platform platformPlayedOn;
+        private string completionCriteria = "";
+        private string completionComment = "";
+        private string timeSpent = "";
+        private DateTime acquiredOn;
+        private DateTime startedOn;
+        private DateTime finishedOn;
+        private string comment = "";
+        private bool isRemaster;
+        private bool isPartOfCompilation;
+        private RatableGame originalGame;
+        private bool showScoreFlag;
+        private bool useOriginalNameScore;
+        private string compName = "";
+        private IEnumerable<CategoryValueContainer> vals = new List<CategoryValueContainer>();
+        private double finalScore;
+        private bool manualFinalScore;
 
         public string Name
         {
             get => name;
             set => SetProperty(ref name, value);
+        }
+
+        public CompletionStatus CompletionStatus
+        {
+            get => status;
+            set => SetProperty(ref status, value);
+        }
+
+        public IEnumerable<CompletionStatus> CompletionStatuses
+        {
+            get => ModuleService.GetActiveModule().Statuses;
+        }
+
+        public Platform Platform
+        {
+            get => platformPlayedOn;
+            set => SetProperty(ref platformPlayedOn, value);
+        }
+
+        public Platform PlatformPlayedOn
+        {
+            get => platform;
+            set => SetProperty(ref platform, value);
+        }
+
+        public string CompletionCriteria
+        {
+            get => completionCriteria;
+            set => SetProperty(ref completionCriteria, value);
+        }
+
+        public string CompletionComment
+        {
+            get => completionComment;
+            set => SetProperty(ref completionComment, value);
+        }
+
+        public string TimeSpent
+        {
+            get => timeSpent;
+            set => SetProperty(ref timeSpent, value);
+        }
+
+        public DateTime AcquiredOn
+        {
+            get => acquiredOn;
+            set => SetProperty(ref acquiredOn, value);
+        }
+
+        public DateTime StartedOn
+        {
+            get => startedOn;
+            set => SetProperty(ref startedOn, value);
+        }
+
+        public DateTime FinishedOn
+        {
+            get => finishedOn;
+            set => SetProperty(ref finishedOn, value);
+        }
+
+        public string Comment
+        {
+            get => comment;
+            set => SetProperty(ref comment, value);
+        }
+
+        public bool IsRemaster
+        {
+            get => isRemaster;
+            set
+            {
+                SetProperty(ref isRemaster, value);
+                if (!value)
+                    OriginalGame = null;
+            }
+        }
+
+        public bool IsPartOfCompilation
+        {
+            get => isPartOfCompilation;
+            set => SetProperty(ref isPartOfCompilation, value);
+        }
+
+        public RatableGame OriginalGame
+        {
+            get => originalGame;
+            set
+            {
+                SetProperty(ref originalGame, value);
+                ShowScoreFlag = (value != null);
+                if (value == null)
+                    UseOriginalGameScore = false;
+            }
+        }
+
+        public bool ShowScoreFlag
+        {
+            get => showScoreFlag;
+            set => SetProperty(ref showScoreFlag, value);
+        }
+
+        public bool UseOriginalGameScore
+        {
+            get => useOriginalNameScore;
+            set
+            {
+                SetProperty(ref useOriginalNameScore, value);
+                if (value)
+                    CategoryValues = ToValueContainerList(OriginalGame.CategoryValues);
+                else
+                    CategoryValues = Item == null ? InitCategoryValues() : ToValueContainerList(Item.CategoryValues);
+            }
+        }
+
+        public string CompName
+        {
+            get => compName;
+            set => SetProperty(ref compName, value);
+        }
+
+        public IEnumerable<CategoryValueContainer> CategoryValues
+        {
+            get
+            {
+                return vals;
+            }
+            set => SetProperty(ref vals, value);
+        }
+
+        public double FinalScore
+        {
+            get
+            {
+                if (ManualFinalScore)
+                    return finalScore;
+                else
+                    return ModuleService.GetActiveModule().GetScoreOfCategoryValues(GetValuesFromUI());
+            }
+            set => SetProperty(ref finalScore, value);
+        }
+
+        public bool ManualFinalScore
+        {
+            get => manualFinalScore;
+            set
+            {
+                SetProperty(ref manualFinalScore, value);
+                OnPropertyChanged("FinalScore");
+            }
+        }
+
+        public IEnumerable<Platform> Platforms
+        {
+            get => ModuleService.GetActiveModule().Platforms;
+        }
+
+        public IEnumerable<RatableGame> Games
+        {
+            get => ModuleService.GetActiveModule().ListedObjects.OrderBy(game => game.Name).ToList();
         }
 
         public Command SaveCommand { get; }
@@ -53,11 +250,13 @@ namespace GameTrackerMobile.ViewModels
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
             this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
+
+            CategoryValues = InitCategoryValues();
         }
 
         private bool ValidateSave()
         {
-            return !String.IsNullOrWhiteSpace(name);
+            return !String.IsNullOrWhiteSpace(name) && (!isPartOfCompilation || (isPartOfCompilation && !string.IsNullOrWhiteSpace(compName)));
         }
 
         private async void OnCancel()
@@ -69,11 +268,53 @@ namespace GameTrackerMobile.ViewModels
         {
             RatableGame newItem = new RatableGame()
             {
-                Name = Name
+                Name = Name,
+                CompletionCriteria = CompletionCriteria,
+                CompletionComment = CompletionComment,
+                TimeSpent = TimeSpent,
+                AcquiredOn = AcquiredOn,
+                StartedOn = StartedOn,
+                FinishedOn = FinishedOn,
+                Comment = Comment,
+                IsRemaster = IsRemaster,
+                UseOriginalGameScore = UseOriginalGameScore,
+                IgnoreCategories = ManualFinalScore,
+                CategoryValues = UseOriginalGameScore ? (Item == null ? GetValuesFromUI() : Item.CategoryValues) : GetValuesFromUI(),
+                FinalScoreManual = FinalScore
             };
+            if (CompletionStatus != null)
+                newItem.SetStatus(CompletionStatus);
+            if (Platform != null)
+                newItem.SetPlatform(Platform);
+            if (PlatformPlayedOn != null)
+                newItem.SetPlatformPlayedOn(PlatformPlayedOn);
+            if (OriginalGame != null)
+                newItem.SetOriginalGame(OriginalGame);
+            bool newCompilation = false;
+            GameCompilation comp = null;
+            if (IsPartOfCompilation)
+            {
+                
+                var matches = ModuleService.GetActiveModule().GameCompilations.Where(c => c.Name == CompName);
+                if (matches.Count() >= 1)
+                {
+                    comp = matches.First();
+                }
+                else
+                {
+                    comp = new GameCompilation()
+                    {
+                        Name = compName
+                    };
+                    newCompilation = true;
+                }
+                newItem.SetCompilation(comp);
+            }
 
             try
             {
+                if (newCompilation)
+                    ModuleService.GetActiveModule().ValidateGameCompilation(comp);
                 ModuleService.GetActiveModule().ValidateListedObject(newItem);
             }
             catch (ValidationException e)
@@ -89,6 +330,8 @@ namespace GameTrackerMobile.ViewModels
                 newItem.OverwriteReferenceKey(Item);
                 await DataStore.UpdateItemAsync(newItem);
             }
+            if (newCompilation)
+                await DependencyService.Get<IDataStore<GameCompilation>>().AddItemAsync(comp);
 
             await Shell.Current.GoToAsync("..");
         }
@@ -103,6 +346,46 @@ namespace GameTrackerMobile.ViewModels
             {
                 Debug.WriteLine("Failed to Load Item");
             }
+        }
+
+        private IEnumerable<CategoryValueContainer> ToValueContainerList(IEnumerable<RatingCategoryValue> oldVals)
+        {
+            List<CategoryValueContainer> newVals = new List<CategoryValueContainer>();
+            var module = ModuleService.GetActiveModule();
+            foreach (RatingCategoryValue item in oldVals)
+            {
+                newVals.Add(new CategoryValueContainer() { CategoryName = module.FindRatingCategory(item.RefRatingCategory).Name, CategoryValue = item.PointValue });
+            }
+            return newVals;
+        }
+
+        private IEnumerable<RatingCategoryValue> GetValuesFromUI()
+        {
+            var values = new List<RatingCategoryValue>();
+            var module = ModuleService.GetActiveModule();
+            for (int i = 0; i < module.RatingCategories.Count(); i++)
+            {
+                var cat = module.RatingCategories.ElementAt(i);
+                var container = CategoryValues.Count() <= i ? null : CategoryValues.ElementAt(i);
+                var newVal = new RatingCategoryValue() { PointValue = container == null ? module.Settings.MinScore : container.CategoryValue };
+                newVal.SetRatingCategory(cat);
+                values.Add(newVal);
+            }
+            return values;
+        }
+
+        private IEnumerable<CategoryValueContainer> InitCategoryValues()
+        {
+            var vals = new List<CategoryValueContainer>();
+            var module = ModuleService.GetActiveModule();
+            foreach (var cat in module.RatingCategories)
+            {
+                var container = new CategoryValueContainer();
+                container.CategoryName = cat.Name;
+                container.CategoryValue = Item == null ? module.Settings.MinScore : module.GetScoreOfCategory(Item, cat);
+                vals = vals.Append(container).ToList();
+            }
+            return vals;
         }
     }
 }

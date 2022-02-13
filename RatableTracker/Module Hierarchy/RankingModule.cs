@@ -149,7 +149,7 @@ namespace RatableTracker.Framework.ModuleHierarchy
         {
             if (limit >= 0 && list.Count() >= limit)
                 throw new ExceededLimitException("Attempted to exceed limit of " + limit.ToString() + " for list of " + typeof(T).ToString());
-            list = list.Append(obj);
+            list = list.Append(obj).ToList();
             if (GlobalSettings.Autosave) saveFunction();
         }
 

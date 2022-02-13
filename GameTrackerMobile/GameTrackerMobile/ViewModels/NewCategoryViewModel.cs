@@ -36,9 +36,9 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
-        private string name;
+        private string name = "";
         private double weight;
-        private string comment;
+        private string comment = "";
 
         public string Name
         {

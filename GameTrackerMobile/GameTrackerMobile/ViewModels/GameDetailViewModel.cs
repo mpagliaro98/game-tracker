@@ -40,6 +40,7 @@ namespace GameTrackerMobile.ViewModels
                 OnPropertyChanged("FinalScore");
                 OnPropertyChanged("FinalScoreColor");
                 OnPropertyChanged("Stats");
+                OnPropertyChanged("ShowCategoryValues");
             }
         }
 
@@ -150,6 +151,11 @@ namespace GameTrackerMobile.ViewModels
                 text += "#" + rankOverall.ToString() + " overall";
                 return text;
             }
+        }
+
+        public bool ShowCategoryValues
+        {
+            get => !Item.IgnoreCategories && !Item.UseOriginalGameScore;
         }
 
         public GameDetailViewModel()

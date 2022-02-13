@@ -40,7 +40,7 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
-        private string name;
+        private string name = "";
         private ScoreRelationship rel;
         private double val1;
         private double val2;

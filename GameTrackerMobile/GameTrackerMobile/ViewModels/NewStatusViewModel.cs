@@ -38,7 +38,7 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
-        private string name;
+        private string name = "";
         private bool useAsFinished;
         private bool excludeFromStats;
         private Xamarin.Forms.Color color;
