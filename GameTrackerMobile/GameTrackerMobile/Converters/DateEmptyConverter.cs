@@ -10,7 +10,7 @@ namespace GameTrackerMobile.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is DateTime) && ((DateTime)value > DateTime.MinValue);
+            return (value is DateTime) && ((DateTime)value > DateTime.Parse("1/1/1900"));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
