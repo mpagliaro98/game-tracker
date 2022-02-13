@@ -12,6 +12,7 @@
             <converters:StringEmptyConverter x:Key="stringEmptyConverter" />
             <converters:DateEmptyConverter x:Key="dateEmptyConverter" />
             <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
+            <converters:DateDisplayConverter x:Key="dateDisplayConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     
@@ -117,17 +118,17 @@
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.AcquiredOn, Converter={StaticResource dateEmptyConverter}}">
                 <Label Text="Acquired On:" FontSize="Small" />
-                <Label Text="{Binding Item.AcquiredOn}" FontSize="Medium" />
+                <Label Text="{Binding Item.AcquiredOn, Converter={StaticResource dateDisplayConverter}}" FontSize="Medium" />
             </StackLayout>
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.StartedOn, Converter={StaticResource dateEmptyConverter}}">
                 <Label Text="Started On:" FontSize="Small" />
-                <Label Text="{Binding Item.StartedOn}" FontSize="Medium" />
+                <Label Text="{Binding Item.StartedOn, Converter={StaticResource dateDisplayConverter}}" FontSize="Medium" />
             </StackLayout>
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.FinishedOn, Converter={StaticResource dateEmptyConverter}}">
                 <Label Text="Finished On:" FontSize="Small" />
-                <Label Text="{Binding Item.FinishedOn}" FontSize="Medium" />
+                <Label Text="{Binding Item.FinishedOn, Converter={StaticResource dateDisplayConverter}}" FontSize="Medium" />
             </StackLayout>
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.Comment, Converter={StaticResource stringEmptyConverter}}">

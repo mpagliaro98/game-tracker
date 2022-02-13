@@ -6,11 +6,11 @@ using Xamarin.Forms;
 
 namespace GameTrackerMobile.Converters
 {
-    public class DateEmptyConverter : IValueConverter
+    public class DateDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return (value is DateTime) && ((DateTime)value > DateTime.MinValue);
+            return (value is DateTime) ? ((DateTime)value).ToShortDateString() : "";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

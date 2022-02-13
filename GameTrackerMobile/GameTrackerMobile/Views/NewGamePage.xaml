@@ -82,13 +82,13 @@
                 <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
 
                 <Label Text="Acquired On:" FontSize="Small" />
-                <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" />
+                <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" MinimumDate="1/1/0001" />
 
                 <Label Text="Started On:" FontSize="Small" />
-                <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" />
+                <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" MinimumDate="1/1/0001" />
 
                 <Label Text="Finished On:" FontSize="Small" />
-                <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" />
+                <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" MinimumDate="1/1/0001" />
 
                 <Label Text="Comment:" FontSize="Small" />
                 <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="4000" AutoSize="TextChanges" />
