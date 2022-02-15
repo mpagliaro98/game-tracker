@@ -6,6 +6,8 @@ using GameTracker.Model;
 using GameTrackerMobile.Views;
 using RatableTracker.Framework;
 using Xamarin.Forms;
+using System.Linq;
+using GameTrackerMobile.Services;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -13,10 +15,13 @@ namespace GameTrackerMobile.ViewModels
     {
         private RatableGame _selectedItem;
 
+        private bool showCompilations = false;
+
         public ObservableCollection<RatableGame> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
         public Command<RatableGame> ItemTapped { get; }
+        public Command ShowCompilations { get; }
 
         public RatableGame SelectedItem
         {
@@ -33,6 +38,7 @@ namespace GameTrackerMobile.ViewModels
             Title = "Games";
             Items = new ObservableCollection<RatableGame>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            ShowCompilations = new Command(OnShowCompilations);
 
             ItemTapped = new Command<RatableGame>(OnItemSelected);
 
@@ -47,6 +53,10 @@ namespace GameTrackerMobile.ViewModels
             {
                 Items.Clear();
                 var items = await DataStore.GetItemsAsync(true);
+                if (showCompilations)
+                {
+                    items = items.Where(rg => !rg.IsPartOfCompilation).Concat(await DependencyService.Get<IDataStore<GameCompilation>>().GetItemsAsync());
+                }
                 foreach (var item in items)
                 {
                     Items.Add(item);
@@ -78,7 +88,16 @@ namespace GameTrackerMobile.ViewModels
             if (item == null)
                 return;
 
-            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={new ObjectReference(item)}");
+            if (item is GameCompilation)
+                return;
+            else
+                await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={new ObjectReference(item)}");
+        }
+
+        async void OnShowCompilations()
+        {
+            showCompilations = !showCompilations;
+            await ExecuteLoadItemsCommand();
         }
     }
 }

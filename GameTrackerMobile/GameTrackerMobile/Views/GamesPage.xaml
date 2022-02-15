@@ -14,8 +14,9 @@
             <converters:FinalScoreConverter x:Key="finalScoreConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
-    
+
     <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Compilations" Command="{Binding ShowCompilations}" />
         <ToolbarItem Text="Sort" />
         <ToolbarItem Text="Search" />
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" />

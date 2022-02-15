@@ -5,6 +5,7 @@ using System.Text;
 using GameTracker.Model;
 using GameTrackerMobile.Services;
 using RatableTracker.Framework;
+using RatableTracker.Framework.Exceptions;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.Converters
@@ -15,7 +16,15 @@ namespace GameTrackerMobile.Converters
         {
             ObjectReference key = (ObjectReference)value;
             RatingModuleGame rm = ModuleService.GetActiveModule();
-            RatableGame game = rm.FindListedObject(key);
+            RatableGame game;
+            try
+            {
+                game = rm.FindListedObject(key);
+            }
+            catch (ReferenceNotFoundException)
+            {
+                game = rm.FindGameCompilation(key);
+            }
             double score = rm.GetScoreOfObject(game);
             return score.ToString("0.##");
         }
