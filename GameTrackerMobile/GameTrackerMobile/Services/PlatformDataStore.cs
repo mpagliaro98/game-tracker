@@ -13,6 +13,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> AddItemAsync(Platform item)
         {
+            RefreshModule();
             rm.AddPlatform(item);
 
             return await Task.FromResult(true);
@@ -20,6 +21,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> UpdateItemAsync(Platform item)
         {
+            RefreshModule();
             var oldItem = rm.FindPlatform(new ObjectReference(item));
             rm.UpdatePlatform(item, oldItem);
 
@@ -28,6 +30,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> DeleteItemAsync(Platform item)
         {
+            RefreshModule();
             rm.DeletePlatform(item);
 
             return await Task.FromResult(true);
@@ -35,11 +38,13 @@ namespace GameTrackerMobile.Services
 
         public override async Task<Platform> GetItemAsync(ObjectReference key)
         {
+            RefreshModule();
             return await Task.FromResult(rm.FindPlatform(key));
         }
 
         public override async Task<IEnumerable<Platform>> GetItemsAsync(bool forceRefresh = false)
         {
+            RefreshModule();
             return await Task.FromResult(rm.Platforms);
         }
     }

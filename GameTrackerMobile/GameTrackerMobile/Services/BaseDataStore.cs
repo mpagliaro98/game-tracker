@@ -10,9 +10,14 @@ namespace GameTrackerMobile.Services
 {
     public abstract class BaseDataStore<T> : IDataStore<T> where T : IReferable
     {
-        protected readonly RatingModuleGame rm;
+        protected RatingModuleGame rm;
 
         public BaseDataStore()
+        {
+            RefreshModule();
+        }
+
+        protected void RefreshModule()
         {
             rm = ModuleService.GetActiveModule();
         }

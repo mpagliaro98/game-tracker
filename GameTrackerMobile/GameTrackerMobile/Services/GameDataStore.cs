@@ -13,6 +13,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> AddItemAsync(RatableGame item)
         {
+            RefreshModule();
             rm.AddListedObject(item);
 
             return await Task.FromResult(true);
@@ -20,6 +21,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> UpdateItemAsync(RatableGame item)
         {
+            RefreshModule();
             var oldItem = rm.FindListedObject(new ObjectReference(item));
             rm.UpdateListedObject(item, oldItem);
 
@@ -28,6 +30,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> DeleteItemAsync(RatableGame item)
         {
+            RefreshModule();
             rm.DeleteListedObject(item);
 
             return await Task.FromResult(true);
@@ -35,11 +38,13 @@ namespace GameTrackerMobile.Services
 
         public override async Task<RatableGame> GetItemAsync(ObjectReference key)
         {
+            RefreshModule();
             return await Task.FromResult(rm.FindListedObject(key));
         }
 
         public override async Task<IEnumerable<RatableGame>> GetItemsAsync(bool forceRefresh = false)
         {
+            RefreshModule();
             return await Task.FromResult(rm.ListedObjects);
         }
     }

@@ -42,15 +42,20 @@ namespace GameTrackerMobile.Services
             }
         }
 
+        public static void ResetActiveModule()
+        {
+            rm = null;
+        }
+
         private static RatingModuleGame GenerateNewModule()
         {
             PathController.PathControllerInstance = new PathControllerMobile();
             GlobalSettings.Autosave = true;
             IContentLoadSave<string, string> cls;
-            //if (ContentLoadSaveAWSS3.KeyFileExists())
-            //    cls = new ContentLoadSaveAWSS3();
-            //else
-            cls = new ContentLoadSaveLocal();
+            if (ContentLoadSaveAWSS3.KeyFileExists())
+                cls = new ContentLoadSaveAWSS3();
+            else
+                cls = new ContentLoadSaveLocal();
             LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
             {
                 ContentLoadSaveInstance = cls

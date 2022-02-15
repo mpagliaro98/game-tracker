@@ -13,6 +13,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> AddItemAsync(CompletionStatus item)
         {
+            RefreshModule();
             rm.AddStatus(item);
 
             return await Task.FromResult(true);
@@ -20,6 +21,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> UpdateItemAsync(CompletionStatus item)
         {
+            RefreshModule();
             var oldItem = rm.FindStatus(new ObjectReference(item));
             rm.UpdateStatus(item, oldItem);
 
@@ -28,6 +30,7 @@ namespace GameTrackerMobile.Services
 
         public override async Task<bool> DeleteItemAsync(CompletionStatus item)
         {
+            RefreshModule();
             rm.DeleteStatus(item);
 
             return await Task.FromResult(true);
@@ -35,11 +38,13 @@ namespace GameTrackerMobile.Services
 
         public override async Task<CompletionStatus> GetItemAsync(ObjectReference key)
         {
+            RefreshModule();
             return await Task.FromResult(rm.FindStatus(key));
         }
 
         public override async Task<IEnumerable<CompletionStatus>> GetItemsAsync(bool forceRefresh = false)
         {
+            RefreshModule();
             return await Task.FromResult(rm.Statuses);
         }
     }

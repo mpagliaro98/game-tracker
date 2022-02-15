@@ -1,9 +1,12 @@
 ﻿using GameTrackerMobile.Services;
+using RatableTracker.Framework.Interfaces;
+using RatableTracker.Framework.IO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace GameTrackerMobile.ViewModels
@@ -49,6 +52,7 @@ namespace GameTrackerMobile.ViewModels
 
         private string minScore;
         private string maxScore;
+        private string awsButtonText = "Switch to remote save files with AWS";
 
         public string MinScore
         {
@@ -62,11 +66,19 @@ namespace GameTrackerMobile.ViewModels
             set => SetProperty(ref maxScore, value);
         }
 
+        public string AWSButtonText
+        {
+            get => awsButtonText;
+            set => SetProperty(ref awsButtonText, value);
+        }
+
         public Command SaveCommand { get; }
+        public Command AWSCommand { get; }
 
         public SettingsEditViewModel()
         {
             SaveCommand = new Command(OnSave, ValidateSave);
+            AWSCommand = new Command(OnAWS);
             this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
             SetValues();
         }
@@ -76,6 +88,7 @@ namespace GameTrackerMobile.ViewModels
             var rm = ModuleService.GetActiveModule();
             MinScore = rm.Settings.MinScore.ToString();
             MaxScore = rm.Settings.MaxScore.ToString();
+            AWSButtonText = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
         private bool ValidateSave()
@@ -94,6 +107,52 @@ namespace GameTrackerMobile.ViewModels
             rm.SaveSettings();
 
             await Shell.Current.GoToAsync("..");
+        }
+
+        private async void OnAWS()
+        {
+            if (ContentLoadSaveAWSS3.KeyFileExists())
+            {
+                // Remove key file
+                var result = await Util.ShowPopupAsync("Overwrite local?", "Switch back to local has started. Transfer AWS save files to local? This will overwrite anything currently on this device.", PopupViewModel.EnumInputType.YesNo);
+
+                if (result.Item1.ToString().ToUpper() == "YES")
+                {
+                    IContentLoadSave<string, string> cls = new ContentLoadSaveLocal();
+                    IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
+                    await ModuleService.GetActiveModule().TransferSaveFilesAsync(from, cls);
+                }
+                ContentLoadSaveAWSS3.DeleteKeyFile();
+                ModuleService.ResetActiveModule();
+                ModuleService.GetActiveModule();
+            }
+            else
+            {
+                // Add a key file
+                var fileSelected = await FilePicker.PickAsync();
+                if (fileSelected != null)
+                {
+                    var result = await Util.ShowPopupAsync("Overwrite AWS?", "Switch to AWS has started. Transfer local save files to AWS? This will overwrite anything currently on your AWS account.", PopupViewModel.EnumInputType.YesNo);
+                    try
+                    {
+                        ContentLoadSaveAWSS3.CreateKeyFile(fileSelected.FullPath);
+                        if (result.Item1.ToString().ToUpper() == "YES")
+                        {
+                            IContentLoadSave<string, string> cls = new ContentLoadSaveAWSS3();
+                            IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
+                            await ModuleService.GetActiveModule().TransferSaveFilesAsync(from, cls);
+                        }
+                        ModuleService.ResetActiveModule();
+                        ModuleService.GetActiveModule();
+                    }
+                    catch (Exception ex)
+                    {
+                        await Util.ShowPopupAsync("Error", "Something went wrong.\n" + ex.Message, PopupViewModel.EnumInputType.Ok);
+                        ContentLoadSaveAWSS3.DeleteKeyFile();
+                    }
+                }
+            }
+            AWSButtonText = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
     }
 }

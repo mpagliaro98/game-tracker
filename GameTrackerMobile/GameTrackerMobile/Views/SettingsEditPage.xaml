@@ -12,6 +12,8 @@
                 <Entry Text="{Binding MinScore, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
                 <Label Text="Maximum Score:" FontSize="Small" />
                 <Editor Text="{Binding MaxScore, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
+                <Label Text="Click the button below to transfer your saved data to AWS. Doing so will allow you to access your data on any platform Game Tracker supports. You will need an AWS account, then you must generate your unique key and secret key on AWS. Once you download that key file, click the button below and select that file." LineBreakMode="WordWrap" FontSize="Small" />
+                <Button Text="{Binding AWSButtonText}" Margin="0,0,0,20" Command="{Binding AWSCommand}" />
                 <StackLayout Orientation="Horizontal">
                     <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
                 </StackLayout>
