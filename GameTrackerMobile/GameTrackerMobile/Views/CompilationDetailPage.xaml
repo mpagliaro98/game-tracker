@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMobile.Views.CompilationDetailPage"
+             xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
+             xmlns:local="clr-namespace:GameTrackerMobile.ViewModels"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PlatformColorConverter x:Key="platformColorConverter" />
+            <converters:StatusColorConverter x:Key="statusColorConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Name:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Large" Margin="0,0,0,10" />
+
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasCompletionStatus}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Completion Status:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding Item.RefStatus, Converter={StaticResource statusColorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatform}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding Item.RefPlatform, Converter={StaticResource platformColorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatformPlayedOn}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding Item.RefPlatformPlayedOn, Converter={StaticResource platformColorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">
+                <StackLayout IsVisible="{Binding ShowCategoryValues}">
+                    <Label Text="Category Scores:" FontSize="Small" />
+                    <ScrollView Orientation="Horizontal" Margin="0,0,0,10">
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Start" BindableLayout.ItemsSource="{Binding CategoryValues}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="local:CategoryValueContainer">
+                                    <StackLayout Orientation="Vertical" Margin="0,0,5,0">
+                                        <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                        <Label Text="{Binding CategoryValue}" FontSize="Medium" />
+                                    </StackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
+                </StackLayout>
+
+                <Label Text="Final Score:" FontSize="Small" />
+                <Label Text="{Binding FinalScore}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
+
+                <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

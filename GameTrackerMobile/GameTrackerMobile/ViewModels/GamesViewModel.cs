@@ -89,7 +89,7 @@ namespace GameTrackerMobile.ViewModels
                 return;
 
             if (item is GameCompilation)
-                return;
+                await Shell.Current.GoToAsync($"{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={new ObjectReference(item)}");
             else
                 await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={new ObjectReference(item)}");
         }

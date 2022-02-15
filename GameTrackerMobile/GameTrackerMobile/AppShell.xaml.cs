@@ -26,6 +26,8 @@ namespace GameTrackerMobile
             Routing.RegisterRoute(nameof(NewScoreRangePage), typeof(NewScoreRangePage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
             Routing.RegisterRoute(nameof(SettingsEditPage), typeof(SettingsEditPage));
+            Routing.RegisterRoute(nameof(CompilationDetailPage), typeof(CompilationDetailPage));
+            Routing.RegisterRoute(nameof(EditCompilationPage), typeof(EditCompilationPage));
         }
 
     }
