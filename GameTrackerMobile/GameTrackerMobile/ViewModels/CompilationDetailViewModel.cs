@@ -35,6 +35,7 @@ namespace GameTrackerMobile.ViewModels
                 OnPropertyChanged("FinalScoreColor");
                 OnPropertyChanged("Stats");
                 OnPropertyChanged("ShowCategoryValues");
+                OnPropertyChanged("GamesInCompilation");
             }
         }
 
@@ -144,6 +145,16 @@ namespace GameTrackerMobile.ViewModels
         public bool ShowCategoryValues
         {
             get => !Item.IgnoreCategories && !Item.UseOriginalGameScore;
+        }
+
+        public IEnumerable<RatableGame> GamesInCompilation
+        {
+            get
+            {
+                if (Item.Name == "")
+                    return new List<RatableGame>();
+                return ModuleService.GetActiveModule().FindGamesInCompilation(Item);
+            }
         }
 
         public CompilationDetailViewModel()

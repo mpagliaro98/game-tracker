@@ -13,6 +13,7 @@
             <converters:DateEmptyConverter x:Key="dateEmptyConverter" />
             <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
             <converters:DateDisplayConverter x:Key="dateDisplayConverter" />
+            <converters:DecimalPlaceConverter x:Key="decimalPlaceConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     
@@ -87,7 +88,7 @@
                                 <DataTemplate x:DataType="local:CategoryValueContainer">
                                     <StackLayout Orientation="Vertical" Margin="0,0,5,0">
                                         <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
-                                        <Label Text="{Binding CategoryValue}" FontSize="Medium" />
+                                        <Label Text="{Binding CategoryValue, Converter={StaticResource decimalPlaceConverter}, ConverterParameter=2}" FontSize="Medium" />
                                     </StackLayout>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>

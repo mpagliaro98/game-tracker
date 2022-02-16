@@ -4,11 +4,15 @@
              x:Class="GameTrackerMobile.Views.CompilationDetailPage"
              xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
              xmlns:local="clr-namespace:GameTrackerMobile.ViewModels"
+             xmlns:model="clr-namespace:GameTracker.Model;assembly=GameTracker"
              Title="{Binding Title}">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:PlatformColorConverter x:Key="platformColorConverter" />
             <converters:StatusColorConverter x:Key="statusColorConverter" />
+            <converters:ScoreRangeColorConverter x:Key="scoreRangeColorConverter" />
+            <converters:FinalScoreConverter x:Key="finalScoreConverter" />
+            <converters:DecimalPlaceConverter x:Key="decimalPlaceConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -72,7 +76,7 @@
                                 <DataTemplate x:DataType="local:CategoryValueContainer">
                                     <StackLayout Orientation="Vertical" Margin="0,0,5,0">
                                         <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
-                                        <Label Text="{Binding CategoryValue}" FontSize="Medium" />
+                                        <Label Text="{Binding CategoryValue, Converter={StaticResource decimalPlaceConverter}, ConverterParameter=2}" FontSize="Medium" />
                                     </StackLayout>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
@@ -85,6 +89,38 @@
 
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
             </StackLayout>
+
+            <Label Text="Games in this Compilation:" FontSize="Small" />
+            <CollectionView ItemsSource="{Binding GamesInCompilation}" SelectionMode="None" HeightRequest="150">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5" x:DataType="model:RatableGame">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="35" />
+                            </Grid.ColumnDefinitions>
+                            <Rectangle BackgroundColor="{Binding RefPlatform, Converter={StaticResource platformColorConverter}}" />
+                            <Label Text="{Binding Name}" Grid.Column="1"
+                            LineBreakMode="TailTruncation" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                            <Rectangle Grid.Column="2" BackgroundColor="{Binding RefStatus, Converter={StaticResource statusColorConverter}}" />
+                            <Label Grid.Column="3" Text="{Binding ReferenceKey, Converter={StaticResource finalScoreConverter}}"
+                               BackgroundColor="{Binding ReferenceKey, Converter={StaticResource scoreRangeColorConverter}}"
+                               FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:GamesViewModel}}, Path=ItemTapped}"		
+                                CommandParameter="{Binding .}">
+                                </TapGestureRecognizer>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </StackLayout>
     </ScrollView>
 </ContentPage>
