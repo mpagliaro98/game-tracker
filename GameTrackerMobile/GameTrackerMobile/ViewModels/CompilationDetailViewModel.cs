@@ -16,6 +16,7 @@ namespace GameTrackerMobile.ViewModels
         private GameCompilation item = new GameCompilation();
 
         public Command EditCommand { get; }
+        public Command<RatableGame> ItemTapped { get; }
 
         public GameCompilation Item
         {
@@ -160,6 +161,7 @@ namespace GameTrackerMobile.ViewModels
         public CompilationDetailViewModel()
         {
             EditCommand = new Command(OnEdit);
+            ItemTapped = new Command<RatableGame>(OnItemSelected);
         }
 
         public async void LoadItemId(ObjectReference itemId)
@@ -178,6 +180,15 @@ namespace GameTrackerMobile.ViewModels
         {
             await Shell.Current.GoToAsync("..");
             await Shell.Current.GoToAsync($"{nameof(EditCompilationPage)}?{nameof(EditCompilationViewModel.ItemId)}={new ObjectReference(item)}");
+        }
+
+        async void OnItemSelected(RatableGame item)
+        {
+            if (item == null)
+                return;
+
+            await Shell.Current.GoToAsync("..");
+            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={new ObjectReference(item)}");
         }
     }
 }

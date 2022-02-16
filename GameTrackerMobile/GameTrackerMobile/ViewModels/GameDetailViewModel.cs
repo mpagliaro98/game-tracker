@@ -18,6 +18,7 @@ namespace GameTrackerMobile.ViewModels
 
         public Command EditCommand { get; }
         public Command DeleteCommand { get; }
+        public Command CompilationCommand { get; }
 
         public RatableGame Item
         {
@@ -176,6 +177,7 @@ namespace GameTrackerMobile.ViewModels
         {
             EditCommand = new Command(OnEdit);
             DeleteCommand = new Command(OnDelete);
+            CompilationCommand = new Command(OnCompilation);
         }
 
         public async void LoadItemId(ObjectReference itemId)
@@ -204,6 +206,12 @@ namespace GameTrackerMobile.ViewModels
                 await DataStore.DeleteItemAsync(Item);
                 await Shell.Current.GoToAsync("..");
             }
+        }
+
+        async void OnCompilation()
+        {
+            await Shell.Current.GoToAsync("..");
+            await Shell.Current.GoToAsync($"{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={Item.RefCompilation}");
         }
     }
 }

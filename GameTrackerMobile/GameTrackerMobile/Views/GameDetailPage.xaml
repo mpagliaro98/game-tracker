@@ -76,7 +76,10 @@
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasCompilation}">
                 <Label Text="Part of Compilation:" FontSize="Small" />
-                <Label Text="{Binding Compilation.Name}" FontSize="Medium" />
+                <StackLayout Orientation="Horizontal" Spacing="15">
+                    <Label Text="{Binding Compilation.Name}" FontSize="Medium" VerticalOptions="Center" />
+                    <Button Text="Go" Command="{Binding CompilationCommand}" WidthRequest="50" HeightRequest="40" />
+                </StackLayout>
             </StackLayout>
 
             <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">
