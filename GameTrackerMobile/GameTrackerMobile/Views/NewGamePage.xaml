@@ -11,6 +11,7 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
+            <converters:GamePlatformNameConverter x:Key="gamePlatformNameConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -33,7 +34,7 @@
 
                 <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsRemaster}">
                     <Label Text="Original Game:" FontSize="Small" />
-                    <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" />
+                    <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding ReferenceKey, Converter={StaticResource gamePlatformNameConverter}}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" />
                 </StackLayout>
 
                 <StackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}">

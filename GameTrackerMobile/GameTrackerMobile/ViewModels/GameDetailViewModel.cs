@@ -32,7 +32,7 @@ namespace GameTrackerMobile.ViewModels
                 OnPropertyChanged(nameof(HasPlatform));
                 OnPropertyChanged(nameof(PlatformPlayedOn));
                 OnPropertyChanged(nameof(HasPlatformPlayedOn));
-                OnPropertyChanged(nameof(OriginalGame));
+                OnPropertyChanged(nameof(OriginalGameName));
                 OnPropertyChanged(nameof(HasOriginalGame));
                 OnPropertyChanged(nameof(Compilation));
                 OnPropertyChanged(nameof(HasCompilation));
@@ -89,9 +89,23 @@ namespace GameTrackerMobile.ViewModels
             get => Item.RefPlatformPlayedOn.HasReference();
         }
 
-        public RatableGame OriginalGame
+        public string OriginalGameName
         {
-            get => Item.RefOriginalGame.HasReference() ? ModuleService.GetActiveModule().FindListedObject(Item.RefOriginalGame) : new RatableGame();
+            get
+            {
+                if (Item.RefOriginalGame.HasReference())
+                {
+                    var game = ModuleService.GetActiveModule().FindListedObject(Item.RefOriginalGame);
+                    Platform platform = null;
+                    if (game.RefPlatform.HasReference())
+                        platform = ModuleService.GetActiveModule().FindPlatform(game.RefPlatform);
+                    return game.Name + (platform != null ? " (" + platform.Name + ")" : "");
+                }
+                else
+                {
+                    return "";
+                }
+            }
         }
 
         public bool HasOriginalGame
