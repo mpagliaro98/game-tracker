@@ -11,7 +11,7 @@
     <ScrollView>
         <StackLayout Spacing="10" Padding="15">
             <Label Text="Name:" FontSize="Small" />
-            <Label Text="{Binding Item.Name}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="{Binding Item.Name}" FontSize="Large" Margin="0,0,0,10" />
             <Label Text="Weight:" FontSize="Small" />
             <Label Text="{Binding Item.Weight}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Comment:" FontSize="Small" />

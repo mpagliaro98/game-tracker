@@ -18,7 +18,7 @@
     <ScrollView>
         <StackLayout Spacing="10" Padding="15">
             <Label Text="Name:" FontSize="Small" />
-            <Label Text="{Binding Item.Name}" FontSize="Medium" Padding="0,0,0,10" />
+            <Label Text="{Binding Item.Name}" FontSize="Large" Padding="0,0,0,10" />
             <Label Text="Mark as finished:" FontSize="Small" />
             <CheckBox IsEnabled="False" IsChecked="{Binding Item.UseAsFinished}" Margin="0,0,0,10" />
             <Label Text="Exclude from stats:" FontSize="Small" />
