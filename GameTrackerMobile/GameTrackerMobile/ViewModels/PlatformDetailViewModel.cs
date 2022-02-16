@@ -27,14 +27,16 @@ namespace GameTrackerMobile.ViewModels
             set 
             {
                 SetProperty(ref item, value);
-                OnPropertyChanged("NumGames");
-                OnPropertyChanged("AverageScore");
-                OnPropertyChanged("HighestScore");
-                OnPropertyChanged("LowestScore");
-                OnPropertyChanged("PercentageFinished");
-                OnPropertyChanged("RatioFinished");
-                OnPropertyChanged("TopGames");
-                OnPropertyChanged("BottomGames");
+                OnPropertyChanged(nameof(NumGames));
+                OnPropertyChanged(nameof(AverageScore));
+                OnPropertyChanged(nameof(HighestScore));
+                OnPropertyChanged(nameof(LowestScore));
+                OnPropertyChanged(nameof(PercentageFinished));
+                OnPropertyChanged(nameof(RatioFinished));
+                OnPropertyChanged(nameof(TopGames));
+                OnPropertyChanged(nameof(BottomGames));
+                OnPropertyChanged(nameof(ReleaseYear));
+                OnPropertyChanged(nameof(AcquiredYear));
             }
         }
 

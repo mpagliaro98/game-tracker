@@ -33,7 +33,7 @@ namespace GameTrackerMobile.ViewModels
 
         public StatusViewModel()
         {
-            Title = "Platforms";
+            Title = "Completion Statuses";
             Items = new ObservableCollection<CompletionStatus>();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 

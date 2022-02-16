@@ -228,7 +228,7 @@ namespace GameTrackerMobile.ViewModels
             set
             {
                 SetProperty(ref manualFinalScore, value);
-                OnPropertyChanged("FinalScore");
+                OnPropertyChanged(nameof(FinalScore));
             }
         }
 

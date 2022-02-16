@@ -23,19 +23,19 @@ namespace GameTrackerMobile.ViewModels
             set
             {
                 SetProperty(ref item, value);
-                OnPropertyChanged("CompletionStatus");
-                OnPropertyChanged("HasCompletionStatus");
-                OnPropertyChanged("StatusMarkedAsFinished");
-                OnPropertyChanged("Platform");
-                OnPropertyChanged("HasPlatform");
-                OnPropertyChanged("PlatformPlayedOn");
-                OnPropertyChanged("HasPlatformPlayedOn");
-                OnPropertyChanged("CategoryValues");
-                OnPropertyChanged("FinalScore");
-                OnPropertyChanged("FinalScoreColor");
-                OnPropertyChanged("Stats");
-                OnPropertyChanged("ShowCategoryValues");
-                OnPropertyChanged("GamesInCompilation");
+                OnPropertyChanged(nameof(CompletionStatus));
+                OnPropertyChanged(nameof(HasCompletionStatus));
+                OnPropertyChanged(nameof(StatusMarkedAsFinished));
+                OnPropertyChanged(nameof(Platform));
+                OnPropertyChanged(nameof(HasPlatform));
+                OnPropertyChanged(nameof(PlatformPlayedOn));
+                OnPropertyChanged(nameof(HasPlatformPlayedOn));
+                OnPropertyChanged(nameof(CategoryValues));
+                OnPropertyChanged(nameof(FinalScore));
+                OnPropertyChanged(nameof(FinalScoreColor));
+                OnPropertyChanged(nameof(Stats));
+                OnPropertyChanged(nameof(ShowCategoryValues));
+                OnPropertyChanged(nameof(GamesInCompilation));
             }
         }
 

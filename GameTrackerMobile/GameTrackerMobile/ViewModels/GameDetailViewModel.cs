@@ -25,22 +25,22 @@ namespace GameTrackerMobile.ViewModels
             set
             {
                 SetProperty(ref item, value);
-                OnPropertyChanged("CompletionStatus");
-                OnPropertyChanged("HasCompletionStatus");
-                OnPropertyChanged("StatusMarkedAsFinished");
-                OnPropertyChanged("Platform");
-                OnPropertyChanged("HasPlatform");
-                OnPropertyChanged("PlatformPlayedOn");
-                OnPropertyChanged("HasPlatformPlayedOn");
-                OnPropertyChanged("OriginalGame");
-                OnPropertyChanged("HasOriginalGame");
-                OnPropertyChanged("Compilation");
-                OnPropertyChanged("HasCompilation");
-                OnPropertyChanged("CategoryValues");
-                OnPropertyChanged("FinalScore");
-                OnPropertyChanged("FinalScoreColor");
-                OnPropertyChanged("Stats");
-                OnPropertyChanged("ShowCategoryValues");
+                OnPropertyChanged(nameof(CompletionStatus));
+                OnPropertyChanged(nameof(HasCompletionStatus));
+                OnPropertyChanged(nameof(StatusMarkedAsFinished));
+                OnPropertyChanged(nameof(Platform));
+                OnPropertyChanged(nameof(HasPlatform));
+                OnPropertyChanged(nameof(PlatformPlayedOn));
+                OnPropertyChanged(nameof(HasPlatformPlayedOn));
+                OnPropertyChanged(nameof(OriginalGame));
+                OnPropertyChanged(nameof(HasOriginalGame));
+                OnPropertyChanged(nameof(Compilation));
+                OnPropertyChanged(nameof(HasCompilation));
+                OnPropertyChanged(nameof(CategoryValues));
+                OnPropertyChanged(nameof(FinalScore));
+                OnPropertyChanged(nameof(FinalScoreColor));
+                OnPropertyChanged(nameof(Stats));
+                OnPropertyChanged(nameof(ShowCategoryValues));
             }
         }
 
