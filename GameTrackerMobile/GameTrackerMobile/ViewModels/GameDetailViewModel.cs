@@ -33,6 +33,8 @@ namespace GameTrackerMobile.ViewModels
                 OnPropertyChanged(nameof(HasPlatform));
                 OnPropertyChanged(nameof(PlatformPlayedOn));
                 OnPropertyChanged(nameof(HasPlatformPlayedOn));
+                OnPropertyChanged(nameof(IsRemaster));
+                OnPropertyChanged(nameof(ShowStaticRemasterText));
                 OnPropertyChanged(nameof(OriginalGameName));
                 OnPropertyChanged(nameof(HasOriginalGame));
                 OnPropertyChanged(nameof(Compilation));
@@ -88,6 +90,16 @@ namespace GameTrackerMobile.ViewModels
         public bool HasPlatformPlayedOn
         {
             get => Item.RefPlatformPlayedOn.HasReference();
+        }
+
+        public bool IsRemaster
+        {
+            get => Item.IsRemaster;
+        }
+
+        public bool ShowStaticRemasterText
+        {
+            get => IsRemaster && !HasOriginalGame;
         }
 
         public string OriginalGameName

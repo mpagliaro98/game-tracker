@@ -69,8 +69,10 @@
                 <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
             </Grid>
 
+            <Label Text="Remaster/Re-release" FontSize="Medium" IsVisible="{Binding ShowStaticRemasterText}" FontAttributes="Italic" Margin="0,0,0,10" />
+
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasOriginalGame}">
-                <Label Text="Is a Remake/Remaster Of:" FontSize="Small" />
+                <Label Text="Is a Remaster/Re-release Of:" FontSize="Small" />
                 <Label Text="{Binding OriginalGameName}" FontSize="Medium" />
             </StackLayout>
 
