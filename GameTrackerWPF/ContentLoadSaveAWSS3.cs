@@ -14,7 +14,7 @@ namespace RatableTracker.Framework.IO
 {
     public class ContentLoadSaveAWSS3 : IContentLoadSave<string, string>
     {
-        private const string BUCKET_NAME = "gametrackersavefiles";
+        private static string BUCKET_NAME = "gametrackersavefiles";
         private const string KEY_FILENAME = "awskeys.dat";
         private static string KEY_FILE_PATH = PathController.Combine(PathController.BaseDirectory(), KEY_FILENAME);
 
@@ -28,6 +28,12 @@ namespace RatableTracker.Framework.IO
             string[] fileLines = fileContents.Split('\n');
             if (fileLines.Length != 2)
                 throw new FederatedAuthenticationFailureException("Credentials were not formatted correctly");
+
+            BUCKET_NAME = "gametrackersavefiles-" + fileLines[0].Trim().ToLower();
+#if DEBUG
+            BUCKET_NAME = "gametrackersavefiles-dev";
+#endif
+
             AWSCredentials credentials = new BasicAWSCredentials(fileLines[0].Trim(), fileLines[1].Trim());
             client = new AmazonS3Client(credentials, RegionEndpoint.USEast1);
         }
