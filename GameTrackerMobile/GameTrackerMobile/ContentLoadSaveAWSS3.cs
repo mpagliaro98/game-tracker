@@ -17,7 +17,7 @@ namespace RatableTracker.Framework.IO
 {
     public class ContentLoadSaveAWSS3 : IContentLoadSave<string, string>
     {
-        private const string BUCKET_NAME = "gametrackersavefiles";
+        private static string BUCKET_NAME = "gametrackersavefiles";
         private const string KEY_FILENAME = "awskeys.dat";
         private static string KEY_FILE_PATH = PathController.Combine(PathController.BaseDirectory(), KEY_FILENAME);
 
@@ -26,6 +26,8 @@ namespace RatableTracker.Framework.IO
 
         public ContentLoadSaveAWSS3()
         {
+
+
             Debug.WriteLine("Load save started");
             string fileContents = IO.PathController.ReadFromFile(KEY_FILE_PATH);
             if (fileContents.Length <= 0)
@@ -37,6 +39,11 @@ namespace RatableTracker.Framework.IO
             string clientId = fileLines[0].Trim();
             string clientSecret = fileLines[1].Trim();
             Debug.WriteLine(clientId + "\n" + clientSecret);
+
+            BUCKET_NAME = "gametrackersavefiles-" + clientId.ToLower();
+#if DEBUG
+            BUCKET_NAME = "gametrackersavefiles-dev";
+#endif
 
             var config = new AmazonS3Config() { RegionEndpoint = Amazon.RegionEndpoint.USEast1, Timeout = TimeSpan.FromSeconds(30), UseHttp = true };
             this.s3client = new AmazonS3Client(clientId, clientSecret, config);
@@ -50,7 +57,7 @@ namespace RatableTracker.Framework.IO
         public string Read(string key)
         {
             Debug.WriteLine("Starting read: " + key);
-            CreateBucketIfDoesNotExistAsync(BUCKET_NAME);
+            CreateBucketIfDoesNotExist(BUCKET_NAME);
             string content = Task.Run(async() => await ReadFromS3BucketAsync(BUCKET_NAME, key)).Result;
             return content;
         }
@@ -58,7 +65,7 @@ namespace RatableTracker.Framework.IO
         public async Task<string> ReadAsync(string key)
         {
             Debug.WriteLine("Starting read async: " + key);
-            CreateBucketIfDoesNotExistAsync(BUCKET_NAME);
+            CreateBucketIfDoesNotExist(BUCKET_NAME);
             string content = await ReadFromS3BucketAsync(BUCKET_NAME, key);
             return content;
         }
@@ -66,14 +73,14 @@ namespace RatableTracker.Framework.IO
         public void Write(string key, string output)
         {
             Debug.WriteLine("Starting write: " + key);
-            CreateBucketIfDoesNotExistAsync(BUCKET_NAME);
+            CreateBucketIfDoesNotExist(BUCKET_NAME);
             Task.Run(async () => { await WriteToS3BucketAsync(BUCKET_NAME, key, output); }).Wait();
         }
 
         public async Task WriteAsync(string key, string output)
         {
             Debug.WriteLine("Starting write async: " + key);
-            CreateBucketIfDoesNotExistAsync(BUCKET_NAME);
+            CreateBucketIfDoesNotExist(BUCKET_NAME);
             await WriteToS3BucketAsync(BUCKET_NAME, key, output);
         }
 
@@ -91,7 +98,21 @@ namespace RatableTracker.Framework.IO
                 };
 
                 Debug.WriteLine("Before download to " + tempPath);
-                Task.Run(async () => { await this.s3transferUtility.DownloadAsync(request); }).Wait();
+                try
+                {
+                    Task.Run(async () => { await this.s3transferUtility.DownloadAsync(request); }).Wait();
+                }
+                catch (Exception e)
+                {
+                    // key doesn't exist
+                    Debug.WriteLine("EXCEPTION: " + e.GetType().Name + " - " + e.Message);
+                    if (e.InnerException != null && e.InnerException is AmazonS3Exception && e.InnerException.Message.ToLower().StartsWith("the specified key does not exist"))
+                    {
+                        Debug.WriteLine("Creating empty file for " + keyName);
+                        await WriteToS3BucketAsync(bucketName, keyName, "");
+                    }
+                    return "";
+                }
 
                 Debug.WriteLine("Downloaded, reading from local temp file");
                 string content = await PathController.ReadFromFileAsync(tempPath);
@@ -133,9 +154,9 @@ namespace RatableTracker.Framework.IO
             }
         }
 
-        private async void CreateBucketIfDoesNotExistAsync(string bucketName)
+        private void CreateBucketIfDoesNotExist(string bucketName)
         {
-            ListBucketsResponse response = await this.s3transferUtility.S3Client.ListBucketsAsync();
+            ListBucketsResponse response = this.s3transferUtility.S3Client.ListBucketsAsync().Result; 
             bool found = false;
             foreach (S3Bucket bucket in response.Buckets)
             {
@@ -147,7 +168,9 @@ namespace RatableTracker.Framework.IO
             }
             if (found == false)
             {
-                await this.s3transferUtility.S3Client.PutBucketAsync(bucketName);
+                Debug.WriteLine("No bucket found, creating bucket " + bucketName);
+                Task.Run(async () => { await this.s3transferUtility.S3Client.PutBucketAsync(bucketName); }).Wait();
+                Debug.WriteLine("Bucket created");
             }
         }
 
