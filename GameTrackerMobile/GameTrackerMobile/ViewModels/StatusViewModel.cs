@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using GameTrackerMobile.Views;
 using RatableTracker.Framework;
+using GameTrackerMobile.Services;
+using System.Linq;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -39,7 +41,13 @@ namespace GameTrackerMobile.ViewModels
 
             ItemTapped = new Command<CompletionStatus>(OnItemSelected);
 
-            AddItemCommand = new Command(OnAddItem);
+            AddItemCommand = new Command(OnAddItem, ShowAddButton);
+            this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
+        }
+
+        private bool ShowAddButton(object o)
+        {
+            return ModuleService.GetActiveModule().Statuses.Count() < ModuleService.GetActiveModule().LimitStatuses;
         }
 
         async Task ExecuteLoadItemsCommand()

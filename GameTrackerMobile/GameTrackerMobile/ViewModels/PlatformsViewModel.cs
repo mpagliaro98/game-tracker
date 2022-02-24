@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GameTracker.Model;
+using GameTrackerMobile.Services;
 using GameTrackerMobile.Views;
 using RatableTracker.Framework;
 using Xamarin.Forms;
@@ -38,7 +40,13 @@ namespace GameTrackerMobile.ViewModels
 
             ItemTapped = new Command<Platform>(OnItemSelected);
 
-            AddItemCommand = new Command(OnAddItem);
+            AddItemCommand = new Command(OnAddItem, ShowAddButton);
+            this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
+        }
+
+        private bool ShowAddButton(object o)
+        {
+            return ModuleService.GetActiveModule().Platforms.Count() < ModuleService.GetActiveModule().LimitPlatforms;
         }
 
         async Task ExecuteLoadItemsCommand()

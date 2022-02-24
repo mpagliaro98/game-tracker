@@ -42,7 +42,13 @@ namespace GameTrackerMobile.ViewModels
 
             ItemTapped = new Command<RatableGame>(OnItemSelected);
 
-            AddItemCommand = new Command(OnAddItem);
+            AddItemCommand = new Command(OnAddItem, ShowAddButton);
+            this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
+        }
+
+        private bool ShowAddButton(object o)
+        {
+            return ModuleService.GetActiveModule().ListedObjects.Count() < ModuleService.GetActiveModule().LimitListedObjects;
         }
 
         async Task ExecuteLoadItemsCommand()
