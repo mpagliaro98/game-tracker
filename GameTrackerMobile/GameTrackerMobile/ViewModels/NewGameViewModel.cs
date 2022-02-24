@@ -52,6 +52,7 @@ namespace GameTrackerMobile.ViewModels
                 ManualFinalScore = item.IgnoreCategories;
                 CategoryValues = InitCategoryValues();
                 FinalScore = ModuleService.GetActiveModule().GetScoreOfObject(item);
+                OnPropertyChanged(nameof(Games));
             }
         }
 
@@ -239,7 +240,12 @@ namespace GameTrackerMobile.ViewModels
 
         public IEnumerable<RatableGame> Games
         {
-            get => ModuleService.GetActiveModule().ListedObjects.OrderBy(game => game.Name).ToList();
+            get
+            {
+                var lst = ModuleService.GetActiveModule().ListedObjects.OrderBy(game => game.Name).ToList();
+                lst.Remove(Item);
+                return lst;
+            }
         }
 
         public Command SaveCommand { get; }

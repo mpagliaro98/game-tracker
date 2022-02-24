@@ -272,6 +272,7 @@ namespace GameTrackerWPF
             cb.Items.Add(item);
             foreach (RatableGame game in rm.ListedObjects.OrderBy(ro => ro.Name))
             {
+                if (game.Equals(orig)) continue;
                 cb.Items.Add(game);
             }
         }
