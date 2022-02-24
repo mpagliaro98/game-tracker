@@ -90,7 +90,7 @@ namespace GameTrackerMobile.ViewModels
 
         public IEnumerable<CompletionStatus> CompletionStatuses
         {
-            get => ModuleService.GetActiveModule().Statuses;
+            get => ModuleService.GetActiveModule().Statuses.OrderBy(s => s.Name).ToList();
         }
 
         public Platform Platform
@@ -234,7 +234,7 @@ namespace GameTrackerMobile.ViewModels
 
         public IEnumerable<Platform> Platforms
         {
-            get => ModuleService.GetActiveModule().Platforms;
+            get => ModuleService.GetActiveModule().Platforms.OrderBy(p => p.Name).ToList();
         }
 
         public IEnumerable<RatableGame> Games

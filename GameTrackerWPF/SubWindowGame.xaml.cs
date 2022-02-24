@@ -246,7 +246,7 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (CompletionStatus cs in rm.Statuses)
+            foreach (CompletionStatus cs in rm.Statuses.OrderBy(s => s.Name))
             {
                 cb.Items.Add(cs);
             }
@@ -258,7 +258,7 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (Platform platform in rm.Platforms)
+            foreach (Platform platform in rm.Platforms.OrderBy(p => p.Name))
             {
                 cb.Items.Add(platform);
             }
