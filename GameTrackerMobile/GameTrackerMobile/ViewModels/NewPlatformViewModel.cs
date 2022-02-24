@@ -32,6 +32,7 @@ namespace GameTrackerMobile.ViewModels
             {
                 SetProperty(ref item, value);
                 Name = item.Name;
+                Abbreviation = item.Abbreviation;
                 ReleaseYear = item.ReleaseYear;
                 AcquiredYear = item.AcquiredYear;
                 Color = item.Color.ToXamarinColor();
@@ -39,6 +40,7 @@ namespace GameTrackerMobile.ViewModels
         }
 
         private string name = "";
+        private string abbreviation = "";
         private int releaseYear;
         private int acquiredYear;
         private Xamarin.Forms.Color color;
@@ -47,6 +49,12 @@ namespace GameTrackerMobile.ViewModels
         {
             get => name;
             set => SetProperty(ref name, value);
+        }
+
+        public string Abbreviation
+        {
+            get => abbreviation;
+            set => SetProperty(ref abbreviation, value);
         }
 
         public int ReleaseYear
@@ -92,6 +100,7 @@ namespace GameTrackerMobile.ViewModels
             Platform newItem = new Platform()
             {
                 Name = Name,
+                Abbreviation = abbreviation,
                 ReleaseYear = ReleaseYear,
                 AcquiredYear = AcquiredYear,
                 Color = Color.ToFrameworkColor()

@@ -37,6 +37,7 @@ namespace GameTrackerMobile.ViewModels
                 OnPropertyChanged(nameof(BottomGames));
                 OnPropertyChanged(nameof(ReleaseYear));
                 OnPropertyChanged(nameof(AcquiredYear));
+                OnPropertyChanged(nameof(Abbreviation));
             }
         }
 
@@ -97,6 +98,11 @@ namespace GameTrackerMobile.ViewModels
                 var top = ModuleService.GetActiveModule().GetBottomGamesByPlatform(Item, 3);
                 return string.Join("\n", top.ForEach(game => game.Name));
             }
+        }
+
+        public string Abbreviation
+        {
+            get => Item.Abbreviation == "" ? "N/A" : Item.Abbreviation;
         }
 
         public string ReleaseYear

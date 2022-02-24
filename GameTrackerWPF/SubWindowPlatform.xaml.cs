@@ -44,6 +44,7 @@ namespace GameTrackerWPF
                     TextboxYear.Text = orig.ReleaseYear > 0 ? orig.ReleaseYear.ToString() : "";
                     TextboxAcquiredYear.Text = orig.AcquiredYear > 0 ? orig.AcquiredYear.ToString() : "";
                     ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
+                    TextboxAbbreviation.Text = orig.Abbreviation;
                     break;
                 default:
                     throw new Exception("Unhandled mode");
@@ -63,13 +64,14 @@ namespace GameTrackerWPF
         private void SaveResult()
         {
             if (!ValidateInputs(out string name, out RatableTracker.Framework.Color color,
-                out int releaseYear, out int acquiredYear)) return;
+                out int releaseYear, out int acquiredYear, out string abbreviation)) return;
             var platform = new Platform()
             {
                 Name = name,
                 Color = color,
                 ReleaseYear = releaseYear,
-                AcquiredYear = acquiredYear
+                AcquiredYear = acquiredYear,
+                Abbreviation = abbreviation
             };
             try
             {
@@ -88,12 +90,13 @@ namespace GameTrackerWPF
         }
 
         private bool ValidateInputs(out string name, out RatableTracker.Framework.Color color,
-            out int releaseYear, out int acquiredYear)
+            out int releaseYear, out int acquiredYear, out string abbreviation)
         {
             name = TextboxName.Text;
             releaseYear = TextboxYear.Text == "" ? 0 : TextboxYear.Value.HasValue ? TextboxYear.Value.Value : 0;
             acquiredYear = TextboxAcquiredYear.Text == "" ? 0 : TextboxAcquiredYear.Value.HasValue ? TextboxAcquiredYear.Value.Value : 0;
             color = ColorPickerColor.SelectedColor.ToDrawingColor();
+            abbreviation = TextboxAbbreviation.Text;
             return true;
         }
     }

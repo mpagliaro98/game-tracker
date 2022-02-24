@@ -20,7 +20,7 @@ namespace GameTrackerMobile.Converters
             Platform platform = null;
             if (game.RefPlatform.HasReference())
                 platform = rm.FindPlatform(game.RefPlatform);
-            return game.Name + (platform != null ? " (" + platform.Name + ")" : "");
+            return game.Name + (platform != null ? " (" + (platform.Abbreviation != "" ? platform.Abbreviation : platform.Name) + ")" : "");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

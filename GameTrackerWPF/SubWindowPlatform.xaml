@@ -8,7 +8,7 @@
         Title="Platform" Height="270" Width="300" MinHeight="270" MinWidth="300">
     <StackPanel>
         <Label Content="Name" />
-        <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />
+        <TextBox x:Name="TextboxName" Margin="5,0" Width="200" MaxLength="200" HorizontalAlignment="Left" />
         <StackPanel Orientation="Horizontal">
             <StackPanel>
                 <Label Content="Release Year" />
@@ -19,8 +19,16 @@
                 <xctk:IntegerUpDown x:Name="TextboxAcquiredYear" Margin="5,0" Width="100" HorizontalAlignment="Left" />
             </StackPanel>
         </StackPanel>
-        <Label Content="Color" />
-        <xctk:ColorPicker x:Name="ColorPickerColor" Margin="5,0,0,0" HorizontalAlignment="Left" Width="100" />
+        <StackPanel Orientation="Horizontal">
+            <StackPanel>
+                <Label Content="Color" />
+                <xctk:ColorPicker x:Name="ColorPickerColor" Margin="5,0" HorizontalAlignment="Left" Width="100" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Abbreviation" />
+                <TextBox x:Name="TextboxAbbreviation" Margin="5,0" Width="100" MaxLength="10" HorizontalAlignment="Left" />
+            </StackPanel>
+        </StackPanel>
         <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />
         <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
         <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" />

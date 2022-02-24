@@ -34,6 +34,8 @@
             <Label Text="{Binding TopGames}" FontSize="Medium" LineBreakMode="WordWrap" Margin="0,0,0,10" />
             <Label Text="Bottom Games:" FontSize="Small" />
             <Label Text="{Binding BottomGames}" FontSize="Medium" LineBreakMode="WordWrap" Margin="0,0,0,10" />
+            <Label Text="Abbreviation:" FontSize="Small" />
+            <Label Text="{Binding Abbreviation}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Release Year:" FontSize="Small" />
             <Label Text="{Binding ReleaseYear}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Acquired Year:" FontSize="Small" />

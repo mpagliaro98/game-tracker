@@ -313,6 +313,8 @@ namespace GameTracker.Model
                 throw new ValidationException("A name is required");
             if (obj.Name.Length > Platform.MaxLengthName)
                 throw new ValidationException("Name cannot be longer than " + Platform.MaxLengthName.ToString());
+            if (obj.Abbreviation.Length > Platform.MaxLengthAbbreviation)
+                throw new ValidationException("Abbreviation cannot be longer than " + Platform.MaxLengthAbbreviation.ToString());
         }
 
         public virtual void ValidateGameCompilation(GameCompilation obj)

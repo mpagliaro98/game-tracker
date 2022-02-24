@@ -112,7 +112,7 @@ namespace GameTrackerMobile.ViewModels
                     Platform platform = null;
                     if (game.RefPlatform.HasReference())
                         platform = ModuleService.GetActiveModule().FindPlatform(game.RefPlatform);
-                    return game.Name + (platform != null ? " (" + platform.Name + ")" : "");
+                    return game.Name + (platform != null ? " (" + (platform.Abbreviation != "" ? platform.Abbreviation : platform.Name) + ")" : "");
                 }
                 else
                 {

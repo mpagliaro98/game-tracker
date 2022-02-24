@@ -13,8 +13,11 @@ namespace GameTracker.Model
     public class Platform : ISavable, IReferable
     {
         public static int MaxLengthName => 200;
+        public static int MaxLengthAbbreviation => 10;
 
         public string Name { get; set; } = "";
+
+        public string Abbreviation { get; set; } = "";
 
         public int ReleaseYear { get; set; } = 0;
 
@@ -35,6 +38,7 @@ namespace GameTracker.Model
             sr.SaveValue("color", Color);
             sr.SaveValue("releaseYear", ReleaseYear);
             sr.SaveValue("acquiredYear", AcquiredYear);
+            sr.SaveValue("abbreviation", Abbreviation);
             return sr;
         }
 
@@ -58,6 +62,9 @@ namespace GameTracker.Model
                         break;
                     case "acquiredYear":
                         AcquiredYear = sr.GetInt(key);
+                        break;
+                    case "abbreviation":
+                        Abbreviation = sr.GetString(key);
                         break;
                     default:
                         break;
