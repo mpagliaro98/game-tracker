@@ -250,11 +250,19 @@ namespace GameTrackerMobile.ViewModels
 
         public Command SaveCommand { get; }
         public Command CancelCommand { get; }
+        public Command ClearStatusCommand { get; }
+        public Command ClearPlatformCommand { get; }
+        public Command ClearPlatformPlayedOnCommand { get; }
+        public Command ClearOriginalGameCommand { get; }
 
         public NewGameViewModel()
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
+            ClearStatusCommand = new Command(OnClearStatus);
+            ClearPlatformCommand = new Command(OnClearPlatform);
+            ClearPlatformPlayedOnCommand = new Command(OnClearPlatformPlayedOn);
+            ClearOriginalGameCommand = new Command(OnClearOriginalGame);
             this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
 
             CategoryValues = InitCategoryValues();
@@ -263,6 +271,26 @@ namespace GameTrackerMobile.ViewModels
         private bool ValidateSave()
         {
             return !String.IsNullOrWhiteSpace(name) && (!isPartOfCompilation || (isPartOfCompilation && !string.IsNullOrWhiteSpace(compName)));
+        }
+
+        private void OnClearStatus()
+        {
+            CompletionStatus = null;
+        }
+
+        private void OnClearPlatform()
+        {
+            Platform = null;
+        }
+
+        private void OnClearPlatformPlayedOn()
+        {
+            PlatformPlayedOn = null;
+        }
+
+        private void OnClearOriginalGame()
+        {
+            OriginalGame = null;
         }
 
         private async void OnCancel()

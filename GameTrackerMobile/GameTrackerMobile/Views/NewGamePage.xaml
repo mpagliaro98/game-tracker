@@ -21,20 +21,32 @@
                 <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
                 
                 <Label Text="Completion Status:" FontSize="Small" />
-                <Picker ItemsSource="{Binding CompletionStatuses}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding CompletionStatus}" Title="--Select One--" Margin="0,0,0,10" />
+                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                    <Picker ItemsSource="{Binding CompletionStatuses}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding CompletionStatus}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                    <Button Text="Clear" Command="{Binding ClearStatusCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
+                </StackLayout>
 
                 <Label Text="Platform:" FontSize="Small" />
-                <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Platform}" Title="--Select One--" Margin="0,0,0,10" />
-
+                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                    <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Platform}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                    <Button Text="Clear" Command="{Binding ClearPlatformCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
+                </StackLayout>
+                
                 <Label Text="Platform Played On:" FontSize="Small" />
-                <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding PlatformPlayedOn}" Title="--Select One--" Margin="0,0,0,10" />
-
+                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                    <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding PlatformPlayedOn}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                    <Button Text="Clear" Command="{Binding ClearPlatformPlayedOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
+                </StackLayout>
+                
                 <Label Text="Remaster/Re-release:" FontSize="Small" />
                 <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" />
 
                 <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsRemaster}">
                     <Label Text="Original Game:" FontSize="Small" />
-                    <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding ReferenceKey, Converter={StaticResource gamePlatformNameConverter}}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" />
+                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                        <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding ReferenceKey, Converter={StaticResource gamePlatformNameConverter}}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                        <Button Text="Clear" Command="{Binding ClearOriginalGameCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
+                    </StackLayout>
                 </StackLayout>
 
                 <StackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}">
