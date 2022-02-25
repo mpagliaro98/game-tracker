@@ -12,6 +12,7 @@
             <converters:StatusColorConverter x:Key="statusColorConverter" />
             <converters:ScoreRangeColorConverter x:Key="scoreRangeColorConverter" />
             <converters:FinalScoreConverter x:Key="finalScoreConverter" />
+            <converters:ShowFinalScoreConverter x:Key="showFinalScoreConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -46,7 +47,8 @@
                         <Rectangle Grid.Column="2" BackgroundColor="{Binding RefStatus, Converter={StaticResource statusColorConverter}}" />
                         <Label Grid.Column="3" Text="{Binding ReferenceKey, Converter={StaticResource finalScoreConverter}}"
                                BackgroundColor="{Binding ReferenceKey, Converter={StaticResource scoreRangeColorConverter}}"
-                               FontAttributes="Bold" HorizontalTextAlignment="Center"/>
+                               FontAttributes="Bold" HorizontalTextAlignment="Center"
+                               IsVisible="{Binding RefStatus, Converter={StaticResource showFinalScoreConverter}}"/>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
