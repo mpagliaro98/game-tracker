@@ -12,6 +12,8 @@
         <ResourceDictionary>
             <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
             <converters:GamePlatformNameConverter x:Key="gamePlatformNameConverter" />
+            <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
+            <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
@@ -64,18 +66,19 @@
 
                 <StackLayout Margin="0,0,0,10">
                     <Label Text="Category Scores:" FontSize="Small" />
-                    <ScrollView Orientation="Horizontal" Margin="0,0,0,10">
-                        <StackLayout Orientation="Horizontal" VerticalOptions="Start" BindableLayout.ItemsSource="{Binding CategoryValues, Mode=TwoWay}" BindableLayout.EmptyView="No categories specified" IsEnabled="{Binding UseOriginalGameScore, Converter={StaticResource booleanInvertConverter}}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="local:CategoryValueContainer">
-                                    <StackLayout Orientation="Vertical" Margin="0,0,5,0">
-                                        <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
-                                        <Entry Text="{Binding CategoryValue, Mode=TwoWay}" FontSize="Medium" MaxLength="10" WidthRequest="100" Keyboard="Numeric" />
+                    <StackLayout BindableLayout.ItemsSource="{Binding CategoryValues, Mode=TwoWay}" BindableLayout.EmptyView="No categories specified" IsEnabled="{Binding UseOriginalGameScore, Converter={StaticResource booleanInvertConverter}}" Margin="0,0,0,10">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="local:CategoryValueContainer">
+                                <StackLayout>
+                                    <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                    <StackLayout Orientation="Horizontal">
+                                        <Slider HorizontalOptions="FillAndExpand" Minimum="0" Maximum="1" Value="{Binding CategoryValue, Mode=TwoWay, Converter={StaticResource minMaxSliderConverter}}" x:Name="slider" />
+                                        <Entry Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.#}'}" FontSize="Medium" MaxLength="10" WidthRequest="50" HorizontalOptions="Start" Keyboard="Numeric" />
                                     </StackLayout>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </StackLayout>
-                    </ScrollView>
+                                </StackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
 
                     <Label Text="Final Score:" FontSize="Small" />
                     <Label Text="{Binding FinalScore}" FontSize="Large" FontAttributes="Bold" Padding="5" IsVisible="{Binding ManualFinalScore, Converter={StaticResource booleanInvertConverter}}" />

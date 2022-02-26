@@ -401,7 +401,7 @@ namespace GameTrackerMobile.ViewModels
             {
                 var cat = module.RatingCategories.ElementAt(i);
                 var container = CategoryValues.Count() <= i ? null : CategoryValues.ElementAt(i);
-                var newVal = new RatingCategoryValue() { PointValue = container == null ? module.Settings.MinScore : container.CategoryValue };
+                var newVal = new RatingCategoryValue() { PointValue = container == null ? module.Settings.MinScore : Math.Round(container.CategoryValue, 1) };
                 newVal.SetRatingCategory(cat);
                 values.Add(newVal);
             }
