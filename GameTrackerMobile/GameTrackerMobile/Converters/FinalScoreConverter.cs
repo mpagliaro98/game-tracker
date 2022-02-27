@@ -26,7 +26,7 @@ namespace GameTrackerMobile.Converters
                 game = rm.FindGameCompilation(key);
             }
             double score = rm.GetScoreOfObject(game);
-            return score.ToString("0.##");
+            return score;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

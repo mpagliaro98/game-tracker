@@ -13,7 +13,6 @@
             <converters:DateEmptyConverter x:Key="dateEmptyConverter" />
             <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
             <converters:DateDisplayConverter x:Key="dateDisplayConverter" />
-            <converters:DecimalPlaceConverter x:Key="decimalPlaceConverter" />
             <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
             <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
         </ResourceDictionary>

@@ -12,7 +12,6 @@
             <converters:StatusColorConverter x:Key="statusColorConverter" />
             <converters:ScoreRangeColorConverter x:Key="scoreRangeColorConverter" />
             <converters:FinalScoreConverter x:Key="finalScoreConverter" />
-            <converters:DecimalPlaceConverter x:Key="decimalPlaceConverter" />
             <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
             <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
         </ResourceDictionary>

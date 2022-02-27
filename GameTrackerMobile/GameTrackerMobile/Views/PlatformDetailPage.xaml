@@ -22,13 +22,13 @@
             <Label Text="Number of Games:" FontSize="Small" />
             <Label Text="{Binding NumGames}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Average Score:" FontSize="Small" />
-            <Label Text="{Binding AverageScore}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="{Binding AverageScore, StringFormat='{0:0.####}'}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Highest Score:" FontSize="Small" />
-            <Label Text="{Binding HighestScore}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="{Binding HighestScore, StringFormat='{0:0.####}'}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Lowest Score:" FontSize="Small" />
-            <Label Text="{Binding LowestScore}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="{Binding LowestScore, StringFormat='{0:0.####}'}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Finished Games:" FontSize="Small" />
-            <Label Text="{Binding PercentageFinished}" FontSize="Medium" />
+            <Label Text="{Binding PercentageFinished, StringFormat='\{0:0.##\}% finished'}" FontSize="Medium" />
             <Label Text="{Binding RatioFinished}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Top Games:" FontSize="Small" />
             <Label Text="{Binding TopGames}" FontSize="Medium" LineBreakMode="WordWrap" Margin="0,0,0,10" />

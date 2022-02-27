@@ -17,7 +17,7 @@ namespace GameTrackerMobile.Converters
             RatingModuleGame rm = ModuleService.GetActiveModule();
             Platform platform = rm.FindPlatform(key);
             if (platform == null) return "";
-            string result = rm.GetNumGamesByPlatform(platform).ToString();
+            int result = rm.GetNumGamesByPlatform(platform);
             return result;
         }
 

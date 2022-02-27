@@ -71,9 +71,9 @@ namespace GameTrackerMobile.ViewModels
             get => ModuleService.GetActiveModule().GetLowestScoreFromGamesByPlatform(Item);
         }
 
-        public string PercentageFinished
+        public double PercentageFinished
         {
-            get => ModuleService.GetActiveModule().GetPercentageGamesFinishedByPlatform(Item).ToString("0.##") + "% finished";
+            get => ModuleService.GetActiveModule().GetPercentageGamesFinishedByPlatform(Item);
         }
 
         public string RatioFinished

@@ -17,7 +17,7 @@ namespace GameTrackerMobile.Converters
             RatingModuleGame rm = ModuleService.GetActiveModule();
             Platform platform = rm.FindPlatform(key);
             if (platform == null) return "";
-            string result = rm.GetPercentageGamesFinishedByPlatform(platform).ToString("0.##") + "%";
+            double result = rm.GetPercentageGamesFinishedByPlatform(platform);
             return result;
         }
 

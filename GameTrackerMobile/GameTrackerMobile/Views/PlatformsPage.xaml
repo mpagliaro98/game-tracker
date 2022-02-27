@@ -43,7 +43,7 @@
                             FontSize="16" />
                         <Label Grid.Column="2" Text="{Binding ReferenceKey, Converter={StaticResource platformNumGamesConverter}, StringFormat='\{0\} Games'}"
                                HorizontalTextAlignment="End"/>
-                        <Label Grid.Column="3" Text="{Binding ReferenceKey, Converter={StaticResource platformFinishPercentConverter}, StringFormat='\{0\} Finished'}"
+                        <Label Grid.Column="3" Text="{Binding ReferenceKey, Converter={StaticResource platformFinishPercentConverter}, StringFormat='\{0:0.##\}% Finished'}"
                                FontAttributes="Bold" HorizontalTextAlignment="End"/>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
