@@ -13,6 +13,8 @@
             <converters:ScoreRangeColorConverter x:Key="scoreRangeColorConverter" />
             <converters:FinalScoreConverter x:Key="finalScoreConverter" />
             <converters:DecimalPlaceConverter x:Key="decimalPlaceConverter" />
+            <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
+            <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -70,22 +72,23 @@
             <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">
                 <StackLayout IsVisible="{Binding ShowCategoryValues}">
                     <Label Text="Category Scores:" FontSize="Small" />
-                    <ScrollView Orientation="Horizontal" Margin="0,0,0,10">
-                        <StackLayout Orientation="Horizontal" VerticalOptions="Start" BindableLayout.ItemsSource="{Binding CategoryValues}">
-                            <BindableLayout.ItemTemplate>
-                                <DataTemplate x:DataType="local:CategoryValueContainer">
-                                    <StackLayout Orientation="Vertical" Margin="0,0,5,0">
-                                        <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
-                                        <Label Text="{Binding CategoryValue, Converter={StaticResource decimalPlaceConverter}, ConverterParameter=2}" FontSize="Medium" />
+                    <StackLayout BindableLayout.ItemsSource="{Binding CategoryValues}" BindableLayout.EmptyView="No categories specified">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="local:CategoryValueContainer">
+                                <StackLayout>
+                                    <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                    <StackLayout Orientation="Horizontal">
+                                        <Slider Minimum="0" Maximum="1" Value="{Binding CategoryValue, Converter={StaticResource minMaxSliderConverter}}" IsEnabled="False" HorizontalOptions="FillAndExpand" x:Name="slider" />
+                                        <Label Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.##}'}" FontSize="Medium" WidthRequest="50" HorizontalOptions="Start" />
                                     </StackLayout>
-                                </DataTemplate>
-                            </BindableLayout.ItemTemplate>
-                        </StackLayout>
-                    </ScrollView>
+                                </StackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
                 </StackLayout>
 
                 <Label Text="Final Score:" FontSize="Small" />
-                <Label Text="{Binding FinalScore}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
+                <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
 
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
             </StackLayout>

@@ -105,7 +105,7 @@
                 </StackLayout>
 
                 <Label Text="Final Score:" FontSize="Small" />
-                <Label Text="{Binding FinalScore}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
+                <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
 
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
             </StackLayout>
