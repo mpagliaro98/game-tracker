@@ -102,9 +102,20 @@ namespace GameTrackerMobile.ViewModels
         private async void OnSave()
         {
             var rm = ModuleService.GetActiveModule();
-            rm.Settings.MinScore = double.Parse(MinScore);
-            rm.Settings.MaxScore = double.Parse(MaxScore);
-            rm.SaveSettings();
+            double min = double.Parse(MinScore);
+            double max = double.Parse(MaxScore);
+
+            if (min != rm.Settings.MinScore || max != rm.Settings.MaxScore)
+            {
+                var result = await Util.ShowPopupAsync("Confirmation", "Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", PopupViewModel.EnumInputType.YesNo);
+
+                if (result.Item1.ToString().ToUpper() != "YES")
+                {
+                    return;
+                }
+            }
+
+            rm.SetScoresAndUpdate(min, max);
 
             await Shell.Current.GoToAsync("..");
         }
