@@ -98,13 +98,22 @@
                 <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
 
                 <Label Text="Acquired On:" FontSize="Small" />
-                <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" MinimumDate="1/1/0001" />
+                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                    <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                    <Button Text="Clear" Command="{Binding ClearAcquiredOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
+                </StackLayout>
 
                 <Label Text="Started On:" FontSize="Small" />
-                <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" MinimumDate="1/1/0001" />
+                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                    <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                    <Button Text="Clear" Command="{Binding ClearStartedOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
+                </StackLayout>
 
                 <Label Text="Finished On:" FontSize="Small" />
-                <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" Margin="0,0,0,10" MinimumDate="1/1/0001" />
+                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                    <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                    <Button Text="Clear" Command="{Binding ClearFinishedOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
+                </StackLayout>
 
                 <Label Text="Comment:" FontSize="Small" />
                 <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="4000" AutoSize="TextChanges" />

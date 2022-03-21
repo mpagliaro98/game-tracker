@@ -254,6 +254,9 @@ namespace GameTrackerMobile.ViewModels
         public Command ClearPlatformCommand { get; }
         public Command ClearPlatformPlayedOnCommand { get; }
         public Command ClearOriginalGameCommand { get; }
+        public Command ClearAcquiredOnCommand { get; }
+        public Command ClearStartedOnCommand { get; }
+        public Command ClearFinishedOnCommand { get; }
 
         public NewGameViewModel()
         {
@@ -263,6 +266,9 @@ namespace GameTrackerMobile.ViewModels
             ClearPlatformCommand = new Command(OnClearPlatform);
             ClearPlatformPlayedOnCommand = new Command(OnClearPlatformPlayedOn);
             ClearOriginalGameCommand = new Command(OnClearOriginalGame);
+            ClearAcquiredOnCommand = new Command(OnClearAcquiredOn);
+            ClearStartedOnCommand = new Command(OnClearStartedOn);
+            ClearFinishedOnCommand = new Command(OnClearFinishedOn);
             this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
 
             CategoryValues = InitCategoryValues();
@@ -291,6 +297,21 @@ namespace GameTrackerMobile.ViewModels
         private void OnClearOriginalGame()
         {
             OriginalGame = null;
+        }
+
+        private void OnClearAcquiredOn()
+        {
+            AcquiredOn = DateTime.MinValue;
+        }
+
+        private void OnClearStartedOn()
+        {
+            StartedOn = DateTime.MinValue;
+        }
+
+        private void OnClearFinishedOn()
+        {
+            FinishedOn = DateTime.MinValue;
         }
 
         private async void OnCancel()
