@@ -1,6 +1,8 @@
 ﻿using System;
 using GameTrackerMobile.Services;
 using GameTrackerMobile.Views;
+using RatableTracker.Framework.Global;
+using RatableTracker.Framework.IO;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -12,6 +14,10 @@ namespace GameTrackerMobile
         public App()
         {
             InitializeComponent();
+
+            PathController.PathControllerInstance = new PathControllerMobile();
+            GlobalSettings.Autosave = true;
+            SavedState.LoadSavedState();
 
             DependencyService.Register<GameDataStore>();
             DependencyService.Register<PlatformDataStore>();

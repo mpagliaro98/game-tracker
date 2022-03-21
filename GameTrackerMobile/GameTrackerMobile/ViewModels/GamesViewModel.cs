@@ -15,8 +15,6 @@ namespace GameTrackerMobile.ViewModels
     {
         private RatableGame _selectedItem;
 
-        private bool showCompilations = false;
-
         public ObservableCollection<RatableGame> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command AddItemCommand { get; }
@@ -59,7 +57,7 @@ namespace GameTrackerMobile.ViewModels
             {
                 Items.Clear();
                 var items = await DataStore.GetItemsAsync(true);
-                if (showCompilations)
+                if (SavedState.ShowCompilations)
                 {
                     items = items.Where(rg => !rg.IsPartOfCompilation).Concat(await DependencyService.Get<IDataStore<GameCompilation>>().GetItemsAsync());
                 }
@@ -102,9 +100,9 @@ namespace GameTrackerMobile.ViewModels
 
         async void OnShowCompilations()
         {
-            showCompilations = !showCompilations;
+            SavedState.ShowCompilations = !SavedState.ShowCompilations;
             await ExecuteLoadItemsCommand();
-            string msg = showCompilations ?
+            string msg = SavedState.ShowCompilations ?
                 "Compilations are now being shown in the list, and games in compilations are hidden." :
                 "Games in compilations are visible, and compilations are being hidden.";
             await Util.ShowPopupAsync("Compilations", msg, PopupViewModel.EnumInputType.Ok);
