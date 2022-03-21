@@ -13,6 +13,7 @@
             <converters:ScoreRangeColorConverter x:Key="scoreRangeColorConverter" />
             <converters:FinalScoreConverter x:Key="finalScoreConverter" />
             <converters:ShowFinalScoreConverter x:Key="showFinalScoreConverter" />
+            <converters:StatusFinishedConverter x:Key="statusFinishedConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -45,6 +46,7 @@
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
                         <Rectangle Grid.Column="2" BackgroundColor="{Binding RefStatus, Converter={StaticResource statusColorConverter}}" />
+                        <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding RefStatus, Converter={StaticResource statusFinishedConverter}}" />
                         <Label Grid.Column="3" Text="{Binding ReferenceKey, Converter={StaticResource finalScoreConverter}, StringFormat='{0:0.##}'}"
                                BackgroundColor="{Binding ReferenceKey, Converter={StaticResource scoreRangeColorConverter}}"
                                FontAttributes="Bold" HorizontalTextAlignment="Center"
