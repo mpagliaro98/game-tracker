@@ -18,7 +18,7 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Edit" Command="{Binding EditCommand}" />
+        <ToolbarItem Text="Edit" Command="{Binding EditCommand}" IconImageSource="edit" />
     </ContentPage.ToolbarItems>
 
     <ScrollView>
