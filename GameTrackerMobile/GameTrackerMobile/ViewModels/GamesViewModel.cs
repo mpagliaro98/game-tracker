@@ -104,6 +104,10 @@ namespace GameTrackerMobile.ViewModels
         {
             showCompilations = !showCompilations;
             await ExecuteLoadItemsCommand();
+            string msg = showCompilations ?
+                "Compilations are now being shown in the list, and games in compilations are hidden." :
+                "Games in compilations are visible, and compilations are being hidden.";
+            await Util.ShowPopupAsync("Compilations", msg, PopupViewModel.EnumInputType.Ok);
         }
     }
 }
