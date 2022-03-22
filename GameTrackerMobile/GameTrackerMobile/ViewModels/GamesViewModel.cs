@@ -201,9 +201,9 @@ namespace GameTrackerMobile.ViewModels
             }
 
             if (SavedState.GameSortDirection == SortMode.ASCENDING)
-                items = items.OrderBy(sortFunc);
+                items = items.OrderBy(game => game.Name).OrderBy(sortFunc);
             else
-                items = items.OrderByDescending(sortFunc);
+                items = items.OrderBy(game => game.Name).OrderByDescending(sortFunc);
         }
     }
 }
