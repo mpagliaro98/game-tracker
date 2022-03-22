@@ -18,7 +18,8 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Compilations" Command="{Binding ShowCompilations}" IconImageSource="compilations" />
+        <ToolbarItem Text="Group" Command="{Binding ShowCompilations}" IconImageSource="compilations" />
+        <ToolbarItem Text="{Binding SortDirectionButtonText}" Command="{Binding SortDirectionCommand}" IconImageSource="{Binding SortDirectionImageName}" />
         <ToolbarItem Text="Sort" Command="{Binding SortCommand}" IconImageSource="sort" />
         <ToolbarItem Text="Search" IconImageSource="search" />
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />

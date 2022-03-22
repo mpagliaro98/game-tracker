@@ -20,6 +20,7 @@ namespace GameTrackerMobile.ViewModels
         public ObservableCollection<RatableGame> Items { get; }
         public Command LoadItemsCommand { get; }
         public Command SortCommand { get; }
+        public Command SortDirectionCommand { get; }
         public Command AddItemCommand { get; }
         public Command<RatableGame> ItemTapped { get; }
         public Command ShowCompilations { get; }
@@ -34,6 +35,20 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
+        private string _sortDirectionButtonText = "Asc";
+        public string SortDirectionButtonText
+        {
+            get => _sortDirectionButtonText;
+            set => SetProperty(ref _sortDirectionButtonText, value);
+        }
+
+        private string _sortDirectionImageName = "sort_ascending";
+        public string SortDirectionImageName
+        {
+            get => _sortDirectionImageName;
+            set => SetProperty(ref _sortDirectionImageName, value);
+        }
+
         public GamesViewModel()
         {
             Title = "Games";
@@ -45,6 +60,8 @@ namespace GameTrackerMobile.ViewModels
 
             AddItemCommand = new Command(OnAddItem, ShowAddButton);
             SortCommand = new Command(OnSort);
+            SortDirectionCommand = new Command(OnSortDirection);
+            SetSortDirectionButton();
             this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
         }
 
@@ -117,7 +134,6 @@ namespace GameTrackerMobile.ViewModels
         {
             List<PopupListOption> options = new List<PopupListOption>()
             {
-                new PopupListOption(-1, SavedState.GameSortDirection == SortMode.ASCENDING ? "Switch to descending" : "Switch to ascending"),
                 new PopupListOption(0, "Name"),
                 new PopupListOption(1, "Completion Status"),
                 new PopupListOption(2, "Platform"),
@@ -133,7 +149,7 @@ namespace GameTrackerMobile.ViewModels
                 options.Add(new PopupListOption(i++, cat.Name));
             }
             
-            var ret = await Util.ShowPopupListAsync("Sort", options);
+            var ret = await Util.ShowPopupListAsync("Sort by", options);
             if (ret != null)
             {
                 if (ret.Item1 == PopupListViewModel.EnumOutputType.Cancel)
@@ -141,20 +157,33 @@ namespace GameTrackerMobile.ViewModels
                 else if (ret.Item1 == PopupListViewModel.EnumOutputType.Clear)
                     SavedState.GameSortMode = -1;
                 else
-                {
-                    if (ret.Item2 == -1)
-                        SavedState.GameSortDirection = SavedState.GameSortDirection == SortMode.ASCENDING ? SortMode.DESCENDING : SortMode.ASCENDING;
-                    else
-                        SavedState.GameSortMode = ret.Item2.Value;
-                }
+                    SavedState.GameSortMode = ret.Item2.Value;
                 
                 await ExecuteLoadItemsCommand();
             }
         }
 
+        private async void OnSortDirection()
+        {
+            SavedState.GameSortDirection = SavedState.GameSortDirection == SortMode.ASCENDING ? SortMode.DESCENDING : SortMode.ASCENDING;
+            SetSortDirectionButton();
+            await ExecuteLoadItemsCommand();
+        }
+
+        private void SetSortDirectionButton()
+        {
+            SortDirectionButtonText = SavedState.GameSortDirection == SortMode.ASCENDING ? "Desc" : "Asc";
+            SortDirectionImageName = SavedState.GameSortDirection == SortMode.ASCENDING ? "sort_descending" : "sort_ascending";
+        }
+
         private void SortGamesList(ref IEnumerable<RatableGame> items)
         {
-            if (SavedState.GameSortMode < 0) return;
+            if (SavedState.GameSortMode < 0)
+            {
+                if (SavedState.GameSortDirection == SortMode.ASCENDING)
+                    items = items.Reverse();
+                return;
+            }
 
             Func<RatableGame, object> sortFunc;
             switch (SavedState.GameSortMode)
@@ -201,9 +230,9 @@ namespace GameTrackerMobile.ViewModels
             }
 
             if (SavedState.GameSortDirection == SortMode.ASCENDING)
-                items = items.OrderBy(game => game.Name).OrderBy(sortFunc);
-            else
                 items = items.OrderBy(game => game.Name).OrderByDescending(sortFunc);
+            else
+                items = items.OrderBy(game => game.Name).OrderBy(sortFunc);
         }
     }
 }

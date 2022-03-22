@@ -221,6 +221,12 @@
     <ImageAsset Include="Assets.xcassets\icon_settings.imageset\icon_settings.png">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sort_ascending.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sort_descending.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\search.imageset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
@@ -231,6 +237,12 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\sort.imageset\sort.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sort_ascending.imageset\sort_ascending.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\sort_descending.imageset\sort_descending.png">
       <Visible>false</Visible>
     </ImageAsset>
   </ItemGroup>
