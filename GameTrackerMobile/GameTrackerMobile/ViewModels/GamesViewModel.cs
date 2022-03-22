@@ -184,15 +184,15 @@ namespace GameTrackerMobile.ViewModels
 
         private void SetSortDirectionButton()
         {
-            SortDirectionButtonText = SavedState.GameSortDirection == SortMode.ASCENDING ? "Desc" : "Asc";
-            SortDirectionImageName = SavedState.GameSortDirection == SortMode.ASCENDING ? "sort_descending" : "sort_ascending";
+            SortDirectionButtonText = SavedState.GameSortDirection == SortMode.ASCENDING ? "Asc" : "Desc";
+            SortDirectionImageName = SavedState.GameSortDirection == SortMode.ASCENDING ? "sort_ascending" : "sort_descending";
         }
 
         private void SortGamesList(ref IEnumerable<RatableGame> items)
         {
             if (SavedState.GameSortMode == SORT_NONE)
             {
-                if (SavedState.GameSortDirection == SortMode.ASCENDING)
+                if (SavedState.GameSortDirection == SortMode.DESCENDING)
                     items = items.Reverse();
                 return;
             }
@@ -242,9 +242,9 @@ namespace GameTrackerMobile.ViewModels
             }
 
             if (SavedState.GameSortDirection == SortMode.ASCENDING)
-                items = items.OrderBy(game => game.Name).OrderByDescending(sortFunc);
-            else
                 items = items.OrderBy(game => game.Name).OrderBy(sortFunc);
+            else
+                items = items.OrderBy(game => game.Name).OrderByDescending(sortFunc);
         }
     }
 }

@@ -15,8 +15,8 @@
     </ContentPage.Resources>
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Asc" IconImageSource="sort_ascending" />
-        <ToolbarItem Text="Sort" IconImageSource="sort" />
+        <ToolbarItem Text="{Binding SortDirectionButtonText}" Command="{Binding SortDirectionCommand}" IconImageSource="{Binding SortDirectionImageName}" />
+        <ToolbarItem Text="Sort" Command="{Binding SortCommand}" IconImageSource="sort" />
         <ToolbarItem Text="Search" IconImageSource="search" />
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
     </ContentPage.ToolbarItems>

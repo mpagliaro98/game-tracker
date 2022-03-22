@@ -45,6 +45,28 @@ namespace GameTrackerMobile
             }
         }
 
+        private static int platformSortMode = PlatformsViewModel.SORT_NONE;
+        public static int PlatformSortMode
+        {
+            get => platformSortMode;
+            set
+            {
+                platformSortMode = value;
+                SaveSavedState();
+            }
+        }
+
+        private static SortMode platformSortDirection = SortMode.ASCENDING;
+        public static SortMode PlatformSortDirection
+        {
+            get => platformSortDirection;
+            set
+            {
+                platformSortDirection = value;
+                SaveSavedState();
+            }
+        }
+
         public static void LoadSavedState()
         {
             PathController.CreateFileIfDoesNotExist(SAVED_STATE_PATH);
@@ -65,6 +87,12 @@ namespace GameTrackerMobile
                     case 2:
                         gameSortDirection = lines[i].ToUpper() == "DESCENDING" ? SortMode.DESCENDING : SortMode.ASCENDING;
                         break;
+                    case 3:
+                        platformSortMode = Convert.ToInt32(lines[i]);
+                        break;
+                    case 4:
+                        platformSortDirection = lines[i].ToUpper() == "DESCENDING" ? SortMode.DESCENDING : SortMode.ASCENDING;
+                        break;
                 }
             }
         }
@@ -75,6 +103,8 @@ namespace GameTrackerMobile
             lines.Add(showCompilations.ToString());
             lines.Add(gameSortMode.ToString());
             lines.Add(gameSortDirection.ToString());
+            lines.Add(platformSortMode.ToString());
+            lines.Add(platformSortDirection.ToString());
             string contents = string.Join("\n", lines);
             PathController.WriteToFile(SAVED_STATE_PATH, contents);
         }
