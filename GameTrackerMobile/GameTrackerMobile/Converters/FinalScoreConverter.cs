@@ -25,7 +25,29 @@ namespace GameTrackerMobile.Converters
             {
                 game = rm.FindGameCompilation(key);
             }
-            double score = rm.GetScoreOfObject(game);
+            double score;
+            switch (SavedState.GameSortMode)
+            {
+                case int n when n >= 6:
+                    RatingCategoryWeighted selectedCat = null;
+                    int i = 6;
+                    foreach (var cat in ModuleService.GetActiveModule().RatingCategories)
+                    {
+                        if (i++ == n)
+                        {
+                            selectedCat = cat;
+                            break;
+                        }
+                    }
+                    if (selectedCat == null)
+                        score = rm.GetScoreOfObject(game);
+                    else
+                        score = rm.GetScoreOfCategory(game, selectedCat);
+                    break;
+                default:
+                    score = rm.GetScoreOfObject(game);
+                    break;
+            }
             return score;
         }
 

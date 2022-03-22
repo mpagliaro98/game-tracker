@@ -26,7 +26,29 @@ namespace GameTrackerMobile.Converters
                 game = rm.FindGameCompilation(key);
             }
             if (game == null) return new Xamarin.Forms.Color();
-            RatableTracker.Framework.Color color = rm.GetRangeColorFromObject(game);
+            RatableTracker.Framework.Color color;
+            switch (SavedState.GameSortMode)
+            {
+                case int n when n >= 6:
+                    RatingCategoryWeighted selectedCat = null;
+                    int i = 6;
+                    foreach (var cat in ModuleService.GetActiveModule().RatingCategories)
+                    {
+                        if (i++ == n)
+                        {
+                            selectedCat = cat;
+                            break;
+                        }
+                    }
+                    if (selectedCat == null)
+                        color = rm.GetRangeColorFromObject(game);
+                    else
+                        color = rm.GetRangeColorFromValue(rm.GetScoreOfCategory(game, selectedCat));
+                    break;
+                default:
+                    color = rm.GetRangeColorFromObject(game);
+                    break;
+            }
             return color.ToXamarinColor();
         }
 
