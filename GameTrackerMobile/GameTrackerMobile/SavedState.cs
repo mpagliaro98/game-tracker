@@ -1,4 +1,5 @@
-﻿using RatableTracker.Framework.IO;
+﻿using RatableTracker.Framework;
+using RatableTracker.Framework.IO;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,6 +22,28 @@ namespace GameTrackerMobile
             }
         }
 
+        private static int gameSortMode = -1;
+        public static int GameSortMode
+        {
+            get => gameSortMode;
+            set
+            {
+                gameSortMode = value;
+                SaveSavedState();
+            }
+        }
+
+        private static SortMode gameSortDirection = SortMode.ASCENDING;
+        public static SortMode GameSortDirection
+        {
+            get => gameSortDirection;
+            set
+            {
+                gameSortDirection = value;
+                SaveSavedState();
+            }
+        }
+
         public static void LoadSavedState()
         {
             PathController.CreateFileIfDoesNotExist(SAVED_STATE_PATH);
@@ -35,6 +58,12 @@ namespace GameTrackerMobile
                     case 0:
                         showCompilations = Convert.ToBoolean(lines[i]);
                         break;
+                    case 1:
+                        gameSortMode = Convert.ToInt32(lines[i]);
+                        break;
+                    case 2:
+                        gameSortDirection = lines[i].ToUpper() == "DESCENDING" ? SortMode.DESCENDING : SortMode.ASCENDING;
+                        break;
                 }
             }
         }
@@ -43,6 +72,8 @@ namespace GameTrackerMobile
         {
             List<string> lines = new List<string>();
             lines.Add(showCompilations.ToString());
+            lines.Add(gameSortMode.ToString());
+            lines.Add(gameSortDirection.ToString());
             string contents = string.Join("\n", lines);
             PathController.WriteToFile(SAVED_STATE_PATH, contents);
         }

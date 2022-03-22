@@ -17,5 +17,13 @@ namespace GameTrackerMobile
             var ret = await popup.PopupClosedTask;
             return ret;
         }
+
+        public static async Task<Tuple<PopupListViewModel.EnumOutputType, int?>> ShowPopupListAsync(string title, IEnumerable<PopupListOption> options)
+        {
+            var popup = new PopupListPage(title, options);
+            await PopupNavigation.Instance.PushAsync(popup);
+            var ret = await popup.PopupClosedTask;
+            return ret;
+        }
     }
 }
