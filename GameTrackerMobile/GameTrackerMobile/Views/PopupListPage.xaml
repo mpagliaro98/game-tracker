@@ -4,7 +4,13 @@
                  xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
                  xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
                  xmlns:viewmodel="clr-namespace:GameTrackerMobile.ViewModels"
+                 xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
                  x:Class="GameTrackerMobile.Views.PopupListPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:PopupListSelectedValueConverter x:Key="popupListSelectedValueConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <!--  You can set an animation in the xaml file or in the csharp code behind  -->
     <pages:PopupPage.Animation>
         <animations:ScaleAnimation
@@ -36,7 +42,14 @@
                     <CollectionView.ItemTemplate>
                         <DataTemplate x:DataType="viewmodel:PopupListOption">
                             <Grid>
-                                <Label FontSize="Medium" HorizontalOptions="Center" Text="{Binding Text}" />
+                                <Label FontSize="Medium" HorizontalOptions="Center" Text="{Binding Text}">
+                                    <Label.FontAttributes>
+                                        <MultiBinding Converter="{StaticResource popupListSelectedValueConverter}">
+                                            <Binding Path="Value" />
+                                            <Binding Path="SelectedValue" Source="{RelativeSource AncestorType={x:Type viewmodel:PopupListViewModel}}" />
+                                        </MultiBinding>
+                                    </Label.FontAttributes>
+                                </Label>
                                 <Grid.GestureRecognizers>
                                     <TapGestureRecognizer 
                                         NumberOfTapsRequired="1"
@@ -54,9 +67,6 @@
                     HorizontalOptions="End"
                     VerticalOptions="Start"
                     Orientation="Horizontal">
-                    <Button
-                        Command="{Binding ClearCommand}"
-                        Text="Clear" />
                     <Button
                         Command="{Binding CancelCommand}"
                         Text="Cancel" />

@@ -12,24 +12,22 @@ namespace GameTrackerMobile.ViewModels
     {
         public string Title { get; set; }
         public IEnumerable<PopupListOption> Options { get; set; }
+        public int? SelectedValue { get; set; }
 
-        public enum EnumOutputType { Cancel, Selection, Clear }
+        public enum EnumOutputType { Cancel, Selection }
         public Tuple<EnumOutputType, int?> ReturnValue;
 
         public Command<PopupListOption> ItemTapped { get; }
 
-        public PopupListViewModel(string title, IEnumerable<PopupListOption> options)
+        public PopupListViewModel(string title, IEnumerable<PopupListOption> options, int? selectedValue)
         {
             Title = title;
             Options = options;
+            SelectedValue = selectedValue;
 
             CancelCommand = new Command(async () =>
             {
                 await ClosePopUp(EnumOutputType.Cancel, null);
-            });
-            ClearCommand = new Command(async () =>
-            {
-                await ClosePopUp(EnumOutputType.Clear, null);
             });
 
             ItemTapped = new Command<PopupListOption>(OnItemSelected);
@@ -44,7 +42,6 @@ namespace GameTrackerMobile.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand CancelCommand { get; protected set; }
-        public ICommand ClearCommand { get; protected set; }
 
         async void OnItemSelected(PopupListOption item)
         {

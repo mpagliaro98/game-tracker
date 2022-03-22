@@ -157,13 +157,16 @@ namespace GameTrackerMobile.ViewModels
             {
                 options.Add(new PopupListOption(i++, cat.Name));
             }
-            
-            var ret = await Util.ShowPopupListAsync("Sort by", options);
+
+            int? selectedValue = SavedState.GameSortMode;
+            if (selectedValue.Value == SORT_NONE)
+                selectedValue = null;
+            var ret = await Util.ShowPopupListAsync("Sort by", options, selectedValue);
             if (ret != null)
             {
                 if (ret.Item1 == PopupListViewModel.EnumOutputType.Cancel)
                     return;
-                else if (ret.Item1 == PopupListViewModel.EnumOutputType.Clear)
+                else if (ret.Item2 == SavedState.GameSortMode)
                     SavedState.GameSortMode = SORT_NONE;
                 else
                     SavedState.GameSortMode = ret.Item2.Value;

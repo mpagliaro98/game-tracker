@@ -17,10 +17,10 @@ namespace GameTrackerMobile.Views
         public Task<Tuple<PopupListViewModel.EnumOutputType, int?>> PopupClosedTask => _taskCompletionSource.Task;
 
 
-        public PopupListPage(string title, IEnumerable<PopupListOption> options)
+        public PopupListPage(string title, IEnumerable<PopupListOption> options, int? selectedValue)
         {
             InitializeComponent();
-            BindingContext = new PopupListViewModel(title, options);
+            BindingContext = new PopupListViewModel(title, options, selectedValue);
         }
 
         protected override void OnAppearing()
