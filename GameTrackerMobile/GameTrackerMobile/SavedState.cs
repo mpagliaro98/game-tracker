@@ -1,4 +1,5 @@
-﻿using RatableTracker.Framework;
+﻿using GameTrackerMobile.ViewModels;
+using RatableTracker.Framework;
 using RatableTracker.Framework.IO;
 using System;
 using System.Collections.Generic;
@@ -22,7 +23,7 @@ namespace GameTrackerMobile
             }
         }
 
-        private static int gameSortMode = -1;
+        private static int gameSortMode = GamesViewModel.SORT_NONE;
         public static int GameSortMode
         {
             get => gameSortMode;

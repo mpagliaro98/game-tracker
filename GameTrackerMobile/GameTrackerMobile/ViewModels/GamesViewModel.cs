@@ -15,6 +15,15 @@ namespace GameTrackerMobile.ViewModels
 {
     public class GamesViewModel : BaseViewModel<RatableGame>
     {
+        public const int SORT_NONE = -1;
+        public const int SORT_NAME = 0;
+        public const int SORT_STATUS = 1;
+        public const int SORT_PLATFORM = 2;
+        public const int SORT_PLAYEDON = 3;
+        public const int SORT_SCORE = 4;
+        public const int SORT_HASCOMMENT = 5;
+        public const int SORT_CATEGORY_START = 6;
+
         private RatableGame _selectedItem;
 
         public ObservableCollection<RatableGame> Items { get; }
@@ -134,16 +143,16 @@ namespace GameTrackerMobile.ViewModels
         {
             List<PopupListOption> options = new List<PopupListOption>()
             {
-                new PopupListOption(0, "Name"),
-                new PopupListOption(1, "Completion Status"),
-                new PopupListOption(2, "Platform"),
-                new PopupListOption(3, "Platform Played On"),
-                new PopupListOption(4, "Final Score"),
-                new PopupListOption(5, "Has Comment")
+                new PopupListOption(SORT_NAME, "Name"),
+                new PopupListOption(SORT_STATUS, "Completion Status"),
+                new PopupListOption(SORT_PLATFORM, "Platform"),
+                new PopupListOption(SORT_PLAYEDON, "Platform Played On"),
+                new PopupListOption(SORT_SCORE, "Final Score"),
+                new PopupListOption(SORT_HASCOMMENT, "Has Comment")
             };
 
             var module = ModuleService.GetActiveModule();
-            int i = 6;
+            int i = SORT_CATEGORY_START;
             foreach (var cat in module.RatingCategories)
             {
                 options.Add(new PopupListOption(i++, cat.Name));
@@ -155,7 +164,7 @@ namespace GameTrackerMobile.ViewModels
                 if (ret.Item1 == PopupListViewModel.EnumOutputType.Cancel)
                     return;
                 else if (ret.Item1 == PopupListViewModel.EnumOutputType.Clear)
-                    SavedState.GameSortMode = -1;
+                    SavedState.GameSortMode = SORT_NONE;
                 else
                     SavedState.GameSortMode = ret.Item2.Value;
                 
@@ -178,7 +187,7 @@ namespace GameTrackerMobile.ViewModels
 
         private void SortGamesList(ref IEnumerable<RatableGame> items)
         {
-            if (SavedState.GameSortMode < 0)
+            if (SavedState.GameSortMode == SORT_NONE)
             {
                 if (SavedState.GameSortDirection == SortMode.ASCENDING)
                     items = items.Reverse();
@@ -188,27 +197,27 @@ namespace GameTrackerMobile.ViewModels
             Func<RatableGame, object> sortFunc;
             switch (SavedState.GameSortMode)
             {
-                case 0:
+                case SORT_NAME:
                     sortFunc = game => game.Name;
                     break;
-                case 1:
+                case SORT_STATUS:
                     sortFunc = game => game.RefStatus.HasReference() ? ModuleService.GetActiveModule().FindStatus(game.RefStatus).Name : "";
                     break;
-                case 2:
+                case SORT_PLATFORM:
                     sortFunc = game => game.RefPlatform.HasReference() ? ModuleService.GetActiveModule().FindPlatform(game.RefPlatform).Name : "";
                     break;
-                case 3:
+                case SORT_PLAYEDON:
                     sortFunc = game => game.RefPlatformPlayedOn.HasReference() ? ModuleService.GetActiveModule().FindPlatform(game.RefPlatformPlayedOn).Name : "";
                     break;
-                case 4:
+                case SORT_SCORE:
                     sortFunc = game => ModuleService.GetActiveModule().GetScoreOfObject(game);
                     break;
-                case 5:
+                case SORT_HASCOMMENT:
                     sortFunc = game => game.Comment.Length > 0;
                     break;
-                case int n when n >= 6:
+                case int n when n >= SORT_CATEGORY_START:
                     RatingCategoryWeighted selectedCat = null;
-                    int i = 6;
+                    int i = SORT_CATEGORY_START;
                     foreach (var cat in ModuleService.GetActiveModule().RatingCategories)
                     {
                         if (i++ == n)
@@ -219,7 +228,7 @@ namespace GameTrackerMobile.ViewModels
                     }
                     if (selectedCat == null)
                     {
-                        SavedState.GameSortMode = -1;
+                        SavedState.GameSortMode = SORT_NONE;
                         return;
                     }
                     var rm = ModuleService.GetActiveModule();

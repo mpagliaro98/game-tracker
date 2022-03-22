@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Text;
 using GameTracker.Model;
 using GameTrackerMobile.Services;
+using GameTrackerMobile.ViewModels;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Exceptions;
 using Xamarin.Forms;
@@ -29,9 +30,9 @@ namespace GameTrackerMobile.Converters
             RatableTracker.Framework.Color color;
             switch (SavedState.GameSortMode)
             {
-                case int n when n >= 6:
+                case int n when n >= GamesViewModel.SORT_CATEGORY_START:
                     RatingCategoryWeighted selectedCat = null;
-                    int i = 6;
+                    int i = GamesViewModel.SORT_CATEGORY_START;
                     foreach (var cat in ModuleService.GetActiveModule().RatingCategories)
                     {
                         if (i++ == n)
