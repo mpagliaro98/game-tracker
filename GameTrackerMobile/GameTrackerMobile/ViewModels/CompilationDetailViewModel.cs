@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using Xamarin.Forms;
+using System.Linq;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -154,7 +155,7 @@ namespace GameTrackerMobile.ViewModels
             {
                 if (Item.Name == "")
                     return new List<RatableGame>();
-                return ModuleService.GetActiveModule().FindGamesInCompilation(Item);
+                return ModuleService.GetActiveModule().FindGamesInCompilation(Item).OrderBy(game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name).ToList();
             }
         }
 

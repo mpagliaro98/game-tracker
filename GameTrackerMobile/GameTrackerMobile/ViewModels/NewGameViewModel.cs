@@ -246,7 +246,7 @@ namespace GameTrackerMobile.ViewModels
         {
             get
             {
-                var lst = ModuleService.GetActiveModule().ListedObjects.OrderBy(game => game.Name).ToList();
+                var lst = ModuleService.GetActiveModule().ListedObjects.OrderBy(game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name).ToList();
                 lst.Remove(Item);
                 return lst;
             }
