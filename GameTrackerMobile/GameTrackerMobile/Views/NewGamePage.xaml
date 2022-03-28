@@ -23,32 +23,48 @@
                 <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
                 
                 <Label Text="Completion Status:" FontSize="Small" />
-                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
                     <Picker ItemsSource="{Binding CompletionStatuses}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding CompletionStatus}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
-                    <Button Text="Clear" Command="{Binding ClearStatusCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
-                </StackLayout>
+                    <ImageButton Source="cancel" Command="{Binding ClearStatusCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
 
                 <Label Text="Platform:" FontSize="Small" />
-                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
                     <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Platform}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
-                    <Button Text="Clear" Command="{Binding ClearPlatformCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
-                </StackLayout>
+                    <ImageButton Source="cancel" Command="{Binding ClearPlatformCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
                 
                 <Label Text="Platform Played On:" FontSize="Small" />
-                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
                     <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding PlatformPlayedOn}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
-                    <Button Text="Clear" Command="{Binding ClearPlatformPlayedOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
-                </StackLayout>
+                    <ImageButton Source="cancel" Command="{Binding ClearPlatformPlayedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
                 
                 <Label Text="Remaster/Re-release:" FontSize="Small" />
                 <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" />
 
                 <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsRemaster}">
                     <Label Text="Original Game:" FontSize="Small" />
-                    <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
                         <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding ReferenceKey, Converter={StaticResource gamePlatformNameConverter}}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
-                        <Button Text="Clear" Command="{Binding ClearOriginalGameCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
-                    </StackLayout>
+                        <ImageButton Source="cancel" Command="{Binding ClearOriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
                 </StackLayout>
 
                 <StackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}">
@@ -98,22 +114,34 @@
                 <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
 
                 <Label Text="Acquired On:" FontSize="Small" />
-                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
                     <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                    <Button Text="Clear" Command="{Binding ClearAcquiredOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
-                </StackLayout>
+                    <ImageButton Source="cancel" Command="{Binding ClearAcquiredOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
 
                 <Label Text="Started On:" FontSize="Small" />
-                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
                     <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                    <Button Text="Clear" Command="{Binding ClearStartedOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
-                </StackLayout>
+                    <ImageButton Source="cancel" Command="{Binding ClearStartedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
 
                 <Label Text="Finished On:" FontSize="Small" />
-                <StackLayout Orientation="Horizontal" Margin="0,0,0,10">
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
                     <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                    <Button Text="Clear" Command="{Binding ClearFinishedOnCommand}" WidthRequest="80" HeightRequest="40" HorizontalOptions="Start" />
-                </StackLayout>
+                    <ImageButton Source="cancel" Command="{Binding ClearFinishedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
 
                 <Label Text="Comment:" FontSize="Small" />
                 <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="4000" AutoSize="TextChanges" />

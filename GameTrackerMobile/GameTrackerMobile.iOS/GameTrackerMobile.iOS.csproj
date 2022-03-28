@@ -176,6 +176,9 @@
     <ImageAsset Include="Assets.xcassets\AppIcons.appiconset\Icon87.png">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\cancel.imageset\cancel.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\checkmark.imageset\checkmark.png">
       <Visible>false</Visible>
     </ImageAsset>
@@ -219,6 +222,9 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\icon_settings.imageset\icon_settings.png">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\cancel.imageset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\sort_ascending.imageset\Contents.json">
