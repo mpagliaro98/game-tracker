@@ -9,6 +9,7 @@ using RatableTracker.Framework;
 using RatableTracker.Framework.Exceptions;
 using Xamarin.Forms;
 using System.Linq;
+using System.ComponentModel;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -73,7 +74,7 @@ namespace GameTrackerMobile.ViewModels
         private bool showScoreFlag;
         private bool useOriginalNameScore;
         private string compName = "";
-        private IEnumerable<CategoryValueContainer> vals = new List<CategoryValueContainer>();
+        private BindingList<CategoryValueContainer> vals = new BindingList<CategoryValueContainer>();
         private double finalScore;
         private bool manualFinalScore;
 
@@ -202,7 +203,7 @@ namespace GameTrackerMobile.ViewModels
             set => SetProperty(ref compName, value);
         }
 
-        public IEnumerable<CategoryValueContainer> CategoryValues
+        public BindingList<CategoryValueContainer> CategoryValues
         {
             get
             {
@@ -403,9 +404,9 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
-        private IEnumerable<CategoryValueContainer> ToValueContainerList(IEnumerable<RatingCategoryValue> oldVals)
+        private BindingList<CategoryValueContainer> ToValueContainerList(IEnumerable<RatingCategoryValue> oldVals)
         {
-            List<CategoryValueContainer> newVals = new List<CategoryValueContainer>();
+            BindingList<CategoryValueContainer> newVals = new BindingList<CategoryValueContainer>();
             var module = ModuleService.GetActiveModule();
             foreach (RatingCategoryValue item in oldVals)
             {
@@ -414,9 +415,9 @@ namespace GameTrackerMobile.ViewModels
             return newVals;
         }
 
-        private IEnumerable<RatingCategoryValue> GetValuesFromUI()
+        private BindingList<RatingCategoryValue> GetValuesFromUI()
         {
-            var values = new List<RatingCategoryValue>();
+            var values = new BindingList<RatingCategoryValue>();
             var module = ModuleService.GetActiveModule();
             for (int i = 0; i < module.RatingCategories.Count(); i++)
             {
@@ -429,18 +430,24 @@ namespace GameTrackerMobile.ViewModels
             return values;
         }
 
-        private IEnumerable<CategoryValueContainer> InitCategoryValues()
+        private BindingList<CategoryValueContainer> InitCategoryValues()
         {
-            var vals = new List<CategoryValueContainer>();
+            var vals = new BindingList<CategoryValueContainer>();
             var module = ModuleService.GetActiveModule();
             foreach (var cat in module.RatingCategories)
             {
                 var container = new CategoryValueContainer();
                 container.CategoryName = cat.Name;
                 container.CategoryValue = Item == null ? module.Settings.MinScore : module.GetScoreOfCategory(Item, cat);
-                vals = vals.Append(container).ToList();
+                vals.Add(container);
             }
+            vals.ListChanged += CategoryValues_ListChanged;
             return vals;
+        }
+
+        void CategoryValues_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(FinalScore));
         }
     }
 }
