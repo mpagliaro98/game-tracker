@@ -175,6 +175,11 @@ namespace GameTrackerMobile.ViewModels
                 ShowScoreFlag = (value != null);
                 if (value == null)
                     UseOriginalGameScore = false;
+                else if (value != null && UseOriginalGameScore)
+                {
+                    CategoryValues = ToValueContainerList(OriginalGame.CategoryValues);
+                    OnPropertyChanged(nameof(FinalScore));
+                }
             }
         }
 
@@ -206,10 +211,7 @@ namespace GameTrackerMobile.ViewModels
 
         public BindingList<CategoryValueContainer> CategoryValues
         {
-            get
-            {
-                return vals;
-            }
+            get => vals;
             set => SetProperty(ref vals, value);
         }
 
