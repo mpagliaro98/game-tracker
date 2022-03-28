@@ -47,13 +47,13 @@ namespace GameTrackerMobile.ViewModels
                 Comment = item.Comment;
                 IsRemaster = item.IsRemaster;
                 IsPartOfCompilation = item.IsPartOfCompilation;
-                OriginalGame = ModuleService.GetActiveModule().FindListedObject(item.RefOriginalGame);
-                UseOriginalGameScore = item.UseOriginalGameScore;
                 CompName = item.RefCompilation.HasReference() ? ModuleService.GetActiveModule().FindGameCompilation(item.RefCompilation).Name : "";
                 ManualFinalScore = item.IgnoreCategories;
                 CategoryValues = InitCategoryValues();
                 FinalScore = ModuleService.GetActiveModule().GetScoreOfObject(item);
                 OnPropertyChanged(nameof(Games));
+                OriginalGame = ModuleService.GetActiveModule().FindListedObject(item.RefOriginalGame);
+                UseOriginalGameScore = item.UseOriginalGameScore;
             }
         }
 
@@ -194,6 +194,7 @@ namespace GameTrackerMobile.ViewModels
                     CategoryValues = ToValueContainerList(OriginalGame.CategoryValues);
                 else
                     CategoryValues = Item == null ? InitCategoryValues() : ToValueContainerList(Item.CategoryValues);
+                OnPropertyChanged(nameof(FinalScore));
             }
         }
 
@@ -412,6 +413,7 @@ namespace GameTrackerMobile.ViewModels
             {
                 newVals.Add(new CategoryValueContainer() { CategoryName = module.FindRatingCategory(item.RefRatingCategory).Name, CategoryValue = item.PointValue });
             }
+            newVals.ListChanged += CategoryValues_ListChanged;
             return newVals;
         }
 
@@ -427,6 +429,7 @@ namespace GameTrackerMobile.ViewModels
                 newVal.SetRatingCategory(cat);
                 values.Add(newVal);
             }
+            values.ListChanged += CategoryValues_ListChanged;
             return values;
         }
 
