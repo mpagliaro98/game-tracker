@@ -201,7 +201,7 @@ namespace GameTrackerMobile.ViewModels
             switch (SavedState.GameSortMode)
             {
                 case SORT_NAME:
-                    sortFunc = game => game.Name;
+                    sortFunc = game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name;
                     break;
                 case SORT_STATUS:
                     sortFunc = game => game.RefStatus.HasReference() ? ModuleService.GetActiveModule().FindStatus(game.RefStatus).Name : "";
@@ -242,9 +242,9 @@ namespace GameTrackerMobile.ViewModels
             }
 
             if (SavedState.GameSortDirection == SortMode.ASCENDING)
-                items = items.OrderBy(game => game.Name).OrderBy(sortFunc);
+                items = items.OrderBy(game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name).OrderBy(sortFunc);
             else
-                items = items.OrderBy(game => game.Name).OrderByDescending(sortFunc);
+                items = items.OrderBy(game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name).OrderByDescending(sortFunc);
         }
     }
 }

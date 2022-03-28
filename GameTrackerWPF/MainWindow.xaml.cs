@@ -442,7 +442,7 @@ namespace GameTrackerWPF
             switch (sortField)
             {
                 case SORT_GAME_NAME:
-                    savedState.gamesSortFunc = game => game.Name;
+                    savedState.gamesSortFunc = game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name;
                     break;
                 case SORT_GAME_STATUS:
                     savedState.gamesSortFunc = game => game.RefStatus.HasReference() ? rm.FindStatus(game.RefStatus).Name : "";
