@@ -198,7 +198,7 @@ namespace GameTrackerMobile.ViewModels
                 if (value)
                     CategoryValues = ToValueContainerList(OriginalGame.CategoryValues);
                 else
-                    CategoryValues = Item == null ? InitCategoryValues() : ToValueContainerList(Item.CategoryValues);
+                    CategoryValues = InitCategoryValues();
                 OnPropertyChanged(nameof(FinalScore));
             }
         }
