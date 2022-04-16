@@ -79,10 +79,14 @@
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasCompilation}">
                 <Label Text="Part of Compilation:" FontSize="Small" />
-                <StackLayout Orientation="Horizontal" Spacing="15">
-                    <Label Text="{Binding Compilation.Name}" FontSize="Medium" VerticalOptions="Center" />
-                    <Button Text="Go" Command="{Binding CompilationCommand}" WidthRequest="50" HeightRequest="40" />
-                </StackLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="{Binding Compilation.Name}" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="FillAndExpand" />
+                    <ImageButton Source="go" Command="{Binding CompilationCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
             </StackLayout>
 
             <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">

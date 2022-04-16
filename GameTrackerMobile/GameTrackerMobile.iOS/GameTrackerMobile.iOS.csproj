@@ -206,6 +206,9 @@
     <ImageAsset Include="Assets.xcassets\delete.imageset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\go.imageset\go.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\icon_games.imageset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
@@ -225,6 +228,9 @@
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\cancel.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\go.imageset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
     <ImageAsset Include="Assets.xcassets\sort_ascending.imageset\Contents.json">
