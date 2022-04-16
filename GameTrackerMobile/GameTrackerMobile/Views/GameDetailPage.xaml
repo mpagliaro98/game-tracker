@@ -74,7 +74,14 @@
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasOriginalGame}">
                 <Label Text="Is a Remaster/Re-release Of:" FontSize="Small" />
-                <Label Text="{Binding OriginalGameName}" FontSize="Medium" />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
+                    <Label Text="{Binding OriginalGameName}" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="FillAndExpand" />
+                    <ImageButton Source="go" Command="{Binding OriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                </Grid>
             </StackLayout>
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasCompilation}">
