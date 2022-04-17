@@ -34,6 +34,7 @@ namespace GameTrackerMobile.ViewModels
             set
             {
                 SetProperty(ref item, value);
+                Title = "Edit Game";
                 Name = item.Name;
                 CompletionStatus = ModuleService.GetActiveModule().FindStatus(item.RefStatus);
                 Platform = ModuleService.GetActiveModule().FindPlatform(item.RefPlatform);
@@ -276,6 +277,7 @@ namespace GameTrackerMobile.ViewModels
             this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
 
             CategoryValues = InitCategoryValues();
+            Title = "New Game";
         }
 
         private bool ValidateSave()

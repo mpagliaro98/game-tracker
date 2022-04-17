@@ -4,8 +4,7 @@
              x:Class="GameTrackerMobile.Views.NewScoreRangePage"
              xmlns:colorpicker="clr-namespace:ColorPicker;assembly=ColorPicker"
              xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
-             Shell.PresentationMode="ModalAnimated"
-             Title="New Item"
+             Title="{Binding Title}"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true">
     <ContentPage.Resources>
@@ -13,6 +12,9 @@
             <converters:ScoreRangeValueVisibleConverter x:Key="scoreRangeValueVisibleConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ContentView>
             <ScrollView>
@@ -25,10 +27,6 @@
                     <Entry FontSize="Medium" Text="{Binding Value2}" IsVisible="{Binding ScoreRelationship.NumValuesRequired, Converter={StaticResource scoreRangeValueVisibleConverter}, ConverterParameter=2, FallbackValue=false}" Keyboard="Numeric" />
                     <Label Text="Color:" FontSize="Small" />
                     <colorpicker:ColorWheel x:Name="colors" SelectedColor="{Binding Color, Mode=TwoWay}" ShowAlphaSlider="True" Margin="0,0,0,10" />
-                    <StackLayout Orientation="Horizontal">
-                        <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                        <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
-                    </StackLayout>
                 </StackLayout>
             </ScrollView>
         </ContentView>

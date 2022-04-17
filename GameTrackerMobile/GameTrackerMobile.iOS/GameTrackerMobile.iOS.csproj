@@ -233,6 +233,12 @@
     <ImageAsset Include="Assets.xcassets\go.imageset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\save.imageset\Contents.json">
+      <Visible>false</Visible>
+    </ImageAsset>
+    <ImageAsset Include="Assets.xcassets\save.imageset\save.png">
+      <Visible>false</Visible>
+    </ImageAsset>
     <ImageAsset Include="Assets.xcassets\sort_ascending.imageset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>

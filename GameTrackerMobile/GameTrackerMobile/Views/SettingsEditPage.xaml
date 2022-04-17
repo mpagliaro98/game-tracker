@@ -5,6 +5,9 @@
              Title="General Settings"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <ScrollView>
             <StackLayout Spacing="3" Padding="15">
@@ -14,11 +17,7 @@
                 <Editor Text="{Binding MaxScore, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
                 <Label Text="Click the button below to transfer your saved data to AWS. Doing so will allow you to access your data on any platform Game Tracker supports. You will need an AWS account, then you must generate your unique key and secret key on AWS. Once you download that key file, click the button below and select that file." LineBreakMode="WordWrap" FontSize="Small" />
                 <Button Text="{Binding AWSButtonText}" Margin="0,0,0,20" Command="{Binding AWSCommand}" />
-                <StackLayout Orientation="Horizontal">
-                    <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
-                </StackLayout>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
-
 </ContentPage>

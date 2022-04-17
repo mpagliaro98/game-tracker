@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GameTrackerMobile.Views.StatusDetailPage"
              xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
-             Title="{Binding Title}">
+             Title="Status">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:FrameworkToXamarinColorConverter x:Key="frameworkToXamarinColorConverter" />

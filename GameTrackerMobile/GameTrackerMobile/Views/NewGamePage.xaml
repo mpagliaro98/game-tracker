@@ -4,8 +4,7 @@
              x:Class="GameTrackerMobile.Views.NewGamePage"
              xmlns:local="clr-namespace:GameTrackerMobile.ViewModels"
              xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
-             Shell.PresentationMode="ModalAnimated"
-             Title="New Item"
+             Title="{Binding Title}"
              xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
              ios:Page.UseSafeArea="true">
     <ContentPage.Resources>
@@ -16,6 +15,11 @@
             <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Content>
         <ContentView>
             <ScrollView>
@@ -146,11 +150,6 @@
 
                     <Label Text="Comment:" FontSize="Small" />
                     <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="4000" AutoSize="TextChanges" />
-
-                    <StackLayout Orientation="Horizontal">
-                        <Button Text="Cancel" Command="{Binding CancelCommand}" HorizontalOptions="FillAndExpand"></Button>
-                        <Button Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="FillAndExpand"></Button>
-                    </StackLayout>
                 </StackLayout>
             </ScrollView>
         </ContentView>

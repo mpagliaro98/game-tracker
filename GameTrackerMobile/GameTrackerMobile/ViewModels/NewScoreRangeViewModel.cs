@@ -32,6 +32,7 @@ namespace GameTrackerMobile.ViewModels
             set
             {
                 SetProperty(ref item, value);
+                Title = "Edit Score Range";
                 Name = item.Name;
                 ScoreRelationship = ModuleService.GetActiveModule().FindScoreRelationship(item.RefScoreRelationship);
                 Value1 = item.ValueList.Count() >= 1 ? item.ValueList.ElementAt(0) : 0;
@@ -89,6 +90,7 @@ namespace GameTrackerMobile.ViewModels
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
             this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
+            Title = "New Score Range";
         }
 
         private bool ValidateSave()

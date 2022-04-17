@@ -5,7 +5,7 @@
              xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
              xmlns:local="clr-namespace:GameTrackerMobile.ViewModels"
              xmlns:model="clr-namespace:GameTracker.Model;assembly=GameTracker"
-             Title="{Binding Title}">
+             Title="Game Compilation">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:PlatformColorConverter x:Key="platformColorConverter" />

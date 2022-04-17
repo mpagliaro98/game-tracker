@@ -4,7 +4,7 @@
              x:Class="GameTrackerMobile.Views.GameDetailPage"
              xmlns:converters="clr-namespace:GameTrackerMobile.Converters"
              xmlns:local="clr-namespace:GameTrackerMobile.ViewModels"
-             Title="{Binding Title}">
+             Title="Game">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:PlatformColorConverter x:Key="platformColorConverter" />

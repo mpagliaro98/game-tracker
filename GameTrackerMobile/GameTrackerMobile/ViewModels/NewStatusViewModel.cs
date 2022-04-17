@@ -31,6 +31,7 @@ namespace GameTrackerMobile.ViewModels
             set
             {
                 SetProperty(ref item, value);
+                Title = "Edit Status";
                 Name = item.Name;
                 UseAsFinished = item.UseAsFinished;
                 ExcludeFromStats = item.ExcludeFromStats;
@@ -75,6 +76,7 @@ namespace GameTrackerMobile.ViewModels
             SaveCommand = new Command(OnSave, ValidateSave);
             CancelCommand = new Command(OnCancel);
             this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
+            Title = "New Status";
         }
 
         private bool ValidateSave()
