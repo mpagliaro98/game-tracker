@@ -118,6 +118,16 @@
                     <Label Text="Time Spent:" FontSize="Small" />
                     <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
 
+                    <Label Text="Release Date:" FontSize="Small" />
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker Date="{Binding ReleaseDate}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                        <ImageButton Source="cancel" Command="{Binding ClearReleaseDateCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
+                    
                     <Label Text="Acquired On:" FontSize="Small" />
                     <Grid Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>

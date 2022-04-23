@@ -28,6 +28,8 @@ namespace GameTracker.Model
 
         public string TimeSpent { get; set; } = "";
 
+        public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
+
         public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
 
         public DateTime StartedOn { get; set; } = DateTime.MinValue;
@@ -56,6 +58,7 @@ namespace GameTracker.Model
             sr.SaveValue("completionCriteria", CompletionCriteria);
             sr.SaveValue("completionComment", CompletionComment);
             sr.SaveValue("timeSpent", TimeSpent);
+            sr.SaveValue("releaseDate", ReleaseDate);
             sr.SaveValue("acquiredOn", AcquiredOn);
             sr.SaveValue("startedOn", StartedOn);
             sr.SaveValue("finishedOn", FinishedOn);
@@ -87,6 +90,9 @@ namespace GameTracker.Model
                         break;
                     case "timeSpent":
                         TimeSpent = sr.GetString(key);
+                        break;
+                    case "releaseDate":
+                        ReleaseDate = sr.GetDateTime(key);
                         break;
                     case "acquiredOn":
                         AcquiredOn = sr.GetDateTime(key);

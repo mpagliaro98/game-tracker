@@ -123,7 +123,8 @@
         </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
@@ -133,14 +134,18 @@
                 <TextBox x:Name="TextboxTimeSpent" Margin="5,0" />
             </StackPanel>
             <StackPanel VerticalAlignment="Center" Grid.Column="1">
+                <Label Content="Release Date" />
+                <DatePicker x:Name="DatePickerRelease" Margin="5,0" />
+            </StackPanel>
+            <StackPanel VerticalAlignment="Center" Grid.Column="2">
                 <Label Content="Acquired On" />
                 <DatePicker x:Name="DatePickerAcquired" Margin="5,0" />
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Grid.Column="2">
+            <StackPanel VerticalAlignment="Center" Grid.Column="3">
                 <Label Content="Started On" />
                 <DatePicker x:Name="DatePickerStarted" Margin="5,0" />
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Grid.Column="3">
+            <StackPanel VerticalAlignment="Center" Grid.Column="4">
                 <Label Content="Finished On" />
                 <DatePicker x:Name="DatePickerFinished" Margin="5,0" />
             </StackPanel>

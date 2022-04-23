@@ -64,6 +64,7 @@ namespace GameTrackerWPF
                     TextboxCompletionCriteria.Text = orig.CompletionCriteria;
                     TextboxCompletionComment.Text = orig.CompletionComment;
                     TextboxTimeSpent.Text = orig.TimeSpent;
+                    if (!orig.ReleaseDate.Equals(DateTime.MinValue)) DatePickerRelease.SelectedDate = orig.ReleaseDate;
                     if (!orig.AcquiredOn.Equals(DateTime.MinValue)) DatePickerAcquired.SelectedDate = orig.AcquiredOn;
                     if (!orig.StartedOn.Equals(DateTime.MinValue)) DatePickerStarted.SelectedDate = orig.StartedOn;
                     if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
@@ -95,7 +96,7 @@ namespace GameTrackerWPF
         {
             if (!ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
                 out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
-                out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
+                out string timeSpent, out DateTime releaseDate, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
                 out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
                 out string compilationName)) return;
             if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
@@ -106,6 +107,7 @@ namespace GameTrackerWPF
                 CompletionCriteria = completionCriteria,
                 CompletionComment = completionComment,
                 TimeSpent = timeSpent,
+                ReleaseDate = releaseDate,
                 AcquiredOn = acquiredOn,
                 StartedOn = startedOn,
                 FinishedOn = finishedOn,
@@ -174,7 +176,7 @@ namespace GameTrackerWPF
 
         private bool ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
             out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
-            out string timeSpent, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
+            out string timeSpent, out DateTime releaseDate, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
             out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
             out string compilationName)
         {
@@ -185,6 +187,7 @@ namespace GameTrackerWPF
             completionCriteria = TextboxCompletionCriteria.Text;
             completionComment = TextboxCompletionComment.Text;
             timeSpent = TextboxTimeSpent.Text;
+            releaseDate = DatePickerRelease.SelectedDate.HasValue ? DatePickerRelease.SelectedDate.Value : DateTime.MinValue;
             acquiredOn = DatePickerAcquired.SelectedDate.HasValue ? DatePickerAcquired.SelectedDate.Value : DateTime.MinValue;
             startedOn = DatePickerStarted.SelectedDate.HasValue ? DatePickerStarted.SelectedDate.Value : DateTime.MinValue;
             finishedOn = DatePickerFinished.SelectedDate.HasValue ? DatePickerFinished.SelectedDate.Value : DateTime.MinValue;

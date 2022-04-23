@@ -42,6 +42,7 @@ namespace GameTrackerMobile.ViewModels
                 CompletionCriteria = item.CompletionCriteria;
                 CompletionComment = item.CompletionComment;
                 TimeSpent = item.TimeSpent;
+                ReleaseDate = item.ReleaseDate;
                 AcquiredOn = item.AcquiredOn;
                 StartedOn = item.StartedOn;
                 FinishedOn = item.FinishedOn;
@@ -65,6 +66,7 @@ namespace GameTrackerMobile.ViewModels
         private string completionCriteria = "";
         private string completionComment = "";
         private string timeSpent = "";
+        private DateTime releaseDate;
         private DateTime acquiredOn;
         private DateTime startedOn;
         private DateTime finishedOn;
@@ -124,6 +126,12 @@ namespace GameTrackerMobile.ViewModels
         {
             get => timeSpent;
             set => SetProperty(ref timeSpent, value);
+        }
+
+        public DateTime ReleaseDate
+        {
+            get => releaseDate;
+            set => SetProperty(ref releaseDate, value);
         }
 
         public DateTime AcquiredOn
@@ -259,6 +267,7 @@ namespace GameTrackerMobile.ViewModels
         public Command ClearPlatformCommand { get; }
         public Command ClearPlatformPlayedOnCommand { get; }
         public Command ClearOriginalGameCommand { get; }
+        public Command ClearReleaseDateCommand { get; }
         public Command ClearAcquiredOnCommand { get; }
         public Command ClearStartedOnCommand { get; }
         public Command ClearFinishedOnCommand { get; }
@@ -271,6 +280,7 @@ namespace GameTrackerMobile.ViewModels
             ClearPlatformCommand = new Command(OnClearPlatform);
             ClearPlatformPlayedOnCommand = new Command(OnClearPlatformPlayedOn);
             ClearOriginalGameCommand = new Command(OnClearOriginalGame);
+            ClearReleaseDateCommand = new Command(OnClearReleaseDate);
             ClearAcquiredOnCommand = new Command(OnClearAcquiredOn);
             ClearStartedOnCommand = new Command(OnClearStartedOn);
             ClearFinishedOnCommand = new Command(OnClearFinishedOn);
@@ -305,6 +315,11 @@ namespace GameTrackerMobile.ViewModels
             OriginalGame = null;
         }
 
+        private void OnClearReleaseDate()
+        {
+            ReleaseDate = DateTime.MinValue;
+        }
+
         private void OnClearAcquiredOn()
         {
             AcquiredOn = DateTime.MinValue;
@@ -333,6 +348,7 @@ namespace GameTrackerMobile.ViewModels
                 CompletionCriteria = CompletionCriteria,
                 CompletionComment = CompletionComment,
                 TimeSpent = TimeSpent,
+                ReleaseDate = ReleaseDate,
                 AcquiredOn = AcquiredOn,
                 StartedOn = StartedOn,
                 FinishedOn = FinishedOn,
