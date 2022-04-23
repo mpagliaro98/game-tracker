@@ -46,6 +46,10 @@ namespace GameTrackerWPF
         private const string SORT_GAME_PLAYEDON = "GamesSortPlayedOn";
         private const string SORT_GAME_SCORE = "GamesSortScore";
         private const string SORT_GAME_HASCOMMENT = "GamesSortHasComment";
+        private const string SORT_GAME_RELEASEDATE = "GamesSortReleaseDate";
+        private const string SORT_GAME_ACQUIREDON = "GamesSortAcquiredOn";
+        private const string SORT_GAME_STARTEDON = "GamesSortStartedOn";
+        private const string SORT_GAME_FINISHEDON = "GamesSortFinishedOn";
 
         private RatingModuleGame rm;
 
@@ -318,6 +322,10 @@ namespace GameTrackerWPF
                 new Tuple<string, string>(SORT_GAME_PLAYEDON, "Platform Played On"),
                 new Tuple<string, string>(SORT_GAME_SCORE, "Final Score"),
                 new Tuple<string, string>(SORT_GAME_HASCOMMENT, "Has Comment"),
+                new Tuple<string, string>(SORT_GAME_RELEASEDATE, "Release Date"),
+                new Tuple<string, string>(SORT_GAME_ACQUIREDON, "Acquired On"),
+                new Tuple<string, string>(SORT_GAME_STARTEDON, "Started On"),
+                new Tuple<string, string>(SORT_GAME_FINISHEDON, "Finished On")
             })
             {
                 item = new MenuItem
@@ -458,6 +466,18 @@ namespace GameTrackerWPF
                     break;
                 case SORT_GAME_HASCOMMENT:
                     savedState.gamesSortFunc = game => game.Comment.Length > 0;
+                    break;
+                case SORT_GAME_RELEASEDATE:
+                    savedState.gamesSortFunc = game => game.ReleaseDate;
+                    break;
+                case SORT_GAME_ACQUIREDON:
+                    savedState.gamesSortFunc = game => game.AcquiredOn;
+                    break;
+                case SORT_GAME_STARTEDON:
+                    savedState.gamesSortFunc = game => game.StartedOn;
+                    break;
+                case SORT_GAME_FINISHEDON:
+                    savedState.gamesSortFunc = game => game.FinishedOn;
                     break;
                 default:
                     if (Guid.TryParse(sortField.Substring(1), out Guid key))

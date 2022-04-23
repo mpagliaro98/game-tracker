@@ -22,7 +22,11 @@ namespace GameTrackerMobile.ViewModels
         public const int SORT_PLAYEDON = 3;
         public const int SORT_SCORE = 4;
         public const int SORT_HASCOMMENT = 5;
-        public const int SORT_CATEGORY_START = 6;
+        public const int SORT_RELEASEDATE = 6;
+        public const int SORT_ACQUIREDON = 7;
+        public const int SORT_STARTEDON = 8;
+        public const int SORT_FINISHEDON = 9;
+        public const int SORT_CATEGORY_START = 50;
 
         private RatableGame _selectedItem;
 
@@ -148,7 +152,11 @@ namespace GameTrackerMobile.ViewModels
                 new PopupListOption(SORT_PLATFORM, "Platform"),
                 new PopupListOption(SORT_PLAYEDON, "Platform Played On"),
                 new PopupListOption(SORT_SCORE, "Final Score"),
-                new PopupListOption(SORT_HASCOMMENT, "Has Comment")
+                new PopupListOption(SORT_HASCOMMENT, "Has Comment"),
+                new PopupListOption(SORT_RELEASEDATE, "Release Date"),
+                new PopupListOption(SORT_ACQUIREDON, "Acquired On"),
+                new PopupListOption(SORT_STARTEDON, "Started On"),
+                new PopupListOption(SORT_FINISHEDON, "Finished On")
             };
 
             var module = ModuleService.GetActiveModule();
@@ -217,6 +225,18 @@ namespace GameTrackerMobile.ViewModels
                     break;
                 case SORT_HASCOMMENT:
                     sortFunc = game => game.Comment.Length > 0;
+                    break;
+                case SORT_RELEASEDATE:
+                    sortFunc = game => game.ReleaseDate;
+                    break;
+                case SORT_ACQUIREDON:
+                    sortFunc = game => game.AcquiredOn;
+                    break;
+                case SORT_STARTEDON:
+                    sortFunc = game => game.StartedOn;
+                    break;
+                case SORT_FINISHEDON:
+                    sortFunc = game => game.FinishedOn;
                     break;
                 case int n when n >= SORT_CATEGORY_START:
                     RatingCategoryWeighted selectedCat = null;
