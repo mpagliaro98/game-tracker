@@ -13,7 +13,7 @@ namespace GameTracker.Global
     {
         public static string FixJSONSpecialChars(string str)
         {
-            return str.Replace("\"", "\\\"");
+            return str.Replace("\"", "\\\"").Replace("\n", "\\n");
         }
 
         public static string CreateJSONArray<T>(IEnumerable<SavableRepresentation<T>> objs) where T : IValueContainer<T>, new()
