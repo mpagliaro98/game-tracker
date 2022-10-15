@@ -159,7 +159,7 @@
                     </Grid>
 
                     <Label Text="Comment:" FontSize="Small" />
-                    <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="4000" AutoSize="TextChanges" />
+                    <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="10000" AutoSize="TextChanges" />
                 </StackLayout>
             </ScrollView>
         </ContentView>

@@ -152,7 +152,7 @@
         </Grid>
         <StackPanel VerticalAlignment="Center" Grid.Row="4">
             <Label Content="Comments" />
-            <TextBox x:Name="TextBoxComments" Margin="5,0" TextWrapping="Wrap" AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto" />
+            <TextBox x:Name="TextBoxComments" Margin="5,0" TextWrapping="Wrap" AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto" MaxLength="10000" />
         </StackPanel>
         <StackPanel Grid.Row="5" HorizontalAlignment="Center">
             <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonSave_Click" />

@@ -12,7 +12,7 @@ namespace RatableTracker.Framework.ObjectHierarchy
     public class ListedObject : ISavable, IReferable
     {
         public static int MaxLengthName => 200;
-        public static int MaxLengthComment => 4000;
+        public static int MaxLengthComment => 10000;
 
         public string Name { get; set; } = "";
 
