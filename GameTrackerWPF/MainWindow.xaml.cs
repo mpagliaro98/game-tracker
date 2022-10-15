@@ -59,7 +59,7 @@ namespace GameTrackerWPF
             public SortMode gamesSortMode = SortMode.ASCENDING;
             public Func<Platform, object> platformsSortFunc = null;
             public SortMode platformsSortMode = SortMode.ASCENDING;
-            public bool gamesSortCatCreated = false;
+            public bool loaded = false;
             public GameDisplayMode displayMode = GameDisplayMode.DISPLAY_SMALL;
         }
 
@@ -94,6 +94,7 @@ namespace GameTrackerWPF
             EnableNewButtons(false);
             mainWindow.Title = "Game Tracker (Loading...)";
             await Task.Run(() => rm.InitAsync());
+            savedState.loaded = true;
             UpdateCurrentTab();
             EnableNewButtons(true);
             mainWindow.Title = "Game Tracker";
@@ -311,7 +312,7 @@ namespace GameTrackerWPF
 
         private void BuildGamesSortOptions(IEnumerable<RatingCategory> cats)
         {
-            if (savedState.gamesSortCatCreated) return;
+            if (!savedState.loaded || GamesButtonSort.ContextMenu.Items.Count > 0) return;
             GamesButtonSort.ContextMenu.Items.Clear();
             MenuItem item;
             foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
@@ -350,7 +351,6 @@ namespace GameTrackerWPF
                 item.Unchecked += GamesSort_Unchecked;
                 GamesButtonSort.ContextMenu.Items.Add(item);
             }
-            savedState.gamesSortCatCreated = true;
         }
 
         private void GamesButtonNew_Click(object sender, RoutedEventArgs e)
@@ -809,7 +809,7 @@ namespace GameTrackerWPF
 
             var vis = rm.RatingCategories.Count() >= rm.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewRatingCategory.Visibility = vis;
-            savedState.gamesSortCatCreated = false;
+            GamesButtonSort.ContextMenu.Items.Clear();
             savedState.gamesSortFunc = null;
         }
 
