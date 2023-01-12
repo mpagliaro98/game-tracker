@@ -45,6 +45,8 @@ namespace GameTrackerMobile.ViewModels
                 OnPropertyChanged(nameof(FinalScoreColor));
                 OnPropertyChanged(nameof(Stats));
                 OnPropertyChanged(nameof(ShowCategoryValues));
+                OnPropertyChanged(nameof(FinishedOn));
+                OnPropertyChanged(nameof(StartedOnName));
             }
         }
 
@@ -184,6 +186,16 @@ namespace GameTrackerMobile.ViewModels
         public bool ShowCategoryValues
         {
             get => !Item.IgnoreCategories && !Item.UseOriginalGameScore;
+        }
+        
+        public DateTime FinishedOn
+        {
+            get => Item.IsUnfinishable ? DateTime.MinValue : Item.FinishedOn;
+        }
+
+        public string StartedOnName
+        {
+            get => Item.IsUnfinishable ? "Played On:" : "Started On:";
         }
 
         public GameDetailViewModel()

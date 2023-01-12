@@ -56,7 +56,10 @@
                         <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding PlatformPlayedOn}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
                         <ImageButton Source="cancel" Command="{Binding ClearPlatformPlayedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
                     </Grid>
-                
+
+                    <Label Text="Doesn't Have a Start/End:" FontSize="Small" />
+                    <Switch IsToggled="{Binding IsUnfinishable}" Margin="0,0,0,10" />
+
                     <Label Text="Remaster/Re-release:" FontSize="Small" />
                     <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" />
 
@@ -138,7 +141,7 @@
                         <ImageButton Source="cancel" Command="{Binding ClearAcquiredOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
                     </Grid>
 
-                    <Label Text="Started On:" FontSize="Small" />
+                    <Label Text="{Binding StartedOnName}" FontSize="Small" />
                     <Grid Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
@@ -148,15 +151,17 @@
                         <ImageButton Source="cancel" Command="{Binding ClearStartedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
                     </Grid>
 
-                    <Label Text="Finished On:" FontSize="Small" />
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="32" />
-                        </Grid.ColumnDefinitions>
-                        <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                        <ImageButton Source="cancel" Command="{Binding ClearFinishedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
-                    </Grid>
+                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding ShowFinishedOn}">
+                        <Label Text="Finished On:" FontSize="Small" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="32" />
+                            </Grid.ColumnDefinitions>
+                            <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                            <ImageButton Source="cancel" Command="{Binding ClearFinishedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                        </Grid>
+                    </StackLayout>
 
                     <Label Text="Comment:" FontSize="Small" />
                     <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="10000" AutoSize="TextChanges" />

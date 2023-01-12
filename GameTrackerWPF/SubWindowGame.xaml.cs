@@ -74,6 +74,7 @@ namespace GameTrackerWPF
                     CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
                     CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
                     if (orig.RefCompilation.HasReference()) TextboxCompilation.Text = rm.FindGameCompilation(orig.RefCompilation).Name;
+                    CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
                     break;
                 default:
                     throw new Exception("Unhandled mode");
@@ -98,7 +99,7 @@ namespace GameTrackerWPF
                 out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
                 out string timeSpent, out DateTime releaseDate, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
                 out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
-                out string compilationName)) return;
+                out string compilationName, out bool isUnfinishable)) return;
             if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
                 out bool ignoreCategories)) return;
             var game = new RatableGame()
@@ -116,7 +117,8 @@ namespace GameTrackerWPF
                 FinalScoreManual = finalScore,
                 CategoryValues = vals,
                 IsRemaster = isRemaster,
-                UseOriginalGameScore = useOriginalGameScore
+                UseOriginalGameScore = useOriginalGameScore,
+                IsUnfinishable = isUnfinishable,
             };
             if (status != null)
                 game.SetStatus(status);
@@ -178,7 +180,7 @@ namespace GameTrackerWPF
             out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
             out string timeSpent, out DateTime releaseDate, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
             out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
-            out string compilationName)
+            out string compilationName, out bool isUnfinishable)
         {
             name = TextboxName.Text;
             status = ComboBoxStatus.SelectedIndex == 0 ? null : (CompletionStatus)ComboBoxStatus.SelectedItem;
@@ -196,6 +198,7 @@ namespace GameTrackerWPF
             originalGame = isRemaster && ComboboxOriginalGame.SelectedIndex > 0 ? (RatableGame)ComboboxOriginalGame.SelectedItem : null;
             useOriginalGameScore = isRemaster && originalGame != null ? CheckboxUseOriginalGameScore.IsChecked.Value : false;
             compilationName = CheckboxCompilation.IsChecked.Value ? TextboxCompilation.Text : "";
+            isUnfinishable = CheckboxUnfinishable.IsChecked.Value;
             if (name == "")
             {
                 LabelError.Visibility = Visibility.Visible;
@@ -487,6 +490,13 @@ namespace GameTrackerWPF
             Window window = new SubWindowCompilation(rm, SubWindowMode.MODE_VIEW, rm.FindGameCompilation(orig.RefCompilation));
             window.ShowDialog();
             Show();
+        }
+
+        private void CheckboxUnfinishable_Checked(object sender, RoutedEventArgs e)
+        {
+            StackPanelFinishedOn.Visibility = CheckboxUnfinishable.IsChecked.Value ? Visibility.Hidden: Visibility.Visible;
+            Grid.SetColumnSpan(StackPanelStartedOn, CheckboxUnfinishable.IsChecked.Value ? 2 : 1);
+            LabelStartedOn.Content = CheckboxUnfinishable.IsChecked.Value ? "Played On" : "Started On";
         }
     }
 }

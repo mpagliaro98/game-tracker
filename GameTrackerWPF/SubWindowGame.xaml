@@ -14,9 +14,9 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="2.5*" />
             <RowDefinition Height="1.5*" />
+            <RowDefinition Height="0.7*" />
             <RowDefinition Height="0.8*" />
-            <RowDefinition Height="0.85*" />
-            <RowDefinition Height="2.2*" />
+            <RowDefinition Height="2*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Grid>
@@ -28,14 +28,25 @@
             <Image x:Name="ImageGame" Margin="10" />
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1.5*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <StackPanel VerticalAlignment="Center">
-                    <Label Content="Name" />
-                    <TextBox x:Name="TextboxName" Margin="5,0" />
-                </StackPanel>
+
+                <Grid VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="2">
+                        <Label Content="Name" />
+                        <TextBox x:Name="TextboxName" Margin="5,0" />
+                    </StackPanel>
+                </Grid>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label Content="Platform" />
                     <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" SelectionChanged="ComboBoxPlatform_SelectionChanged" />
@@ -56,14 +67,25 @@
             </Grid>
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1.5*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <StackPanel VerticalAlignment="Center">
-                    <Label Content="Completion Status" />
-                    <ComboBox x:Name="ComboBoxStatus" Margin="5,0" />
-                </StackPanel>
+                <Grid VerticalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="3*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="2">
+                        <Label Content="Completion Status" />
+                        <ComboBox x:Name="ComboBoxStatus" Margin="5,0" />
+                    </StackPanel>
+                    <CheckBox x:Name="CheckboxUnfinishable" Grid.Row="1" Content="Doesn't have a start/end" Checked="CheckboxUnfinishable_Checked" Unchecked="CheckboxUnfinishable_Checked" Margin="5,0" />
+                </Grid>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label Content="Platform Played On" />
                     <ComboBox x:Name="ComboBoxPlatformPlayedOn" Margin="5,0" />
@@ -141,11 +163,11 @@
                 <Label Content="Acquired On" />
                 <DatePicker x:Name="DatePickerAcquired" Margin="5,0" />
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Grid.Column="3">
-                <Label Content="Started On" />
+            <StackPanel x:Name="StackPanelStartedOn" VerticalAlignment="Center" Grid.Column="3">
+                <Label x:Name="LabelStartedOn" Content="Started On" />
                 <DatePicker x:Name="DatePickerStarted" Margin="5,0" />
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Grid.Column="4">
+            <StackPanel x:Name="StackPanelFinishedOn" VerticalAlignment="Center" Grid.Column="4">
                 <Label Content="Finished On" />
                 <DatePicker x:Name="DatePickerFinished" Margin="5,0" />
             </StackPanel>

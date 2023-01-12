@@ -69,7 +69,7 @@
                 <Rectangle BackgroundColor="{Binding Item.RefPlatformPlayedOn, Converter={StaticResource platformColorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
             </Grid>
-
+            
             <Label Text="Remaster/Re-release" FontSize="Medium" IsVisible="{Binding ShowStaticRemasterText}" FontAttributes="Italic" Margin="0,0,0,10" />
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasOriginalGame}">
@@ -146,11 +146,11 @@
             </StackLayout>
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.StartedOn, Converter={StaticResource dateEmptyConverter}}">
-                <Label Text="Started On:" FontSize="Small" />
+                <Label Text="{Binding StartedOnName}" FontSize="Small" />
                 <Label Text="{Binding Item.StartedOn, Converter={StaticResource dateDisplayConverter}}" FontSize="Medium" />
             </StackLayout>
 
-            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.FinishedOn, Converter={StaticResource dateEmptyConverter}}">
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding FinishedOn, Converter={StaticResource dateEmptyConverter}}">
                 <Label Text="Finished On:" FontSize="Small" />
                 <Label Text="{Binding Item.FinishedOn, Converter={StaticResource dateDisplayConverter}}" FontSize="Medium" />
             </StackLayout>

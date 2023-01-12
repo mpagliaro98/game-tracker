@@ -48,6 +48,8 @@ namespace GameTracker.Model
 
         public bool IsPartOfCompilation { get { return RefCompilation.HasReference(); } }
 
+        public bool IsUnfinishable { get; set; } = false;
+
         public RatableGame() : base() { }
 
         public override SavableRepresentation<T> LoadIntoRepresentation<T>()
@@ -66,6 +68,7 @@ namespace GameTracker.Model
             sr.SaveValue("originalGame", originalGame);
             sr.SaveValue("useOriginalGameScore", UseOriginalGameScore);
             sr.SaveValue("compilation", compilation);
+            sr.SaveValue("unfinishable", IsUnfinishable);
             return sr;
         }
 
@@ -114,6 +117,9 @@ namespace GameTracker.Model
                         break;
                     case "compilation":
                         compilation = sr.GetISavable<ObjectReference>(key);
+                        break;
+                    case "unfinishable":
+                        IsUnfinishable = sr.GetBool(key);
                         break;
                     default:
                         break;

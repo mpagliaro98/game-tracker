@@ -56,6 +56,7 @@ namespace GameTrackerMobile.ViewModels
                 OnPropertyChanged(nameof(Games));
                 OriginalGame = ModuleService.GetActiveModule().FindListedObject(item.RefOriginalGame);
                 UseOriginalGameScore = item.UseOriginalGameScore;
+                IsUnfinishable = item.IsUnfinishable;
             }
         }
 
@@ -80,6 +81,9 @@ namespace GameTrackerMobile.ViewModels
         private BindingList<CategoryValueContainer> vals = new BindingList<CategoryValueContainer>();
         private double finalScore;
         private bool manualFinalScore;
+        private bool isUnfinishable;
+        private bool showFinishedOn;
+        private string startedOnName;
 
         public string Name
         {
@@ -246,6 +250,29 @@ namespace GameTrackerMobile.ViewModels
             }
         }
 
+        public bool IsUnfinishable
+        {
+            get => isUnfinishable;
+            set
+            {
+                SetProperty(ref isUnfinishable, value);
+                ShowFinishedOn = !value;
+                StartedOnName = value ? "Played On:" : "Started On:";
+            }
+        }
+
+        public bool ShowFinishedOn
+        {
+            get => showFinishedOn;
+            set => SetProperty(ref showFinishedOn, value);
+        }
+
+        public string StartedOnName
+        {
+            get => startedOnName;
+            set => SetProperty(ref startedOnName, value);
+        }
+
         public IEnumerable<Platform> Platforms
         {
             get => ModuleService.GetActiveModule().Platforms.OrderBy(p => p.Name).ToList();
@@ -357,7 +384,8 @@ namespace GameTrackerMobile.ViewModels
                 UseOriginalGameScore = UseOriginalGameScore,
                 IgnoreCategories = ManualFinalScore,
                 CategoryValues = UseOriginalGameScore ? (Item == null ? GetValuesFromUI() : Item.CategoryValues) : GetValuesFromUI(),
-                FinalScoreManual = FinalScore
+                FinalScoreManual = FinalScore,
+                IsUnfinishable = IsUnfinishable
             };
             if (CompletionStatus != null)
                 newItem.SetStatus(CompletionStatus);
