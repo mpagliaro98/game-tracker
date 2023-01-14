@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CompletionStatus.cs" />
+    <Compile Include="FilterOptionsGame.cs" />
+    <Compile Include="FilterOptionsGameTemplate.cs" />
     <Compile Include="GameCompilation.cs" />
     <Compile Include="LoadSaveEngineGame.cs" />
     <Compile Include="LoadSaveEngineGameJson.cs" />
@@ -58,6 +60,8 @@
     <Compile Include="RatableGame.cs" />
     <Compile Include="RatingModuleGame.cs" />
     <Compile Include="RatingModuleGameTemplate.cs" />
+    <Compile Include="SortOptionsGame.cs" />
+    <Compile Include="SortOptionsGameTemplate.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RatableTracker\RatableTracker.csproj">

@@ -19,6 +19,8 @@ using RatableTracker.Framework.Global;
 using RatableTracker.Framework.LoadSave;
 using RatableTracker.Framework.Interfaces;
 using Microsoft.Win32;
+using GameTracker;
+using RatableTracker.List_Manipulation;
 
 namespace GameTrackerWPF
 {
@@ -40,27 +42,19 @@ namespace GameTrackerWPF
         private const string SORT_PLATFORM_RELEASE = "PlatformsSortRelease";
         private const string SORT_PLATFORM_ACQUIRED = "PlatformsSortAcquired";
 
-        private const string SORT_GAME_NAME = "GamesSortName";
-        private const string SORT_GAME_STATUS = "GamesSortStatus";
-        private const string SORT_GAME_PLATFORM = "GamesSortPlatform";
-        private const string SORT_GAME_PLAYEDON = "GamesSortPlayedOn";
-        private const string SORT_GAME_SCORE = "GamesSortScore";
-        private const string SORT_GAME_HASCOMMENT = "GamesSortHasComment";
-        private const string SORT_GAME_RELEASEDATE = "GamesSortReleaseDate";
-        private const string SORT_GAME_ACQUIREDON = "GamesSortAcquiredOn";
-        private const string SORT_GAME_STARTEDON = "GamesSortStartedOn";
-        private const string SORT_GAME_FINISHEDON = "GamesSortFinishedOn";
+        private const string SORT_CM_PREFIX = "sort";
 
         private RatingModuleGame rm;
 
         private class SavedState
         {
-            public Func<RatableGame, object> gamesSortFunc = null;
+            public int gamesSortMethod = SortOptionsGame.SORT_None;
             public SortMode gamesSortMode = SortMode.ASCENDING;
             public Func<Platform, object> platformsSortFunc = null;
             public SortMode platformsSortMode = SortMode.ASCENDING;
             public bool loaded = false;
             public GameDisplayMode displayMode = GameDisplayMode.DISPLAY_SMALL;
+            public bool showCompilations = false;
         }
 
         private SavedState savedState = new SavedState();
@@ -213,15 +207,14 @@ namespace GameTrackerWPF
         #endregion
 
         #region Games Tab
-        private IEnumerable<RatableGame> GetGamesView()
+        private FilterOptionsGame GetGameFilterOptions()
         {
-            IEnumerable<RatableGame> temp;
-            if (CheckboxShowCompilations.IsChecked.Value)
-                temp = rm.ListedObjects.Where(rg => !rg.IsPartOfCompilation).Concat(rm.GameCompilations);
-            else
-                temp = rm.ListedObjects;
-            if (savedState.gamesSortFunc != null) temp = rm.SortListedObjects(savedState.gamesSortFunc, savedState.gamesSortMode);
-            return temp;
+            return new FilterOptionsGame(savedState.showCompilations);
+        }
+
+        private SortOptionsGame GetGameSortOptions()
+        {
+            return new SortOptionsGame(savedState.gamesSortMethod, savedState.gamesSortMode);
         }
 
         private void UpdateGamesUI()
@@ -251,7 +244,7 @@ namespace GameTrackerWPF
                 default:
                     throw new NotImplementedException();
             }
-            foreach (RatableGame rg in GetGamesView())
+            foreach (RatableGame rg in rm.GetListedObjectView(GetGameFilterOptions(), GetGameSortOptions()))
             {
                 UserControl item;
                 switch (savedState.displayMode)
@@ -317,21 +310,21 @@ namespace GameTrackerWPF
             MenuItem item;
             foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
             {
-                new Tuple<string, string>(SORT_GAME_NAME, "Name"),
-                new Tuple<string, string>(SORT_GAME_STATUS, "Completion Status"),
-                new Tuple<string, string>(SORT_GAME_PLATFORM, "Platform"),
-                new Tuple<string, string>(SORT_GAME_PLAYEDON, "Platform Played On"),
-                new Tuple<string, string>(SORT_GAME_SCORE, "Final Score"),
-                new Tuple<string, string>(SORT_GAME_HASCOMMENT, "Has Comment"),
-                new Tuple<string, string>(SORT_GAME_RELEASEDATE, "Release Date"),
-                new Tuple<string, string>(SORT_GAME_ACQUIREDON, "Acquired On"),
-                new Tuple<string, string>(SORT_GAME_STARTEDON, "Started On"),
-                new Tuple<string, string>(SORT_GAME_FINISHEDON, "Finished On")
+                new Tuple<string, string>(SortOptionsGame.SORT_Name.ToString(), "Name"),
+                new Tuple<string, string>(SortOptionsGame.SORT_Status.ToString(), "Completion Status"),
+                new Tuple<string, string>(SortOptionsGame.SORT_Platform.ToString(), "Platform"),
+                new Tuple<string, string>(SortOptionsGame.SORT_PlatformPlayedOn.ToString(), "Platform Played On"),
+                new Tuple<string, string>(SortOptionsGame.SORT_Score.ToString(), "Final Score"),
+                new Tuple<string, string>(SortOptionsGame.SORT_HasComment.ToString(), "Has Comment"),
+                new Tuple<string, string>(SortOptionsGame.SORT_ReleaseDate.ToString(), "Release Date"),
+                new Tuple<string, string>(SortOptionsGame.SORT_AcquiredOn.ToString(), "Acquired On"),
+                new Tuple<string, string>(SortOptionsGame.SORT_StartedOn.ToString(), "Started On"),
+                new Tuple<string, string>(SortOptionsGame.SORT_FinishedOn.ToString(), "Finished On")
             })
             {
                 item = new MenuItem
                 {
-                    Name = sortOption.Item1,
+                    Name = SORT_CM_PREFIX + sortOption.Item1,
                     Header = sortOption.Item2,
                     IsCheckable = true
                 };
@@ -339,12 +332,13 @@ namespace GameTrackerWPF
                 item.Unchecked += GamesSort_Unchecked;
                 GamesButtonSort.ContextMenu.Items.Add(item);
             }
-            foreach (RatingCategory cat in cats)
+            for (int i = 0; i < cats.Count(); i++)
             {
+                var cat = cats.ElementAt(i);
                 item = new MenuItem
                 {
                     Header = cat.Name,
-                    Name = "z" + cat.ReferenceKey.ToString(),
+                    Name = SORT_CM_PREFIX + (SortOptionsGame.SORT_CategoryStart + i).ToString(),
                     IsCheckable = true
                 };
                 item.Checked += GamesSort_Checked;
@@ -440,57 +434,14 @@ namespace GameTrackerWPF
 
         private void GamesSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.gamesSortFunc = null;
+            savedState.gamesSortMethod = SortOptionsGame.SORT_None;
             UpdateGamesUI();
         }
 
         private void GamesSort(string sortField)
         {
             savedState.gamesSortMode = GetSortModeFromButton(GamesButtonSortMode);
-            switch (sortField)
-            {
-                case SORT_GAME_NAME:
-                    savedState.gamesSortFunc = game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name;
-                    break;
-                case SORT_GAME_STATUS:
-                    savedState.gamesSortFunc = game => game.RefStatus.HasReference() ? rm.FindStatus(game.RefStatus).Name : "";
-                    break;
-                case SORT_GAME_PLATFORM:
-                    savedState.gamesSortFunc = game => game.RefPlatform.HasReference() ? rm.FindPlatform(game.RefPlatform).Name : "";
-                    break;
-                case SORT_GAME_PLAYEDON:
-                    savedState.gamesSortFunc = game => game.RefPlatformPlayedOn.HasReference() ? rm.FindPlatform(game.RefPlatformPlayedOn).Name : "";
-                    break;
-                case SORT_GAME_SCORE:
-                    savedState.gamesSortFunc = game => rm.GetScoreOfObject(game);
-                    break;
-                case SORT_GAME_HASCOMMENT:
-                    savedState.gamesSortFunc = game => game.Comment.Length > 0;
-                    break;
-                case SORT_GAME_RELEASEDATE:
-                    savedState.gamesSortFunc = game => game.ReleaseDate;
-                    break;
-                case SORT_GAME_ACQUIREDON:
-                    savedState.gamesSortFunc = game => game.AcquiredOn;
-                    break;
-                case SORT_GAME_STARTEDON:
-                    savedState.gamesSortFunc = game => game.StartedOn;
-                    break;
-                case SORT_GAME_FINISHEDON:
-                    savedState.gamesSortFunc = game => game.FinishedOn;
-                    break;
-                default:
-                    if (Guid.TryParse(sortField.Substring(1), out Guid key))
-                    {
-                        ObjectReference refCat = new ObjectReference(key);
-                        savedState.gamesSortFunc = game => rm.GetScoreOfCategory(game, rm.FindRatingCategory(refCat));
-                    }
-                    else
-                    {
-                        throw new Exception("Unhandled sort expression");
-                    }
-                    break;
-            }
+            savedState.gamesSortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
             UpdateGamesUI();
         }
 
@@ -538,6 +489,7 @@ namespace GameTrackerWPF
 
         private void CheckboxShowCompilations_Checked(object sender, RoutedEventArgs e)
         {
+            savedState.showCompilations = CheckboxShowCompilations.IsChecked.Value;
             UpdateGamesUI();
         }
         #endregion
@@ -810,7 +762,7 @@ namespace GameTrackerWPF
             var vis = rm.RatingCategories.Count() >= rm.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewRatingCategory.Visibility = vis;
             GamesButtonSort.ContextMenu.Items.Clear();
-            savedState.gamesSortFunc = null;
+            savedState.gamesSortMethod = SortOptionsGame.SORT_None;
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)

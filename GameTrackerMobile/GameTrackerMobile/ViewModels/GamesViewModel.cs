@@ -10,24 +10,13 @@ using System.Linq;
 using GameTrackerMobile.Services;
 using System.Collections;
 using System.Collections.Generic;
+using GameTracker;
+using RatableTracker.List_Manipulation;
 
 namespace GameTrackerMobile.ViewModels
 {
     public class GamesViewModel : BaseViewModel<RatableGame>
     {
-        public const int SORT_NONE = -1;
-        public const int SORT_NAME = 0;
-        public const int SORT_STATUS = 1;
-        public const int SORT_PLATFORM = 2;
-        public const int SORT_PLAYEDON = 3;
-        public const int SORT_SCORE = 4;
-        public const int SORT_HASCOMMENT = 5;
-        public const int SORT_RELEASEDATE = 6;
-        public const int SORT_ACQUIREDON = 7;
-        public const int SORT_STARTEDON = 8;
-        public const int SORT_FINISHEDON = 9;
-        public const int SORT_CATEGORY_START = 50;
-
         private RatableGame _selectedItem;
 
         public ObservableCollection<RatableGame> Items { get; }
@@ -95,7 +84,7 @@ namespace GameTrackerMobile.ViewModels
                 {
                     items = items.Where(rg => !rg.IsPartOfCompilation).Concat(await DependencyService.Get<IDataStore<GameCompilation>>().GetItemsAsync());
                 }
-                SortGamesList(ref items);
+                items = ModuleService.GetActiveModule().GetListedObjectView(GetGameFilterOptions(), GetGameSortOptions());
                 foreach (var item in items)
                 {
                     Items.Add(item);
@@ -147,27 +136,27 @@ namespace GameTrackerMobile.ViewModels
         {
             List<PopupListOption> options = new List<PopupListOption>()
             {
-                new PopupListOption(SORT_NAME, "Name"),
-                new PopupListOption(SORT_STATUS, "Completion Status"),
-                new PopupListOption(SORT_PLATFORM, "Platform"),
-                new PopupListOption(SORT_PLAYEDON, "Platform Played On"),
-                new PopupListOption(SORT_SCORE, "Final Score"),
-                new PopupListOption(SORT_HASCOMMENT, "Has Comment"),
-                new PopupListOption(SORT_RELEASEDATE, "Release Date"),
-                new PopupListOption(SORT_ACQUIREDON, "Acquired On"),
-                new PopupListOption(SORT_STARTEDON, "Started On"),
-                new PopupListOption(SORT_FINISHEDON, "Finished On")
+                new PopupListOption(SortOptionsGame.SORT_Name, "Name"),
+                new PopupListOption(SortOptionsGame.SORT_Status, "Completion Status"),
+                new PopupListOption(SortOptionsGame.SORT_Platform, "Platform"),
+                new PopupListOption(SortOptionsGame.SORT_PlatformPlayedOn, "Platform Played On"),
+                new PopupListOption(SortOptionsGame.SORT_Score, "Final Score"),
+                new PopupListOption(SortOptionsGame.SORT_HasComment, "Has Comment"),
+                new PopupListOption(SortOptionsGame.SORT_ReleaseDate, "Release Date"),
+                new PopupListOption(SortOptionsGame.SORT_AcquiredOn, "Acquired On"),
+                new PopupListOption(SortOptionsGame.SORT_StartedOn, "Started On"),
+                new PopupListOption(SortOptionsGame.SORT_FinishedOn, "Finished On")
             };
 
             var module = ModuleService.GetActiveModule();
-            int i = SORT_CATEGORY_START;
+            int i = SortOptionsGame.SORT_CategoryStart;
             foreach (var cat in module.RatingCategories)
             {
                 options.Add(new PopupListOption(i++, cat.Name));
             }
 
             int? selectedValue = SavedState.GameSortMode;
-            if (selectedValue.Value == SORT_NONE)
+            if (selectedValue.Value == SortOptionsGame.SORT_None)
                 selectedValue = null;
             var ret = await Util.ShowPopupListAsync("Sort by", options, selectedValue);
             if (ret != null)
@@ -175,7 +164,7 @@ namespace GameTrackerMobile.ViewModels
                 if (ret.Item1 == PopupListViewModel.EnumOutputType.Cancel)
                     return;
                 else if (ret.Item2 == SavedState.GameSortMode)
-                    SavedState.GameSortMode = SORT_NONE;
+                    SavedState.GameSortMode = SortOptionsGame.SORT_None;
                 else
                     SavedState.GameSortMode = ret.Item2.Value;
                 
@@ -196,75 +185,14 @@ namespace GameTrackerMobile.ViewModels
             SortDirectionImageName = SavedState.GameSortDirection == SortMode.ASCENDING ? "sort_ascending" : "sort_descending";
         }
 
-        private void SortGamesList(ref IEnumerable<RatableGame> items)
+        private FilterOptionsGame GetGameFilterOptions()
         {
-            if (SavedState.GameSortMode == SORT_NONE)
-            {
-                if (SavedState.GameSortDirection == SortMode.DESCENDING)
-                    items = items.Reverse();
-                return;
-            }
+            return new FilterOptionsGame(SavedState.ShowCompilations);
+        }
 
-            Func<RatableGame, object> sortFunc;
-            switch (SavedState.GameSortMode)
-            {
-                case SORT_NAME:
-                    sortFunc = game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name;
-                    break;
-                case SORT_STATUS:
-                    sortFunc = game => game.RefStatus.HasReference() ? ModuleService.GetActiveModule().FindStatus(game.RefStatus).Name : "";
-                    break;
-                case SORT_PLATFORM:
-                    sortFunc = game => game.RefPlatform.HasReference() ? ModuleService.GetActiveModule().FindPlatform(game.RefPlatform).Name : "";
-                    break;
-                case SORT_PLAYEDON:
-                    sortFunc = game => game.RefPlatformPlayedOn.HasReference() ? ModuleService.GetActiveModule().FindPlatform(game.RefPlatformPlayedOn).Name : "";
-                    break;
-                case SORT_SCORE:
-                    sortFunc = game => ModuleService.GetActiveModule().GetScoreOfObject(game);
-                    break;
-                case SORT_HASCOMMENT:
-                    sortFunc = game => game.Comment.Length > 0;
-                    break;
-                case SORT_RELEASEDATE:
-                    sortFunc = game => game.ReleaseDate;
-                    break;
-                case SORT_ACQUIREDON:
-                    sortFunc = game => game.AcquiredOn;
-                    break;
-                case SORT_STARTEDON:
-                    sortFunc = game => game.StartedOn;
-                    break;
-                case SORT_FINISHEDON:
-                    sortFunc = game => game.FinishedOn;
-                    break;
-                case int n when n >= SORT_CATEGORY_START:
-                    RatingCategoryWeighted selectedCat = null;
-                    int i = SORT_CATEGORY_START;
-                    foreach (var cat in ModuleService.GetActiveModule().RatingCategories)
-                    {
-                        if (i++ == n)
-                        {
-                            selectedCat = cat;
-                            break;
-                        }
-                    }
-                    if (selectedCat == null)
-                    {
-                        SavedState.GameSortMode = SORT_NONE;
-                        return;
-                    }
-                    var rm = ModuleService.GetActiveModule();
-                    sortFunc = game => rm.GetScoreOfCategory(game, selectedCat);
-                    break;
-                default:
-                    throw new Exception("Unknown sort mode");
-            }
-
-            if (SavedState.GameSortDirection == SortMode.ASCENDING)
-                items = items.OrderBy(game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name).OrderBy(sortFunc);
-            else
-                items = items.OrderBy(game => game.Name.ToLower().StartsWith("the ") ? game.Name.Substring(4) : game.Name).OrderByDescending(sortFunc);
+        private SortOptionsGame GetGameSortOptions()
+        {
+            return new SortOptionsGame(SavedState.GameSortMode, SavedState.GameSortDirection);
         }
     }
 }

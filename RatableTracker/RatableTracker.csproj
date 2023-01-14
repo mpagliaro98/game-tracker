@@ -68,6 +68,18 @@
     <Compile Include="IO\PathController.cs" />
     <Compile Include="IO\PathControllerMobile.cs" />
     <Compile Include="IO\PathControllerWindows.cs" />
+    <Compile Include="List Manipulation\FilterOptionsListedObj.cs" />
+    <Compile Include="List Manipulation\FilterOptionsListedObjStatus.cs" />
+    <Compile Include="List Manipulation\FilterOptionsRatableObj.cs" />
+    <Compile Include="List Manipulation\FilterOptionsRatableObjCategorical.cs" />
+    <Compile Include="List Manipulation\FilterOptionsRatableObjStatus.cs" />
+    <Compile Include="List Manipulation\FilterOptionsRatableObjStatusCategorical.cs" />
+    <Compile Include="List Manipulation\SortOptionsListedObj.cs" />
+    <Compile Include="List Manipulation\SortOptionsListedObjStatus.cs" />
+    <Compile Include="List Manipulation\SortOptionsRatableObj.cs" />
+    <Compile Include="List Manipulation\SortOptionsRatableObjCategorical.cs" />
+    <Compile Include="List Manipulation\SortOptionsRatableObjStatus.cs" />
+    <Compile Include="List Manipulation\SortOptionsRatableObjStatusCategorical.cs" />
     <Compile Include="LoadSave\LoadSaveEngine.cs" />
     <Compile Include="LoadSave\LoadSaveEngineRated.cs" />
     <Compile Include="LoadSave\LoadSaveEngineRatedCategorical.cs" />
@@ -101,7 +113,7 @@
     <Compile Include="ScoreRange.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsScore.cs" />
-    <Compile Include="SortMode.cs" />
+    <Compile Include="List Manipulation\SortMode.cs" />
     <Compile Include="Status.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

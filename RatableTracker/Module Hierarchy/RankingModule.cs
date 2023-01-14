@@ -8,6 +8,7 @@ using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.Exceptions;
 using RatableTracker.Framework.Global;
 using RatableTracker.Framework.ScoreRelationships;
+using RatableTracker.List_Manipulation;
 
 namespace RatableTracker.Framework.ModuleHierarchy
 {
@@ -261,14 +262,12 @@ namespace RatableTracker.Framework.ModuleHierarchy
             DeleteFromList(ref ranges, SaveRanges, obj);
         }
 
-        public IEnumerable<TListedObj> SortListedObjects<TField>(Func<TListedObj, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        public IEnumerable<TListedObj> GetListedObjectView<TModule>(FilterOptionsListedObj<TListedObj, TModule, TRange, TSettings> filter, SortOptionsListedObj<TListedObj, TModule, TRange, TSettings> sort) where TModule : RankingModule<TListedObj, TRange, TSettings>
         {
-            return SortList(listedObjs, keySelector, mode);
-        }
-
-        public IEnumerable<TRange> SortRanges<TField>(Func<TRange, TField> keySelector, SortMode mode = SortMode.ASCENDING)
-        {
-            return SortList(ranges, keySelector, mode);
+            IEnumerable<TListedObj> temp = new List<TListedObj>(ListedObjects);
+            temp = filter.ApplyFilters(temp, (TModule)this);
+            temp = sort.ApplySorting(temp, (TModule)this);
+            return temp;
         }
 
         public void ChangeRankOfListedObject(int rankToChange, int newRank)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using GameTracker;
 using GameTracker.Model;
 using GameTrackerMobile.Services;
 using GameTrackerMobile.ViewModels;
@@ -29,9 +30,9 @@ namespace GameTrackerMobile.Converters
             double score;
             switch (SavedState.GameSortMode)
             {
-                case int n when n >= GamesViewModel.SORT_CATEGORY_START:
+                case int n when n >= SortOptionsGame.SORT_CategoryStart:
                     RatingCategoryWeighted selectedCat = null;
-                    int i = GamesViewModel.SORT_CATEGORY_START;
+                    int i = SortOptionsGame.SORT_CategoryStart;
                     foreach (var cat in ModuleService.GetActiveModule().RatingCategories)
                     {
                         if (i++ == n)
