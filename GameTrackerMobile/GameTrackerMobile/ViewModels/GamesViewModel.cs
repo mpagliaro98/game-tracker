@@ -55,7 +55,7 @@ namespace GameTrackerMobile.ViewModels
         {
             Title = "Games";
             Items = new ObservableCollection<RatableGame>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
             ShowCompilations = new Command(OnShowCompilations);
 
             ItemTapped = new Command<RatableGame>(OnItemSelected);
@@ -72,19 +72,14 @@ namespace GameTrackerMobile.ViewModels
             return ModuleService.GetActiveModule().ListedObjects.Count() < ModuleService.GetActiveModule().LimitListedObjects;
         }
 
-        async Task ExecuteLoadItemsCommand()
+        void ExecuteLoadItemsCommand()
         {
             IsBusy = true;
 
             try
             {
                 Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
-                if (SavedState.ShowCompilations)
-                {
-                    items = items.Where(rg => !rg.IsPartOfCompilation).Concat(await DependencyService.Get<IDataStore<GameCompilation>>().GetItemsAsync());
-                }
-                items = ModuleService.GetActiveModule().GetListedObjectView(GetGameFilterOptions(), GetGameSortOptions());
+                var items = ModuleService.GetActiveModule().GetListedObjectView(GetGameFilterOptions(), GetGameSortOptions());
                 foreach (var item in items)
                 {
                     Items.Add(item);
@@ -125,7 +120,7 @@ namespace GameTrackerMobile.ViewModels
         async void OnShowCompilations()
         {
             SavedState.ShowCompilations = !SavedState.ShowCompilations;
-            await ExecuteLoadItemsCommand();
+            ExecuteLoadItemsCommand();
             string msg = SavedState.ShowCompilations ?
                 "Compilations are now being shown in the list, and games in compilations are hidden." :
                 "Games in compilations are visible, and compilations are being hidden.";
@@ -168,15 +163,15 @@ namespace GameTrackerMobile.ViewModels
                 else
                     SavedState.GameSortMode = ret.Item2.Value;
                 
-                await ExecuteLoadItemsCommand();
+                ExecuteLoadItemsCommand();
             }
         }
 
-        private async void OnSortDirection()
+        private void OnSortDirection()
         {
             SavedState.GameSortDirection = SavedState.GameSortDirection == SortMode.ASCENDING ? SortMode.DESCENDING : SortMode.ASCENDING;
             SetSortDirectionButton();
-            await ExecuteLoadItemsCommand();
+            ExecuteLoadItemsCommand();
         }
 
         private void SetSortDirectionButton()

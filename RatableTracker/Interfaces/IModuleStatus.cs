@@ -18,7 +18,6 @@ namespace RatableTracker.Framework.Interfaces
         void AddStatus(TStatus obj);
         void UpdateStatus(TStatus obj, TStatus orig);
         void DeleteStatus(TStatus obj);
-        IEnumerable<TStatus> SortStatuses<TField>(Func<TStatus, TField> keySelector, SortMode mode = SortMode.ASCENDING);
         void ValidateStatus(TStatus obj);
     }
 }

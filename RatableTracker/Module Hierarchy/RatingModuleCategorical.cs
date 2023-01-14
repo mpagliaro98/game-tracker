@@ -123,11 +123,6 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (GlobalSettings.Autosave) SaveListedObjects();
         }
 
-        public IEnumerable<TRatingCat> SortRatingCategories<TField>(Func<TRatingCat, TField> keySelector, SortMode mode = SortMode.ASCENDING)
-        {
-            return SortList(ratingCategories, keySelector, mode);
-        }
-
         public override void ValidateListedObject(TListedObj obj)
         {
             base.ValidateListedObject(obj);

@@ -62,11 +62,6 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (GlobalSettings.Autosave) SaveListedObjects();
         }
 
-        public IEnumerable<TStatus> SortStatuses<TField>(Func<TStatus, TField> keySelector, SortMode mode = SortMode.ASCENDING)
-        {
-            return SortList(statuses, keySelector, mode);
-        }
-
         public virtual void ValidateStatus(TStatus obj)
         {
             if (obj.Name == "")

@@ -8,6 +8,7 @@ using RatableTracker.Framework.Global;
 using RatableTracker.Framework.Interfaces;
 using RatableTracker.Framework.ModuleHierarchy;
 using RatableTracker.Framework.Exceptions;
+using RatableTracker.List_Manipulation;
 
 namespace GameTracker.Model
 {
@@ -258,9 +259,12 @@ namespace GameTracker.Model
             if (GlobalSettings.Autosave) SaveListedObjects();
         }
 
-        public IEnumerable<Platform> SortPlatforms<TField>(Func<Platform, TField> keySelector, SortMode mode = SortMode.ASCENDING)
+        public IEnumerable<Platform> GetPlatformView<TModule>(FilterOptionsPlatformTemplate<TListedObj, TModule, TRange, TSettings, TStatus, TRatingCat> filter, SortOptionsPlatformTemplate<TListedObj, TModule, TRange, TSettings, TStatus, TRatingCat> sort) where TModule : RatingModuleGameTemplate<TListedObj, TRange, TSettings, TStatus, TRatingCat>
         {
-            return SortList(platforms, keySelector, mode);
+            IEnumerable<Platform> temp = new List<Platform>(Platforms);
+            temp = filter.ApplyFilters(temp, (TModule)this);
+            temp = sort.ApplySorting(temp, (TModule)this);
+            return temp;
         }
 
         public GameCompilation FindGameCompilation(ObjectReference objectKey)

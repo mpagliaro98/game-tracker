@@ -195,17 +195,6 @@ namespace RatableTracker.Framework.ModuleHierarchy
             if (GlobalSettings.Autosave) saveFunction();
         }
 
-        protected IEnumerable<TInput> SortList<TInput, TOutput>(IEnumerable<TInput> list,
-            Func<TInput, TOutput> keySelector, SortMode mode)
-        {
-            if (mode == SortMode.ASCENDING)
-                return list.OrderBy(keySelector);
-            else if (mode == SortMode.DESCENDING)
-                return list.OrderByDescending(keySelector);
-            else
-                throw new Exception("Unhandled sort mode");
-        }
-
         protected void MoveElementInList<T>(ref IEnumerable<T> list, Action saveFunction, int posToChange, int newPos)
         {
             List<T> temp = list.ToList();

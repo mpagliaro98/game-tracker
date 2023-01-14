@@ -22,7 +22,6 @@ namespace RatableTracker.Framework.Interfaces
         void AddRatingCategory(TRatingCat obj);
         void UpdateRatingCategory(TRatingCat obj, TRatingCat orig);
         void DeleteRatingCategory(TRatingCat obj);
-        IEnumerable<TRatingCat> SortRatingCategories<TField>(Func<TRatingCat, TField> keySelector, SortMode mode = SortMode.ASCENDING);
         void ValidateCategoryScores(IEnumerable<RatingCategoryValue> vals);
         void ValidateRatingCategory(TRatingCat obj);
     }

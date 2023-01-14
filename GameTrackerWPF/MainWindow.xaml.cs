@@ -33,15 +33,6 @@ namespace GameTrackerWPF
         private const string TAB_PLATFORMS = "TabPlatforms";
         private const string TAB_SETTINGS = "TabSettings";
 
-        private const string SORT_PLATFORM_NAME = "PlatformsSortName";
-        private const string SORT_PLATFORM_NUMGAMES = "PlatformsSortNumGames";
-        private const string SORT_PLATFORM_AVERAGE = "PlatformsSortAverage";
-        private const string SORT_PLATFORM_HIGHEST = "PlatformsSortHighest";
-        private const string SORT_PLATFORM_LOWEST = "PlatformsSortLowest";
-        private const string SORT_PLATFORM_PERCENT = "PlatformsSortPercentFinished";
-        private const string SORT_PLATFORM_RELEASE = "PlatformsSortRelease";
-        private const string SORT_PLATFORM_ACQUIRED = "PlatformsSortAcquired";
-
         private const string SORT_CM_PREFIX = "sort";
 
         private RatingModuleGame rm;
@@ -50,7 +41,7 @@ namespace GameTrackerWPF
         {
             public int gamesSortMethod = SortOptionsGame.SORT_None;
             public SortMode gamesSortMode = SortMode.ASCENDING;
-            public Func<Platform, object> platformsSortFunc = null;
+            public int platformsSortMethod = SortOptionsPlatform.SORT_None;
             public SortMode platformsSortMode = SortMode.ASCENDING;
             public bool loaded = false;
             public GameDisplayMode displayMode = GameDisplayMode.DISPLAY_SMALL;
@@ -61,6 +52,7 @@ namespace GameTrackerWPF
 
         public MainWindow()
         {
+            savedState.loaded = false;
             PathController.PathControllerInstance = new PathControllerWindows();
             GlobalSettings.Autosave = false;
             IContentLoadSave<string, string> cls;
@@ -495,17 +487,20 @@ namespace GameTrackerWPF
         #endregion
 
         #region Platforms Tab
-        private IEnumerable<Platform> GetPlatformsView()
+        private FilterOptionsPlatform GetPlatformFilterOptions()
         {
-            IEnumerable<Platform> temp = rm.Platforms;
-            if (savedState.platformsSortFunc != null) temp = rm.SortPlatforms(savedState.platformsSortFunc, savedState.platformsSortMode);
-            return temp;
+            return new FilterOptionsPlatform();
+        }
+
+        private SortOptionsPlatform GetPlatformSortOptions()
+        {
+            return new SortOptionsPlatform(savedState.platformsSortMethod, savedState.platformsSortMode);
         }
 
         private void UpdatePlatformsUI()
         {
             PlatformsListbox.ClearItems();
-            foreach (Platform platform in GetPlatformsView())
+            foreach (Platform platform in rm.GetPlatformView(GetPlatformFilterOptions(), GetPlatformSortOptions()))
             {
                 ListBoxItemPlatform item = new ListBoxItemPlatform(rm, platform);
                 item.MouseDoubleClick += PlatformEdit;
@@ -514,8 +509,39 @@ namespace GameTrackerWPF
                 item.ContextMenu = EditDeleteContextMenu(PlatformEdit, PlatformDelete);
             }
 
+            BuildPlatformsSortOptions();
+
             var vis = rm.Platforms.Count() >= rm.LimitPlatforms ? Visibility.Hidden : Visibility.Visible;
             PlatformsButtonNew.Visibility = vis;
+        }
+
+        private void BuildPlatformsSortOptions()
+        {
+            if (!savedState.loaded || PlatformsButtonSort.ContextMenu.Items.Count > 0) return;
+            PlatformsButtonSort.ContextMenu.Items.Clear();
+            MenuItem item;
+            foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
+            {
+                new Tuple<string, string>(SortOptionsPlatform.SORT_Name.ToString(), "Name"),
+                new Tuple<string, string>(SortOptionsPlatform.SORT_NumGames.ToString(), "# Games"),
+                new Tuple<string, string>(SortOptionsPlatform.SORT_Average.ToString(), "Average Score"),
+                new Tuple<string, string>(SortOptionsPlatform.SORT_Highest.ToString(), "Highest Score"),
+                new Tuple<string, string>(SortOptionsPlatform.SORT_Lowest.ToString(), "Lowest Score"),
+                new Tuple<string, string>(SortOptionsPlatform.SORT_PercentFinished.ToString(), "% Finished"),
+                new Tuple<string, string>(SortOptionsPlatform.SORT_Release.ToString(), "Release Year"),
+                new Tuple<string, string>(SortOptionsPlatform.SORT_Acquired.ToString(), "Acquired Year")
+            })
+            {
+                item = new MenuItem
+                {
+                    Name = SORT_CM_PREFIX + sortOption.Item1,
+                    Header = sortOption.Item2,
+                    IsCheckable = true
+                };
+                item.Checked += PlatformsSort_Checked;
+                item.Unchecked += PlatformsSort_Unchecked;
+                PlatformsButtonSort.ContextMenu.Items.Add(item);
+            }
         }
 
         private void PlatformsButtonNew_Click(object sender, RoutedEventArgs e)
@@ -591,42 +617,14 @@ namespace GameTrackerWPF
 
         private void PlatformsSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.platformsSortFunc = null;
+            savedState.platformsSortMethod = SortOptionsPlatform.SORT_None;
             UpdatePlatformsUI();
         }
 
         private void PlatformSort(string sortField)
         {
-            SortMode mode = GetSortModeFromButton(PlatformsButtonSortMode);
-            switch (sortField)
-            {
-                case SORT_PLATFORM_NAME:
-                    savedState.platformsSortFunc = platform => platform.Name;
-                    break;
-                case SORT_PLATFORM_NUMGAMES:
-                    savedState.platformsSortFunc = platform => rm.GetNumGamesByPlatform(platform);
-                    break;
-                case SORT_PLATFORM_AVERAGE:
-                    savedState.platformsSortFunc = platform => rm.GetAverageScoreOfGamesByPlatform(platform);
-                    break;
-                case SORT_PLATFORM_HIGHEST:
-                    savedState.platformsSortFunc = platform => rm.GetHighestScoreFromGamesByPlatform(platform);
-                    break;
-                case SORT_PLATFORM_LOWEST:
-                    savedState.platformsSortFunc = platform => rm.GetLowestScoreFromGamesByPlatform(platform);
-                    break;
-                case SORT_PLATFORM_PERCENT:
-                    savedState.platformsSortFunc = platform => rm.GetPercentageGamesFinishedByPlatform(platform);
-                    break;
-                case SORT_PLATFORM_RELEASE:
-                    savedState.platformsSortFunc = platform => platform.ReleaseYear;
-                    break;
-                case SORT_PLATFORM_ACQUIRED:
-                    savedState.platformsSortFunc = platform => platform.AcquiredYear;
-                    break;
-                default:
-                    throw new Exception("Unhandled sort expression");
-            }
+            savedState.platformsSortMode = GetSortModeFromButton(PlatformsButtonSortMode);
+            savedState.platformsSortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
             UpdatePlatformsUI();
         }
 

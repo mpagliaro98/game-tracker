@@ -46,7 +46,7 @@ namespace GameTrackerMobile
             }
         }
 
-        private static int platformSortMode = PlatformsViewModel.SORT_NONE;
+        private static int platformSortMode = SortOptionsPlatform.SORT_None;
         public static int PlatformSortMode
         {
             get => platformSortMode;
@@ -100,12 +100,14 @@ namespace GameTrackerMobile
 
         public static void SaveSavedState()
         {
-            List<string> lines = new List<string>();
-            lines.Add(showCompilations.ToString());
-            lines.Add(gameSortMode.ToString());
-            lines.Add(gameSortDirection.ToString());
-            lines.Add(platformSortMode.ToString());
-            lines.Add(platformSortDirection.ToString());
+            List<string> lines = new List<string>
+            {
+                showCompilations.ToString(),
+                gameSortMode.ToString(),
+                gameSortDirection.ToString(),
+                platformSortMode.ToString(),
+                platformSortDirection.ToString()
+            };
             string contents = string.Join("\n", lines);
             PathController.WriteToFile(SAVED_STATE_PATH, contents);
         }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameTracker;
 using GameTracker.Model;
 using GameTrackerMobile.Services;
 using GameTrackerMobile.Views;
@@ -15,16 +16,6 @@ namespace GameTrackerMobile.ViewModels
 {
     public class PlatformsViewModel : BaseViewModel<Platform>
     {
-        public const int SORT_NONE = -1;
-        public const int SORT_NAME = 0;
-        public const int SORT_NUMGAMES = 1;
-        public const int SORT_AVG = 2;
-        public const int SORT_HIGHEST = 3;
-        public const int SORT_LOWEST = 4;
-        public const int SORT_PERCFINISHED = 5;
-        public const int SORT_RELEASEYEAR = 6;
-        public const int SORT_ACQUIREDYEAR = 7;
-
         private Platform _selectedItem;
 
         public ObservableCollection<Platform> Items { get; }
@@ -62,7 +53,7 @@ namespace GameTrackerMobile.ViewModels
         {
             Title = "Platforms";
             Items = new ObservableCollection<Platform>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
+            LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
 
             ItemTapped = new Command<Platform>(OnItemSelected);
 
@@ -78,15 +69,14 @@ namespace GameTrackerMobile.ViewModels
             return ModuleService.GetActiveModule().Platforms.Count() < ModuleService.GetActiveModule().LimitPlatforms;
         }
 
-        async Task ExecuteLoadItemsCommand()
+        void ExecuteLoadItemsCommand()
         {
             IsBusy = true;
 
             try
             {
                 Items.Clear();
-                var items = await DataStore.GetItemsAsync(true);
-                SortPlatformsList(ref items);
+                var items = ModuleService.GetActiveModule().GetPlatformView(GetPlatformFilterOptions(), GetPlatformSortOptions());
                 foreach (var item in items)
                 {
                     Items.Add(item);
@@ -125,18 +115,18 @@ namespace GameTrackerMobile.ViewModels
         {
             List<PopupListOption> options = new List<PopupListOption>()
             {
-                new PopupListOption(SORT_NAME, "Name"),
-                new PopupListOption(SORT_NUMGAMES, "# Games"),
-                new PopupListOption(SORT_AVG, "Average Score"),
-                new PopupListOption(SORT_HIGHEST, "Highest Score"),
-                new PopupListOption(SORT_LOWEST, "Lowest Score"),
-                new PopupListOption(SORT_PERCFINISHED, "% Finished"),
-                new PopupListOption(SORT_RELEASEYEAR, "Release Year"),
-                new PopupListOption(SORT_ACQUIREDYEAR, "Acquired Year")
+                new PopupListOption(SortOptionsPlatform.SORT_Name, "Name"),
+                new PopupListOption(SortOptionsPlatform.SORT_NumGames, "# Games"),
+                new PopupListOption(SortOptionsPlatform.SORT_Average, "Average Score"),
+                new PopupListOption(SortOptionsPlatform.SORT_Highest, "Highest Score"),
+                new PopupListOption(SortOptionsPlatform.SORT_Lowest, "Lowest Score"),
+                new PopupListOption(SortOptionsPlatform.SORT_PercentFinished, "% Finished"),
+                new PopupListOption(SortOptionsPlatform.SORT_Release, "Release Year"),
+                new PopupListOption(SortOptionsPlatform.SORT_Acquired, "Acquired Year")
             };
 
             int? selectedValue = SavedState.PlatformSortMode;
-            if (selectedValue.Value == SORT_NONE)
+            if (selectedValue.Value == SortOptionsPlatform.SORT_None)
                 selectedValue = null;
             var ret = await Util.ShowPopupListAsync("Sort by", options, selectedValue);
             if (ret != null)
@@ -144,19 +134,19 @@ namespace GameTrackerMobile.ViewModels
                 if (ret.Item1 == PopupListViewModel.EnumOutputType.Cancel)
                     return;
                 else if (ret.Item2 == SavedState.PlatformSortMode)
-                    SavedState.PlatformSortMode = SORT_NONE;
+                    SavedState.PlatformSortMode = SortOptionsPlatform.SORT_None;
                 else
                     SavedState.PlatformSortMode = ret.Item2.Value;
 
-                await ExecuteLoadItemsCommand();
+                ExecuteLoadItemsCommand();
             }
         }
 
-        private async void OnSortDirection()
+        private void OnSortDirection()
         {
             SavedState.PlatformSortDirection = SavedState.PlatformSortDirection == SortMode.ASCENDING ? SortMode.DESCENDING : SortMode.ASCENDING;
             SetSortDirectionButton();
-            await ExecuteLoadItemsCommand();
+            ExecuteLoadItemsCommand();
         }
 
         private void SetSortDirectionButton()
@@ -165,51 +155,14 @@ namespace GameTrackerMobile.ViewModels
             SortDirectionImageName = SavedState.PlatformSortDirection == SortMode.ASCENDING ? "sort_ascending" : "sort_descending";
         }
 
-        private void SortPlatformsList(ref IEnumerable<Platform> items)
+        private FilterOptionsPlatform GetPlatformFilterOptions()
         {
-            if (SavedState.PlatformSortMode == SORT_NONE)
-            {
-                if (SavedState.PlatformSortDirection == SortMode.DESCENDING)
-                    items = items.Reverse();
-                return;
-            }
+            return new FilterOptionsPlatform();
+        }
 
-            var rm = ModuleService.GetActiveModule();
-            Func<Platform, object> sortFunc;
-            switch (SavedState.PlatformSortMode)
-            {
-                case SORT_NAME:
-                    sortFunc = platform => platform.Name;
-                    break;
-                case SORT_NUMGAMES:
-                    sortFunc = platform => rm.GetNumGamesByPlatform(platform);
-                    break;
-                case SORT_AVG:
-                    sortFunc = platform => rm.GetAverageScoreOfGamesByPlatform(platform);
-                    break;
-                case SORT_HIGHEST:
-                    sortFunc = platform => rm.GetHighestScoreFromGamesByPlatform(platform);
-                    break;
-                case SORT_LOWEST:
-                    sortFunc = platform => rm.GetLowestScoreFromGamesByPlatform(platform);
-                    break;
-                case SORT_PERCFINISHED:
-                    sortFunc = platform => rm.GetPercentageGamesFinishedByPlatform(platform);
-                    break;
-                case SORT_RELEASEYEAR:
-                    sortFunc = platform => platform.ReleaseYear;
-                    break;
-                case SORT_ACQUIREDYEAR:
-                    sortFunc = platform => platform.AcquiredYear;
-                    break;
-                default:
-                    throw new Exception("Unknown sort mode");
-            }
-
-            if (SavedState.PlatformSortDirection == SortMode.ASCENDING)
-                items = items.OrderBy(game => game.Name).OrderBy(sortFunc);
-            else
-                items = items.OrderBy(game => game.Name).OrderByDescending(sortFunc);
+        private SortOptionsPlatform GetPlatformSortOptions()
+        {
+            return new SortOptionsPlatform(SavedState.PlatformSortMode, SavedState.PlatformSortDirection);
         }
     }
 }
