@@ -106,6 +106,46 @@
     <Compile Include="RatingCategory.cs" />
     <Compile Include="RatingCategoryValue.cs" />
     <Compile Include="RatingCategoryWeighted.cs" />
+    <Compile Include="Rework\Interfaces\ILoadSaveLocation.cs" />
+    <Compile Include="Rework\Interfaces\ILoadSaveMethod.cs" />
+    <Compile Include="Rework\Interfaces\IKeyable.cs" />
+    <Compile Include="Rework\Interfaces\IModuleCategorical.cs" />
+    <Compile Include="Rework\Interfaces\ISavable.cs" />
+    <Compile Include="Rework\LoadSave\LoadSaveHandler.cs" />
+    <Compile Include="Rework\LoadSave\LoadSaveLocationAWSS3.cs" />
+    <Compile Include="Rework\LoadSave\LoadSaveLocationLocal.cs" />
+    <Compile Include="Rework\LoadSave\LoadSaveMethodJSON.cs" />
+    <Compile Include="Rework\LoadSave\SavableRepresentation.cs" />
+    <Compile Include="Rework\LoadSave\ValueContainer.cs" />
+    <Compile Include="Rework\Model\RankedObject.cs" />
+    <Compile Include="Rework\Model\RankedObjectStatus.cs" />
+    <Compile Include="Rework\Model\RatedObject.cs" />
+    <Compile Include="Rework\Model\RatedObjectCategorical.cs" />
+    <Compile Include="Rework\Model\RatedObjectStatus.cs" />
+    <Compile Include="Rework\Model\RatedObjectStatusCategorical.cs" />
+    <Compile Include="Rework\Modules\TrackerModule.cs" />
+    <Compile Include="Rework\Modules\TrackerModuleScoreCategorical.cs" />
+    <Compile Include="Rework\Modules\TrackerModuleScores.cs" />
+    <Compile Include="Rework\Modules\TrackerModuleScoreStatusCategorical.cs" />
+    <Compile Include="Rework\Modules\TrackerModuleScoreStatuses.cs" />
+    <Compile Include="Rework\Modules\TrackerModuleStatuses.cs" />
+    <Compile Include="Rework\ObjAddOns\CategoryExtension.cs" />
+    <Compile Include="Rework\ObjAddOns\CategoryExtensionModule.cs" />
+    <Compile Include="Rework\ObjAddOns\CategoryValue.cs" />
+    <Compile Include="Rework\ObjAddOns\RatingCategory.cs" />
+    <Compile Include="Rework\ObjAddOns\RatingCategoryWeighted.cs" />
+    <Compile Include="Rework\ObjAddOns\Status.cs" />
+    <Compile Include="Rework\ObjAddOns\StatusExtension.cs" />
+    <Compile Include="Rework\ObjAddOns\StatusExtensionModule.cs" />
+    <Compile Include="Rework\ScoreRanges\ScoreRange.cs" />
+    <Compile Include="Rework\ScoreRanges\ScoreRelationship.cs" />
+    <Compile Include="Rework\ScoreRanges\ScoreRelationshipAbove.cs" />
+    <Compile Include="Rework\ScoreRanges\ScoreRelationshipBelow.cs" />
+    <Compile Include="Rework\ScoreRanges\ScoreRelationshipBetween.cs" />
+    <Compile Include="Rework\Util\Color.cs" />
+    <Compile Include="Rework\Util\Settings.cs" />
+    <Compile Include="Rework\Util\SettingsScore.cs" />
+    <Compile Include="Rework\Util\UniqueID.cs" />
     <Compile Include="Score Relationships\ScoreRelationship.cs" />
     <Compile Include="Score Relationships\ScoreRelationshipAbove.cs" />
     <Compile Include="Score Relationships\ScoreRelationshipBelow.cs" />
@@ -116,5 +156,6 @@
     <Compile Include="List Manipulation\SortMode.cs" />
     <Compile Include="Status.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
