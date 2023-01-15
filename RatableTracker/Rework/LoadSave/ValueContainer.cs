@@ -1,115 +1,278 @@
-﻿using System;
+﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using RatableTracker.Rework.Interfaces;
 
 namespace RatableTracker.Rework.LoadSave
 {
     public class ValueContainer
     {
-        private string valueString = null;
-        private SavableRepresentation<ValueContainer> valueSR = null;
-        private IEnumerable<string> valueStringList = null;
-        private IEnumerable<SavableRepresentation<ValueContainer>> valueSRList = null;
+        protected string valueString = null;
+        protected SavableRepresentation valueSR = null;
+        protected IEnumerable<string> valueStringList = null;
+        protected IEnumerable<SavableRepresentation> valueSRList = null;
 
-        public ValueContainer() { }
+        public ValueContainer(string val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(int val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(bool val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(double val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(Guid val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(Color val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(DateTime val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(UniqueID val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(ISavable val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(SavableRepresentation val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(IEnumerable<string> val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(IEnumerable<int> val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(IEnumerable<double> val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(IEnumerable<ISavable> val)
+        {
+            SetContent(val);
+        }
+
+        public ValueContainer(IEnumerable<SavableRepresentation> val)
+        {
+            SetContent(val);
+        }
 
         public void SetContent(string val)
         {
             valueString = val;
         }
 
-        //public void SetContent(ISavable val)
-        //{
-        //    var sr = new SavableRepresentation<ValueContainer>();
-        //    val?.LoadIntoRepresentation(ref sr);
-        //    valueSR = sr;
-        //}
+        public void SetContent(int val)
+        {
+            SetContent(val.ToString());
+        }
 
-        //public void SetContent(SavableRepresentation<ValueContainer> val)
-        //{
-        //    valueSR = val;
-        //}
+        public void SetContent(bool val)
+        {
+            SetContent(val.ToString());
+        }
+
+        public void SetContent(double val)
+        {
+            SetContent(val.ToString());
+        }
+
+        public void SetContent(Guid val)
+        {
+            SetContent(val.ToString());
+        }
+
+        public void SetContent(Color val)
+        {
+            SetContent(val.ToArgb().ToString());
+        }
+
+        public void SetContent(DateTime val)
+        {
+            SetContent(val.ToString());
+        }
+
+        public void SetContent(UniqueID val)
+        {
+            SetContent(val.ToString());
+        }
+
+        public void SetContent(ISavable savable)
+        {
+            SetContent(savable.LoadIntoRepresentation());
+        }
+
+        public void SetContent(SavableRepresentation val)
+        {
+            valueSR = val;
+        }
 
         public void SetContent(IEnumerable<string> val)
         {
             valueStringList = val;
         }
 
-        //public void SetContent(IEnumerable<ISavable> val)
-        //{
-        //    LinkedList<SavableRepresentation<TInner>> list = new LinkedList<SavableRepresentation<TInner>>();
-        //    foreach (ISavable value in val)
-        //    {
-        //        list.AddLast(value.LoadIntoRepresentation<TInner>());
-        //    }
-        //    valueSRList = list;
-        //}
+        public void SetContent(IEnumerable<int> val)
+        {
+            IEnumerable<string> list = Util.Util.ConvertListToStringList(val);
+            SetContent(list);
+        }
 
-        //public void SetContent(IEnumerable<SavableRepresentation<TInner>> val)
-        //{
-        //    valueSRList = val;
-        //}
+        public void SetContent(IEnumerable<double> val)
+        {
+            IEnumerable<string> list = Util.Util.ConvertListToStringList(val);
+            SetContent(list);
+        }
 
-        public string GetContentString()
+        public void SetContent(IEnumerable<ISavable> val)
+        {
+            LinkedList<SavableRepresentation> list = new LinkedList<SavableRepresentation>();
+            foreach (ISavable value in val)
+            {
+                var sr = value?.LoadIntoRepresentation();
+                list.AddLast(sr);
+            }
+            SetContent(list);
+        }
+
+        public void SetContent(IEnumerable<SavableRepresentation> val)
+        {
+            valueSRList = val;
+        }
+
+        public string GetString()
         {
             return valueString;
         }
 
-        //public T GetContentISavable<T>() where T : ISavable, new()
-        //{
-        //    SavableRepresentation<TInner> sr = valueSR;
-        //    T t = new T();
-        //    if (sr != null) t.RestoreFromRepresentation(sr);
-        //    return t;
-        //}
+        public int GetInt()
+        {
+            return Convert.ToInt32(GetString());
+        }
 
-        //public SavableRepresentation<TInner> GetContentSavableRepresentation()
-        //{
-        //    return valueSR;
-        //}
+        public bool GetBool()
+        {
+            return Convert.ToBoolean(GetString());
+        }
 
-        public IEnumerable<string> GetContentStringList()
+        public double GetDouble()
+        {
+            return Convert.ToDouble(GetString());
+        }
+
+        public Guid GetGuid()
+        {
+            return Guid.Parse(GetString());
+        }
+
+        public Color GetColor()
+        {
+            return Color.FromArgb(GetInt());
+        }
+
+        public DateTime GetDateTime()
+        {
+            return DateTime.Parse(GetString());
+        }
+
+        public UniqueID GetUniqueID()
+        {
+            return new UniqueID(GetGuid());
+        }
+
+        public ISavable GetISavable(Func<ISavable> initSavable)
+        {
+            ISavable savable = initSavable();
+            savable?.RestoreFromRepresentation(GetSavableRepresentation());
+            return savable;
+        }
+
+        public SavableRepresentation GetSavableRepresentation()
+        {
+            return valueSR;
+        }
+
+        public IEnumerable<string> GetStringList()
         {
             return valueStringList;
         }
 
-        //public IEnumerable<T> GetContentISavableList<T>() where T : ISavable, new()
-        //{
-        //    List<T> result = new List<T>();
-        //    IEnumerable<SavableRepresentation<TInner>> list = GetContentSavableRepresentationList();
-        //    foreach (SavableRepresentation<TInner> sr in list)
-        //    {
-        //        T t = new T();
-        //        if (sr != null) t.RestoreFromRepresentation(sr);
-        //        result.Add(t);
-        //    }
-        //    return result;
-        //}
+        public IEnumerable<int> GetIntList()
+        {
+            return GetStringList().Select((s) => Convert.ToInt32(s));
+        }
 
-        //public IEnumerable<SavableRepresentation<TInner>> GetContentSavableRepresentationList()
-        //{
-        //    return valueSRList;
-        //}
+        public IEnumerable<double> GetDoubleList()
+        {
+            return GetStringList().Select((s) => Convert.ToDouble(s));
+        }
 
-        public bool HasValue()
+        public IEnumerable<T> GetISavableList<T>(Func<T> initSavable) where T : ISavable
+        {
+            LinkedList<T> list = new LinkedList<T>();
+            foreach (SavableRepresentation sr in GetSavableRepresentationList())
+            {
+                T savable = initSavable();
+                savable?.RestoreFromRepresentation(sr);
+                list.AddLast(savable);
+            }
+            return list;
+        }
+
+        public IEnumerable<SavableRepresentation> GetSavableRepresentationList()
+        {
+            return valueSRList;
+        }
+
+        public virtual bool HasValue()
         {
             return valueString != null || valueSR != null || valueStringList != null || valueSRList != null;
         }
 
-        public bool IsValueAList()
+        public virtual bool IsValueAList()
         {
             return valueStringList != null || valueSRList != null;
         }
 
-        public bool IsValueObjectList()
+        public virtual bool IsValueObjectList()
         {
             return valueSRList != null;
         }
 
-        public bool IsValueObject()
+        public virtual bool IsValueObject()
         {
             return valueSR != null;
         }

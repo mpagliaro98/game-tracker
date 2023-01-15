@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Modules;
+﻿using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.ObjAddOns;
 using RatableTracker.Rework.Util;
 using System;
@@ -20,6 +21,19 @@ namespace RatableTracker.Rework.Model
         public RatedObjectCategorical(SettingsScore settings, TrackerModuleScoreCategorical module) : base(settings, module)
         {
             _categoryExtension = new CategoryExtension(module.CategoryExtension, settings);
+        }
+
+        public override SavableRepresentation LoadIntoRepresentation()
+        {
+            SavableRepresentation sr = base.LoadIntoRepresentation();
+            CategoryExtension.LoadIntoRepresentation(ref sr);
+            return sr;
+        }
+
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
+        {
+            base.RestoreFromRepresentation(sr);
+            CategoryExtension.RestoreFromRepresentation(sr);
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using RatableTracker.Rework.LoadSave;
 
 namespace RatableTracker.Rework.Model
 {
@@ -49,5 +50,28 @@ namespace RatableTracker.Rework.Model
         protected readonly new TrackerModuleScores module;
 
         public RatedObject(SettingsScore settings, TrackerModuleScores module) : base(settings, module) { }
+
+        public override SavableRepresentation LoadIntoRepresentation()
+        {
+            SavableRepresentation sr = base.LoadIntoRepresentation();
+            sr.SaveValue("ManualScore", new ValueContainer(ManualScore));
+            return sr;
+        }
+
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
+        {
+            base.RestoreFromRepresentation(sr);
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    case "ManualScore":
+                        ManualScore = sr.GetValue(key).GetDouble();
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
     }
 }

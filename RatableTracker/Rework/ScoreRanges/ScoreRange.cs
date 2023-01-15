@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ScoreRanges
 {
@@ -32,7 +33,8 @@ namespace RatableTracker.Rework.ScoreRanges
             }
         }
 
-        public UniqueID UniqueID => new UniqueID();
+        private UniqueID _uniqueID = new UniqueID();
+        public UniqueID UniqueID { get { return _uniqueID; } }
 
         protected readonly TrackerModuleScores module;
 
@@ -41,14 +43,43 @@ namespace RatableTracker.Rework.ScoreRanges
             this.module = module;
         }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation<ValueContainer> sr)
+        public virtual SavableRepresentation LoadIntoRepresentation()
         {
-            // TODO load into representation (use attributes?)
+            SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
+            sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
+            sr.SaveValue("Name", new ValueContainer(Name));
+            sr.SaveValue("ValueList", new ValueContainer(ValueList));
+            sr.SaveValue("Color", new ValueContainer(Color));
+            sr.SaveValue("ScoreRelationship", new ValueContainer(_scoreRelationship));
+            return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation<ValueContainer> sr)
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
-            // TODO get from representation (use attributes?)
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    case "UniqueID":
+                        _uniqueID = sr.GetValue(key).GetUniqueID();
+                        break;
+                    case "Name":
+                        Name = sr.GetValue(key).GetString();
+                        break;
+                    case "ValueList":
+                        ValueList = sr.GetValue(key).GetDoubleList();
+                        break;
+                    case "Color":
+                        Color = sr.GetValue(key).GetColor();
+                        break;
+                    case "ScoreRelationship":
+                        _scoreRelationship = sr.GetValue(key).GetUniqueID();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         public override bool Equals(object obj)

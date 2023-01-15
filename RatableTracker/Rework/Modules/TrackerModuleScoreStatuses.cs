@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.ObjAddOns;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace RatableTracker.Rework.Modules
         private readonly StatusExtensionModule _statusExtension;
         public StatusExtensionModule StatusExtension { get { return _statusExtension; } }
 
-        public TrackerModuleScoreStatuses(LoadSaveHandler loadSave) : base(loadSave)
+        public TrackerModuleScoreStatuses(ILoadSaveMethod loadSave) : base(loadSave)
         {
             _statusExtension = new StatusExtensionModule();
         }

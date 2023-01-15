@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
@@ -17,18 +18,40 @@ namespace RatableTracker.Rework.ObjAddOns
         public string Name { get; set; } = "";
         public Color Color { get; set; } = new Color();
 
-        public UniqueID UniqueID => new UniqueID();
+        private UniqueID _uniqueID = new UniqueID();
+        public UniqueID UniqueID { get { return _uniqueID; } }
 
         public Status() { }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation<ValueContainer> sr)
+        public virtual SavableRepresentation LoadIntoRepresentation()
         {
-            // TODO load into representation (use attributes?)
+            SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
+            sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
+            sr.SaveValue("Name", new ValueContainer(Name));
+            sr.SaveValue("Color", new ValueContainer(Color));
+            return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation<ValueContainer> sr)
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
-            // TODO get from representation (use attributes?)
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    case "UniqueID":
+                        _uniqueID = sr.GetValue(key).GetUniqueID();
+                        break;
+                    case "Name":
+                        Name = sr.GetValue(key).GetString();
+                        break;
+                    case "Color":
+                        Color = sr.GetValue(key).GetColor();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         public override bool Equals(object obj)

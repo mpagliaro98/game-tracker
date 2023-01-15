@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.LoadSave
 {
-    public class LoadSaveLocationAWSS3 : ILoadSaveLocation
+    public class LoadSaveLocationLocalAppData : ILoadSaveLocation
     {
     }
 }

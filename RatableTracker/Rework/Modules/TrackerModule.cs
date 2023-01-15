@@ -13,11 +13,11 @@ namespace RatableTracker.Rework.Modules
 {
     public class TrackerModule
     {
-        protected readonly LoadSaveHandler loadSave;
+        protected readonly ILoadSaveMethod loadSave;
 
         protected IList<RankedObject> ModelObjects => new List<RankedObject>();
 
-        public TrackerModule(LoadSaveHandler loadSave)
+        public TrackerModule(ILoadSaveMethod loadSave)
         {
             this.loadSave = loadSave;
         }

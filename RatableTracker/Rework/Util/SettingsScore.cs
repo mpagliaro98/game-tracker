@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RatableTracker.Rework.LoadSave;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,33 @@ namespace RatableTracker.Rework.Util
             _minScore = newMin;
             _maxScore = newMax;
             // TODO scale existing scores to new min/max range
+        }
+
+        public override SavableRepresentation LoadIntoRepresentation()
+        {
+            SavableRepresentation sr = base.LoadIntoRepresentation();
+            sr.SaveValue("MinScore", new ValueContainer(MinScore));
+            sr.SaveValue("MaxScore", new ValueContainer(MaxScore));
+            return sr;
+        }
+
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
+        {
+            base.RestoreFromRepresentation(sr);
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    case "MinScore":
+                        _minScore = sr.GetValue(key).GetDouble();
+                        break;
+                    case "MaxScore":
+                        _maxScore = sr.GetValue(key).GetDouble();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

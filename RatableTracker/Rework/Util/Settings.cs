@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RatableTracker.Rework.Util
 {
@@ -12,14 +13,23 @@ namespace RatableTracker.Rework.Util
     {
         public Settings() { }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation<ValueContainer> sr)
+        public virtual SavableRepresentation LoadIntoRepresentation()
         {
-            // TODO load into representation (use attributes?)
+            SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
+            return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation<ValueContainer> sr)
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
-            // TODO get from representation (use attributes?)
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

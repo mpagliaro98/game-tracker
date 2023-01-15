@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.ScoreRanges;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace RatableTracker.Rework.Modules
         protected IList<ScoreRange> ScoreRanges => new List<ScoreRange>();
         protected IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
 
-        public TrackerModuleScores(LoadSaveHandler loadSave) : base(loadSave)
+        public TrackerModuleScores(ILoadSaveMethod loadSave) : base(loadSave)
         {
             ScoreRelationships.Add(new ScoreRelationshipAbove());
             ScoreRelationships.Add(new ScoreRelationshipBelow());

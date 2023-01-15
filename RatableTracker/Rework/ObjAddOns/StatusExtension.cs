@@ -1,10 +1,12 @@
-﻿using RatableTracker.Rework.Modules;
+﻿using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
@@ -29,6 +31,26 @@ namespace RatableTracker.Rework.ObjAddOns
         public StatusExtension(StatusExtensionModule module)
         {
             this.module = module;
+        }
+
+        public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
+        {
+            sr.SaveValue("Status", new ValueContainer(_status));
+        }
+
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        {
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    case "Status":
+                        _status = sr.GetValue(key).GetUniqueID();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

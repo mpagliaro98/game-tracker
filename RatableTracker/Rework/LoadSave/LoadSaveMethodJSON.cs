@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,5 +10,16 @@ namespace RatableTracker.Rework.LoadSave
 {
     public class LoadSaveMethodJSON : ILoadSaveMethod
     {
+        protected readonly ILoadSaveLocation loadSaveLocation;
+
+        public LoadSaveMethodJSON(ILoadSaveLocation loadSaveLocation)
+        {
+            this.loadSaveLocation = loadSaveLocation;
+        }
+
+        public void SaveOneModelObject(RankedObject rankedObject)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

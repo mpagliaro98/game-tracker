@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Modules;
+﻿using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.ObjAddOns;
 using RatableTracker.Rework.Util;
 using System;
@@ -20,6 +21,19 @@ namespace RatableTracker.Rework.Model
         public RatedObjectStatus(SettingsScore settings, TrackerModuleScoreStatuses module) : base(settings, module)
         {
             _statusExtension = new StatusExtension(module.StatusExtension);
+        }
+
+        public override SavableRepresentation LoadIntoRepresentation()
+        {
+            SavableRepresentation sr = base.LoadIntoRepresentation();
+            StatusExtension.LoadIntoRepresentation(ref sr);
+            return sr;
+        }
+
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
+        {
+            base.RestoreFromRepresentation(sr);
+            StatusExtension.RestoreFromRepresentation(sr);
         }
     }
 }

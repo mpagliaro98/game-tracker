@@ -26,7 +26,8 @@ namespace RatableTracker.Rework.Model
             }
         }
 
-        public UniqueID UniqueID => new UniqueID();
+        private UniqueID _uniqueID = new UniqueID();
+        public UniqueID UniqueID { get { return _uniqueID; } }
 
         protected readonly Settings settings;
         protected readonly TrackerModule module;
@@ -47,14 +48,36 @@ namespace RatableTracker.Rework.Model
             // TODO move position in list and save
         }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation<ValueContainer> sr)
+        public virtual SavableRepresentation LoadIntoRepresentation()
         {
-            // TODO load into representation (use attributes?)
+            SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
+            sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
+            sr.SaveValue("Name", new ValueContainer(Name));
+            sr.SaveValue("Comment", new ValueContainer(Comment));
+            sr.SaveValue("Rank", new ValueContainer(Rank));
+            return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation<ValueContainer> sr)
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
-            // TODO get from representation (use attributes?)
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    case "UniqueID":
+                        _uniqueID = sr.GetValue(key).GetUniqueID();
+                        break;
+                    case "Name":
+                        Name = sr.GetValue(key).GetString();
+                        break;
+                    case "Comment":
+                        Comment = sr.GetValue(key).GetString();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         public override bool Equals(object obj)

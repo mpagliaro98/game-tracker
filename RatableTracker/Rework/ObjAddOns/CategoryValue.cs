@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
@@ -26,20 +27,38 @@ namespace RatableTracker.Rework.ObjAddOns
 
         private readonly CategoryExtensionModule module;
 
+        public CategoryValue(CategoryExtensionModule module) : this(module, null) { }
+
         public CategoryValue(CategoryExtensionModule module, RatingCategory ratingCategory)
         {
             this.module = module;
             _category = ratingCategory.UniqueID;
         }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation<ValueContainer> sr)
+        public virtual SavableRepresentation LoadIntoRepresentation()
         {
-            // TODO load into representation (use attributes?)
+            SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("Category", new ValueContainer(_category));
+            sr.SaveValue("PointValue", new ValueContainer(PointValue));
+            return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation<ValueContainer> sr)
+        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
         {
-            // TODO get from representation (use attributes?)
+            foreach (string key in sr.GetAllSavedKeys())
+            {
+                switch (key)
+                {
+                    case "Category":
+                        _category = sr.GetValue(key).GetUniqueID();
+                        break;
+                    case "PointValue":
+                        PointValue = sr.GetValue(key).GetDouble();
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }

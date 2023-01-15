@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.ObjAddOns;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace RatableTracker.Rework.Modules
         private readonly CategoryExtensionModule _categoryExtension;
         public CategoryExtensionModule CategoryExtension { get { return _categoryExtension; } }
 
-        public TrackerModuleScoreStatusCategorical(LoadSaveHandler loadSave) : base(loadSave)
+        public TrackerModuleScoreStatusCategorical(ILoadSaveMethod loadSave) : base(loadSave)
         {
             _categoryExtension = new CategoryExtensionModule();
         }
