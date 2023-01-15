@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
@@ -18,7 +19,7 @@ namespace RatableTracker.Rework.ObjAddOns
             get
             {
                 if (!_status.HasValue()) return null;
-                return TrackerModule.FindObjectInList(module.GetStatusList(), _status);
+                return Util.Util.FindObjectInList(module.GetStatusList(), _status);
             }
             set
             {
@@ -27,10 +28,17 @@ namespace RatableTracker.Rework.ObjAddOns
         }
 
         private readonly StatusExtensionModule module;
+        private readonly RankedObject obj;
 
-        public StatusExtension(StatusExtensionModule module)
+        public StatusExtension(StatusExtensionModule module, RankedObject obj)
         {
             this.module = module;
+            this.obj = obj;
+        }
+
+        public virtual void Validate()
+        {
+
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)

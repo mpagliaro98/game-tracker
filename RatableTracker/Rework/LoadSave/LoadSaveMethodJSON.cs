@@ -17,6 +17,16 @@ namespace RatableTracker.Rework.LoadSave
             this.loadSaveLocation = loadSaveLocation;
         }
 
+        public IList<RankedObject> LoadModelObjects()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveAllModelObjects(IList<RankedObject> rankedObjects)
+        {
+            throw new NotImplementedException();
+        }
+
         public void SaveOneModelObject(RankedObject rankedObject)
         {
             throw new NotImplementedException();

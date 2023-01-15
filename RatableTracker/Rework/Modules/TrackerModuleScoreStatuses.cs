@@ -16,7 +16,7 @@ namespace RatableTracker.Rework.Modules
 
         public TrackerModuleScoreStatuses(ILoadSaveMethod loadSave) : base(loadSave)
         {
-            _statusExtension = new StatusExtensionModule();
+            _statusExtension = new StatusExtensionModule(this);
         }
     }
 }

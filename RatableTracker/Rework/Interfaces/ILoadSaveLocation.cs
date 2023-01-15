@@ -18,5 +18,6 @@ namespace RatableTracker.Rework.Interfaces
 
         // id could be file name, aws bucket name, database table, etc.
         //void EstablishConnection(ILoadSaveMethod method, string id);
+        //void EndConnection();
     }
 }

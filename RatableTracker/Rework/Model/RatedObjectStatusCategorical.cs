@@ -15,18 +15,38 @@ namespace RatableTracker.Rework.Model
         private readonly CategoryExtension _categoryExtension;
         public CategoryExtension CategoryExtension { get { return _categoryExtension; } }
 
+        public override double Score
+        {
+            get
+            {
+                if (CategoryExtension.IgnoreCategories)
+                {
+                    return base.Score;
+                }
+                else
+                {
+                    return CategoryExtension.CalculateTotalCategoryScore();
+                }
+            }
+        }
+
         // Module re-declared as a different derived type
         protected readonly new TrackerModuleScoreStatusCategorical module;
 
         public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module) : base(settings, module)
         {
-            _categoryExtension = new CategoryExtension(module.CategoryExtension, settings);
+            _categoryExtension = new CategoryExtension(module.CategoryExtension, settings, this);
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+            CategoryExtension.Validate();
         }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();
-            StatusExtension.LoadIntoRepresentation(ref sr);
             CategoryExtension.LoadIntoRepresentation(ref sr);
             return sr;
         }
@@ -34,7 +54,6 @@ namespace RatableTracker.Rework.Model
         public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
             base.RestoreFromRepresentation(sr);
-            StatusExtension.RestoreFromRepresentation(sr);
             CategoryExtension.RestoreFromRepresentation(sr);
         }
     }

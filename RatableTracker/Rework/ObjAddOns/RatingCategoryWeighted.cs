@@ -8,7 +8,7 @@ namespace RatableTracker.Rework.ObjAddOns
 {
     public class RatingCategoryWeighted : RatingCategory
     {
-        public RatingCategoryWeighted() : base() { }
+        public RatingCategoryWeighted(CategoryExtensionModule module) : base(module) { }
 
         public void SetWeight(double val)
         {

@@ -41,25 +41,25 @@ namespace RatableTracker.Rework.Util
             throw new Exception("Unknown type: " + typeName);
         }
 
-        public virtual Status GetStatus(string typeName)
+        public virtual Status GetStatus(string typeName, StatusExtensionModule module)
         {
             switch (typeName.ToLower())
             {
                 case "status":
-                    return new Status();
+                    return new Status(module);
             }
             // TODO throw unique exception
             throw new Exception("Unknown type: " + typeName);
         }
 
-        public virtual RatingCategory GetRatingCategory(string typeName)
+        public virtual RatingCategory GetRatingCategory(string typeName, CategoryExtensionModule module)
         {
             switch (typeName.ToLower())
             {
                 case "ratingcategory":
-                    return new RatingCategory();
+                    return new RatingCategory(module);
                 case "ratingcategoryweighted":
-                    return new RatingCategoryWeighted();
+                    return new RatingCategoryWeighted(module);
             }
             // TODO throw unique exception
             throw new Exception("Unknown type: " + typeName);

@@ -21,7 +21,26 @@ namespace RatableTracker.Rework.ObjAddOns
         private UniqueID _uniqueID = new UniqueID();
         public UniqueID UniqueID { get { return _uniqueID; } }
 
-        public Status() { }
+        protected readonly StatusExtensionModule module;
+
+        public Status(StatusExtensionModule module)
+        {
+            this.module = module;
+        }
+
+        public virtual void Validate()
+        {
+            // TODO unique exceptions
+            if (Name == "")
+                throw new Exception("A name is required");
+            if (Name.Length > MaxLengthName)
+                throw new Exception("Name cannot be longer than " + MaxLengthName.ToString() + " characters");
+        }
+
+        public void Save()
+        {
+            // TODO validate and save
+        }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {

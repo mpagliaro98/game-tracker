@@ -11,6 +11,8 @@ namespace RatableTracker.Rework.Modules
 {
     public class TrackerModuleScores : TrackerModule
     {
+        public virtual int LimitRanges => 20;
+
         protected IList<ScoreRange> ScoreRanges => new List<ScoreRange>();
         protected IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
 
@@ -24,6 +26,16 @@ namespace RatableTracker.Rework.Modules
         public IList<ScoreRange> GetScoreRangeList()
         {
             return ScoreRanges;
+        }
+
+        public void AddScoreRange(ScoreRange scoreRange)
+        {
+            // TODO validate, add, save (limit)
+        }
+
+        public void DeleteScoreRange(ScoreRange scoreRange)
+        {
+            // TODO delete, save
         }
 
         public IList<ScoreRelationship> GetScoreRelationshipList()

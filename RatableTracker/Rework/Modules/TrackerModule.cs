@@ -13,9 +13,11 @@ namespace RatableTracker.Rework.Modules
 {
     public class TrackerModule
     {
-        protected readonly ILoadSaveMethod loadSave;
+        public virtual int LimitListedObjects => 100000;
 
         protected IList<RankedObject> ModelObjects => new List<RankedObject>();
+
+        protected readonly ILoadSaveMethod loadSave;
 
         public TrackerModule(ILoadSaveMethod loadSave)
         {
@@ -33,17 +35,13 @@ namespace RatableTracker.Rework.Modules
 
         public void AddModelObject(RankedObject modelObject)
         {
-            // TODO validate, add, save
+            // TODO validate, add, save (keep in mind limit)
             // or put save function on RankedObject that calls the module to put it in the list?
         }
 
-        public static T FindObjectInList<T>(IList<T> list, UniqueID uniqueID) where T : IKeyable
+        public void DeleteModelObject(RankedObject modelObject)
         {
-            foreach (T item in list)
-            {
-                if (item.UniqueID.Equals(uniqueID)) return item;
-            }
-            return default; // null
+            // TODO delete, save
         }
     }
 }

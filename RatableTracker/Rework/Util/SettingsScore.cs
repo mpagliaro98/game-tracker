@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace RatableTracker.Rework.Util
 
         public SettingsScore() : base() { }
 
-        public void ChangeMinMaxScore(double newMin, double newMax)
+        public void ChangeMinMaxScore(double newMin, double newMax, TrackerModuleScores module)
         {
             double oldMin = MinScore;
             double oldMax = MaxScore;

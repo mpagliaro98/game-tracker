@@ -10,5 +10,7 @@ namespace RatableTracker.Rework.Interfaces
     public interface ILoadSaveMethod
     {
         void SaveOneModelObject(RankedObject rankedObject);
+        void SaveAllModelObjects(IList<RankedObject> rankedObjects);
+        IList<RankedObject> LoadModelObjects();
     }
 }

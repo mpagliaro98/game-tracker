@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Framework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
@@ -25,7 +26,7 @@ namespace RatableTracker.Rework.ScoreRanges
             get
             {
                 if (!_scoreRelationship.HasValue()) return null;
-                return TrackerModule.FindObjectInList(module.GetScoreRelationshipList(), _scoreRelationship);
+                return Util.Util.FindObjectInList(module.GetScoreRelationshipList(), _scoreRelationship);
             }
             set
             {
@@ -41,6 +42,25 @@ namespace RatableTracker.Rework.ScoreRanges
         public ScoreRange(TrackerModuleScores module)
         {
             this.module = module;
+        }
+
+        public virtual void Validate()
+        {
+            // TODO unique exceptions
+            if (Name == "")
+                throw new Exception("A name is required");
+            if (Name.Length > MaxLengthName)
+                throw new Exception("Name cannot be longer than " + MaxLengthName.ToString() + " characters");
+            ScoreRelationship sr = ScoreRelationship;
+            if (sr == null)
+                throw new Exception("A score relationship is required");
+            if (sr.NumValuesRequired != ValueList.Count())
+                throw new Exception("The " + sr.Name + " relationship requires " + sr.NumValuesRequired.ToString() + " values, but " + ValueList.Count().ToString() + " were given");
+        }
+
+        public void Save()
+        {
+            // TODO figure out saving architecture
         }
 
         public virtual SavableRepresentation LoadIntoRepresentation()

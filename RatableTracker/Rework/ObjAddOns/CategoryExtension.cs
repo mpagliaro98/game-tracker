@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
@@ -18,18 +19,17 @@ namespace RatableTracker.Rework.ObjAddOns
 
         private readonly CategoryExtensionModule module;
         private readonly SettingsScore settings;
+        private readonly RatedObject obj;
 
-        public CategoryExtension(CategoryExtensionModule module, SettingsScore settings)
+        public CategoryExtension(CategoryExtensionModule module, SettingsScore settings, RatedObject obj)
         {
             this.module = module;
             this.settings = settings;
+            this.obj = obj;
 
             foreach (RatingCategory category in module.GetRatingCategoryList())
             {
-                var categoryValue = new CategoryValue(module, category)
-                {
-                    PointValue = settings.MinScore
-                };
+                var categoryValue = new CategoryValue(module, settings, category);
                 CategoryValues.Add(categoryValue);
             }
         }
@@ -37,6 +37,23 @@ namespace RatableTracker.Rework.ObjAddOns
         public IList<CategoryValue> GetCategoryValues()
         {
             return CategoryValues;
+        }
+
+        public virtual double CalculateTotalCategoryScore()
+        {
+            double sumOfWeights = module.GetRatingCategoryList().Select(cat => cat.Weight).Sum();
+            double total = GetCategoryValues().Select(cv => (cv.RatingCategory.Weight / sumOfWeights) * cv.PointValue).Sum();
+            return total;
+        }
+
+        public virtual void Validate()
+        {
+            // TODO unique exceptions
+            foreach (CategoryValue categoryValue in GetCategoryValues())
+            {
+                if (categoryValue.PointValue < settings.MinScore || categoryValue.PointValue > settings.MaxScore)
+                    throw new Exception(categoryValue.RatingCategory.Name + " score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString());
+            }
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
@@ -55,7 +72,7 @@ namespace RatableTracker.Rework.ObjAddOns
                         IgnoreCategories = sr.GetValue(key).GetBool();
                         break;
                     case "CategoryValues":
-                        _categoryValues = sr.GetValue(key).GetISavableList(() => new CategoryValue(module)).ToList();
+                        _categoryValues = sr.GetValue(key).GetISavableList(() => new CategoryValue(module, settings)).ToList();
                         break;
                     default:
                         break;

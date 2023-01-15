@@ -20,7 +20,13 @@ namespace RatableTracker.Rework.Model
 
         public RankedObjectStatus(Settings settings, TrackerModuleStatuses module) : base(settings, module)
         {
-            _statusExtension = new StatusExtension(module.StatusExtension);
+            _statusExtension = new StatusExtension(module.StatusExtension, this);
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+            StatusExtension.Validate();
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

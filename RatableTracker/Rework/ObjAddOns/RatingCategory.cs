@@ -24,7 +24,28 @@ namespace RatableTracker.Rework.ObjAddOns
         private UniqueID _uniqueID = new UniqueID();
         public UniqueID UniqueID { get { return _uniqueID; } }
 
-        public RatingCategory() { }
+        protected readonly CategoryExtensionModule module;
+
+        public RatingCategory(CategoryExtensionModule module)
+        {
+            this.module = module;
+        }
+
+        public virtual void Validate()
+        {
+            // TODO unique exceptions
+            if (Name == "")
+                throw new Exception("A name is required");
+            if (Name.Length > MaxLengthName)
+                throw new Exception("Name cannot be longer than " + MaxLengthName.ToString() + " characters");
+            if (Comment.Length > MaxLengthComment)
+                throw new Exception("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters");
+        }
+
+        public void Save()
+        {
+            // TODO validate and save
+        }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
         {

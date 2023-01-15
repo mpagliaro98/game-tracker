@@ -1,6 +1,5 @@
 ﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
-using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
@@ -19,20 +18,23 @@ namespace RatableTracker.Rework.ObjAddOns
             get
             {
                 if (!_category.HasValue()) return null;
-                return TrackerModule.FindObjectInList(module.GetRatingCategoryList(), _category);
+                return Util.Util.FindObjectInList(module.GetRatingCategoryList(), _category);
             }
         }
 
         public double PointValue { get; set; } = 0;
 
         private readonly CategoryExtensionModule module;
+        private readonly SettingsScore settings;
 
-        public CategoryValue(CategoryExtensionModule module) : this(module, null) { }
+        public CategoryValue(CategoryExtensionModule module, SettingsScore settings) : this(module, settings, null) { }
 
-        public CategoryValue(CategoryExtensionModule module, RatingCategory ratingCategory)
+        public CategoryValue(CategoryExtensionModule module, SettingsScore settings, RatingCategory ratingCategory)
         {
             this.module = module;
-            _category = ratingCategory.UniqueID;
+            this.settings = settings;
+            if (ratingCategory != null) _category = ratingCategory.UniqueID;
+            PointValue = settings.MinScore;
         }
 
         public virtual SavableRepresentation LoadIntoRepresentation()

@@ -12,26 +12,12 @@ namespace RatableTracker.Rework.Model
 {
     public class RatedObject : RankedObject
     {
-        /// <summary>
-        /// The score of this ratable object.
-        /// </summary>
-        public double Score
+        public override double Score
         {
             get { return ManualScore; }
         }
 
-        private double _manualScore = 0;
-        public double ManualScore
-        {
-            get { return _manualScore; }
-            set
-            {
-                // TODO throw specialized type of exception
-                if (value < settings.MinScore || value > settings.MaxScore)
-                    throw new Exception("Invalid score");
-                _manualScore = value;
-            }
-        }
+        public double ManualScore { get; set; } = 0;
 
         public ScoreRange ScoreRange
         {
@@ -45,11 +31,31 @@ namespace RatableTracker.Rework.Model
             }
         }
 
+        public override int Rank
+        {
+            get
+            {
+                IList<RankedObject> rankedObjects = module.GetModelObjectList().OrderByDescending(obj => obj.Score).ToList();
+                return rankedObjects.IndexOf(this) + 1;
+            }
+        }
+
         // Re-declared as a different derived type
         protected readonly new SettingsScore settings;
         protected readonly new TrackerModuleScores module;
 
-        public RatedObject(SettingsScore settings, TrackerModuleScores module) : base(settings, module) { }
+        public RatedObject(SettingsScore settings, TrackerModuleScores module) : base(settings, module)
+        {
+            ManualScore = settings.MinScore;
+        }
+
+        public override void Validate()
+        {
+            base.Validate();
+            // TODO throw specialized type of exception
+            if (ManualScore < settings.MinScore || ManualScore > settings.MaxScore)
+                throw new Exception("Score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString());
+        }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {

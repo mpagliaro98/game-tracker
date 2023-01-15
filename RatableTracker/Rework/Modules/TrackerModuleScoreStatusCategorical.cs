@@ -16,7 +16,7 @@ namespace RatableTracker.Rework.Modules
 
         public TrackerModuleScoreStatusCategorical(ILoadSaveMethod loadSave) : base(loadSave)
         {
-            _categoryExtension = new CategoryExtensionModule();
+            _categoryExtension = new CategoryExtensionModule(this);
         }
     }
 }

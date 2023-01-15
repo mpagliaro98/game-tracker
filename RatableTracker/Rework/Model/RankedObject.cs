@@ -17,13 +17,18 @@ namespace RatableTracker.Rework.Model
 
         public string Name { get; set; } = "";
         public string Comment { get; set; } = "";
-        public int Rank
+        public virtual int Rank
         {
             get
             {
                 IList<RankedObject> rankedObjects = module.GetModelObjectList();
                 return rankedObjects.IndexOf(this) + 1;
             }
+        }
+
+        public virtual double Score
+        {
+            get { return Rank; }
         }
 
         private UniqueID _uniqueID = new UniqueID();
@@ -38,6 +43,22 @@ namespace RatableTracker.Rework.Model
             this.module = module;
         }
 
+        public virtual void Validate()
+        {
+            // TODO unique exceptions
+            if (Name == "")
+                throw new Exception("A name is required");
+            if (Name.Length > MaxLengthName)
+                throw new Exception("Name cannot be longer than " + MaxLengthName.ToString() + " characters");
+            if (Comment.Length > MaxLengthComment)
+                throw new Exception("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters");
+        }
+
+        public void Save()
+        {
+            // TODO figure out saving architecture
+        }
+
         public void MoveUpOneRank()
         {
             // TODO move position in list and save
@@ -46,6 +67,11 @@ namespace RatableTracker.Rework.Model
         public void MoveDownOneRank()
         {
             // TODO move position in list and save
+        }
+
+        public void ChangeRank(int newRank)
+        {
+            // TODO change rank and save
         }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
