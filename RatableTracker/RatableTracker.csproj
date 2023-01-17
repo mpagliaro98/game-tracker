@@ -118,7 +118,6 @@
     <Compile Include="Rework\Interfaces\ILoadSaveMethodStatuses.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveMethodStatusExtension.cs" />
     <Compile Include="Rework\Interfaces\IPathController.cs" />
-    <Compile Include="Rework\Interfaces\ISavable.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerAWSS3.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerLocal.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerLocalAppData.cs" />
@@ -134,6 +133,7 @@
     <Compile Include="Rework\Model\RatedObjectCategorical.cs" />
     <Compile Include="Rework\Model\RatedObjectStatus.cs" />
     <Compile Include="Rework\Model\RatedObjectStatusCategorical.cs" />
+    <Compile Include="Rework\Model\SavableObject.cs" />
     <Compile Include="Rework\Modules\TrackerModule.cs" />
     <Compile Include="Rework\Modules\TrackerModuleScoreCategorical.cs" />
     <Compile Include="Rework\Modules\TrackerModuleScores.cs" />

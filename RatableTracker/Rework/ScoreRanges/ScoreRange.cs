@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
@@ -11,7 +12,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ScoreRanges
 {
-    public class ScoreRange : IKeyable, ISavable
+    public class ScoreRange : SavableObject, IKeyable
     {
         public static int MaxLengthName => 200;
 
@@ -67,9 +68,9 @@ namespace RatableTracker.Rework.ScoreRanges
             module.DeleteScoreRange(this);
         }
 
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public override SavableRepresentation LoadIntoRepresentation()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation sr = base.LoadIntoRepresentation();
             sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
             sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
             sr.SaveValue("Name", new ValueContainer(Name));
@@ -79,8 +80,9 @@ namespace RatableTracker.Rework.ScoreRanges
             return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

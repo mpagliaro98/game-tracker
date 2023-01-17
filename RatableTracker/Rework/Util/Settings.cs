@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,20 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.Util
 {
-    public class Settings : ISavable
+    public class Settings : SavableObject
     {
         public Settings() { }
 
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public override SavableRepresentation LoadIntoRepresentation()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation sr = base.LoadIntoRepresentation();
             sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
             return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

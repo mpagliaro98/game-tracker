@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
@@ -55,7 +56,7 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(val);
         }
 
-        public ValueContainer(ISavable val)
+        public ValueContainer(SavableObject val)
         {
             SetContent(val);
         }
@@ -80,7 +81,7 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(val);
         }
 
-        public ValueContainer(IEnumerable<ISavable> val)
+        public ValueContainer(IEnumerable<SavableObject> val)
         {
             SetContent(val);
         }
@@ -130,7 +131,7 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(val.ToString());
         }
 
-        public void SetContent(ISavable savable)
+        public void SetContent(SavableObject savable)
         {
             SetContent(savable.LoadIntoRepresentation());
         }
@@ -157,10 +158,10 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(list);
         }
 
-        public void SetContent(IEnumerable<ISavable> val)
+        public void SetContent(IEnumerable<SavableObject> val)
         {
             LinkedList<SavableRepresentation> list = new LinkedList<SavableRepresentation>();
-            foreach (ISavable value in val)
+            foreach (SavableObject value in val)
             {
                 var sr = value?.LoadIntoRepresentation();
                 list.AddLast(sr);
@@ -213,9 +214,9 @@ namespace RatableTracker.Rework.LoadSave
             return new UniqueID(GetGuid());
         }
 
-        public ISavable GetISavable(Func<ISavable> initSavable)
+        public SavableObject GetSavableObject(Func<SavableObject> initSavable)
         {
-            ISavable savable = initSavable();
+            SavableObject savable = initSavable();
             savable?.RestoreFromRepresentation(GetSavableRepresentation());
             return savable;
         }
@@ -240,7 +241,7 @@ namespace RatableTracker.Rework.LoadSave
             return GetStringList().Select((s) => Convert.ToDouble(s));
         }
 
-        public IEnumerable<T> GetISavableList<T>(Func<T> initSavable) where T : ISavable
+        public IEnumerable<T> GetSavableObjectList<T>(Func<T> initSavable) where T : SavableObject
         {
             LinkedList<T> list = new LinkedList<T>();
             foreach (SavableRepresentation sr in GetSavableRepresentationList())

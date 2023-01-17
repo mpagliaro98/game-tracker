@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
-    public class CategoryValue : ISavable
+    public class CategoryValue : SavableObject
     {
         private UniqueID _category = new UniqueID(false);
         public RatingCategory RatingCategory
@@ -37,16 +38,17 @@ namespace RatableTracker.Rework.ObjAddOns
             PointValue = settings.MinScore;
         }
 
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public override SavableRepresentation LoadIntoRepresentation()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation sr = base.LoadIntoRepresentation();
             sr.SaveValue("Category", new ValueContainer(_category));
             sr.SaveValue("PointValue", new ValueContainer(PointValue));
             return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

@@ -70,7 +70,7 @@ namespace RatableTracker.Rework.ObjAddOns
                         IgnoreCategories = sr.GetValue(key).GetBool();
                         break;
                     case "CategoryValues":
-                        _categoryValues = sr.GetValue(key).GetISavableList(() => new CategoryValue(module, settings)).ToList();
+                        _categoryValues = sr.GetValue(key).GetSavableObjectList(() => new CategoryValue(module, settings)).ToList();
                         break;
                     default:
                         break;

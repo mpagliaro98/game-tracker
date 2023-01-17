@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
-    public class RatingCategory : IKeyable, ISavable
+    public class RatingCategory : SavableObject, IKeyable
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthComment => 4000;
@@ -52,9 +52,9 @@ namespace RatableTracker.Rework.ObjAddOns
             module.DeleteRatingCategory(this);
         }
 
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public override SavableRepresentation LoadIntoRepresentation()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation sr = base.LoadIntoRepresentation();
             sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
             sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
             sr.SaveValue("Name", new ValueContainer(Name));
@@ -63,8 +63,9 @@ namespace RatableTracker.Rework.ObjAddOns
             return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

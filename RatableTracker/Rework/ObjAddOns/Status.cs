@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
-    public class Status : IKeyable, ISavable
+    public class Status : SavableObject, IKeyable
     {
         public static int MaxLengthName => 200;
 
@@ -47,9 +47,9 @@ namespace RatableTracker.Rework.ObjAddOns
             module.DeleteStatus(this);
         }
 
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public override SavableRepresentation LoadIntoRepresentation()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation sr = base.LoadIntoRepresentation();
             sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
             sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
             sr.SaveValue("Name", new ValueContainer(Name));
@@ -57,8 +57,9 @@ namespace RatableTracker.Rework.ObjAddOns
             return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

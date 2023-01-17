@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Model
 {
-    public class RankedObject : IKeyable, ISavable
+    public class RankedObject : SavableObject, IKeyable
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthComment => 10000;
@@ -88,9 +88,9 @@ namespace RatableTracker.Rework.Model
             module.ChangeModelObjectPositionInList(this, newRank - 1);
         }
 
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public override SavableRepresentation LoadIntoRepresentation()
         {
-            SavableRepresentation sr = new SavableRepresentation();
+            SavableRepresentation sr = base.LoadIntoRepresentation();
             sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
             sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
             sr.SaveValue("Name", new ValueContainer(Name));
@@ -99,8 +99,9 @@ namespace RatableTracker.Rework.Model
             return sr;
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)
