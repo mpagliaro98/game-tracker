@@ -37,6 +37,23 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
+        public void TransferToNewModule(TrackerModuleScores newModule)
+        {
+            using (var connCurrent = _loadSave.NewConnection())
+            {
+                using (var connNew = newModule._loadSave.NewConnection())
+                {
+                    base.TransferToNewModule(connCurrent, connNew);
+                    TransferToNewModule(connCurrent, connNew);
+                }
+            }
+        }
+
+        protected void TransferToNewModule(ILoadSaveMethodScores connCurrent, ILoadSaveMethodScores connNew)
+        {
+            connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges());
+        }
+
         public IList<ScoreRange> GetScoreRangeList()
         {
             return ScoreRanges;

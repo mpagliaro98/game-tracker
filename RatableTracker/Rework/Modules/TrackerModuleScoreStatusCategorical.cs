@@ -30,5 +30,22 @@ namespace RatableTracker.Rework.Modules
             base.Init();
             CategoryExtension.Init();
         }
+
+        public void TransferToNewModule(TrackerModuleScoreStatusCategorical newModule)
+        {
+            using (var connCurrent = _loadSave.NewConnection())
+            {
+                using (var connNew = newModule._loadSave.NewConnection())
+                {
+                    base.TransferToNewModule(connCurrent, connNew);
+                    TransferToNewModule(connCurrent, connNew);
+                }
+            }
+        }
+
+        protected virtual void TransferToNewModule(ILoadSaveMethodCategoryExtension connCurrent, ILoadSaveMethodCategoryExtension connNew)
+        {
+            connNew.SaveAllCategories(connCurrent.LoadCategories());
+        }
     }
 }

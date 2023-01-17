@@ -29,5 +29,22 @@ namespace RatableTracker.Rework.Modules
             base.Init();
             StatusExtension.Init();
         }
+
+        public void TransferToNewModule(TrackerModuleStatuses newModule)
+        {
+            using (var connCurrent = _loadSave.NewConnection())
+            {
+                using (var connNew = newModule._loadSave.NewConnection())
+                {
+                    base.TransferToNewModule(connCurrent, connNew);
+                    TransferToNewModule(connCurrent, connNew);
+                }
+            }
+        }
+
+        protected virtual void TransferToNewModule(ILoadSaveMethodStatusExtension connCurrent, ILoadSaveMethodStatusExtension connNew)
+        {
+            connNew.SaveAllStatuses(connCurrent.LoadStatuses());
+        }
     }
 }

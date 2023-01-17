@@ -35,12 +35,28 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
+        public void TransferToNewModule(TrackerModule newModule)
+        {
+            using (var connCurrent = _loadSave.NewConnection())
+            {
+                using (var connNew = newModule._loadSave.NewConnection())
+                {
+                    TransferToNewModule(connCurrent, connNew);
+                }
+            }
+        }
+
+        protected void TransferToNewModule(ILoadSaveMethod connCurrent, ILoadSaveMethod connNew)
+        {
+            connNew.SaveAllModelObjects(connCurrent.LoadModelObjects());
+        }
+
         /// <summary>
         /// Get the list of listed objects, with any filtering and sorting applied.
         /// </summary>
         public IList<RankedObject> GetModelObjectList()
         {
-            // TODO pass in filter and sort options
+            // TODO pass in filter and sort options with function overloads
             return ModelObjects;
         }
 
