@@ -12,12 +12,22 @@ namespace RatableTracker.Rework.Modules
 {
     public class TrackerModuleStatuses : TrackerModule
     {
-        private readonly StatusExtensionModule _statusExtension;
+        protected readonly StatusExtensionModule _statusExtension;
         public StatusExtensionModule StatusExtension { get { return _statusExtension; } }
 
-        public TrackerModuleStatuses(ILoadSaveMethod loadSave) : base(loadSave)
+        protected readonly new ILoadSaveHandler<ILoadSaveMethodStatuses> _loadSave;
+
+        public TrackerModuleStatuses(ILoadSaveHandler<ILoadSaveMethodStatuses> loadSave) : this(loadSave, new StatusExtensionModule(loadSave)) { }
+
+        public TrackerModuleStatuses(ILoadSaveHandler<ILoadSaveMethodStatuses> loadSave, StatusExtensionModule statusExtension) : base(loadSave)
         {
-            _statusExtension = new StatusExtensionModule(this);
+            _statusExtension = statusExtension;
+        }
+
+        public override void Init()
+        {
+            base.Init();
+            StatusExtension.Init();
         }
     }
 }

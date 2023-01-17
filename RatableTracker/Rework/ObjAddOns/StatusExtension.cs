@@ -27,13 +27,11 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
-        private readonly StatusExtensionModule module;
-        private readonly RankedObject obj;
+        protected readonly StatusExtensionModule module;
 
-        public StatusExtension(StatusExtensionModule module, RankedObject obj)
+        public StatusExtension(StatusExtensionModule module)
         {
             this.module = module;
-            this.obj = obj;
         }
 
         public virtual void Validate()

@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.Model;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +8,13 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Interfaces
 {
-    public interface ILoadSaveMethod
+    public interface ILoadSaveMethod : IDisposable
     {
         void SaveOneModelObject(RankedObject rankedObject);
         void SaveAllModelObjects(IList<RankedObject> rankedObjects);
+        void DeleteOneModelObject(RankedObject rankedObject);
         IList<RankedObject> LoadModelObjects();
+        void SaveSettings(Settings settings);
+        Settings LoadSettings();
     }
 }

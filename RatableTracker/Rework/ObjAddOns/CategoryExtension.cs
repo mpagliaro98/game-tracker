@@ -17,15 +17,13 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public bool IgnoreCategories { get; set; } = false;
 
-        private readonly CategoryExtensionModule module;
-        private readonly SettingsScore settings;
-        private readonly RatedObject obj;
+        protected readonly CategoryExtensionModule module;
+        protected readonly SettingsScore settings;
 
-        public CategoryExtension(CategoryExtensionModule module, SettingsScore settings, RatedObject obj)
+        public CategoryExtension(CategoryExtensionModule module, SettingsScore settings)
         {
             this.module = module;
             this.settings = settings;
-            this.obj = obj;
 
             foreach (RatingCategory category in module.GetRatingCategoryList())
             {

@@ -14,7 +14,7 @@ namespace RatableTracker.Rework.ScoreRanges
         public abstract int NumValuesRequired { get; }
         public abstract UniqueID UniqueID { get; }
 
-        public abstract bool IsValueInRange(double val, IEnumerable<double> valueList);
+        public abstract bool IsValueInRange(double val, IList<double> valueList);
 
         public override bool Equals(object obj)
         {

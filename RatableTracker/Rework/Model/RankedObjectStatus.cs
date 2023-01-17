@@ -18,9 +18,11 @@ namespace RatableTracker.Rework.Model
         // Module re-declared as a different derived type
         protected readonly new TrackerModuleStatuses module;
 
-        public RankedObjectStatus(Settings settings, TrackerModuleStatuses module) : base(settings, module)
+        public RankedObjectStatus(Settings settings, TrackerModuleStatuses module) : this(settings, module, new StatusExtension(module.StatusExtension)) { }
+
+        public RankedObjectStatus(Settings settings, TrackerModuleStatuses module, StatusExtension statusExtension) : base(settings, module)
         {
-            _statusExtension = new StatusExtension(module.StatusExtension, this);
+            _statusExtension = statusExtension;
         }
 
         public override void Validate()

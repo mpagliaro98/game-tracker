@@ -7,7 +7,9 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.LoadSave
 {
-    public class LoadSaveLocationAWSS3 : ILoadSaveLocation
+    public class FileHandlerLocalAppData : FileHandlerLocal
     {
+        // TODO
+        public FileHandlerLocalAppData(IPathController pathController) : base("local app data", pathController) { }
     }
 }

@@ -13,14 +13,14 @@ namespace RatableTracker.Rework.ScoreRanges
         public override int NumValuesRequired => 2;
         public override UniqueID UniqueID => new UniqueID(3);
 
-        public override bool IsValueInRange(double val, IEnumerable<double> valueList)
+        public override bool IsValueInRange(double val, IList<double> valueList)
         {
             if (valueList.Count() != NumValuesRequired)
             {
                 // TODO throw different exception
                 throw new Exception(GetType().Name + " expects " + NumValuesRequired.ToString() + " values, got " + valueList.Count().ToString());
             }
-            return val >= valueList.ElementAt(0) && val < valueList.ElementAt(1);
+            return val >= valueList[0] && val < valueList[1];
         }
     }
 }

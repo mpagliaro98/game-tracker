@@ -44,7 +44,12 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public void Save()
         {
-            // TODO validate and save
+            module.SaveRatingCategory(this);
+        }
+
+        public void Delete()
+        {
+            module.DeleteRatingCategory(this);
         }
 
         public virtual SavableRepresentation LoadIntoRepresentation()

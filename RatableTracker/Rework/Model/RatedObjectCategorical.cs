@@ -33,9 +33,11 @@ namespace RatableTracker.Rework.Model
         // Module re-declared as a different derived type
         protected readonly new TrackerModuleScoreCategorical module;
 
-        public RatedObjectCategorical(SettingsScore settings, TrackerModuleScoreCategorical module) : base(settings, module)
+        public RatedObjectCategorical(SettingsScore settings, TrackerModuleScoreCategorical module) : this(settings, module, new CategoryExtension(module.CategoryExtension, settings)) { }
+
+        public RatedObjectCategorical(SettingsScore settings, TrackerModuleScoreCategorical module, CategoryExtension categoryExtension) : base(settings, module)
         {
-            _categoryExtension = new CategoryExtension(module.CategoryExtension, settings, this);
+            _categoryExtension = categoryExtension;
         }
 
         public override void Validate()

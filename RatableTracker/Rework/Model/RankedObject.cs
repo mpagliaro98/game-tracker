@@ -56,22 +56,36 @@ namespace RatableTracker.Rework.Model
 
         public void Save()
         {
-            // TODO figure out saving architecture
+            module.SaveModelObject(this);
+        }
+
+        public void Delete()
+        {
+            module.DeleteModelObject(this);
         }
 
         public void MoveUpOneRank()
         {
-            // TODO move position in list and save
+            // TODO throw unique exception
+            if (Rank <= 1)
+                throw new Exception("Cannot raise rank any further");
+            ChangeRank(Rank - 1);
         }
 
         public void MoveDownOneRank()
         {
-            // TODO move position in list and save
+            // TODO throw unique exception
+            if (Rank >= module.TotalNumModelObjects())
+                throw new Exception("Cannot lower rank any further");
+            ChangeRank(Rank + 1);
         }
 
         public void ChangeRank(int newRank)
         {
-            // TODO change rank and save
+            // TODO throw unique exception
+            if (newRank < 1 || newRank > module.TotalNumModelObjects())
+                throw new Exception("Rank out of range");
+            module.ChangeModelObjectPositionInList(this, newRank - 1);
         }
 
         public virtual SavableRepresentation LoadIntoRepresentation()

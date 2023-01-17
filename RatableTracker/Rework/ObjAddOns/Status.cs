@@ -39,7 +39,12 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public void Save()
         {
-            // TODO validate and save
+            module.SaveStatus(this);
+        }
+
+        public void Delete()
+        {
+            module.DeleteStatus(this);
         }
 
         public virtual SavableRepresentation LoadIntoRepresentation()

@@ -14,9 +14,19 @@ namespace RatableTracker.Rework.Modules
         private readonly StatusExtensionModule _statusExtension;
         public StatusExtensionModule StatusExtension { get { return _statusExtension; } }
 
-        public TrackerModuleScoreStatuses(ILoadSaveMethod loadSave) : base(loadSave)
+        protected readonly new ILoadSaveHandler<ILoadSaveMethodScoreStatuses> _loadSave;
+
+        public TrackerModuleScoreStatuses(ILoadSaveHandler<ILoadSaveMethodScoreStatuses> loadSave) : this(loadSave, new StatusExtensionModule(loadSave)) { }
+
+        public TrackerModuleScoreStatuses(ILoadSaveHandler<ILoadSaveMethodScoreStatuses> loadSave, StatusExtensionModule statusExtension) : base(loadSave)
         {
-            _statusExtension = new StatusExtensionModule(this);
+            _statusExtension = statusExtension;
+        }
+
+        public override void Init()
+        {
+            base.Init();
+            StatusExtension.Init();
         }
     }
 }

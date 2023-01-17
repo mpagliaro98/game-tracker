@@ -24,7 +24,7 @@ namespace RatableTracker.Rework.Util
             double oldMax = MaxScore;
             _minScore = newMin;
             _maxScore = newMax;
-            // TODO scale existing scores to new min/max range
+            module.ScaleScoresToNewRange(oldMin, oldMax, newMin, newMax);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

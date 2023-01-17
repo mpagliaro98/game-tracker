@@ -1,5 +1,4 @@
-﻿using RatableTracker.Framework.Exceptions;
-using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
@@ -17,7 +16,7 @@ namespace RatableTracker.Rework.ScoreRanges
         public static int MaxLengthName => 200;
 
         public string Name { get; set; } = "";
-        public IEnumerable<double> ValueList { get; set; } = new List<double>();
+        public IList<double> ValueList { get; set; } = new List<double>();
         public Color Color { get; set; } = new Color();
 
         private UniqueID _scoreRelationship = new UniqueID(false);
@@ -60,7 +59,12 @@ namespace RatableTracker.Rework.ScoreRanges
 
         public void Save()
         {
-            // TODO figure out saving architecture
+            module.SaveScoreRange(this);
+        }
+
+        public void Delete()
+        {
+            module.DeleteScoreRange(this);
         }
 
         public virtual SavableRepresentation LoadIntoRepresentation()
@@ -88,7 +92,7 @@ namespace RatableTracker.Rework.ScoreRanges
                         Name = sr.GetValue(key).GetString();
                         break;
                     case "ValueList":
-                        ValueList = sr.GetValue(key).GetDoubleList();
+                        ValueList = sr.GetValue(key).GetDoubleList().ToList();
                         break;
                     case "Color":
                         Color = sr.GetValue(key).GetColor();
