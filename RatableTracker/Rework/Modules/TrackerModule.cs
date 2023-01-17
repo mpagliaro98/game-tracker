@@ -57,7 +57,7 @@ namespace RatableTracker.Rework.Modules
         public IList<RankedObject> GetModelObjectList()
         {
             // TODO pass in filter and sort options with function overloads
-            return ModelObjects;
+            return new List<RankedObject>(ModelObjects);
         }
 
         public int TotalNumModelObjects()

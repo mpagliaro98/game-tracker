@@ -33,7 +33,7 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public IList<RatingCategory> GetRatingCategoryList()
         {
-            return RatingCategories;
+            return new List<RatingCategory>(RatingCategories);
         }
 
         public int TotalNumRatingCategories()

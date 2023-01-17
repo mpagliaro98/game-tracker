@@ -56,7 +56,7 @@ namespace RatableTracker.Rework.Modules
 
         public IList<ScoreRange> GetScoreRangeList()
         {
-            return ScoreRanges;
+            return new List<ScoreRange>(ScoreRanges);
         }
 
         public int TotalNumScoreRanges()
@@ -93,7 +93,7 @@ namespace RatableTracker.Rework.Modules
 
         public IList<ScoreRelationship> GetScoreRelationshipList()
         {
-            return ScoreRelationships;
+            return new List<ScoreRelationship>(ScoreRelationships);
         }
 
         public int TotalNumScoreRelationships()

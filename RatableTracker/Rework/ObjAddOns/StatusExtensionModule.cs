@@ -33,7 +33,7 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public IList<Status> GetStatusList()
         {
-            return Statuses;
+            return new List<Status>(Statuses);
         }
 
         public int TotalNumStatuses()

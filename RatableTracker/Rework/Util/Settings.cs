@@ -16,9 +16,7 @@ namespace RatableTracker.Rework.Util
 
         public override SavableRepresentation LoadIntoRepresentation()
         {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
-            return sr;
+            return base.LoadIntoRepresentation();
         }
 
         public override void RestoreFromRepresentation(SavableRepresentation sr)

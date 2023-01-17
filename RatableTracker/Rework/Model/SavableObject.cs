@@ -13,7 +13,9 @@ namespace RatableTracker.Rework.Model
     {
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
-            return new SavableRepresentation();
+            SavableRepresentation sr = new SavableRepresentation();
+            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
+            return sr;
         }
 
         public virtual void RestoreFromRepresentation(SavableRepresentation sr)

@@ -50,7 +50,6 @@ namespace RatableTracker.Rework.ObjAddOns
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
             sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
             sr.SaveValue("Name", new ValueContainer(Name));
             sr.SaveValue("Color", new ValueContainer(Color));
