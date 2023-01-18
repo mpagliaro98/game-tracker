@@ -27,7 +27,7 @@ namespace RatableTracker.Rework.Modules
             _loadSave = loadSave;
         }
 
-        public virtual void Init()
+        public virtual void LoadData()
         {
             using (var conn = _loadSave.NewConnection())
             {
@@ -49,6 +49,20 @@ namespace RatableTracker.Rework.Modules
         protected void TransferToNewModule(ILoadSaveMethod connCurrent, ILoadSaveMethod connNew)
         {
             connNew.SaveAllModelObjects(connCurrent.LoadModelObjects());
+        }
+
+        public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
+        {
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (RankedObject rankedObject in ModelObjects)
+                {
+                    if (rankedObject.RemoveReferenceToObject(obj, type))
+                    {
+                        conn.SaveOneModelObject(rankedObject);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -86,6 +100,8 @@ namespace RatableTracker.Rework.Modules
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
                 throw new Exception("Model object " + modelObject.Name.ToString() + " has not been saved yet and cannot be deleted");
+            RemoveReferencesToObject(modelObject, typeof(RankedObject));
+            ModelObjects.Remove(modelObject);
             using (var conn = _loadSave.NewConnection())
             {
                 conn.DeleteOneModelObject(modelObject);
@@ -101,8 +117,7 @@ namespace RatableTracker.Rework.Modules
             if (currentPosition == -1)
                 throw new Exception("Object " + modelObject.UniqueID.ToString() + " does not exist in the module");
 
-            ModelObjects.RemoveAt(currentPosition);
-            ModelObjects.Insert(newPosition, modelObject);
+            ModelObjects.Move(currentPosition, newPosition);
 
             using (var conn = _loadSave.NewConnection())
             {

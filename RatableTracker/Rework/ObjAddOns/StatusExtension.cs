@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
@@ -23,7 +24,7 @@ namespace RatableTracker.Rework.ObjAddOns
             }
             set
             {
-                _status = value.UniqueID;
+                _status = value == null ? new UniqueID(false) : value.UniqueID;
             }
         }
 
@@ -37,6 +38,19 @@ namespace RatableTracker.Rework.ObjAddOns
         public virtual void Validate()
         {
 
+        }
+
+        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
+        {
+            if (type == typeof(Status))
+            {
+                if (obj.Equals(Status))
+                {
+                    Status = null;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)

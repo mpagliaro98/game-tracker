@@ -23,7 +23,7 @@ namespace RatableTracker.Rework.ObjAddOns
             _loadSave = loadSave;
         }
 
-        public virtual void Init()
+        public virtual void LoadData()
         {
             using (var conn = _loadSave.NewConnection())
             {
@@ -57,14 +57,30 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
-        public void DeleteRatingCategory(RatingCategory ratingCategory)
+        public void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
         {
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
                 throw new Exception("Category " + ratingCategory.Name.ToString() + " has not been saved yet and cannot be deleted");
+            module.RemoveReferencesToObject(ratingCategory, typeof(RatingCategory));
+            RatingCategories.Remove(ratingCategory);
             using (var conn = _loadSave.NewConnection())
             {
                 conn.DeleteOneCategory(ratingCategory);
+            }
+        }
+
+        public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
+        {
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (RatingCategory ratingCategory in RatingCategories)
+                {
+                    if (ratingCategory.RemoveReferenceToObject(obj, type))
+                    {
+                        conn.SaveOneCategory(ratingCategory);
+                    }
+                }
             }
         }
     }

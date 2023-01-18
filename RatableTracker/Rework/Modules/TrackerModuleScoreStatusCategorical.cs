@@ -25,10 +25,10 @@ namespace RatableTracker.Rework.Modules
             _categoryExtension = categoryExtension;
         }
 
-        public override void Init()
+        public override void LoadData()
         {
-            base.Init();
-            CategoryExtension.Init();
+            base.LoadData();
+            CategoryExtension.LoadData();
         }
 
         public void TransferToNewModule(TrackerModuleScoreStatusCategorical newModule)
@@ -46,6 +46,12 @@ namespace RatableTracker.Rework.Modules
         {
             base.TransferToNewModule(connCurrent, connNew);
             connNew.SaveAllCategories(connCurrent.LoadCategories());
+        }
+
+        public override void RemoveReferencesToObject(IKeyable obj, Type type)
+        {
+            base.RemoveReferencesToObject(obj, type);
+            CategoryExtension.RemoveReferencesToObject(obj, type);
         }
     }
 }

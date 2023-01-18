@@ -68,6 +68,11 @@ namespace RatableTracker.Rework.ScoreRanges
             module.DeleteScoreRange(this);
         }
 
+        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
+        {
+            return false;
+        }
+
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

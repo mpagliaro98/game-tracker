@@ -23,7 +23,7 @@ namespace RatableTracker.Rework.ObjAddOns
             _loadSave = loadSave;
         }
 
-        public virtual void Init()
+        public virtual void LoadData()
         {
             using (var conn = _loadSave.NewConnection())
             {
@@ -57,14 +57,30 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
-        public void DeleteStatus(Status status)
+        public void DeleteStatus(Status status, TrackerModule module)
         {
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
                 throw new Exception("Status " + status.Name.ToString() + " has not been saved yet and cannot be deleted");
+            module.RemoveReferencesToObject(status, typeof(Status));
+            Statuses.Remove(status);
             using (var conn = _loadSave.NewConnection())
             {
                 conn.DeleteOneStatus(status);
+            }
+        }
+
+        public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
+        {
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (Status status in Statuses)
+                {
+                    if (status.RemoveReferenceToObject(obj, type))
+                    {
+                        conn.SaveOneStatus(status);
+                    }
+                }
             }
         }
     }

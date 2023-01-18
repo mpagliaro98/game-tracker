@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
@@ -52,6 +53,27 @@ namespace RatableTracker.Rework.ObjAddOns
                 if (categoryValue.PointValue < settings.MinScore || categoryValue.PointValue > settings.MaxScore)
                     throw new Exception(categoryValue.RatingCategory.Name + " score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString());
             }
+        }
+
+        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
+        {
+            if (type == typeof(RatingCategory))
+            {
+                ICollection<CategoryValue> toDelete = new List<CategoryValue>();
+                foreach (CategoryValue cv in CategoryValues)
+                {
+                    if (obj.Equals(cv.RatingCategory))
+                    {
+                        toDelete.Add(cv);
+                    }
+                }
+                foreach (CategoryValue cv in toDelete)
+                {
+                    CategoryValues.Remove(cv);
+                }
+                return toDelete.Count > 0;
+            }
+            return false;
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)

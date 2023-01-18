@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
+using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
@@ -42,9 +43,14 @@ namespace RatableTracker.Rework.ObjAddOns
             module.SaveStatus(this);
         }
 
-        public void Delete()
+        public void Delete(TrackerModule module)
         {
-            module.DeleteStatus(this);
+            this.module.DeleteStatus(this, module);
+        }
+
+        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
+        {
+            return false;
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

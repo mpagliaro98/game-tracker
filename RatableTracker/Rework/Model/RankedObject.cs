@@ -64,6 +64,11 @@ namespace RatableTracker.Rework.Model
             module.DeleteModelObject(this);
         }
 
+        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
+        {
+            return false;
+        }
+
         public void MoveUpOneRank()
         {
             // TODO throw unique exception

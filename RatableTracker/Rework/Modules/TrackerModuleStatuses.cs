@@ -24,10 +24,10 @@ namespace RatableTracker.Rework.Modules
             _statusExtension = statusExtension;
         }
 
-        public override void Init()
+        public override void LoadData()
         {
-            base.Init();
-            StatusExtension.Init();
+            base.LoadData();
+            StatusExtension.LoadData();
         }
 
         public void TransferToNewModule(TrackerModuleStatuses newModule)
@@ -45,6 +45,12 @@ namespace RatableTracker.Rework.Modules
         {
             base.TransferToNewModule(connCurrent, connNew);
             connNew.SaveAllStatuses(connCurrent.LoadStatuses());
+        }
+
+        public override void RemoveReferencesToObject(IKeyable obj, Type type)
+        {
+            base.RemoveReferencesToObject(obj, type);
+            StatusExtension.RemoveReferencesToObject(obj, type);
         }
     }
 }

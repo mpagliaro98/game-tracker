@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.ObjAddOns;
 using RatableTracker.Rework.Util;
@@ -46,6 +47,12 @@ namespace RatableTracker.Rework.Model
         {
             base.Validate();
             CategoryExtension.Validate();
+        }
+
+        public override bool RemoveReferenceToObject(IKeyable obj, Type type)
+        {
+            // deliberately not using || to avoid short-circuit behavior
+            return base.RemoveReferenceToObject(obj, type) | CategoryExtension.RemoveReferenceToObject(obj, type);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

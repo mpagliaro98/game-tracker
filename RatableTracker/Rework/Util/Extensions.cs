@@ -35,5 +35,28 @@ namespace RatableTracker.Rework.Util
             }
             return results;
         }
+
+        public static T RemoveAtAndReturn<T>(this IList<T> source, int index)
+        {
+            source.ThrowIfNull("source");
+            T obj = source.ElementAt(index);
+            source.RemoveAt(index);
+            return obj;
+        }
+
+        public static void Move<T>(this IList<T> source, int oldIndex, int newIndex)
+        {
+            source.ThrowIfNull("source");
+            T obj = source.RemoveAtAndReturn(oldIndex);
+            source.Insert(newIndex, obj);
+        }
+
+        public static void Move<T>(this IList<T> source, T obj, int newIndex)
+        {
+            source.ThrowIfNull("source");
+            int oldIndex = source.IndexOf(obj);
+            source.RemoveAt(oldIndex);
+            source.Insert(newIndex, obj);
+        }
     }
 }

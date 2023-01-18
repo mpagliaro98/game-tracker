@@ -28,9 +28,9 @@ namespace RatableTracker.Rework.Modules
             ScoreRelationships.Add(new ScoreRelationshipBetween());
         }
 
-        public override void Init()
+        public override void LoadData()
         {
-            base.Init();
+            base.LoadData();
             using (var conn = _loadSave.NewConnection())
             {
                 _scoreRanges = conn.LoadScoreRanges();
@@ -52,6 +52,21 @@ namespace RatableTracker.Rework.Modules
         {
             base.TransferToNewModule(connCurrent, connNew);
             connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges());
+        }
+
+        public override void RemoveReferencesToObject(IKeyable obj, Type type)
+        {
+            base.RemoveReferencesToObject(obj, type);
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (ScoreRange scoreRange in ScoreRanges)
+                {
+                    if (scoreRange.RemoveReferenceToObject(obj, type))
+                    {
+                        conn.SaveOneScoreRange(scoreRange);
+                    }
+                }
+            }
         }
 
         public IList<ScoreRange> GetScoreRangeList()
@@ -85,6 +100,8 @@ namespace RatableTracker.Rework.Modules
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
                 throw new Exception("Score range " + scoreRange.Name.ToString() + " has not been saved yet and cannot be deleted");
+            RemoveReferencesToObject(scoreRange, typeof(ScoreRange));
+            ScoreRanges.Remove(scoreRange);
             using (var conn = _loadSave.NewConnection())
             {
                 conn.DeleteOneScoreRange(scoreRange);
