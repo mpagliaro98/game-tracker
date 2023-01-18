@@ -8,7 +8,7 @@ namespace RatableTracker.Rework.LoadSave
 {
     public class PathControllerMobile : PathControllerWindows
     {
-        public override string BaseDirectory()
+        public override string ApplicationDirectory()
         {
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
         }

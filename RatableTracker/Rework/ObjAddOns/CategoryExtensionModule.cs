@@ -27,7 +27,7 @@ namespace RatableTracker.Rework.ObjAddOns
         {
             using (var conn = _loadSave.NewConnection())
             {
-                _ratingCategories = conn.LoadCategories();
+                _ratingCategories = conn.LoadCategories(this);
             }
         }
 

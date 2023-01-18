@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.Model;
+using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.ScoreRanges;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,6 @@ namespace RatableTracker.Rework.Interfaces
         void SaveOneScoreRange(ScoreRange scoreRange);
         void SaveAllScoreRanges(IList<ScoreRange> scoreRanges);
         void DeleteOneScoreRange(ScoreRange scoreRange);
-        IList<ScoreRange> LoadScoreRanges();
+        IList<ScoreRange> LoadScoreRanges(TrackerModuleScores module);
     }
 }

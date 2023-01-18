@@ -27,7 +27,7 @@ namespace RatableTracker.Rework.ObjAddOns
         {
             using (var conn = _loadSave.NewConnection())
             {
-                _statuses = conn.LoadStatuses();
+                _statuses = conn.LoadStatuses(this);
             }
         }
 

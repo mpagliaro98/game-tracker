@@ -12,6 +12,6 @@ namespace RatableTracker.Rework.Interfaces
         void SaveOneStatus(Status status);
         void SaveAllStatuses(IList<Status> statuses);
         void DeleteOneStatus(Status status);
-        IList<Status> LoadStatuses();
+        IList<Status> LoadStatuses(StatusExtensionModule module);
     }
 }

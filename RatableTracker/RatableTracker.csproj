@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -155,7 +158,6 @@
     <Compile Include="Rework\ScoreRanges\ScoreRelationshipBetween.cs" />
     <Compile Include="Rework\Util\Color.cs" />
     <Compile Include="Rework\Util\Extensions.cs" />
-    <Compile Include="Rework\Util\GlobalSettings.cs" />
     <Compile Include="Rework\Util\RatableTrackerFactory.cs" />
     <Compile Include="Rework\Util\Settings.cs" />
     <Compile Include="Rework\Util\SettingsScore.cs" />
@@ -171,6 +173,8 @@
     <Compile Include="List Manipulation\SortMode.cs" />
     <Compile Include="Status.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

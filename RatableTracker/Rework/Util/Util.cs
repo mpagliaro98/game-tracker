@@ -9,6 +9,8 @@ namespace RatableTracker.Rework.Util
 {
     public static class Util
     {
+        public static Encoding TextEncoding => Encoding.UTF8;
+
         public static T FindObjectInList<T>(IList<T> list, UniqueID uniqueID) where T : IKeyable
         {
             foreach (T item in list)

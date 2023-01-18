@@ -2,6 +2,7 @@
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.ScoreRanges;
+using RatableTracker.Rework.Util;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -28,30 +29,30 @@ namespace RatableTracker.Rework.Modules
             ScoreRelationships.Add(new ScoreRelationshipBetween());
         }
 
-        public override void LoadData()
+        public override void LoadData(Settings settings)
         {
-            base.LoadData();
+            base.LoadData(settings);
             using (var conn = _loadSave.NewConnection())
             {
-                _scoreRanges = conn.LoadScoreRanges();
+                _scoreRanges = conn.LoadScoreRanges(this);
             }
         }
 
-        public void TransferToNewModule(TrackerModuleScores newModule)
+        public void TransferToNewModule(TrackerModuleScores newModule, Settings settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
                 using (var connNew = newModule._loadSave.NewConnection())
                 {
-                    TransferToNewModule(connCurrent, connNew);
+                    TransferToNewModule(connCurrent, connNew, settings);
                 }
             }
         }
 
-        protected void TransferToNewModule(ILoadSaveMethodScores connCurrent, ILoadSaveMethodScores connNew)
+        protected void TransferToNewModule(ILoadSaveMethodScores connCurrent, ILoadSaveMethodScores connNew, Settings settings)
         {
-            base.TransferToNewModule(connCurrent, connNew);
-            connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges());
+            base.TransferToNewModule(connCurrent, connNew, settings);
+            connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges(this));
         }
 
         public override void RemoveReferencesToObject(IKeyable obj, Type type)

@@ -2,6 +2,7 @@
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.ObjAddOns;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,27 +25,27 @@ namespace RatableTracker.Rework.Modules
             _statusExtension = statusExtension;
         }
 
-        public override void LoadData()
+        public override void LoadData(Settings settings)
         {
-            base.LoadData();
+            base.LoadData(settings);
             StatusExtension.LoadData();
         }
 
-        public void TransferToNewModule(TrackerModuleStatuses newModule)
+        public void TransferToNewModule(TrackerModuleStatuses newModule, Settings settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
                 using (var connNew = newModule._loadSave.NewConnection())
                 {
-                    TransferToNewModule(connCurrent, connNew);
+                    TransferToNewModule(connCurrent, connNew, settings);
                 }
             }
         }
 
-        protected virtual void TransferToNewModule(ILoadSaveMethodStatusExtension connCurrent, ILoadSaveMethodStatusExtension connNew)
+        protected virtual void TransferToNewModule(ILoadSaveMethodStatusExtension connCurrent, ILoadSaveMethodStatusExtension connNew, Settings settings)
         {
-            base.TransferToNewModule(connCurrent, connNew);
-            connNew.SaveAllStatuses(connCurrent.LoadStatuses());
+            base.TransferToNewModule(connCurrent, connNew, settings);
+            connNew.SaveAllStatuses(connCurrent.LoadStatuses(StatusExtension));
         }
 
         public override void RemoveReferencesToObject(IKeyable obj, Type type)

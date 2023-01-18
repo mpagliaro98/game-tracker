@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.ObjAddOns;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,27 +24,27 @@ namespace RatableTracker.Rework.Modules
             _categoryExtension = categoryExtension;
         }
 
-        public override void LoadData()
+        public override void LoadData(Settings settings)
         {
-            base.LoadData();
+            base.LoadData(settings);
             CategoryExtension.LoadData();
         }
 
-        public void TransferToNewModule(TrackerModuleScoreCategorical newModule)
+        public void TransferToNewModule(TrackerModuleScoreCategorical newModule, Settings settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
                 using (var connNew = newModule._loadSave.NewConnection())
                 {
-                    TransferToNewModule(connCurrent, connNew);
+                    TransferToNewModule(connCurrent, connNew, settings);
                 }
             }
         }
 
-        protected virtual void TransferToNewModule(ILoadSaveMethodCategoryExtension connCurrent, ILoadSaveMethodCategoryExtension connNew)
+        protected virtual void TransferToNewModule(ILoadSaveMethodCategoryExtension connCurrent, ILoadSaveMethodCategoryExtension connNew, Settings settings)
         {
-            base.TransferToNewModule(connCurrent, connNew);
-            connNew.SaveAllCategories(connCurrent.LoadCategories());
+            base.TransferToNewModule(connCurrent, connNew, settings);
+            connNew.SaveAllCategories(connCurrent.LoadCategories(CategoryExtension));
         }
 
         public override void RemoveReferencesToObject(IKeyable obj, Type type)

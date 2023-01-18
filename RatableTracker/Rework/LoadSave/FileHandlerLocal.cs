@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Util;
+using RatableTracker.Rework.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,19 +10,29 @@ namespace RatableTracker.Rework.LoadSave
 {
     public class FileHandlerLocal : IFileHandler
     {
-        public FileHandlerLocal(string directory, IPathController pathController)
-        {
+        protected readonly string baseDirectory;
+        protected readonly IPathController pathController;
 
+        public FileHandlerLocal(string baseDirectory, IPathController pathController)
+        {
+            this.baseDirectory = baseDirectory;
+            this.pathController = pathController;
         }
 
-        public byte[] LoadFile(string path)
+        public byte[] LoadFile(string relativePath)
         {
-            throw new NotImplementedException();
+            string fullPath = pathController.Combine(baseDirectory, relativePath);
+            if (pathController.FileExists(fullPath))
+                return Util.Util.TextEncoding.GetBytes(pathController.ReadFromFile(fullPath));
+            else
+                return new byte[0];
         }
 
-        public void SaveFile(string path, byte[] data)
+        public void SaveFile(string relativePath, byte[] data)
         {
-            throw new NotImplementedException();
+            string fullPath = pathController.Combine(baseDirectory, relativePath);
+            pathController.CreateFileIfDoesNotExist(fullPath);
+            pathController.WriteToFile(fullPath, Util.Util.TextEncoding.GetString(data));
         }
     }
 }

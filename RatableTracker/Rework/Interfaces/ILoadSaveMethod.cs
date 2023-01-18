@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.Model;
+using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace RatableTracker.Rework.Interfaces
         void SaveOneModelObject(RankedObject rankedObject);
         void SaveAllModelObjects(IList<RankedObject> rankedObjects);
         void DeleteOneModelObject(RankedObject rankedObject);
-        IList<RankedObject> LoadModelObjects();
+        IList<RankedObject> LoadModelObjects(Settings settings, TrackerModule module);
         void SaveSettings(Settings settings);
         Settings LoadSettings();
     }

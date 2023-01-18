@@ -11,7 +11,7 @@ namespace RatableTracker.Rework.LoadSave
 {
     public class PathControllerWindows : IPathController
     {
-        public virtual string BaseDirectory()
+        public virtual string ApplicationDirectory()
         {
             return Environment.ExpandEnvironmentVariables("%LocalAppData%\\mpagliaro98\\GameTracker");
         }

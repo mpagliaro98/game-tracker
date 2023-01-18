@@ -27,28 +27,29 @@ namespace RatableTracker.Rework.Modules
             _loadSave = loadSave;
         }
 
-        public virtual void LoadData()
+        public virtual void LoadData(Settings settings)
         {
             using (var conn = _loadSave.NewConnection())
             {
-                _modelObjects = conn.LoadModelObjects();
+                _modelObjects = conn.LoadModelObjects(settings, this);
             }
         }
 
-        public void TransferToNewModule(TrackerModule newModule)
+        public void TransferToNewModule(TrackerModule newModule, Settings settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
                 using (var connNew = newModule._loadSave.NewConnection())
                 {
-                    TransferToNewModule(connCurrent, connNew);
+                    TransferToNewModule(connCurrent, connNew, settings);
                 }
             }
         }
 
-        protected void TransferToNewModule(ILoadSaveMethod connCurrent, ILoadSaveMethod connNew)
+        protected void TransferToNewModule(ILoadSaveMethod connCurrent, ILoadSaveMethod connNew, Settings settings)
         {
-            connNew.SaveAllModelObjects(connCurrent.LoadModelObjects());
+            connNew.SaveAllModelObjects(connCurrent.LoadModelObjects(settings, this));
+            connNew.SaveSettings(connCurrent.LoadSettings());
         }
 
         public virtual void RemoveReferencesToObject(IKeyable obj, Type type)

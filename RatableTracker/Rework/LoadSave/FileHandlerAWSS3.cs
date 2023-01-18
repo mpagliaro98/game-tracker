@@ -14,12 +14,12 @@ namespace RatableTracker.Rework.LoadSave
 
         }
 
-        public byte[] LoadFile(string path)
+        public byte[] LoadFile(string bucketID)
         {
             throw new NotImplementedException();
         }
 
-        public void SaveFile(string path, byte[] data)
+        public void SaveFile(string bucketID, byte[] data)
         {
             throw new NotImplementedException();
         }

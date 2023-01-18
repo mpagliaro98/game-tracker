@@ -9,7 +9,6 @@ namespace RatableTracker.Rework.LoadSave
 {
     public class FileHandlerLocalAppData : FileHandlerLocal
     {
-        // TODO
-        public FileHandlerLocalAppData(IPathController pathController) : base("local app data", pathController) { }
+        public FileHandlerLocalAppData(IPathController pathController) : base(pathController.ApplicationDirectory(), pathController) { }
     }
 }

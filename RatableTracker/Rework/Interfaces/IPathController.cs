@@ -8,7 +8,7 @@ namespace RatableTracker.Rework.Interfaces
 {
     public interface IPathController
     {
-        string BaseDirectory();
+        string ApplicationDirectory();
         string Combine(string path1, string path2);
         void WriteToFile(string filepath, string text);
         Task WriteToFileAsync(string filepath, string text);
