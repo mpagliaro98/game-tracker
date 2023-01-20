@@ -12,8 +12,7 @@ namespace RatableTracker.Rework.Modules
 {
     public class TrackerModuleScoreStatuses : TrackerModuleScores, IModuleStatus
     {
-        private readonly StatusExtensionModule _statusExtension;
-        public StatusExtensionModule StatusExtension { get { return _statusExtension; } }
+        public StatusExtensionModule StatusExtension { get; private set; }
 
         protected readonly new ILoadSaveHandler<ILoadSaveMethodScoreStatuses> _loadSave;
 
@@ -21,7 +20,7 @@ namespace RatableTracker.Rework.Modules
 
         public TrackerModuleScoreStatuses(ILoadSaveHandler<ILoadSaveMethodScoreStatuses> loadSave, StatusExtensionModule statusExtension) : base(loadSave)
         {
-            _statusExtension = statusExtension;
+            StatusExtension = statusExtension;
         }
 
         public override void LoadData(Settings settings)

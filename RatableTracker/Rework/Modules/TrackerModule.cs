@@ -17,8 +17,7 @@ namespace RatableTracker.Rework.Modules
     {
         public virtual int LimitModelObjects => 100000;
 
-        private IList<RankedObject> _modelObjects = new List<RankedObject>();
-        protected IList<RankedObject> ModelObjects => _modelObjects;
+        protected IList<RankedObject> ModelObjects { get; private set; } = new List<RankedObject>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethod> _loadSave;
 
@@ -31,7 +30,7 @@ namespace RatableTracker.Rework.Modules
         {
             using (var conn = _loadSave.NewConnection())
             {
-                _modelObjects = conn.LoadModelObjects(settings, this);
+                ModelObjects = conn.LoadModelObjects(settings, this);
             }
         }
 

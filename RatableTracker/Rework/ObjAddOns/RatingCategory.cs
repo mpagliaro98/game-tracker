@@ -18,12 +18,9 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public string Name { get; set; } = "";
         public string Comment { get; set; } = "";
+        public double Weight { get; protected set; } = 1.0;
 
-        protected double weight = 1.0;
-        public double Weight => weight;
-
-        private UniqueID _uniqueID = new UniqueID();
-        public UniqueID UniqueID { get { return _uniqueID; } }
+        public UniqueID UniqueID { get; private set; } = new UniqueID();
 
         protected readonly CategoryExtensionModule module;
 
@@ -80,7 +77,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 switch (key)
                 {
                     case "UniqueID":
-                        _uniqueID = sr.GetValue(key).GetUniqueID();
+                        UniqueID = sr.GetValue(key).GetUniqueID();
                         break;
                     case "Name":
                         Name = sr.GetValue(key).GetString();
@@ -89,7 +86,7 @@ namespace RatableTracker.Rework.ObjAddOns
                         Comment = sr.GetValue(key).GetString();
                         break;
                     case "Weight":
-                        weight = sr.GetValue(key).GetDouble();
+                        Weight = sr.GetValue(key).GetDouble();
                         break;
                     default:
                         break;

@@ -12,8 +12,7 @@ namespace RatableTracker.Rework.Modules
 {
     public class TrackerModuleScoreCategorical : TrackerModuleScores, IModuleCategorical
     {
-        private readonly CategoryExtensionModule _categoryExtension;
-        public CategoryExtensionModule CategoryExtension { get { return _categoryExtension; } }
+        public CategoryExtensionModule CategoryExtension { get; private set; }
 
         protected readonly new ILoadSaveHandler<ILoadSaveMethodScoreCategorical> _loadSave;
 
@@ -21,7 +20,7 @@ namespace RatableTracker.Rework.Modules
 
         public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave, CategoryExtensionModule categoryExtension) : base(loadSave)
         {
-            _categoryExtension = categoryExtension;
+            CategoryExtension = categoryExtension;
         }
 
         public override void LoadData(Settings settings)

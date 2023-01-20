@@ -13,8 +13,7 @@ namespace RatableTracker.Rework.Model
 {
     public class RankedObjectStatus : RankedObject, IModelObjectStatus
     {
-        private readonly StatusExtension _statusExtension;
-        public StatusExtension StatusExtension { get { return _statusExtension; } }
+        public StatusExtension StatusExtension { get; private set; }
 
         // Module re-declared as a different derived type
         protected readonly new TrackerModuleStatuses module;
@@ -23,7 +22,7 @@ namespace RatableTracker.Rework.Model
 
         public RankedObjectStatus(Settings settings, TrackerModuleStatuses module, StatusExtension statusExtension) : base(settings, module)
         {
-            _statusExtension = statusExtension;
+            StatusExtension = statusExtension;
         }
 
         public override void Validate()

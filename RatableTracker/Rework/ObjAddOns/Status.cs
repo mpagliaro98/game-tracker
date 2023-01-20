@@ -19,8 +19,7 @@ namespace RatableTracker.Rework.ObjAddOns
         public string Name { get; set; } = "";
         public Color Color { get; set; } = new Color();
 
-        private UniqueID _uniqueID = new UniqueID();
-        public UniqueID UniqueID { get { return _uniqueID; } }
+        public UniqueID UniqueID { get; private set; } = new UniqueID();
 
         protected readonly StatusExtensionModule module;
 
@@ -74,7 +73,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 switch (key)
                 {
                     case "UniqueID":
-                        _uniqueID = sr.GetValue(key).GetUniqueID();
+                        UniqueID = sr.GetValue(key).GetUniqueID();
                         break;
                     case "Name":
                         Name = sr.GetValue(key).GetString();

@@ -13,8 +13,7 @@ namespace RatableTracker.Rework.Model
 {
     public class RatedObjectStatusCategorical : RatedObjectStatus, IModelObjectCategorical
     {
-        private readonly CategoryExtension _categoryExtension;
-        public CategoryExtension CategoryExtension { get { return _categoryExtension; } }
+        public CategoryExtension CategoryExtension { get; private set; }
 
         public override double Score
         {
@@ -40,7 +39,7 @@ namespace RatableTracker.Rework.Model
 
         public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module, StatusExtension statusExtension, CategoryExtension categoryExtension) : base(settings, module, statusExtension)
         {
-            _categoryExtension = categoryExtension;
+            CategoryExtension = categoryExtension;
         }
 
         public override void Validate()

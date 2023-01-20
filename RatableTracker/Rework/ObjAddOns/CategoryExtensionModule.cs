@@ -13,8 +13,7 @@ namespace RatableTracker.Rework.ObjAddOns
     {
         public virtual int LimitRatingCategories => 10;
 
-        private IList<RatingCategory> _ratingCategories = new List<RatingCategory>();
-        protected IList<RatingCategory> RatingCategories => _ratingCategories;
+        protected IList<RatingCategory> RatingCategories { get; private set; } = new List<RatingCategory>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodCategoryExtension> _loadSave;
 
@@ -27,7 +26,7 @@ namespace RatableTracker.Rework.ObjAddOns
         {
             using (var conn = _loadSave.NewConnection())
             {
-                _ratingCategories = conn.LoadCategories(this);
+                RatingCategories = conn.LoadCategories(this);
             }
         }
 

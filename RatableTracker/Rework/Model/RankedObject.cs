@@ -31,8 +31,7 @@ namespace RatableTracker.Rework.Model
             get { return Rank; }
         }
 
-        private UniqueID _uniqueID = new UniqueID();
-        public UniqueID UniqueID { get { return _uniqueID; } }
+        public UniqueID UniqueID { get; private set; } = new UniqueID();
 
         protected readonly Settings settings;
         protected readonly TrackerModule module;
@@ -115,7 +114,7 @@ namespace RatableTracker.Rework.Model
                 switch (key)
                 {
                     case "UniqueID":
-                        _uniqueID = sr.GetValue(key).GetUniqueID();
+                        UniqueID = sr.GetValue(key).GetUniqueID();
                         break;
                     case "Name":
                         Name = sr.GetValue(key).GetString();

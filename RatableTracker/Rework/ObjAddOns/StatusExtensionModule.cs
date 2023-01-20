@@ -13,8 +13,7 @@ namespace RatableTracker.Rework.ObjAddOns
     {
         public virtual int LimitStatuses => 20;
 
-        private IList<Status> _statuses = new List<Status>();
-        protected IList<Status> Statuses => _statuses;
+        protected IList<Status> Statuses { get; private set; } = new List<Status>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodStatusExtension> _loadSave;
 
@@ -27,7 +26,7 @@ namespace RatableTracker.Rework.ObjAddOns
         {
             using (var conn = _loadSave.NewConnection())
             {
-                _statuses = conn.LoadStatuses(this);
+                Statuses = conn.LoadStatuses(this);
             }
         }
 

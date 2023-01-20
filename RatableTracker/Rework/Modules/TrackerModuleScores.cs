@@ -16,8 +16,7 @@ namespace RatableTracker.Rework.Modules
     {
         public virtual int LimitRanges => 20;
 
-        private IList<ScoreRange> _scoreRanges = new List<ScoreRange>();
-        protected IList<ScoreRange> ScoreRanges => _scoreRanges;
+        protected IList<ScoreRange> ScoreRanges { get; private set; } = new List<ScoreRange>();
         protected IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
 
         protected readonly new ILoadSaveHandler<ILoadSaveMethodScores> _loadSave;
@@ -34,7 +33,7 @@ namespace RatableTracker.Rework.Modules
             base.LoadData(settings);
             using (var conn = _loadSave.NewConnection())
             {
-                _scoreRanges = conn.LoadScoreRanges(this);
+                ScoreRanges = conn.LoadScoreRanges(this);
             }
         }
 

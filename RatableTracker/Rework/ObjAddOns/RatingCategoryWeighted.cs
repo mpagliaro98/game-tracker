@@ -12,7 +12,7 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public void SetWeight(double val)
         {
-            weight = val;
+            Weight = val;
         }
     }
 }

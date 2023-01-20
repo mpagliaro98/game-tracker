@@ -13,8 +13,7 @@ namespace RatableTracker.Rework.ObjAddOns
 {
     public class CategoryExtension
     {
-        private IList<CategoryValue> _categoryValues = new List<CategoryValue>();
-        protected IList<CategoryValue> CategoryValues { get { return _categoryValues; } }
+        protected IList<CategoryValue> CategoryValues { get; private set; } = new List<CategoryValue>();
 
         public bool IgnoreCategories { get; set; } = false;
 
@@ -79,7 +78,7 @@ namespace RatableTracker.Rework.ObjAddOns
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
         {
             sr.SaveValue("IgnoreCategories", new ValueContainer(IgnoreCategories));
-            sr.SaveValue("CategoryValues", new ValueContainer(_categoryValues));
+            sr.SaveValue("CategoryValues", new ValueContainer(CategoryValues));
         }
 
         public virtual void RestoreFromRepresentation(SavableRepresentation sr)
@@ -92,7 +91,7 @@ namespace RatableTracker.Rework.ObjAddOns
                         IgnoreCategories = sr.GetValue(key).GetBool();
                         break;
                     case "CategoryValues":
-                        _categoryValues = sr.GetValue(key).GetSavableObjectList(() => new CategoryValue(module, settings)).ToList();
+                        CategoryValues = sr.GetValue(key).GetSavableObjectList(() => new CategoryValue(module, settings)).ToList();
                         break;
                     default:
                         break;
