@@ -10,21 +10,44 @@ namespace RatableTracker.Rework.Util
 {
     public class SettingsScore : Settings
     {
+        // save min/max score changes to temporary variables until Save is called
         private double _minScore = 0;
-        public double MinScore { get { return _minScore; } }
+        private double _tempMinScore = 0;
+        public double MinScore
+        {
+            get { return _minScore; }
+            set { _tempMinScore = value; }
+        }
 
         private double _maxScore = 10;
-        public double MaxScore { get { return _maxScore; } }
+        private double _tempMaxScore = 10;
+        public double MaxScore
+        {
+            get { return _maxScore; }
+            set { _tempMaxScore = value; }
+        }
 
         public SettingsScore() : base() { }
 
-        public void ChangeMinMaxScore(double newMin, double newMax, TrackerModuleScores module)
+        public override void Validate()
         {
-            double oldMin = MinScore;
-            double oldMax = MaxScore;
-            _minScore = newMin;
-            _maxScore = newMax;
-            module.ScaleScoresToNewRange(oldMin, oldMax, newMin, newMax);
+            // TODO throw unique exceptions
+            base.Validate();
+            if (_tempMinScore >= _tempMaxScore)
+                throw new Exception("Minimum score must be less than maximum score");
+            // new min and max are valid, so swap them into the main variables
+            (_tempMinScore, _minScore) = (_minScore, _tempMinScore);
+            (_tempMaxScore, _maxScore) = (_maxScore, _tempMaxScore);
+        }
+
+        public override void PostSave(TrackerModule module)
+        {
+            base.PostSave(module);
+            // TODO scale min and max score of all model objects by calling module
+
+            // set temp values back equal to the real values
+            _tempMinScore = _minScore;
+            _tempMaxScore = _maxScore;
         }
 
         public override SavableRepresentation LoadIntoRepresentation()
@@ -44,9 +67,11 @@ namespace RatableTracker.Rework.Util
                 {
                     case "MinScore":
                         _minScore = sr.GetValue(key).GetDouble();
+                        _tempMinScore = sr.GetValue(key).GetDouble();
                         break;
                     case "MaxScore":
                         _maxScore = sr.GetValue(key).GetDouble();
+                        _tempMaxScore = sr.GetValue(key).GetDouble();
                         break;
                     default:
                         break;

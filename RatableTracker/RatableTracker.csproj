@@ -120,6 +120,10 @@
     <Compile Include="Rework\Interfaces\ILoadSaveMethodScoreStatuses.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveMethodStatuses.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveMethodStatusExtension.cs" />
+    <Compile Include="Rework\Interfaces\IModelObjectCategorical.cs" />
+    <Compile Include="Rework\Interfaces\IModelObjectStatus.cs" />
+    <Compile Include="Rework\Interfaces\IModuleCategorical.cs" />
+    <Compile Include="Rework\Interfaces\IModuleStatus.cs" />
     <Compile Include="Rework\Interfaces\IPathController.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerAWSS3.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerLocal.cs" />

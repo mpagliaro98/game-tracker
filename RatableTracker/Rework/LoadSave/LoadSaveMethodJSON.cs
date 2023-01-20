@@ -30,6 +30,12 @@ namespace RatableTracker.Rework.LoadSave
         protected IList<SavableRepresentation> statuses = null;
         protected IList<SavableRepresentation> categories = null;
 
+        protected bool modelObjectsChanged = false;
+        protected bool settingsChanged = false;
+        protected bool scoreRangesChanged = false;
+        protected bool statusesChanged = false;
+        protected bool categoriesChanged = false;
+
         protected readonly IFileHandler fileHandler;
         protected readonly IPathController pathController;
         protected readonly RatableTrackerFactory factory;
@@ -75,9 +81,10 @@ namespace RatableTracker.Rework.LoadSave
             EnsureFileContentIsLoaded(CATEGORY_FILE, ref categories, InterpretBytesToSRList);
         }
 
-        protected void SaveFileContentIfLoaded<T>(string fileName, T representation, Func<T, byte[]> representationToBytes)
+        protected void SaveFileContentIfLoaded<T>(string fileName, T representation, Func<T, byte[]> representationToBytes, bool changed)
         {
             if (representation == null) return;
+            if (!changed) return;
             byte[] fileContent = representationToBytes(representation);
             string path = CreateRelativePath(fileName);
             fileHandler.SaveFile(path, fileContent);
@@ -85,27 +92,27 @@ namespace RatableTracker.Rework.LoadSave
 
         protected void SaveModelObjectsIfLoaded()
         {
-            SaveFileContentIfLoaded(MODEL_OBJECT_FILE, modelObjects, SRListToBytes);
+            SaveFileContentIfLoaded(MODEL_OBJECT_FILE, modelObjects, SRListToBytes, modelObjectsChanged);
         }
 
         protected void SaveSettingsIfLoaded()
         {
-            SaveFileContentIfLoaded(SETTINGS_FILE, settings, SRToBytes);
+            SaveFileContentIfLoaded(SETTINGS_FILE, settings, SRToBytes, settingsChanged);
         }
 
         protected void SaveScoreRangesIfLoaded()
         {
-            SaveFileContentIfLoaded(SCORE_RANGE_FILE, modelObjects, SRListToBytes);
+            SaveFileContentIfLoaded(SCORE_RANGE_FILE, modelObjects, SRListToBytes, scoreRangesChanged);
         }
 
         protected void SaveStatusesIfLoaded()
         {
-            SaveFileContentIfLoaded(STATUS_FILE, statuses, SRListToBytes);
+            SaveFileContentIfLoaded(STATUS_FILE, statuses, SRListToBytes, statusesChanged);
         }
 
         protected void SaveCategoriesIfLoaded()
         {
-            SaveFileContentIfLoaded(CATEGORY_FILE, categories, SRListToBytes);
+            SaveFileContentIfLoaded(CATEGORY_FILE, categories, SRListToBytes, categoriesChanged);
         }
 
         private IList<SavableRepresentation> InterpretBytesToSRList(byte[] bytes)
@@ -154,7 +161,23 @@ namespace RatableTracker.Rework.LoadSave
             return pathController.Combine(SAVE_FILE_DIRECTORY, fileName);
         }
 
-        protected void SaveOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toSave, string keyName = "UniqueID") where T : SavableObject, IKeyable
+        public void SaveOne<T>(Action ensureLoaded, ref SavableRepresentation data, T toSave, ref bool changed) where T : SavableObject
+        {
+            ensureLoaded();
+            data = toSave.LoadIntoRepresentation();
+            changed = true;
+        }
+
+        public T LoadOne<T>(Action ensureLoaded, SavableRepresentation data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : SavableObject
+        {
+            ensureLoaded();
+            string typeName = data.GetValue(keyTypeName).GetString();
+            T obj = generateObj(typeName);
+            obj.RestoreFromRepresentation(data);
+            return obj;
+        }
+
+        protected void SaveOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toSave, ref bool changed, string keyName = "UniqueID") where T : SavableObject, IKeyable
         {
             ensureLoaded();
             for (int i = 0; i < data.Count; i++)
@@ -166,9 +189,10 @@ namespace RatableTracker.Rework.LoadSave
                     break;
                 }
             }
+            changed = true;
         }
 
-        protected void SaveAll<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, IList<T> toSave) where T : SavableObject, IKeyable
+        protected void SaveAll<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, IList<T> toSave, ref bool changed) where T : SavableObject, IKeyable
         {
             ensureLoaded();
             data = new List<SavableRepresentation>();
@@ -176,9 +200,10 @@ namespace RatableTracker.Rework.LoadSave
             {
                 data.Add(savable.LoadIntoRepresentation());
             }
+            changed = true;
         }
 
-        protected void DeleteOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toDelete, string keyName = "UniqueID") where T : SavableObject, IKeyable
+        protected void DeleteOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toDelete, ref bool changed, string keyName = "UniqueID") where T : SavableObject, IKeyable
         {
             ensureLoaded();
             for (int i = 0; i < data.Count; i++)
@@ -190,6 +215,7 @@ namespace RatableTracker.Rework.LoadSave
                     break;
                 }
             }
+            changed = true;
         }
 
         protected IList<T> LoadAll<T>(Action ensureLoaded, IList<SavableRepresentation> data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : SavableObject, IKeyable
@@ -390,7 +416,7 @@ namespace RatableTracker.Rework.LoadSave
 
         public void DeleteOneModelObject(RankedObject rankedObject)
         {
-            DeleteOne(EnsureModelObjectsAreLoaded, ref modelObjects, rankedObject);
+            DeleteOne(EnsureModelObjectsAreLoaded, ref modelObjects, rankedObject, ref modelObjectsChanged);
         }
 
         public IList<RankedObject> LoadModelObjects(Settings settings, TrackerModule module)
@@ -400,27 +426,27 @@ namespace RatableTracker.Rework.LoadSave
 
         public void SaveAllModelObjects(IList<RankedObject> rankedObjects)
         {
-            SaveAll(EnsureModelObjectsAreLoaded, ref modelObjects, rankedObjects);
+            SaveAll(EnsureModelObjectsAreLoaded, ref modelObjects, rankedObjects, ref modelObjectsChanged);
         }
 
         public void SaveOneModelObject(RankedObject rankedObject)
         {
-            SaveOne(EnsureModelObjectsAreLoaded, ref modelObjects, rankedObject);
+            SaveOne(EnsureModelObjectsAreLoaded, ref modelObjects, rankedObject, ref modelObjectsChanged);
         }
 
         public void SaveOneScoreRange(ScoreRange scoreRange)
         {
-            SaveOne(EnsureScoreRangesAreLoaded, ref scoreRanges, scoreRange);
+            SaveOne(EnsureScoreRangesAreLoaded, ref scoreRanges, scoreRange, ref scoreRangesChanged);
         }
 
         public void SaveAllScoreRanges(IList<ScoreRange> scoreRanges)
         {
-            SaveAll(EnsureScoreRangesAreLoaded, ref this.scoreRanges, scoreRanges);
+            SaveAll(EnsureScoreRangesAreLoaded, ref this.scoreRanges, scoreRanges, ref scoreRangesChanged);
         }
 
         public void DeleteOneScoreRange(ScoreRange scoreRange)
         {
-            DeleteOne(EnsureScoreRangesAreLoaded, ref scoreRanges, scoreRange);
+            DeleteOne(EnsureScoreRangesAreLoaded, ref scoreRanges, scoreRange, ref scoreRangesChanged);
         }
 
         public IList<ScoreRange> LoadScoreRanges(TrackerModuleScores module)
@@ -430,32 +456,27 @@ namespace RatableTracker.Rework.LoadSave
 
         public void SaveSettings(Settings settings)
         {
-            EnsureSettingsAreLoaded();
-            this.settings = settings.LoadIntoRepresentation();
+            SaveOne(EnsureSettingsAreLoaded, ref this.settings, settings, ref settingsChanged);
         }
 
         public Settings LoadSettings()
         {
-            EnsureSettingsAreLoaded();
-            string typeName = this.settings.GetValue("TypeName").GetString();
-            Settings settings = factory.GetSettings(typeName);
-            settings.RestoreFromRepresentation(this.settings);
-            return settings;
+            return LoadOne(EnsureSettingsAreLoaded, settings, (s) => factory.GetSettings(s));
         }
 
         public void SaveOneCategory(RatingCategory ratingCategory)
         {
-            SaveOne(EnsureCategoriesAreLoaded, ref categories, ratingCategory);
+            SaveOne(EnsureCategoriesAreLoaded, ref categories, ratingCategory, ref categoriesChanged);
         }
 
         public void SaveAllCategories(IList<RatingCategory> ratingCategories)
         {
-            SaveAll(EnsureCategoriesAreLoaded, ref categories, ratingCategories);
+            SaveAll(EnsureCategoriesAreLoaded, ref categories, ratingCategories, ref categoriesChanged);
         }
 
         public void DeleteOneCategory(RatingCategory ratingCategory)
         {
-            DeleteOne(EnsureCategoriesAreLoaded, ref categories, ratingCategory);
+            DeleteOne(EnsureCategoriesAreLoaded, ref categories, ratingCategory, ref categoriesChanged);
         }
 
         public IList<RatingCategory> LoadCategories(CategoryExtensionModule module)
@@ -465,17 +486,17 @@ namespace RatableTracker.Rework.LoadSave
 
         public void SaveOneStatus(Status status)
         {
-            SaveOne(EnsureStatusesAreLoaded, ref statuses, status);
+            SaveOne(EnsureStatusesAreLoaded, ref statuses, status, ref statusesChanged);
         }
 
         public void SaveAllStatuses(IList<Status> statuses)
         {
-            SaveAll(EnsureStatusesAreLoaded, ref this.statuses, statuses);
+            SaveAll(EnsureStatusesAreLoaded, ref this.statuses, statuses, ref statusesChanged);
         }
 
         public void DeleteOneStatus(Status status)
         {
-            DeleteOne(EnsureStatusesAreLoaded, ref statuses, status);
+            DeleteOne(EnsureStatusesAreLoaded, ref statuses, status, ref statusesChanged);
         }
 
         public IList<Status> LoadStatuses(StatusExtensionModule module)

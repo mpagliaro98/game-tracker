@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Modules
 {
-    public class TrackerModuleScoreStatuses : TrackerModuleScores
+    public class TrackerModuleScoreStatuses : TrackerModuleScores, IModuleStatus
     {
         private readonly StatusExtensionModule _statusExtension;
         public StatusExtensionModule StatusExtension { get { return _statusExtension; } }

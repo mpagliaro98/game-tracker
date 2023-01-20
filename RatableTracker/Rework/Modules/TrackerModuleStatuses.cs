@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Modules
 {
-    public class TrackerModuleStatuses : TrackerModule
+    public class TrackerModuleStatuses : TrackerModule, IModuleStatus
     {
         protected readonly StatusExtensionModule _statusExtension;
         public StatusExtensionModule StatusExtension { get { return _statusExtension; } }

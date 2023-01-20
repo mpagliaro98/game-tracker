@@ -41,7 +41,7 @@ namespace RatableTracker.Rework.ObjAddOns
             return Statuses.Count;
         }
 
-        public void SaveStatus(Status status)
+        internal void SaveStatus(Status status)
         {
             // TODO throw unique exception
             status.Validate();
@@ -55,9 +55,10 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.SaveOneStatus(status);
             }
+            status.PostSave();
         }
 
-        public void DeleteStatus(Status status, TrackerModule module)
+        internal void DeleteStatus(Status status, TrackerModule module)
         {
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
@@ -68,6 +69,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.DeleteOneStatus(status);
             }
+            status.PostDelete();
         }
 
         public virtual void RemoveReferencesToObject(IKeyable obj, Type type)

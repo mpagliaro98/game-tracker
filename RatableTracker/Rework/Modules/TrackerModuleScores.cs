@@ -80,7 +80,7 @@ namespace RatableTracker.Rework.Modules
             return ScoreRanges.Count;
         }
 
-        public void SaveScoreRange(ScoreRange scoreRange)
+        internal void SaveScoreRange(ScoreRange scoreRange)
         {
             // TODO throw unique exception
             scoreRange.Validate();
@@ -94,9 +94,10 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.SaveOneScoreRange(scoreRange);
             }
+            scoreRange.PostSave();
         }
 
-        public void DeleteScoreRange(ScoreRange scoreRange)
+        internal void DeleteScoreRange(ScoreRange scoreRange)
         {
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
@@ -107,6 +108,7 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.DeleteOneScoreRange(scoreRange);
             }
+            scoreRange.PostDelete();
         }
 
         public IList<ScoreRelationship> GetScoreRelationshipList()
@@ -117,12 +119,6 @@ namespace RatableTracker.Rework.Modules
         public int TotalNumScoreRelationships()
         {
             return ScoreRelationships.Count;
-        }
-
-        public void ScaleScoresToNewRange(double oldMin, double oldMax, double newMin, double newMax)
-        {
-            // TODO scale all object scores, save all
-            // make it overridable so child classes can also scale category values
         }
     }
 }

@@ -15,7 +15,7 @@ namespace RatableTracker.Rework.Modules
 {
     public class TrackerModule
     {
-        public virtual int LimitRankedObjects => 100000;
+        public virtual int LimitModelObjects => 100000;
 
         private IList<RankedObject> _modelObjects = new List<RankedObject>();
         protected IList<RankedObject> ModelObjects => _modelObjects;
@@ -80,23 +80,24 @@ namespace RatableTracker.Rework.Modules
             return ModelObjects.Count;
         }
 
-        public void SaveModelObject(RankedObject modelObject)
+        internal void SaveModelObject(RankedObject modelObject)
         {
             // TODO throw unique exception
             modelObject.Validate();
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
-                if (ModelObjects.Count() >= LimitRankedObjects)
-                    throw new Exception("Attempted to exceed limit of " + LimitRankedObjects.ToString() + " for list of model objects");
+                if (ModelObjects.Count() >= LimitModelObjects)
+                    throw new Exception("Attempted to exceed limit of " + LimitModelObjects.ToString() + " for list of model objects");
                 ModelObjects.Add(modelObject);
             }
             using (var conn = _loadSave.NewConnection())
             {
                 conn.SaveOneModelObject(modelObject);
             }
+            modelObject.PostSave();
         }
 
-        public void DeleteModelObject(RankedObject modelObject)
+        internal void DeleteModelObject(RankedObject modelObject)
         {
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
@@ -107,9 +108,10 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.DeleteOneModelObject(modelObject);
             }
+            modelObject.PostDelete();
         }
 
-        public void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
+        internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
         {
             // TODO throw unique exception
             modelObject.Validate();
@@ -124,9 +126,21 @@ namespace RatableTracker.Rework.Modules
             {
                 for (int i = currentPosition; i <= newPosition; i++)
                 {
-                    conn.SaveOneModelObject(ModelObjects[i]);
+                    var objIterate = ModelObjects[i];
+                    conn.SaveOneModelObject(objIterate);
+                    objIterate.PostSave();
                 }
             }
+        }
+
+        internal void SaveSettings(Settings settings)
+        {
+            settings.Validate();
+            using (var conn = _loadSave.NewConnection())
+            {
+                conn.SaveSettings(settings);
+            }
+            settings.PostSave(this);
         }
     }
 }

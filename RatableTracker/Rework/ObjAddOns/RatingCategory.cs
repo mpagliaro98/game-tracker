@@ -48,10 +48,14 @@ namespace RatableTracker.Rework.ObjAddOns
             module.SaveRatingCategory(this);
         }
 
+        public virtual void PostSave() { }
+
         public void Delete(TrackerModule module)
         {
             this.module.DeleteRatingCategory(this, module);
         }
+
+        public virtual void PostDelete() { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {

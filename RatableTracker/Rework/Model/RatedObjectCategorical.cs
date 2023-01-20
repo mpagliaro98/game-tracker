@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Model
 {
-    public class RatedObjectCategorical : RatedObject
+    public class RatedObjectCategorical : RatedObject, IModelObjectCategorical
     {
         private readonly CategoryExtension _categoryExtension;
         public CategoryExtension CategoryExtension { get { return _categoryExtension; } }

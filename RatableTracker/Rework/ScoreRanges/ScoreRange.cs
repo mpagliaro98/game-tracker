@@ -63,10 +63,14 @@ namespace RatableTracker.Rework.ScoreRanges
             module.SaveScoreRange(this);
         }
 
+        public virtual void PostSave() { }
+
         public void Delete()
         {
             module.DeleteScoreRange(this);
         }
+
+        public virtual void PostDelete() { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {

@@ -59,10 +59,14 @@ namespace RatableTracker.Rework.Model
             module.SaveModelObject(this);
         }
 
+        public virtual void PostSave() { }
+
         public void Delete()
         {
             module.DeleteModelObject(this);
         }
+
+        public virtual void PostDelete() { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {

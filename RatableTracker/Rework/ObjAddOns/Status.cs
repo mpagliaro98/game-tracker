@@ -43,10 +43,14 @@ namespace RatableTracker.Rework.ObjAddOns
             module.SaveStatus(this);
         }
 
+        public virtual void PostSave() { }
+
         public void Delete(TrackerModule module)
         {
             this.module.DeleteStatus(this, module);
         }
+
+        public virtual void PostDelete() { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {

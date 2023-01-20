@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.LoadSave
 {
-    public class LoadSaveHandler<T> : ILoadSaveHandler<T> where T : ILoadSaveMethod
+    public sealed class LoadSaveHandler<T> : ILoadSaveHandler<T> where T : ILoadSaveMethod
     {
-        private readonly Func<T> _createMethod;
+        public delegate T CreateLoadSaveInstance();
+        private readonly CreateLoadSaveInstance _createMethod;
 
-        public LoadSaveHandler(Func<T> createMethod)
+        public LoadSaveHandler(CreateLoadSaveInstance createMethod)
         {
             _createMethod = createMethod;
         }

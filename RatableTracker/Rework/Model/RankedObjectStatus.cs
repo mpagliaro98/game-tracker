@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Model
 {
-    public class RankedObjectStatus : RankedObject
+    public class RankedObjectStatus : RankedObject, IModelObjectStatus
     {
         private readonly StatusExtension _statusExtension;
         public StatusExtension StatusExtension { get { return _statusExtension; } }

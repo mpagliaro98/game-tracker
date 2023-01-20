@@ -41,7 +41,7 @@ namespace RatableTracker.Rework.ObjAddOns
             return RatingCategories.Count;
         }
 
-        public void SaveRatingCategory(RatingCategory ratingCategory)
+        internal void SaveRatingCategory(RatingCategory ratingCategory)
         {
             // TODO throw unique exception
             ratingCategory.Validate();
@@ -55,9 +55,10 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.SaveOneCategory(ratingCategory);
             }
+            ratingCategory.PostSave();
         }
 
-        public void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
+        internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
         {
             // TODO throw unique exception
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
@@ -68,6 +69,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.DeleteOneCategory(ratingCategory);
             }
+            ratingCategory.PostDelete();
         }
 
         public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
