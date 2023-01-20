@@ -211,7 +211,7 @@ namespace RatableTracker.Rework.LoadSave
 
         public UniqueID GetUniqueID()
         {
-            return new UniqueID(GetGuid());
+            return UniqueID.Parse(GetString());
         }
 
         public SavableObject GetSavableObject(Func<SavableObject> initSavable)

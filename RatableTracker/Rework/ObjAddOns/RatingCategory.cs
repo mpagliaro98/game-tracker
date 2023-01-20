@@ -20,7 +20,7 @@ namespace RatableTracker.Rework.ObjAddOns
         public string Comment { get; set; } = "";
         public double Weight { get; protected set; } = 1.0;
 
-        public UniqueID UniqueID { get; private set; } = new UniqueID();
+        public UniqueID UniqueID { get; private set; } = UniqueID.NewID();
 
         protected readonly CategoryExtensionModule module;
 

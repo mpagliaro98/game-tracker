@@ -14,7 +14,7 @@ namespace RatableTracker.Rework.ObjAddOns
 {
     public class StatusExtension
     {
-        private UniqueID _status = new UniqueID(false);
+        private UniqueID _status = UniqueID.BlankID();
         public Status Status
         {
             get
@@ -24,7 +24,7 @@ namespace RatableTracker.Rework.ObjAddOns
             }
             set
             {
-                _status = value == null ? new UniqueID(false) : value.UniqueID;
+                _status = value == null ? UniqueID.BlankID() : value.UniqueID;
             }
         }
 

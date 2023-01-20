@@ -11,6 +11,8 @@ namespace RatableTracker.Rework.Util
     {
         public static Encoding TextEncoding => Encoding.UTF8;
 
+        public static VersionNumber FrameworkVersion => new VersionNumber(2, 0, 0, 0);
+
         public static T FindObjectInList<T>(IList<T> list, UniqueID uniqueID) where T : IKeyable
         {
             foreach (T item in list)

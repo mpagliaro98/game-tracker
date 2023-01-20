@@ -31,7 +31,7 @@ namespace RatableTracker.Rework.Model
             get { return Rank; }
         }
 
-        public UniqueID UniqueID { get; private set; } = new UniqueID();
+        public UniqueID UniqueID { get; private set; } = UniqueID.NewID();
 
         protected readonly Settings settings;
         protected readonly TrackerModule module;

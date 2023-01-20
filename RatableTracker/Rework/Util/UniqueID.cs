@@ -8,32 +8,59 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Util
 {
-    public class UniqueID
+    public struct UniqueID
     {
-        protected Guid uniqueKey = Guid.NewGuid();
+        private Guid uniqueKey;
 
-        public UniqueID() { }
-
-        public UniqueID(bool newRandomID)
+        public static UniqueID NewID()
         {
-            if (!newRandomID) uniqueKey = Guid.Empty;
+            return new UniqueID
+            {
+                uniqueKey = Guid.NewGuid()
+            };
         }
 
-        public UniqueID(int val)
+        public static UniqueID BlankID()
+        {
+            return new UniqueID
+            {
+                uniqueKey = Guid.Empty
+            };
+        }
+
+        public static UniqueID Parse(ulong value)
         {
             byte[] bytes = new byte[16];
-            BitConverter.GetBytes(val).CopyTo(bytes, 0);
-            uniqueKey = new Guid(bytes);
+            BitConverter.GetBytes(value).CopyTo(bytes, 0);
+            return new UniqueID
+            {
+                uniqueKey = new Guid(bytes)
+            };
         }
 
-        public UniqueID(Guid val)
+        public static UniqueID Parse(string value)
         {
-            uniqueKey = val;
+            // TODO if string is in wrong format, just use whatever bytes are there
+            return new UniqueID
+            {
+                uniqueKey = Guid.Parse(value)
+            };
         }
 
-        public UniqueID(IKeyable keyable)
+        public static UniqueID Copy(UniqueID uniqueID)
         {
-            uniqueKey = keyable.UniqueID.uniqueKey;
+            return new UniqueID
+            {
+                uniqueKey = uniqueID.uniqueKey
+            };
+        }
+
+        public static UniqueID Copy(IKeyable keyable)
+        {
+            return new UniqueID
+            {
+                uniqueKey = keyable.UniqueID.uniqueKey
+            };
         }
 
         public bool HasValue()

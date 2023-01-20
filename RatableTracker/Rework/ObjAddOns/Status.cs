@@ -19,7 +19,7 @@ namespace RatableTracker.Rework.ObjAddOns
         public string Name { get; set; } = "";
         public Color Color { get; set; } = new Color();
 
-        public UniqueID UniqueID { get; private set; } = new UniqueID();
+        public UniqueID UniqueID { get; private set; } = UniqueID.NewID();
 
         protected readonly StatusExtensionModule module;
 

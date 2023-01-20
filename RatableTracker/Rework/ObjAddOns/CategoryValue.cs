@@ -13,7 +13,7 @@ namespace RatableTracker.Rework.ObjAddOns
 {
     public class CategoryValue : SavableObject
     {
-        private UniqueID _category = new UniqueID(false);
+        private UniqueID _category = UniqueID.BlankID();
         public RatingCategory RatingCategory
         {
             get
@@ -28,7 +28,7 @@ namespace RatableTracker.Rework.ObjAddOns
         private readonly CategoryExtensionModule module;
         private readonly SettingsScore settings;
 
-        public CategoryValue(CategoryExtensionModule module, SettingsScore settings) : this(module, settings, null) { }
+        internal CategoryValue(CategoryExtensionModule module, SettingsScore settings) : this(module, settings, null) { }
 
         public CategoryValue(CategoryExtensionModule module, SettingsScore settings, RatingCategory ratingCategory)
         {

@@ -11,7 +11,7 @@ namespace RatableTracker.Rework.ScoreRanges
     {
         public override string Name => "Between";
         public override int NumValuesRequired => 2;
-        public override UniqueID UniqueID => new UniqueID(3);
+        public override UniqueID UniqueID => UniqueID.Parse(3);
 
         public override bool IsValueInRange(double val, IList<double> valueList)
         {

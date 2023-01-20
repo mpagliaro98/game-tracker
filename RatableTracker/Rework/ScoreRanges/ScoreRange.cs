@@ -20,7 +20,7 @@ namespace RatableTracker.Rework.ScoreRanges
         public IList<double> ValueList { get; set; } = new List<double>();
         public Color Color { get; set; } = new Color();
 
-        private UniqueID _scoreRelationship = new UniqueID(false);
+        private UniqueID _scoreRelationship = UniqueID.BlankID();
         public ScoreRelationship ScoreRelationship
         {
             get
@@ -34,7 +34,7 @@ namespace RatableTracker.Rework.ScoreRanges
             }
         }
 
-        public UniqueID UniqueID { get; private set; } = new UniqueID();
+        public UniqueID UniqueID { get; private set; } = UniqueID.NewID();
 
         protected readonly TrackerModuleScores module;
 

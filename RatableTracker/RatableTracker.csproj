@@ -167,6 +167,7 @@
     <Compile Include="Rework\Util\SettingsScore.cs" />
     <Compile Include="Rework\Util\UniqueID.cs" />
     <Compile Include="Rework\Util\Util.cs" />
+    <Compile Include="Rework\Util\VersionNumber.cs" />
     <Compile Include="Score Relationships\ScoreRelationship.cs" />
     <Compile Include="Score Relationships\ScoreRelationshipAbove.cs" />
     <Compile Include="Score Relationships\ScoreRelationshipBelow.cs" />
