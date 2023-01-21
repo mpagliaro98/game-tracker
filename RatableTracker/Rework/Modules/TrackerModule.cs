@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.ListManipulation;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.ScoreRanges;
@@ -72,13 +73,35 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
-        /// <summary>
-        /// Get the list of listed objects, with any filtering and sorting applied.
-        /// </summary>
         public IList<RankedObject> GetModelObjectList()
         {
-            // TODO pass in filter and sort options with function overloads
-            return new List<RankedObject>(ModelObjects);
+            return GetModelObjectList(new FilterRankedObjects(), new SortRankedObjects());
+        }
+
+        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions)
+        {
+            return GetModelObjectList(filterOptions, new SortRankedObjects());
+        }
+
+        public IList<RankedObject> GetModelObjectList(SortRankedObjects sortOptions)
+        {
+            return GetModelObjectList(new FilterRankedObjects(), sortOptions);
+        }
+
+        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, SortRankedObjects sortOptions)
+        {
+            try
+            {
+                IList<RankedObject> list = new List<RankedObject>(ModelObjects);
+                list = filterOptions.ApplyFilters(list, this);
+                list = sortOptions.ApplySorting(list, this);
+                return list;
+            }
+            catch (ListManipulationException e)
+            {
+                Logger.Log(e.GetType().Name + ": " + e.Message + " - value " + e.InvalidValue.ToString());
+                throw;
+            }
         }
 
         public int TotalNumModelObjects()

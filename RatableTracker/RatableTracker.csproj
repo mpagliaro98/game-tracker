@@ -111,6 +111,7 @@
     <Compile Include="RatingCategoryWeighted.cs" />
     <Compile Include="Rework\Exceptions\ExceededLimitException.cs" />
     <Compile Include="Rework\Exceptions\InvalidObjectStateException.cs" />
+    <Compile Include="Rework\Exceptions\ListManipulationException.cs" />
     <Compile Include="Rework\Exceptions\ValidationException.cs" />
     <Compile Include="Rework\Interfaces\IFileHandler.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveHandler.cs" />
@@ -129,6 +130,19 @@
     <Compile Include="Rework\Interfaces\IModuleCategorical.cs" />
     <Compile Include="Rework\Interfaces\IModuleStatus.cs" />
     <Compile Include="Rework\Interfaces\IPathController.cs" />
+    <Compile Include="Rework\ListManipulation\FilterRankedObjects.cs" />
+    <Compile Include="Rework\ListManipulation\FilterRankedObjectStatus.cs" />
+    <Compile Include="Rework\ListManipulation\FilterRatedObjectCategorical.cs" />
+    <Compile Include="Rework\ListManipulation\FilterRatedObjects.cs" />
+    <Compile Include="Rework\ListManipulation\FilterRatedObjectStatus.cs" />
+    <Compile Include="Rework\ListManipulation\FilterRatedObjectStatusCategorical.cs" />
+    <Compile Include="Rework\ListManipulation\SortMode.cs" />
+    <Compile Include="Rework\ListManipulation\SortRankedObjects.cs" />
+    <Compile Include="Rework\ListManipulation\SortRankedObjectStatus.cs" />
+    <Compile Include="Rework\ListManipulation\SortRatedObjectCategorical.cs" />
+    <Compile Include="Rework\ListManipulation\SortRatedObjects.cs" />
+    <Compile Include="Rework\ListManipulation\SortRatedObjectStatus.cs" />
+    <Compile Include="Rework\ListManipulation\SortRatedObjectStatusCategorical.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerAWSS3.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerLocal.cs" />
     <Compile Include="Rework\LoadSave\FileHandlerLocalAppData.cs" />
