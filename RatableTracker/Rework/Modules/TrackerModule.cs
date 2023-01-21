@@ -20,10 +20,12 @@ namespace RatableTracker.Rework.Modules
         protected IList<RankedObject> ModelObjects { get; private set; } = new List<RankedObject>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethod> _loadSave;
+        public ILogger Logger { get; private set; }
 
-        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave)
+        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave, ILogger logger = null)
         {
             _loadSave = loadSave;
+            Logger = logger;
         }
 
         public virtual void LoadData(Settings settings)

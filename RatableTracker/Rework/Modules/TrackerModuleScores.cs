@@ -21,7 +21,7 @@ namespace RatableTracker.Rework.Modules
 
         protected readonly new ILoadSaveHandler<ILoadSaveMethodScores> _loadSave;
 
-        public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave) : base(loadSave)
+        public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave, ILogger logger = null) : base(loadSave, logger)
         {
             ScoreRelationships.Add(new ScoreRelationshipAbove());
             ScoreRelationships.Add(new ScoreRelationshipBelow());

@@ -16,10 +16,12 @@ namespace RatableTracker.Rework.ObjAddOns
         protected IList<RatingCategory> RatingCategories { get; private set; } = new List<RatingCategory>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodCategoryExtension> _loadSave;
+        protected readonly ILogger _logger;
 
-        public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave)
+        public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave, ILogger logger = null)
         {
             _loadSave = loadSave;
+            _logger = logger;
         }
 
         public virtual void LoadData()

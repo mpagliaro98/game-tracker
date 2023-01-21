@@ -80,5 +80,17 @@ namespace RatableTracker.Rework.LoadSave
         {
             File.Delete(filepath);
         }
+
+        public void AppendToFile(string filepath, string text)
+        {
+            using (StreamWriter sw = new StreamWriter(filepath, true))
+                sw.Write(text);
+        }
+
+        public async Task AppendToFileAsync(string filepath, string text)
+        {
+            using (StreamWriter sw = new StreamWriter(filepath, true))
+                await sw.WriteAsync(text);
+        }
     }
 }

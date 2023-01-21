@@ -120,6 +120,7 @@
     <Compile Include="Rework\Interfaces\ILoadSaveMethodScoreStatuses.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveMethodStatuses.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveMethodStatusExtension.cs" />
+    <Compile Include="Rework\Interfaces\ILogger.cs" />
     <Compile Include="Rework\Interfaces\IModelObjectCategorical.cs" />
     <Compile Include="Rework\Interfaces\IModelObjectStatus.cs" />
     <Compile Include="Rework\Interfaces\IModuleCategorical.cs" />
@@ -162,6 +163,7 @@
     <Compile Include="Rework\ScoreRanges\ScoreRelationshipBetween.cs" />
     <Compile Include="Rework\Util\Color.cs" />
     <Compile Include="Rework\Util\Extensions.cs" />
+    <Compile Include="Rework\Util\Logger.cs" />
     <Compile Include="Rework\Util\RatableTrackerFactory.cs" />
     <Compile Include="Rework\Util\Settings.cs" />
     <Compile Include="Rework\Util\SettingsScore.cs" />

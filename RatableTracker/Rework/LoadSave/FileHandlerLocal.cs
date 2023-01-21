@@ -31,8 +31,13 @@ namespace RatableTracker.Rework.LoadSave
         public void SaveFile(string relativePath, byte[] data)
         {
             string fullPath = pathController.Combine(baseDirectory, relativePath);
-            pathController.CreateFileIfDoesNotExist(fullPath);
             pathController.WriteToFile(fullPath, Util.Util.TextEncoding.GetString(data));
+        }
+
+        public void AppendFile(string relativePath, byte[] data)
+        {
+            string fullPath = pathController.Combine(baseDirectory, relativePath);
+            pathController.AppendToFile(fullPath, Util.Util.TextEncoding.GetString(data));
         }
     }
 }

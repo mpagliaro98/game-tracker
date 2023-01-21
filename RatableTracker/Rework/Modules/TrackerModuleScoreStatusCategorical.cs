@@ -16,11 +16,13 @@ namespace RatableTracker.Rework.Modules
 
         protected readonly new ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> _loadSave;
 
-        public TrackerModuleScoreStatusCategorical(ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> loadSave) : this(loadSave, new StatusExtensionModule(loadSave)) { }
+        public TrackerModuleScoreStatusCategorical(ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> loadSave, ILogger logger = null) : this(loadSave, new StatusExtensionModule(loadSave, logger), logger) { }
 
-        public TrackerModuleScoreStatusCategorical(ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> loadSave, StatusExtensionModule statusExtension) : this(loadSave, statusExtension, new CategoryExtensionModule(loadSave)) { }
+        public TrackerModuleScoreStatusCategorical(ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> loadSave, StatusExtensionModule statusExtension, ILogger logger = null) : this(loadSave, statusExtension, new CategoryExtensionModule(loadSave, logger), logger) { }
 
-        public TrackerModuleScoreStatusCategorical(ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> loadSave, StatusExtensionModule statusExtension, CategoryExtensionModule categoryExtension) : base(loadSave, statusExtension)
+        public TrackerModuleScoreStatusCategorical(ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> loadSave, CategoryExtensionModule categoryExtension, ILogger logger = null) : this(loadSave, new StatusExtensionModule(loadSave, logger), categoryExtension, logger) { }
+
+        public TrackerModuleScoreStatusCategorical(ILoadSaveHandler<ILoadSaveMethodScoreStatusCategorical> loadSave, StatusExtensionModule statusExtension, CategoryExtensionModule categoryExtension, ILogger logger = null) : base(loadSave, statusExtension, logger)
         {
             CategoryExtension = categoryExtension;
         }

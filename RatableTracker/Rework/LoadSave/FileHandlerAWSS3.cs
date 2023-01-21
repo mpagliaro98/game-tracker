@@ -23,5 +23,10 @@ namespace RatableTracker.Rework.LoadSave
         {
             throw new NotImplementedException();
         }
+
+        public void AppendFile(string bucketID, byte[] data)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -16,9 +16,9 @@ namespace RatableTracker.Rework.Modules
 
         protected readonly new ILoadSaveHandler<ILoadSaveMethodScoreCategorical> _loadSave;
 
-        public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave) : this(loadSave, new CategoryExtensionModule(loadSave)) { }
+        public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave, ILogger logger = null) : this(loadSave, new CategoryExtensionModule(loadSave, logger), logger) { }
 
-        public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave, CategoryExtensionModule categoryExtension) : base(loadSave)
+        public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave, CategoryExtensionModule categoryExtension, ILogger logger = null) : base(loadSave, logger)
         {
             CategoryExtension = categoryExtension;
         }

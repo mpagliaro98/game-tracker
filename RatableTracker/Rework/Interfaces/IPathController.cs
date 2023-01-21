@@ -20,5 +20,7 @@ namespace RatableTracker.Rework.Interfaces
         System.IO.FileStream CreateFile(string filepath);
         void CreateFileIfDoesNotExist(string filepath);
         void DeleteFile(string filepath);
+        void AppendToFile(string filepath, string text);
+        Task AppendToFileAsync(string filepath, string text);
     }
 }

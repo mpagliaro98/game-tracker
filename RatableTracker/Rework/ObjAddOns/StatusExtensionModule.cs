@@ -16,10 +16,12 @@ namespace RatableTracker.Rework.ObjAddOns
         protected IList<Status> Statuses { get; private set; } = new List<Status>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodStatusExtension> _loadSave;
+        protected readonly ILogger _logger;
 
-        public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave)
+        public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave, ILogger logger = null)
         {
             _loadSave = loadSave;
+            _logger = logger;
         }
 
         public virtual void LoadData()

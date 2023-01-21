@@ -39,12 +39,14 @@ namespace RatableTracker.Rework.LoadSave
         protected readonly IFileHandler fileHandler;
         protected readonly IPathController pathController;
         protected readonly RatableTrackerFactory factory;
+        protected readonly ILogger logger;
 
-        public LoadSaveMethodJSON(IFileHandler fileHandler, IPathController pathController, RatableTrackerFactory factory)
+        public LoadSaveMethodJSON(IFileHandler fileHandler, IPathController pathController, RatableTrackerFactory factory, ILogger logger = null)
         {
             this.fileHandler = fileHandler;
             this.pathController = pathController;
             this.factory = factory;
+            this.logger = logger;
         }
 
         #region "Internal"

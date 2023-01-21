@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Interfaces
 {
-    public interface IFileHandler
+    public interface ILogger
     {
-        byte[] LoadFile(string path);
-        void SaveFile(string path, byte[] data);
-        void AppendFile(string path, byte[] data);
+        void Log(string message);
     }
 }
