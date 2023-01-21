@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Model
 {
-    public class RankedObject : SaveDeleteObject, IKeyable
+    public class RankedObject : SaveDeleteObject
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthComment => 10000;
@@ -32,7 +32,7 @@ namespace RatableTracker.Rework.Model
             get { return Rank; }
         }
 
-        public UniqueID UniqueID { get; private set; } = UniqueID.NewID();
+        public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
         protected readonly Settings settings;
         protected readonly TrackerModule module;

@@ -81,7 +81,6 @@ namespace RatableTracker.Rework.ObjAddOns
                 Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
-            module.RemoveReferencesToObject(status, typeof(Status));
             Statuses.Remove(status);
             if (conn == null)
             {

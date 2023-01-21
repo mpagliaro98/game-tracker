@@ -118,7 +118,6 @@ namespace RatableTracker.Rework.Modules
                 Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
-            RemoveReferencesToObject(scoreRange, typeof(ScoreRange));
             ScoreRanges.Remove(scoreRange);
             if (conn == null)
             {

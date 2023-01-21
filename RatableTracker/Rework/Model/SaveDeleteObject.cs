@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Model
 {
-    public abstract class SaveDeleteObject : SavableObject
+    public abstract class SaveDeleteObject : SavableObject, IKeyable
     {
+        public abstract UniqueID UniqueID { get; protected set; }
+
         public void Delete(TrackerModule module)
         {
             Delete(module, null);
@@ -22,6 +24,7 @@ namespace RatableTracker.Rework.Model
             {
                 PreDelete(module);
                 DeleteObjectFromModule(module, conn);
+                module.RemoveReferencesToObject(this, GetType());
                 PostDelete(module);
             }
             catch

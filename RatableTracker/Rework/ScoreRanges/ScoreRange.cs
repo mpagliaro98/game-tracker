@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ScoreRanges
 {
-    public class ScoreRange : SaveDeleteObject, IKeyable
+    public class ScoreRange : SaveDeleteObject
     {
         public static int MaxLengthName => 200;
 
@@ -35,7 +35,7 @@ namespace RatableTracker.Rework.ScoreRanges
             }
         }
 
-        public UniqueID UniqueID { get; private set; } = UniqueID.NewID();
+        public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
         protected readonly TrackerModuleScores module;
 

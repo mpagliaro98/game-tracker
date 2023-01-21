@@ -13,14 +13,14 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
-    public class Status : SaveDeleteObject, IKeyable
+    public class Status : SaveDeleteObject
     {
         public static int MaxLengthName => 200;
 
         public string Name { get; set; } = "";
         public Color Color { get; set; } = new Color();
 
-        public UniqueID UniqueID { get; private set; } = UniqueID.NewID();
+        public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
         protected readonly StatusExtensionModule module;
 
