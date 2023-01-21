@@ -10,34 +10,57 @@ namespace RatableTracker.Rework.LoadSave
 {
     public class FileHandlerAWSS3 : IFileHandler
     {
-        protected ILogger _logger;
-
-        public FileHandlerAWSS3(string awsKey, string awsSecret, ILogger logger = null)
+        public FileHandlerAWSS3(string awsKey, string awsSecret)
         {
-            _logger = logger;
+
         }
 
-        public byte[] LoadFile(string bucketID, ILogger logger = null)
+        public void AppendFile(string path, byte[] data)
         {
             throw new NotImplementedException();
         }
 
-        public void SaveFile(string bucketID, byte[] data, ILogger logger = null)
+        public void AppendFile(string path, byte[] data, Logger logger)
         {
             throw new NotImplementedException();
         }
 
-        public void AppendFile(string bucketID, byte[] data, ILogger logger = null)
+        public void DeleteFile(string path)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteFile(string path, ILogger logger = null)
+        public void DeleteFile(string path, Logger logger)
         {
             throw new NotImplementedException();
         }
 
-        public IList<FileInfo> GetFilesInCurrentDirectory(ILogger logger = null)
+        public IList<FileInfo> GetFilesInCurrentDirectory()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IList<FileInfo> GetFilesInCurrentDirectory(Logger logger)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] LoadFile(string path)
+        {
+            throw new NotImplementedException();
+        }
+
+        public byte[] LoadFile(string path, Logger logger)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveFile(string path, byte[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SaveFile(string path, byte[] data, Logger logger)
         {
             throw new NotImplementedException();
         }

@@ -170,6 +170,7 @@
     <Compile Include="Rework\Util\Extensions.cs" />
     <Compile Include="Rework\Util\FileInfo.cs" />
     <Compile Include="Rework\Util\Logger.cs" />
+    <Compile Include="Rework\Util\LoggerThreaded.cs" />
     <Compile Include="Rework\Util\RatableTrackerFactory.cs" />
     <Compile Include="Rework\Util\Settings.cs" />
     <Compile Include="Rework\Util\SettingsScore.cs" />

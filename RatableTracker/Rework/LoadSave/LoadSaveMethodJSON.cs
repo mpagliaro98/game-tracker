@@ -41,25 +41,27 @@ namespace RatableTracker.Rework.LoadSave
 
         protected readonly IFileHandler fileHandler;
         protected readonly RatableTrackerFactory factory;
-        protected readonly ILogger logger;
+        protected readonly Logger logger;
 
-        public LoadSaveMethodJSON(IFileHandler fileHandler, RatableTrackerFactory factory, ILogger logger = null)
+        public LoadSaveMethodJSON(IFileHandler fileHandler, RatableTrackerFactory factory) : this(fileHandler, factory, new Logger()) { }
+
+        public LoadSaveMethodJSON(IFileHandler fileHandler, RatableTrackerFactory factory, Logger logger)
         {
             this.fileHandler = fileHandler;
             this.factory = factory;
             this.logger = logger;
-            this.logger?.Log(GetType().Name + " connection opened");
+            this.logger.Log(GetType().Name + " connection opened");
         }
 
         #region "Internal"
         protected void EnsureFileContentIsLoaded<T>(string fileName, ref T representation, Func<byte[], T> interpretBytesFromFile)
         {
             if (representation != null) return;
-            logger?.Log("Load started from file: " + fileName);
+            logger.Log("Load started from file: " + fileName);
             Stopwatch sw = Stopwatch.StartNew();
             byte[] fileContent = fileHandler.LoadFile(fileName, logger);
             sw.Stop();
-            logger?.Log("Load from " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms (" + fileContent.Length.ToString() + " bytes)");
+            logger.Log("Load from " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms (" + fileContent.Length.ToString() + " bytes)");
             representation = interpretBytesFromFile(fileContent);
         }
 
@@ -93,11 +95,11 @@ namespace RatableTracker.Rework.LoadSave
             if (representation == null) return;
             if (!changed) return;
             byte[] fileContent = representationToBytes(representation);
-            logger?.Log("Save started to file: " + fileName + "(" + fileContent.Length.ToString() + " bytes)");
+            logger.Log("Save started to file: " + fileName + "(" + fileContent.Length.ToString() + " bytes)");
             Stopwatch sw = Stopwatch.StartNew();
             fileHandler.SaveFile(fileName, fileContent, logger);
             sw.Stop();
-            logger?.Log("Save to " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms");
+            logger.Log("Save to " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms");
         }
 
         protected void SaveModelObjectsIfLoaded()
@@ -225,7 +227,7 @@ namespace RatableTracker.Rework.LoadSave
                 }
                 catch (ArgumentException e)
                 {
-                    logger?.Log(GetType().Name + " LoadAll - error generating new object of type " + typeof(T).Name + " - " + e.Message);
+                    logger.Log(GetType().Name + " LoadAll - error generating new object of type " + typeof(T).Name + " - " + e.Message);
                     throw;
                 }
                 obj.RestoreFromRepresentation(sr);
@@ -245,7 +247,7 @@ namespace RatableTracker.Rework.LoadSave
                 SaveStatusesIfLoaded();
                 SaveCategoriesIfLoaded();
             }
-            logger?.Log(GetType().Name + " connection closed (canceled: " + operationCanceled.ToString() + ")");
+            logger.Log(GetType().Name + " connection closed (canceled: " + operationCanceled.ToString() + ")");
         }
         #endregion
 

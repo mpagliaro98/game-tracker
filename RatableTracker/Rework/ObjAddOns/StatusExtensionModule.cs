@@ -18,9 +18,11 @@ namespace RatableTracker.Rework.ObjAddOns
         protected IList<Status> Statuses { get; private set; } = new List<Status>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodStatusExtension> _loadSave;
-        public ILogger Logger { get; private set; }
+        public Logger Logger { get; private set; }
 
-        public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave, ILogger logger = null)
+        public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave) : this(loadSave, new Logger()) { }
+
+        public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave, Logger logger)
         {
             _loadSave = loadSave;
             Logger = logger;
@@ -46,14 +48,14 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void SaveStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
-            Logger?.Log("SaveStatus - " + status.UniqueID.ToString());
+            Logger.Log("SaveStatus - " + status.UniqueID.ToString());
 
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
                 if (Statuses.Count() >= LimitStatuses)
                 {
                     string message = "Attempted to exceed limit of " + LimitStatuses.ToString() + " for list of statuses";
-                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    Logger.Log(typeof(ExceededLimitException).Name + ": " + message);
                     throw new ExceededLimitException(message);
                 }
                 Statuses.Add(status);
@@ -74,11 +76,11 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void DeleteStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
-            Logger?.Log("DeleteStatus - " + status.UniqueID.ToString());
+            Logger.Log("DeleteStatus - " + status.UniqueID.ToString());
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
                 string message = "Status " + status.Name.ToString() + " has not been saved yet and cannot be deleted";
-                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             Statuses.Remove(status);

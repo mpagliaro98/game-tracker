@@ -23,9 +23,11 @@ namespace RatableTracker.Rework.Modules
         protected IList<RankedObject> ModelObjects { get; private set; } = new List<RankedObject>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethod> _loadSave;
-        public ILogger Logger { get; private set; }
+        public Logger Logger { get; private set; }
 
-        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave, ILogger logger = null)
+        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave) : this(loadSave, new Logger()) { }
+
+        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave, Logger logger)
         {
             _loadSave = loadSave;
             Logger = logger;
@@ -86,14 +88,14 @@ namespace RatableTracker.Rework.Modules
 
         internal void SaveModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
-            Logger?.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
+            Logger.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
 
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
                 if (ModelObjects.Count() >= LimitModelObjects)
                 {
                     string message = "Attempted to exceed limit of " + LimitModelObjects.ToString() + " for list of model objects";
-                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    Logger.Log(typeof(ExceededLimitException).Name + ": " + message);
                     throw new ExceededLimitException(message);
                 }
                 ModelObjects.Add(modelObject);
@@ -114,11 +116,11 @@ namespace RatableTracker.Rework.Modules
 
         internal void DeleteModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
-            Logger?.Log("DeleteModelObject - " + modelObject.UniqueID.ToString());
+            Logger.Log("DeleteModelObject - " + modelObject.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
                 string message = "Model object " + modelObject.Name.ToString() + " has not been saved yet and cannot be deleted";
-                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             RemoveReferencesToObject(modelObject, typeof(RankedObject));
@@ -138,14 +140,14 @@ namespace RatableTracker.Rework.Modules
 
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
         {
-            Logger?.Log("ChangeModelObjectPositionInList - " + modelObject.UniqueID.ToString() + " - " + newPosition.ToString());
+            Logger.Log("ChangeModelObjectPositionInList - " + modelObject.UniqueID.ToString() + " - " + newPosition.ToString());
             modelObject.Validate(Logger);
 
             int currentPosition = ModelObjects.IndexOf(modelObject);
             if (currentPosition == -1)
             {
                 string message = "Object " + modelObject.UniqueID.ToString() + " has not been saved yet and cannot be modified";
-                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
 

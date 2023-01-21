@@ -18,9 +18,11 @@ namespace RatableTracker.Rework.ObjAddOns
         protected IList<RatingCategory> RatingCategories { get; private set; } = new List<RatingCategory>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodCategoryExtension> _loadSave;
-        public ILogger Logger { get; private set; }
+        public Logger Logger { get; private set; }
 
-        public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave, ILogger logger = null)
+        public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave) : this(loadSave, new Logger()) { }
+
+        public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave, Logger logger)
         {
             _loadSave = loadSave;
             Logger = logger;
@@ -46,14 +48,14 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void SaveRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
-            Logger?.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
+            Logger.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
 
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
                 if (RatingCategories.Count() >= LimitRatingCategories)
                 {
                     string message = "Attempted to exceed limit of " + LimitRatingCategories.ToString() + " for list of categories";
-                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    Logger.Log(typeof(ExceededLimitException).Name + ": " + message);
                     throw new ExceededLimitException(message);
                 }
                 RatingCategories.Add(ratingCategory);
@@ -74,11 +76,11 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
-            Logger?.Log("DeleteRatingCategory - " + ratingCategory.UniqueID.ToString());
+            Logger.Log("DeleteRatingCategory - " + ratingCategory.UniqueID.ToString());
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
                 string message = "Category " + ratingCategory.Name.ToString() + " has not been saved yet and cannot be deleted";
-                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             RatingCategories.Remove(ratingCategory);

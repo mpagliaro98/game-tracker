@@ -23,7 +23,9 @@ namespace RatableTracker.Rework.Modules
 
         protected readonly new ILoadSaveHandler<ILoadSaveMethodScores> _loadSave;
 
-        public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave, ILogger logger = null) : base(loadSave, logger)
+        public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave) : this(loadSave, new Logger()) { }
+
+        public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave, Logger logger) : base(loadSave, logger)
         {
             ScoreRelationships.Add(new ScoreRelationshipAbove());
             ScoreRelationships.Add(new ScoreRelationshipBelow());
@@ -83,14 +85,14 @@ namespace RatableTracker.Rework.Modules
 
         internal void SaveScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
-            Logger?.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
+            Logger.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
 
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
                 if (ScoreRanges.Count() >= LimitRanges)
                 {
                     string message = "Attempted to exceed limit of " + LimitRanges.ToString() + " for list of score ranges";
-                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    Logger.Log(typeof(ExceededLimitException).Name + ": " + message);
                     throw new ExceededLimitException(message);
                 }
                 ScoreRanges.Add(scoreRange);
@@ -111,11 +113,11 @@ namespace RatableTracker.Rework.Modules
 
         internal void DeleteScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
-            Logger?.Log("DeleteScoreRange - " + scoreRange.UniqueID.ToString());
+            Logger.Log("DeleteScoreRange - " + scoreRange.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
                 string message = "Score range " + scoreRange.Name.ToString() + " has not been saved yet and cannot be deleted";
-                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             ScoreRanges.Remove(scoreRange);

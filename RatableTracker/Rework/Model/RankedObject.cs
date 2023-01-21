@@ -66,11 +66,11 @@ namespace RatableTracker.Rework.Model
 
         public void MoveUpOneRank()
         {
-            module.Logger?.Log("MoveUpOneRank - " + UniqueID.ToString());
+            module.Logger.Log("MoveUpOneRank - " + UniqueID.ToString());
             if (Rank <= 1)
             {
                 string message = "Cannot raise rank any further";
-                module.Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             ChangeRank(Rank - 1);
@@ -78,11 +78,11 @@ namespace RatableTracker.Rework.Model
 
         public void MoveDownOneRank()
         {
-            module.Logger?.Log("MoveDownOneRank - " + UniqueID.ToString());
+            module.Logger.Log("MoveDownOneRank - " + UniqueID.ToString());
             if (Rank >= module.TotalNumModelObjects())
             {
                 string message = "Cannot lower rank any further";
-                module.Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             ChangeRank(Rank + 1);
@@ -90,11 +90,11 @@ namespace RatableTracker.Rework.Model
 
         public void ChangeRank(int newRank)
         {
-            module.Logger?.Log("ChangeRank - " + UniqueID.ToString());
+            module.Logger.Log("ChangeRank - " + UniqueID.ToString());
             if (newRank < 1 || newRank > module.TotalNumModelObjects())
             {
                 string message = "Rank out of range: " + newRank.ToString();
-                module.Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             module.ChangeModelObjectPositionInList(this, newRank - 1);

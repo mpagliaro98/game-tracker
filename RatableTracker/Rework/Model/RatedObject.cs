@@ -33,7 +33,7 @@ namespace RatableTracker.Rework.Model
                     }
                     catch (InvalidObjectStateException e)
                     {
-                        module.Logger?.Log(e.GetType().Name + ": " + e.Message);
+                        module.Logger.Log(e.GetType().Name + ": " + e.Message);
                         throw;
                     }
                 }

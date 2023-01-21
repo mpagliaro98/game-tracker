@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,12 @@ namespace RatableTracker.Rework.Model
 {
     public abstract class SavableObject : RepresentationObject
     {
-        public void Validate(ILogger logger = null)
+        public void Validate()
+        {
+            Validate(new Logger());
+        }
+
+        public void Validate(Logger logger)
         {
             PreValidate();
             try
@@ -21,7 +27,7 @@ namespace RatableTracker.Rework.Model
             }
             catch (ValidationException e)
             {
-                logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                logger.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
                 throw;
             }
             PostValidate();
