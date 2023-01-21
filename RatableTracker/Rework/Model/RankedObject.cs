@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.Model
 {
-    public class RankedObject : SavableObject, IKeyable
+    public class RankedObject : SaveDeleteObject, IKeyable
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthComment => 10000;

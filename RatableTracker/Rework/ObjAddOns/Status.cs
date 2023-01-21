@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
-    public class Status : SavableObject, IKeyable
+    public class Status : SaveDeleteObject, IKeyable
     {
         public static int MaxLengthName => 200;
 

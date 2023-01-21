@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ScoreRanges
 {
-    public class ScoreRange : SavableObject, IKeyable
+    public class ScoreRange : SaveDeleteObject, IKeyable
     {
         public static int MaxLengthName => 200;
 

@@ -46,7 +46,7 @@ namespace RatableTracker.Rework.Util
             (_tempMaxScore, _maxScore) = (_maxScore, _tempMaxScore);
         }
 
-        public override void PostSave(TrackerModule module)
+        internal override void PostSave(TrackerModule module)
         {
             base.PostSave(module);
 

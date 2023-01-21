@@ -171,7 +171,7 @@ namespace RatableTracker.Rework.Modules
 
         internal void SaveSettings(Settings settings)
         {
-            settings.Validate(this);
+            settings.Validate(Logger);
             using (var conn = _loadSave.NewConnection())
             {
                 conn.SaveSettings(settings);

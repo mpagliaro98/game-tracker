@@ -146,6 +146,7 @@
     <Compile Include="Rework\Model\RatedObjectStatusCategorical.cs" />
     <Compile Include="Rework\Model\RepresentationObject.cs" />
     <Compile Include="Rework\Model\SavableObject.cs" />
+    <Compile Include="Rework\Model\SaveDeleteObject.cs" />
     <Compile Include="Rework\Modules\TrackerModule.cs" />
     <Compile Include="Rework\Modules\TrackerModuleScoreCategorical.cs" />
     <Compile Include="Rework\Modules\TrackerModuleScores.cs" />

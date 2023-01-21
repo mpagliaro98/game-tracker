@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
-    public class RatingCategory : SavableObject, IKeyable
+    public class RatingCategory : SaveDeleteObject, IKeyable
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthComment => 4000;

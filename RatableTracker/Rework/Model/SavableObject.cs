@@ -33,10 +33,6 @@ namespace RatableTracker.Rework.Model
 
         internal virtual void PostSave(TrackerModule module) { }
 
-        public abstract void Delete(TrackerModule module);
-
-        internal virtual void PostDelete(TrackerModule module) { }
-
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {
             return false;

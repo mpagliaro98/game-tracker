@@ -12,34 +12,16 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.Util
 {
-    public class Settings : RepresentationObject
+    public class Settings : SavableObject
     {
         public Settings() { }
 
-        public void Validate(TrackerModule module)
-        {
-            try
-            {
-                ValidateFields();
-            }
-            catch (ValidationException e)
-            {
-                module.Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
-            PostValidate();
-        }
-
-        protected virtual void ValidateFields() { }
-
-        protected virtual void PostValidate() { }
-
-        public void Save(TrackerModule module)
+        public override void Save(TrackerModule module)
         {
             module.SaveSettings(this);
         }
 
-        public virtual void PostSave(TrackerModule module)
+        internal override void PostSave(TrackerModule module)
         {
             module.ApplySettingsChanges(this);
         }
