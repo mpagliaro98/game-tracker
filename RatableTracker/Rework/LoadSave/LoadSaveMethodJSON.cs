@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace RatableTracker.Rework.LoadSave
 {
@@ -124,10 +125,9 @@ namespace RatableTracker.Rework.LoadSave
             {
                 return new List<SavableRepresentation>();
             }
-            // TODO throw unique exception
             if (!IsValidJSONArray(json))
             {
-                throw new Exception("LoadSaveMethodJSON InterpretBytesToSRList: object is not valid json: " + json);
+                throw new JsonException(GetType().Name + " InterpretBytesToSRList: object is not valid json: " + json);
             }
             IList<SavableRepresentation> result = new List<SavableRepresentation>();
             var objects = JArray.Parse(json);
@@ -232,7 +232,16 @@ namespace RatableTracker.Rework.LoadSave
             foreach (var sr in data)
             {
                 string typeName = sr.GetValue(keyTypeName).ToString();
-                T obj = generateObj(typeName);
+                T obj;
+                try
+                {
+                    obj = generateObj(typeName);
+                }
+                catch (ArgumentException e)
+                {
+                    logger?.Log(GetType().Name + " LoadAll - error generating new object of type " + typeof(T).Name + " - " + e.Message);
+                    throw;
+                }
                 obj.RestoreFromRepresentation(sr);
                 list.Add(obj);
             }

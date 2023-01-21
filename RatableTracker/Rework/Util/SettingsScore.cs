@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Modules;
 using System;
 using System.Collections.Generic;
@@ -31,10 +32,9 @@ namespace RatableTracker.Rework.Util
 
         public override void Validate()
         {
-            // TODO throw unique exceptions
             base.Validate();
             if (_tempMinScore >= _tempMaxScore)
-                throw new Exception("Minimum score must be less than maximum score");
+                throw new ValidationException("Minimum score must be less than maximum score", _tempMinScore.ToString() + ", " + _tempMaxScore.ToString());
             // new min and max are valid, so swap them into the main variables
             (_tempMinScore, _minScore) = (_minScore, _tempMinScore);
             (_tempMaxScore, _maxScore) = (_maxScore, _tempMaxScore);

@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.ScoreRanges;
@@ -7,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
@@ -83,14 +85,34 @@ namespace RatableTracker.Rework.Modules
 
         internal void SaveModelObject(RankedObject modelObject)
         {
-            // TODO throw unique exception
-            modelObject.Validate();
+            Logger?.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
+            try
+            {
+                modelObject.Validate();
+            }
+            catch (ValidationException e)
+            {
+                Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
                 if (ModelObjects.Count() >= LimitModelObjects)
-                    throw new Exception("Attempted to exceed limit of " + LimitModelObjects.ToString() + " for list of model objects");
+                {
+                    try
+                    {
+                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitModelObjects.ToString() + " for list of model objects");
+                    }
+                    catch (ExceededLimitException e)
+                    {
+                        Logger?.Log(e.GetType().Name + ": " + e.Message);
+                        throw;
+                    }
+                }
                 ModelObjects.Add(modelObject);
             }
+
             using (var conn = _loadSave.NewConnection())
             {
                 conn.SaveOneModelObject(modelObject);
@@ -100,9 +122,19 @@ namespace RatableTracker.Rework.Modules
 
         internal void DeleteModelObject(RankedObject modelObject)
         {
-            // TODO throw unique exception
+            Logger?.Log("DeleteModelObject - " + modelObject.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
-                throw new Exception("Model object " + modelObject.Name.ToString() + " has not been saved yet and cannot be deleted");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Model object " + modelObject.Name.ToString() + " has not been saved yet and cannot be deleted");
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    Logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
             RemoveReferencesToObject(modelObject, typeof(RankedObject));
             ModelObjects.Remove(modelObject);
             using (var conn = _loadSave.NewConnection())
@@ -114,12 +146,30 @@ namespace RatableTracker.Rework.Modules
 
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
         {
-            // TODO throw unique exception
-            modelObject.Validate();
+            Logger?.Log("ChangeModelObjectPositionInList - " + modelObject.UniqueID.ToString());
+            try
+            {
+                modelObject.Validate();
+            }
+            catch (ValidationException e)
+            {
+                Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
 
             int currentPosition = ModelObjects.IndexOf(modelObject);
             if (currentPosition == -1)
-                throw new Exception("Object " + modelObject.UniqueID.ToString() + " does not exist in the module");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Object " + modelObject.UniqueID.ToString() + " has not been saved yet and cannot be modified");
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    Logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
 
             ModelObjects.Move(currentPosition, newPosition);
 

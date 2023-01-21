@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Util;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +17,7 @@ namespace RatableTracker.Rework.ScoreRanges
         public override bool IsValueInRange(double val, IList<double> valueList)
         {
             if (valueList.Count() != NumValuesRequired)
-            {
-                // TODO throw different exception
-                throw new Exception(GetType().Name + " expects " + NumValuesRequired.ToString() + " values, got " + valueList.Count().ToString());
-            }
+                throw new InvalidObjectStateException(GetType().Name + " expects " + NumValuesRequired.ToString() + " values, got " + valueList.Count().ToString());
             return val >= valueList[0] && val < valueList[1];
         }
     }

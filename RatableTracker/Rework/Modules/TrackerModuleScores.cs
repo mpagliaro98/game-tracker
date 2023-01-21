@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.ScoreRanges;
@@ -81,14 +82,34 @@ namespace RatableTracker.Rework.Modules
 
         internal void SaveScoreRange(ScoreRange scoreRange)
         {
-            // TODO throw unique exception
-            scoreRange.Validate();
+            Logger?.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
+            try
+            {
+                scoreRange.Validate();
+            }
+            catch (ValidationException e)
+            {
+                Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
                 if (ScoreRanges.Count() >= LimitRanges)
-                    throw new Exception("Attempted to exceed limit of " + LimitRanges.ToString() + " for list of score ranges");
+                {
+                    try
+                    {
+                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitRanges.ToString() + " for list of score ranges");
+                    }
+                    catch (ExceededLimitException e)
+                    {
+                        Logger?.Log(e.GetType().Name + ": " + e.Message);
+                        throw;
+                    }
+                }
                 ScoreRanges.Add(scoreRange);
             }
+
             using (var conn = _loadSave.NewConnection())
             {
                 conn.SaveOneScoreRange(scoreRange);
@@ -98,9 +119,19 @@ namespace RatableTracker.Rework.Modules
 
         internal void DeleteScoreRange(ScoreRange scoreRange)
         {
-            // TODO throw unique exception
+            Logger?.Log("DeleteScoreRange - " + scoreRange.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
-                throw new Exception("Score range " + scoreRange.Name.ToString() + " has not been saved yet and cannot be deleted");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Score range " + scoreRange.Name.ToString() + " has not been saved yet and cannot be deleted");
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    Logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
             RemoveReferencesToObject(scoreRange, typeof(ScoreRange));
             ScoreRanges.Remove(scoreRange);
             using (var conn = _loadSave.NewConnection())

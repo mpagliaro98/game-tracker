@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
@@ -31,13 +32,12 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public virtual void Validate()
         {
-            // TODO unique exceptions
             if (Name == "")
-                throw new Exception("A name is required");
+                throw new ValidationException("A name is required", Name);
             if (Name.Length > MaxLengthName)
-                throw new Exception("Name cannot be longer than " + MaxLengthName.ToString() + " characters");
+                throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
             if (Comment.Length > MaxLengthComment)
-                throw new Exception("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters");
+                throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
 
         public void Save()

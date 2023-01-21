@@ -34,11 +34,9 @@ namespace RatableTracker.Rework.Util
             }
             catch (InvalidCastException e)
             {
-                // TODO throw unique exception (different from below)
-                throw new Exception("Incorrect parameters passed in for creating " + typeName + ": " + e.Message);
+                throw new ArgumentException("Incorrect parameters passed in for creating " + typeName + ": " + e.Message);
             }
-            // TODO throw unique exception
-            throw new Exception("Unknown type: " + typeName);
+            throw new ArgumentException("Unknown type: " + typeName);
         }
 
         public virtual Status GetStatus(string typeName, StatusExtensionModule module)
@@ -48,8 +46,7 @@ namespace RatableTracker.Rework.Util
                 case "status":
                     return new Status(module);
             }
-            // TODO throw unique exception
-            throw new Exception("Unknown type: " + typeName);
+            throw new ArgumentException("Unknown type: " + typeName);
         }
 
         public virtual RatingCategory GetRatingCategory(string typeName, CategoryExtensionModule module)
@@ -61,8 +58,7 @@ namespace RatableTracker.Rework.Util
                 case "ratingcategoryweighted":
                     return new RatingCategoryWeighted(module);
             }
-            // TODO throw unique exception
-            throw new Exception("Unknown type: " + typeName);
+            throw new ArgumentException("Unknown type: " + typeName);
         }
 
         public virtual ScoreRange GetScoreRange(string typeName, TrackerModuleScores module)
@@ -72,8 +68,7 @@ namespace RatableTracker.Rework.Util
                 case "scorerange":
                     return new ScoreRange(module);
             }
-            // TODO throw unique exception
-            throw new Exception("Unknown type: " + typeName);
+            throw new ArgumentException("Unknown type: " + typeName);
         }
 
         public virtual Settings GetSettings(string typeName)
@@ -85,8 +80,7 @@ namespace RatableTracker.Rework.Util
                 case "settingsscore":
                     return new SettingsScore();
             }
-            // TODO throw unique exception
-            throw new Exception("Unknown type: " + typeName);
+            throw new ArgumentException("Unknown type: " + typeName);
         }
     }
 }

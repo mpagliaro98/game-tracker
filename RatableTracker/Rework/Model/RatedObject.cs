@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using RatableTracker.Rework.LoadSave;
+using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 
 namespace RatableTracker.Rework.Model
 {
@@ -25,7 +27,15 @@ namespace RatableTracker.Rework.Model
             {
                 foreach (ScoreRange range in module.GetScoreRangeList())
                 {
-                    if (range.ScoreRelationship.IsValueInRange(Score, range.ValueList)) return range;
+                    try
+                    {
+                        if (range.ScoreRelationship.IsValueInRange(Score, range.ValueList)) return range;
+                    }
+                    catch (InvalidObjectStateException e)
+                    {
+                        module.Logger?.Log(e.GetType().Name + ": " + e.Message);
+                        throw;
+                    }
                 }
                 return null;
             }
@@ -52,9 +62,8 @@ namespace RatableTracker.Rework.Model
         public override void Validate()
         {
             base.Validate();
-            // TODO throw specialized type of exception
             if (ManualScore < settings.MinScore || ManualScore > settings.MaxScore)
-                throw new Exception("Score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString());
+                throw new ValidationException("Score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString(), ManualScore);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

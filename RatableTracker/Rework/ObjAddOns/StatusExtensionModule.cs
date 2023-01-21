@@ -1,5 +1,8 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Framework;
+using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -44,14 +47,34 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void SaveStatus(Status status)
         {
-            // TODO throw unique exception
-            status.Validate();
+            _logger?.Log("SaveStatus - " + status.UniqueID.ToString());
+            try
+            {
+                status.Validate();
+            }
+            catch (ValidationException e)
+            {
+                _logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
                 if (Statuses.Count() >= LimitStatuses)
-                    throw new Exception("Attempted to exceed limit of " + LimitStatuses.ToString() + " for list of statuses");
+                {
+                    try
+                    {
+                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitStatuses.ToString() + " for list of statuses");
+                    }
+                    catch (ExceededLimitException e)
+                    {
+                        _logger?.Log(e.GetType().Name + ": " + e.Message);
+                        throw;
+                    }
+                }
                 Statuses.Add(status);
             }
+
             using (var conn = _loadSave.NewConnection())
             {
                 conn.SaveOneStatus(status);
@@ -61,9 +84,19 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void DeleteStatus(Status status, TrackerModule module)
         {
-            // TODO throw unique exception
+            _logger?.Log("DeleteStatus - " + status.UniqueID.ToString());
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
-                throw new Exception("Status " + status.Name.ToString() + " has not been saved yet and cannot be deleted");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Status " + status.Name.ToString() + " has not been saved yet and cannot be deleted");
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    _logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
             module.RemoveReferencesToObject(status, typeof(Status));
             Statuses.Remove(status);
             using (var conn = _loadSave.NewConnection())

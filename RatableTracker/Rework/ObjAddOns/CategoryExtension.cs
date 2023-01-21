@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
@@ -46,11 +47,10 @@ namespace RatableTracker.Rework.ObjAddOns
 
         public virtual void Validate()
         {
-            // TODO unique exceptions
             foreach (CategoryValue categoryValue in GetCategoryValues())
             {
                 if (categoryValue.PointValue < settings.MinScore || categoryValue.PointValue > settings.MaxScore)
-                    throw new Exception(categoryValue.RatingCategory.Name + " score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString());
+                    throw new ValidationException(categoryValue.RatingCategory.Name + " score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString(), categoryValue.PointValue);
             }
         }
 

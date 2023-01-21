@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
@@ -45,16 +46,15 @@ namespace RatableTracker.Rework.ScoreRanges
 
         public virtual void Validate()
         {
-            // TODO unique exceptions
             if (Name == "")
-                throw new Exception("A name is required");
+                throw new ValidationException("A name is required", Name);
             if (Name.Length > MaxLengthName)
-                throw new Exception("Name cannot be longer than " + MaxLengthName.ToString() + " characters");
+                throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
             ScoreRelationship sr = ScoreRelationship;
             if (sr == null)
-                throw new Exception("A score relationship is required");
+                throw new ValidationException("A score relationship is required");
             if (sr.NumValuesRequired != ValueList.Count())
-                throw new Exception("The " + sr.Name + " relationship requires " + sr.NumValuesRequired.ToString() + " values, but " + ValueList.Count().ToString() + " were given");
+                throw new ValidationException("The " + sr.Name + " relationship requires " + sr.NumValuesRequired.ToString() + " values, but " + ValueList.Count().ToString() + " were given", "list{" + string.Join(",", ValueList) + "}");
         }
 
         public void Save()

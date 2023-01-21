@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
@@ -44,13 +45,12 @@ namespace RatableTracker.Rework.Model
 
         public virtual void Validate()
         {
-            // TODO unique exceptions
             if (Name == "")
-                throw new Exception("A name is required");
+                throw new ValidationException("A name is required", Name);
             if (Name.Length > MaxLengthName)
-                throw new Exception("Name cannot be longer than " + MaxLengthName.ToString() + " characters");
+                throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
             if (Comment.Length > MaxLengthComment)
-                throw new Exception("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters");
+                throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
 
         public void Save()
@@ -74,25 +74,55 @@ namespace RatableTracker.Rework.Model
 
         public void MoveUpOneRank()
         {
-            // TODO throw unique exception
+            module.Logger?.Log("MoveUpOneRank - " + UniqueID.ToString());
             if (Rank <= 1)
-                throw new Exception("Cannot raise rank any further");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Cannot raise rank any further");
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    module.Logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
             ChangeRank(Rank - 1);
         }
 
         public void MoveDownOneRank()
         {
-            // TODO throw unique exception
+            module.Logger?.Log("MoveDownOneRank - " + UniqueID.ToString());
             if (Rank >= module.TotalNumModelObjects())
-                throw new Exception("Cannot lower rank any further");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Cannot lower rank any further");
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    module.Logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
             ChangeRank(Rank + 1);
         }
 
         public void ChangeRank(int newRank)
         {
-            // TODO throw unique exception
+            module.Logger?.Log("ChangeRank - " + UniqueID.ToString());
             if (newRank < 1 || newRank > module.TotalNumModelObjects())
-                throw new Exception("Rank out of range");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Rank out of range: " + newRank.ToString());
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    module.Logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
             module.ChangeModelObjectPositionInList(this, newRank - 1);
         }
 

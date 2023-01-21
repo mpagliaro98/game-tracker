@@ -109,6 +109,9 @@
     <Compile Include="RatingCategory.cs" />
     <Compile Include="RatingCategoryValue.cs" />
     <Compile Include="RatingCategoryWeighted.cs" />
+    <Compile Include="Rework\Exceptions\ExceededLimitException.cs" />
+    <Compile Include="Rework\Exceptions\InvalidObjectStateException.cs" />
+    <Compile Include="Rework\Exceptions\ValidationException.cs" />
     <Compile Include="Rework\Interfaces\IFileHandler.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveHandler.cs" />
     <Compile Include="Rework\Interfaces\ILoadSaveMethod.cs" />

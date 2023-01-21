@@ -1,5 +1,8 @@
-﻿using RatableTracker.Rework.Interfaces;
+﻿using RatableTracker.Framework;
+using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
@@ -44,14 +47,34 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void SaveRatingCategory(RatingCategory ratingCategory)
         {
-            // TODO throw unique exception
-            ratingCategory.Validate();
+            _logger?.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
+            try
+            {
+                ratingCategory.Validate();
+            }
+            catch (ValidationException e)
+            {
+                _logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
                 if (RatingCategories.Count() >= LimitRatingCategories)
-                    throw new Exception("Attempted to exceed limit of " + LimitRatingCategories.ToString() + " for list of categories");
+                {
+                    try
+                    {
+                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitRatingCategories.ToString() + " for list of categories");
+                    }
+                    catch (ExceededLimitException e)
+                    {
+                        _logger?.Log(e.GetType().Name + ": " + e.Message);
+                        throw;
+                    }
+                }
                 RatingCategories.Add(ratingCategory);
             }
+
             using (var conn = _loadSave.NewConnection())
             {
                 conn.SaveOneCategory(ratingCategory);
@@ -61,9 +84,19 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
         {
-            // TODO throw unique exception
+            _logger?.Log("DeleteRatingCategory - " + ratingCategory.UniqueID.ToString());
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
-                throw new Exception("Category " + ratingCategory.Name.ToString() + " has not been saved yet and cannot be deleted");
+            {
+                try
+                {
+                    throw new InvalidObjectStateException("Category " + ratingCategory.Name.ToString() + " has not been saved yet and cannot be deleted");
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    _logger?.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
             module.RemoveReferencesToObject(ratingCategory, typeof(RatingCategory));
             RatingCategories.Remove(ratingCategory);
             using (var conn = _loadSave.NewConnection())
