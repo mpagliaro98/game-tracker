@@ -11,7 +11,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.ObjAddOns
 {
-    public class CategoryValue : SavableObject
+    public class CategoryValue : RepresentationObject
     {
         private UniqueID _category = UniqueID.BlankID();
         public RatingCategory RatingCategory

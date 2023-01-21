@@ -83,7 +83,7 @@ namespace RatableTracker.Rework.Modules
         internal void SaveScoreRange(ScoreRange scoreRange)
         {
             Logger?.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
-            scoreRange.Validate();
+            scoreRange.Validate(Logger);
 
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
@@ -106,7 +106,7 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.SaveOneScoreRange(scoreRange);
             }
-            scoreRange.PostSave();
+            scoreRange.PostSave(this);
         }
 
         internal void DeleteScoreRange(ScoreRange scoreRange)
@@ -130,7 +130,7 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.DeleteOneScoreRange(scoreRange);
             }
-            scoreRange.PostDelete();
+            scoreRange.PostDelete(this);
         }
 
         public override void ApplySettingsChanges(Settings settings)
@@ -144,8 +144,9 @@ namespace RatableTracker.Rework.Modules
             {
                 foreach (ScoreRange scoreRange in ScoreRanges)
                 {
-                    scoreRange.Validate();
+                    scoreRange.Validate(Logger);
                     conn.SaveOneScoreRange(scoreRange);
+                    scoreRange.PostSave(this);
                 }
             }
         }

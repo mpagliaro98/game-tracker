@@ -44,10 +44,10 @@ namespace RatableTracker.Rework.ObjAddOns
             return Statuses.Count;
         }
 
-        internal void SaveStatus(Status status)
+        internal void SaveStatus(Status status, TrackerModule module)
         {
             Logger?.Log("SaveStatus - " + status.UniqueID.ToString());
-            status.Validate();
+            status.Validate(Logger);
 
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
@@ -70,7 +70,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.SaveOneStatus(status);
             }
-            status.PostSave();
+            status.PostSave(module);
         }
 
         internal void DeleteStatus(Status status, TrackerModule module)
@@ -94,7 +94,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.DeleteOneStatus(status);
             }
-            status.PostDelete();
+            status.PostDelete(module);
         }
 
         public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
@@ -111,7 +111,7 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
-        public virtual void ApplySettingsChanges(Settings settings)
+        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module)
         {
             foreach (Status status in Statuses)
             {
@@ -121,8 +121,9 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 foreach (Status status in Statuses)
                 {
-                    status.Validate();
+                    status.Validate(Logger);
                     conn.SaveOneStatus(status);
+                    status.PostSave(module);
                 }
             }
         }

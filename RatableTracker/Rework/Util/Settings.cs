@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.Rework.Util
 {
-    public class Settings : SavableObject
+    public class Settings : RepresentationObject
     {
         public Settings() { }
 

@@ -55,7 +55,7 @@ namespace RatableTracker.Rework.Modules
         public override void ApplySettingsChanges(Settings settings)
         {
             base.ApplySettingsChanges(settings);
-            StatusExtension.ApplySettingsChanges(settings);
+            StatusExtension.ApplySettingsChanges(settings, this);
         }
     }
 }

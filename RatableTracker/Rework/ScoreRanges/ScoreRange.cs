@@ -44,22 +44,9 @@ namespace RatableTracker.Rework.ScoreRanges
             this.module = module;
         }
 
-        public void Validate()
+        protected override void ValidateFields()
         {
-            try
-            {
-                ValidateFields();
-            }
-            catch (ValidationException e)
-            {
-                module.Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
-            PostValidate();
-        }
-
-        protected virtual void ValidateFields()
-        {
+            base.ValidateFields();
             if (Name == "")
                 throw new ValidationException("A name is required", Name);
             if (Name.Length > MaxLengthName)
@@ -71,25 +58,14 @@ namespace RatableTracker.Rework.ScoreRanges
                 throw new ValidationException("The " + sr.Name + " relationship requires " + sr.NumValuesRequired.ToString() + " values, but " + ValueList.Count().ToString() + " were given", "list{" + string.Join(",", ValueList) + "}");
         }
 
-        protected virtual void PostValidate() { }
-
-        public void Save()
+        public override void Save(TrackerModule module)
         {
-            module.SaveScoreRange(this);
+            this.module.SaveScoreRange(this);
         }
 
-        public virtual void PostSave() { }
-
-        public void Delete()
+        public override void Delete(TrackerModule module)
         {
-            module.DeleteScoreRange(this);
-        }
-
-        public virtual void PostDelete() { }
-
-        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
-        {
-            return false;
+            this.module.DeleteScoreRange(this);
         }
 
         public virtual void ApplySettingsChanges(Settings settings)

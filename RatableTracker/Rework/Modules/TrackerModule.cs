@@ -87,7 +87,7 @@ namespace RatableTracker.Rework.Modules
         internal void SaveModelObject(RankedObject modelObject)
         {
             Logger?.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
-            modelObject.Validate();
+            modelObject.Validate(Logger);
 
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
@@ -110,7 +110,7 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.SaveOneModelObject(modelObject);
             }
-            modelObject.PostSave();
+            modelObject.PostSave(this);
         }
 
         internal void DeleteModelObject(RankedObject modelObject)
@@ -134,13 +134,13 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.DeleteOneModelObject(modelObject);
             }
-            modelObject.PostDelete();
+            modelObject.PostDelete(this);
         }
 
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
         {
-            Logger?.Log("ChangeModelObjectPositionInList - " + modelObject.UniqueID.ToString());
-            modelObject.Validate();
+            Logger?.Log("ChangeModelObjectPositionInList - " + modelObject.UniqueID.ToString() + " - " + newPosition.ToString());
+            modelObject.Validate(Logger);
 
             int currentPosition = ModelObjects.IndexOf(modelObject);
             if (currentPosition == -1)
@@ -164,7 +164,7 @@ namespace RatableTracker.Rework.Modules
                 {
                     var objIterate = ModelObjects[i];
                     conn.SaveOneModelObject(objIterate);
-                    objIterate.PostSave();
+                    objIterate.PostSave(this);
                 }
             }
         }
@@ -189,8 +189,9 @@ namespace RatableTracker.Rework.Modules
             {
                 foreach (RankedObject obj in ModelObjects)
                 {
-                    obj.Validate();
+                    obj.Validate(Logger);
                     conn.SaveOneModelObject(obj);
+                    obj.PostSave(this);
                 }
             }
         }

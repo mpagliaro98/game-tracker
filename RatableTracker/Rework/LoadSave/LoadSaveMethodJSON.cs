@@ -148,14 +148,14 @@ namespace RatableTracker.Rework.LoadSave
             return Util.Util.TextEncoding.GetBytes(json);
         }
 
-        public void SaveOne<T>(Action ensureLoaded, ref SavableRepresentation data, T toSave, ref bool changed) where T : SavableObject
+        public void SaveOne<T>(Action ensureLoaded, ref SavableRepresentation data, T toSave, ref bool changed) where T : RepresentationObject
         {
             ensureLoaded();
             data = toSave.LoadIntoRepresentation();
             changed = true;
         }
 
-        public T LoadOne<T>(Action ensureLoaded, SavableRepresentation data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : SavableObject
+        public T LoadOne<T>(Action ensureLoaded, SavableRepresentation data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject
         {
             ensureLoaded();
             string typeName = data.GetValue(keyTypeName).GetString();
@@ -164,7 +164,7 @@ namespace RatableTracker.Rework.LoadSave
             return obj;
         }
 
-        protected void SaveOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toSave, ref bool changed, string keyName = "UniqueID") where T : SavableObject, IKeyable
+        protected void SaveOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toSave, ref bool changed, string keyName = "UniqueID") where T : RepresentationObject, IKeyable
         {
             ensureLoaded();
             for (int i = 0; i < data.Count; i++)
@@ -179,7 +179,7 @@ namespace RatableTracker.Rework.LoadSave
             changed = true;
         }
 
-        protected void SaveAll<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, IList<T> toSave, ref bool changed) where T : SavableObject, IKeyable
+        protected void SaveAll<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, IList<T> toSave, ref bool changed) where T : RepresentationObject, IKeyable
         {
             ensureLoaded();
             data = new List<SavableRepresentation>();
@@ -190,7 +190,7 @@ namespace RatableTracker.Rework.LoadSave
             changed = true;
         }
 
-        protected void DeleteOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toDelete, ref bool changed, string keyName = "UniqueID") where T : SavableObject, IKeyable
+        protected void DeleteOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toDelete, ref bool changed, string keyName = "UniqueID") where T : RepresentationObject, IKeyable
         {
             ensureLoaded();
             for (int i = 0; i < data.Count; i++)
@@ -205,12 +205,12 @@ namespace RatableTracker.Rework.LoadSave
             changed = true;
         }
 
-        protected IList<T> LoadAll<T>(Action ensureLoaded, IList<SavableRepresentation> data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : SavableObject, IKeyable
+        protected IList<T> LoadAll<T>(Action ensureLoaded, IList<SavableRepresentation> data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
         {
             return LoadAll<T, int>(ensureLoaded, data, generateObj, null, keyTypeName: keyTypeName);
         }
 
-        protected IList<T> LoadAll<T, TSort>(Action ensureLoaded, IList<SavableRepresentation> data, Func<string, T> generateObj, Func<T, TSort> sortExpression, string keyTypeName = "TypeName") where T : SavableObject, IKeyable
+        protected IList<T> LoadAll<T, TSort>(Action ensureLoaded, IList<SavableRepresentation> data, Func<string, T> generateObj, Func<T, TSort> sortExpression, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
         {
             ensureLoaded();
             IList<T> list = new List<T>();
@@ -263,10 +263,10 @@ namespace RatableTracker.Rework.LoadSave
             return "[" + jsonArray + "]";
         }
 
-        public static string CreateJSONArray(IEnumerable<SavableObject> objs)
+        public static string CreateJSONArray(IEnumerable<RepresentationObject> objs)
         {
             ICollection<string> jsonObjs = new LinkedList<string>();
-            foreach (SavableObject obj in objs)
+            foreach (RepresentationObject obj in objs)
             {
                 SavableRepresentation sr = obj.LoadIntoRepresentation();
                 string json = SavableRepresentationToJSON(sr);

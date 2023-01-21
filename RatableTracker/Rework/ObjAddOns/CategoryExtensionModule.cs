@@ -44,10 +44,10 @@ namespace RatableTracker.Rework.ObjAddOns
             return RatingCategories.Count;
         }
 
-        internal void SaveRatingCategory(RatingCategory ratingCategory)
+        internal void SaveRatingCategory(RatingCategory ratingCategory, TrackerModule module)
         {
             Logger?.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
-            ratingCategory.Validate();
+            ratingCategory.Validate(Logger);
 
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
@@ -70,7 +70,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.SaveOneCategory(ratingCategory);
             }
-            ratingCategory.PostSave();
+            ratingCategory.PostSave(module);
         }
 
         internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
@@ -94,7 +94,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.DeleteOneCategory(ratingCategory);
             }
-            ratingCategory.PostDelete();
+            ratingCategory.PostDelete(module);
         }
 
         public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
@@ -111,7 +111,7 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
-        public virtual void ApplySettingsChanges(Settings settings)
+        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module)
         {
             foreach (RatingCategory category in RatingCategories)
             {
@@ -121,8 +121,9 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 foreach (RatingCategory category in RatingCategories)
                 {
-                    category.Validate();
+                    category.Validate(Logger);
                     conn.SaveOneCategory(category);
+                    category.PostSave(module);
                 }
             }
         }

@@ -1,33 +1,45 @@
-﻿using RatableTracker.Rework.LoadSave;
-using RatableTracker.Rework.Util;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RatableTracker.Rework.Model
 {
-    public abstract class SavableObject
+    public abstract class SavableObject : RepresentationObject
     {
-        public virtual SavableRepresentation LoadIntoRepresentation()
+        public void Validate(ILogger logger = null)
         {
-            SavableRepresentation sr = new SavableRepresentation();
-            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
-            return sr;
+            try
+            {
+                ValidateFields();
+            }
+            catch (ValidationException e)
+            {
+                logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+            PostValidate();
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        protected virtual void ValidateFields() { }
+
+        protected virtual void PostValidate() { }
+
+        public abstract void Save(TrackerModule module);
+
+        internal virtual void PostSave(TrackerModule module) { }
+
+        public abstract void Delete(TrackerModule module);
+
+        internal virtual void PostDelete(TrackerModule module) { }
+
+        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    default:
-                        break;
-                }
-            }
+            return false;
         }
     }
 }

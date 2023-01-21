@@ -56,7 +56,7 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(val);
         }
 
-        public ValueContainer(SavableObject val)
+        public ValueContainer(RepresentationObject val)
         {
             SetContent(val);
         }
@@ -81,7 +81,7 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(val);
         }
 
-        public ValueContainer(IEnumerable<SavableObject> val)
+        public ValueContainer(IEnumerable<RepresentationObject> val)
         {
             SetContent(val);
         }
@@ -131,7 +131,7 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(val.ToString());
         }
 
-        public void SetContent(SavableObject savable)
+        public void SetContent(RepresentationObject savable)
         {
             SetContent(savable.LoadIntoRepresentation());
         }
@@ -158,10 +158,10 @@ namespace RatableTracker.Rework.LoadSave
             SetContent(list);
         }
 
-        public void SetContent(IEnumerable<SavableObject> val)
+        public void SetContent(IEnumerable<RepresentationObject> val)
         {
             LinkedList<SavableRepresentation> list = new LinkedList<SavableRepresentation>();
-            foreach (SavableObject value in val)
+            foreach (RepresentationObject value in val)
             {
                 var sr = value?.LoadIntoRepresentation();
                 list.AddLast(sr);
@@ -214,9 +214,9 @@ namespace RatableTracker.Rework.LoadSave
             return UniqueID.Parse(GetString());
         }
 
-        public SavableObject GetSavableObject(Func<SavableObject> initSavable)
+        public RepresentationObject GetRepresentationObject(Func<RepresentationObject> initSavable)
         {
-            SavableObject savable = initSavable();
+            RepresentationObject savable = initSavable();
             savable?.RestoreFromRepresentation(GetSavableRepresentation());
             return savable;
         }
@@ -241,7 +241,7 @@ namespace RatableTracker.Rework.LoadSave
             return GetStringList().Select((s) => Convert.ToDouble(s));
         }
 
-        public IEnumerable<T> GetSavableObjectList<T>(Func<T> initSavable) where T : SavableObject
+        public IEnumerable<T> GetRepresentationObjectList<T>(Func<T> initSavable) where T : RepresentationObject
         {
             LinkedList<T> list = new LinkedList<T>();
             foreach (SavableRepresentation sr in GetSavableRepresentationList())

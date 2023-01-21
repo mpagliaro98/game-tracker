@@ -30,22 +30,9 @@ namespace RatableTracker.Rework.ObjAddOns
             this.module = module;
         }
 
-        public void Validate()
+        protected override void ValidateFields()
         {
-            try
-            {
-                ValidateFields();
-            }
-            catch (ValidationException e)
-            {
-                module.Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
-            PostValidate();
-        }
-
-        protected virtual void ValidateFields()
-        {
+            base.ValidateFields();
             if (Name == "")
                 throw new ValidationException("A name is required", Name);
             if (Name.Length > MaxLengthName)
@@ -54,25 +41,14 @@ namespace RatableTracker.Rework.ObjAddOns
                 throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
 
-        protected virtual void PostValidate() { }
-
-        public void Save()
+        public override void Save(TrackerModule module)
         {
-            module.SaveRatingCategory(this);
+            this.module.SaveRatingCategory(this, module);
         }
 
-        public virtual void PostSave() { }
-
-        public void Delete(TrackerModule module)
+        public override void Delete(TrackerModule module)
         {
             this.module.DeleteRatingCategory(this, module);
-        }
-
-        public virtual void PostDelete() { }
-
-        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
-        {
-            return false;
         }
 
         public virtual void ApplySettingsChanges(Settings settings) { }
