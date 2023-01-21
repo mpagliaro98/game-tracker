@@ -11,46 +11,57 @@ namespace RatableTracker.Rework.Util
 {
     public class Logger : ILogger
     {
-        protected const string LOG_DIRECTORY = "logs";
+        public const string LOG_DIRECTORY = "logs";
         protected const int LOG_DELETE_THRESHOLD_DAYS = 14;
 
         private readonly static object fileLock = new object();
 
         protected readonly IFileHandler fileHandler;
-        protected readonly IPathController pathController;
         protected readonly string logFileName;
 
-        public Logger(IFileHandler fileHandler, IPathController pathController)
+        public Logger(IFileHandler fileHandler)
         {
             this.fileHandler = fileHandler;
-            this.pathController = pathController;
             logFileName = "log_" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH-mm-ss-fff") + ".log";
 
-            // TODO delete logs that are more than a few days old
+            LogSystemInfoOnLoggerStart();
 
-            // TODO log system info like OS version, .NET version, framework version, etc
+            // delete logs that are more than the specified number of days old
+            foreach (FileInfo file in this.fileHandler.GetFilesInCurrentDirectory(this))
+            {
+                if (file.CreatedOnUTC <= DateTime.UtcNow.AddDays(-1 * LOG_DELETE_THRESHOLD_DAYS))
+                {
+                    Log("Deleting old log file: " + file.Name + " - creation date " + file.CreatedOnUTC.ToString("G") + " UTC over " + LOG_DELETE_THRESHOLD_DAYS.ToString() + " days old");
+                    this.fileHandler.DeleteFile(file.Name, this);
+                }
+            }
+        }
+
+        protected virtual void LogSystemInfoOnLoggerStart()
+        {
+            Log("OS INFO - " + Environment.OSVersion.VersionString + "\nCLR INFO - " + Environment.Version.ToString() + "\nFRAMEWORK INFO - " + Util.FrameworkVersion.ToString(), false);
         }
 
         public void Log(string message)
         {
-            Thread thread = new Thread(LogToFileThreadSafe);
-            thread.Start(message);
+            Thread thread = new Thread(() => LogToFileThreadSafe(message, false));
+            thread.Start();
         }
 
-        private string LogFileRelativePath()
+        private void Log(string message, bool newlineAtStart)
         {
-            return pathController.Combine(LOG_DIRECTORY, logFileName);
+            Thread thread = new Thread(() => LogToFileThreadSafe(message, !newlineAtStart));
+            thread.Start();
         }
 
-        private void LogToFileThreadSafe(object input)
+        private void LogToFileThreadSafe(string input, bool firstLine)
         {
-            string message = (string)input;
-            message = "\nUTC " + DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm:ss.fff tt") + " - " + message;
+            input = (!firstLine ? "\n" : "") + "UTC " + DateTime.UtcNow.ToString("MM/dd/yyyy hh:mm:ss.fff tt") + " - " + input;
             lock (fileLock)
             {
-                fileHandler.AppendFile(LogFileRelativePath(), Util.TextEncoding.GetBytes(message));
+                fileHandler.AppendFile(logFileName, Util.TextEncoding.GetBytes(input));
 #if DEBUG
-                Debug.WriteLine(message.Trim());
+                Debug.WriteLine(input.Trim());
 #endif
             }
         }

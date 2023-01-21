@@ -49,14 +49,34 @@ namespace RatableTracker.Rework.Util
             }
         }
 
-        public static bool operator < (VersionNumber obj1, VersionNumber obj2)
+        public static bool operator ==(VersionNumber obj1, VersionNumber obj2)
+        {
+            return obj1.CompareTo(obj2) == 0;
+        }
+
+        public static bool operator !=(VersionNumber obj1, VersionNumber obj2)
+        {
+            return !(obj1 == obj2);
+        }
+
+        public static bool operator <(VersionNumber obj1, VersionNumber obj2)
         {
             return obj1.CompareTo(obj2) < 0;
         }
 
-        public static bool operator > (VersionNumber obj1, VersionNumber obj2)
+        public static bool operator <=(VersionNumber obj1, VersionNumber obj2)
         {
-            return obj1.CompareTo(obj2) > 0;
+            return obj1 < obj2 || obj1 == obj2;
+        }
+
+        public static bool operator >(VersionNumber obj1, VersionNumber obj2)
+        {
+            return !(obj1 <= obj2);
+        }
+
+        public static bool operator >=(VersionNumber obj1, VersionNumber obj2)
+        {
+            return !(obj1 < obj2);
         }
 
         public override bool Equals(object obj)

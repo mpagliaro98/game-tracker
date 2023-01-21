@@ -166,6 +166,7 @@
     <Compile Include="Rework\ScoreRanges\ScoreRelationshipBetween.cs" />
     <Compile Include="Rework\Util\Color.cs" />
     <Compile Include="Rework\Util\Extensions.cs" />
+    <Compile Include="Rework\Util\FileInfo.cs" />
     <Compile Include="Rework\Util\Logger.cs" />
     <Compile Include="Rework\Util\RatableTrackerFactory.cs" />
     <Compile Include="Rework\Util\Settings.cs" />

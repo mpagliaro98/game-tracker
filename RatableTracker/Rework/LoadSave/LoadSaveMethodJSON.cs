@@ -12,12 +12,13 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using System.Diagnostics;
 
 namespace RatableTracker.Rework.LoadSave
 {
     public class LoadSaveMethodJSON : ILoadSaveMethodScoreStatusCategorical
     {
-        protected const string SAVE_FILE_DIRECTORY = "savefiles";
+        public const string SAVE_FILE_DIRECTORY = "savefiles";
 
         protected const string MODEL_OBJECT_FILE = "modelobjects.json";
         protected const string SETTINGS_FILE = "settings.json";
@@ -38,24 +39,26 @@ namespace RatableTracker.Rework.LoadSave
         protected bool categoriesChanged = false;
 
         protected readonly IFileHandler fileHandler;
-        protected readonly IPathController pathController;
         protected readonly RatableTrackerFactory factory;
         protected readonly ILogger logger;
 
-        public LoadSaveMethodJSON(IFileHandler fileHandler, IPathController pathController, RatableTrackerFactory factory, ILogger logger = null)
+        public LoadSaveMethodJSON(IFileHandler fileHandler, RatableTrackerFactory factory, ILogger logger = null)
         {
             this.fileHandler = fileHandler;
-            this.pathController = pathController;
             this.factory = factory;
             this.logger = logger;
+            this.logger?.Log(GetType().Name + " connection opened");
         }
 
         #region "Internal"
         protected void EnsureFileContentIsLoaded<T>(string fileName, ref T representation, Func<byte[], T> interpretBytesFromFile)
         {
             if (representation != null) return;
-            string path = CreateRelativePath(fileName);
-            byte[] fileContent = fileHandler.LoadFile(path);
+            logger?.Log("Load started from file: " + fileName);
+            Stopwatch sw = Stopwatch.StartNew();
+            byte[] fileContent = fileHandler.LoadFile(fileName, logger);
+            sw.Stop();
+            logger?.Log("Load from " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms (" + fileContent.Length.ToString() + " bytes)");
             representation = interpretBytesFromFile(fileContent);
         }
 
@@ -89,8 +92,11 @@ namespace RatableTracker.Rework.LoadSave
             if (representation == null) return;
             if (!changed) return;
             byte[] fileContent = representationToBytes(representation);
-            string path = CreateRelativePath(fileName);
-            fileHandler.SaveFile(path, fileContent);
+            logger?.Log("Save started to file: " + fileName + "(" + fileContent.Length.ToString() + " bytes)");
+            Stopwatch sw = Stopwatch.StartNew();
+            fileHandler.SaveFile(fileName, fileContent, logger);
+            sw.Stop();
+            logger?.Log("Save to " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms");
         }
 
         protected void SaveModelObjectsIfLoaded()
@@ -121,23 +127,7 @@ namespace RatableTracker.Rework.LoadSave
         private IList<SavableRepresentation> InterpretBytesToSRList(byte[] bytes)
         {
             string json = Util.Util.TextEncoding.GetString(bytes);
-            if (json == "")
-            {
-                return new List<SavableRepresentation>();
-            }
-            if (!IsValidJSONArray(json))
-            {
-                throw new JsonException(GetType().Name + " InterpretBytesToSRList: object is not valid json: " + json);
-            }
-            IList<SavableRepresentation> result = new List<SavableRepresentation>();
-            var objects = JArray.Parse(json);
-            foreach (JObject root in objects.Cast<JObject>())
-            {
-                string jsonObj = root.ToString();
-                SavableRepresentation sr = JSONToSavableRepresentation(jsonObj);
-                result.Add(sr);
-            }
-            return result;
+            return JSONToSavableRepresentationList(json);
         }
 
         private SavableRepresentation InterpretBytesToSR(byte[] bytes)
@@ -156,11 +146,6 @@ namespace RatableTracker.Rework.LoadSave
         {
             string json = SavableRepresentationToJSON(representation);
             return Util.Util.TextEncoding.GetBytes(json);
-        }
-
-        protected string CreateRelativePath(string fileName)
-        {
-            return pathController.Combine(SAVE_FILE_DIRECTORY, fileName);
         }
 
         public void SaveOne<T>(Action ensureLoaded, ref SavableRepresentation data, T toSave, ref bool changed) where T : SavableObject
@@ -256,6 +241,7 @@ namespace RatableTracker.Rework.LoadSave
             SaveScoreRangesIfLoaded();
             SaveStatusesIfLoaded();
             SaveCategoriesIfLoaded();
+            logger?.Log(GetType().Name + " connection closed");
         }
         #endregion
 
@@ -368,6 +354,27 @@ namespace RatableTracker.Rework.LoadSave
             return jsonObj;
         }
 
+        public static IList<SavableRepresentation> JSONToSavableRepresentationList(string json)
+        {
+            if (json == "")
+            {
+                return new List<SavableRepresentation>();
+            }
+            if (!IsValidJSONArray(json))
+            {
+                throw new JsonException("JSONToSavableRepresentationList: object is not valid json array: " + json);
+            }
+            IList<SavableRepresentation> result = new List<SavableRepresentation>();
+            var objects = JArray.Parse(json);
+            foreach (JObject root in objects.Cast<JObject>())
+            {
+                string jsonObj = root.ToString();
+                SavableRepresentation sr = JSONToSavableRepresentation(jsonObj);
+                result.Add(sr);
+            }
+            return result;
+        }
+
         public static SavableRepresentation JSONToSavableRepresentation(string json)
         {
             if (json == "")
@@ -376,32 +383,32 @@ namespace RatableTracker.Rework.LoadSave
             }
             if (!IsValidJSONObject(json))
             {
-                throw new Exception("LoadSaveMethodJSON JSONToSavableRepresentation: object is not valid json: " + json);
+                throw new JsonException("JSONToSavableRepresentation: object is not valid json object: " + json);
             }
             SavableRepresentation sr = new SavableRepresentation();
             JObject root = JObject.Parse(json);
             foreach (KeyValuePair<string, JToken> node in root)
             {
-                if (node.Value is JArray)
+                if (node.Value is JArray array)
                 {
                     // Node is an array
-                    if (((JArray)node.Value).First is JValue)
+                    if (array.First is JValue)
                     {
                         // Array is all single values (assumes all values are same type)
                         LinkedList<string> stringList = new LinkedList<string>();
                         var objects = node.Value;
-                        foreach (JValue childRoot in objects)
+                        foreach (JValue childRoot in objects.Cast<JValue>())
                         {
                             stringList.AddLast(childRoot.Value.ToString());
                         }
                         sr.SaveValue(node.Key, new ValueContainer(stringList));
                     }
-                    else if (((JArray)node.Value).First is JObject)
+                    else if (array.First is JObject)
                     {
                         // Array is all json objects (assumes all values are same type)
                         LinkedList<SavableRepresentation> srList = new LinkedList<SavableRepresentation>();
                         var objects = node.Value;
-                        foreach (JObject childRoot in objects)
+                        foreach (JObject childRoot in objects.Cast<JObject>())
                         {
                             string jsonObj = childRoot.ToString();
                             SavableRepresentation srChild = JSONToSavableRepresentation(jsonObj);
