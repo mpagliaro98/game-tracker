@@ -43,7 +43,21 @@ namespace RatableTracker.Rework.Model
             this.module = module;
         }
 
-        public virtual void Validate()
+        public void Validate()
+        {
+            try
+            {
+                ValidateFields();
+            }
+            catch (ValidationException e)
+            {
+                module.Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+            PostValidate();
+        }
+
+        protected virtual void ValidateFields()
         {
             if (Name == "")
                 throw new ValidationException("A name is required", Name);
@@ -52,6 +66,8 @@ namespace RatableTracker.Rework.Model
             if (Comment.Length > MaxLengthComment)
                 throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
+
+        protected virtual void PostValidate() { }
 
         public void Save()
         {
@@ -125,6 +141,8 @@ namespace RatableTracker.Rework.Model
             }
             module.ChangeModelObjectPositionInList(this, newRank - 1);
         }
+
+        public virtual void ApplySettingsChanges(Settings settings) { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {

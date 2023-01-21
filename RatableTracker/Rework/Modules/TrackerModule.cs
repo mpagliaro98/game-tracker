@@ -5,6 +5,7 @@ using RatableTracker.Rework.Model;
 using RatableTracker.Rework.ScoreRanges;
 using RatableTracker.Rework.Util;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Linq;
@@ -86,15 +87,7 @@ namespace RatableTracker.Rework.Modules
         internal void SaveModelObject(RankedObject modelObject)
         {
             Logger?.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
-            try
-            {
-                modelObject.Validate();
-            }
-            catch (ValidationException e)
-            {
-                Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
+            modelObject.Validate();
 
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
@@ -147,15 +140,7 @@ namespace RatableTracker.Rework.Modules
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
         {
             Logger?.Log("ChangeModelObjectPositionInList - " + modelObject.UniqueID.ToString());
-            try
-            {
-                modelObject.Validate();
-            }
-            catch (ValidationException e)
-            {
-                Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
+            modelObject.Validate();
 
             int currentPosition = ModelObjects.IndexOf(modelObject);
             if (currentPosition == -1)
@@ -186,12 +171,28 @@ namespace RatableTracker.Rework.Modules
 
         internal void SaveSettings(Settings settings)
         {
-            settings.Validate();
+            settings.Validate(this);
             using (var conn = _loadSave.NewConnection())
             {
                 conn.SaveSettings(settings);
             }
             settings.PostSave(this);
+        }
+
+        public virtual void ApplySettingsChanges(Settings settings)
+        {
+            foreach (RankedObject obj in ModelObjects)
+            {
+                obj.ApplySettingsChanges(settings);
+            }
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (RankedObject obj in ModelObjects)
+                {
+                    obj.Validate();
+                    conn.SaveOneModelObject(obj);
+                }
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using RatableTracker.Rework.LoadSave;
+﻿using RatableTracker.Rework.Exceptions;
+using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using System;
@@ -14,14 +16,33 @@ namespace RatableTracker.Rework.Util
     {
         public Settings() { }
 
-        public virtual void Validate() { }
+        public void Validate(TrackerModule module)
+        {
+            try
+            {
+                ValidateFields();
+            }
+            catch (ValidationException e)
+            {
+                module.Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+            PostValidate();
+        }
+
+        protected virtual void ValidateFields() { }
+
+        protected virtual void PostValidate() { }
 
         public void Save(TrackerModule module)
         {
             module.SaveSettings(this);
         }
 
-        public virtual void PostSave(TrackerModule module) { }
+        public virtual void PostSave(TrackerModule module)
+        {
+            module.ApplySettingsChanges(this);
+        }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {

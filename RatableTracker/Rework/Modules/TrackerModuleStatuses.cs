@@ -52,5 +52,11 @@ namespace RatableTracker.Rework.Modules
             base.RemoveReferencesToObject(obj, type);
             StatusExtension.RemoveReferencesToObject(obj, type);
         }
+
+        public override void ApplySettingsChanges(Settings settings)
+        {
+            base.ApplySettingsChanges(settings);
+            StatusExtension.ApplySettingsChanges(settings);
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using RatableTracker.Framework;
-using RatableTracker.Rework.Exceptions;
+﻿using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
@@ -19,12 +18,12 @@ namespace RatableTracker.Rework.ObjAddOns
         protected IList<Status> Statuses { get; private set; } = new List<Status>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodStatusExtension> _loadSave;
-        protected readonly ILogger _logger;
+        public ILogger Logger { get; private set; }
 
         public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave, ILogger logger = null)
         {
             _loadSave = loadSave;
-            _logger = logger;
+            Logger = logger;
         }
 
         public virtual void LoadData()
@@ -47,16 +46,8 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void SaveStatus(Status status)
         {
-            _logger?.Log("SaveStatus - " + status.UniqueID.ToString());
-            try
-            {
-                status.Validate();
-            }
-            catch (ValidationException e)
-            {
-                _logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
+            Logger?.Log("SaveStatus - " + status.UniqueID.ToString());
+            status.Validate();
 
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
@@ -68,7 +59,7 @@ namespace RatableTracker.Rework.ObjAddOns
                     }
                     catch (ExceededLimitException e)
                     {
-                        _logger?.Log(e.GetType().Name + ": " + e.Message);
+                        Logger?.Log(e.GetType().Name + ": " + e.Message);
                         throw;
                     }
                 }
@@ -84,7 +75,7 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void DeleteStatus(Status status, TrackerModule module)
         {
-            _logger?.Log("DeleteStatus - " + status.UniqueID.ToString());
+            Logger?.Log("DeleteStatus - " + status.UniqueID.ToString());
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
                 try
@@ -93,7 +84,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 }
                 catch (InvalidObjectStateException e)
                 {
-                    _logger?.Log(e.GetType().Name + ": " + e.Message);
+                    Logger?.Log(e.GetType().Name + ": " + e.Message);
                     throw;
                 }
             }
@@ -116,6 +107,22 @@ namespace RatableTracker.Rework.ObjAddOns
                     {
                         conn.SaveOneStatus(status);
                     }
+                }
+            }
+        }
+
+        public virtual void ApplySettingsChanges(Settings settings)
+        {
+            foreach (Status status in Statuses)
+            {
+                status.ApplySettingsChanges(settings);
+            }
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (Status status in Statuses)
+                {
+                    status.Validate();
+                    conn.SaveOneStatus(status);
                 }
             }
         }

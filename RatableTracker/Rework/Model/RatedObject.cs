@@ -59,11 +59,20 @@ namespace RatableTracker.Rework.Model
             ManualScore = settings.MinScore;
         }
 
-        public override void Validate()
+        protected override void ValidateFields()
         {
-            base.Validate();
+            base.ValidateFields();
             if (ManualScore < settings.MinScore || ManualScore > settings.MaxScore)
                 throw new ValidationException("Score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString(), ManualScore);
+        }
+
+        public override void ApplySettingsChanges(Settings settings)
+        {
+            base.ApplySettingsChanges(settings);
+            if (settings is SettingsScore settingsScore)
+            {
+                ManualScore = settingsScore.ScaleValueToNewMinMaxRange(ManualScore);
+            }
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

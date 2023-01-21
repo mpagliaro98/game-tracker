@@ -35,7 +35,7 @@ namespace RatableTracker.Rework.ObjAddOns
             this.module = module;
         }
 
-        public virtual void Validate()
+        public virtual void ValidateFields()
         {
 
         }
@@ -52,6 +52,8 @@ namespace RatableTracker.Rework.ObjAddOns
             }
             return false;
         }
+
+        public virtual void ApplySettingsChanges(Settings settings) { }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
         {

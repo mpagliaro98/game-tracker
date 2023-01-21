@@ -29,13 +29,29 @@ namespace RatableTracker.Rework.ObjAddOns
             this.module = module;
         }
 
-        public virtual void Validate()
+        public void Validate()
+        {
+            try
+            {
+                ValidateFields();
+            }
+            catch (ValidationException e)
+            {
+                module.Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+            PostValidate();
+        }
+
+        protected virtual void ValidateFields()
         {
             if (Name == "")
                 throw new ValidationException("A name is required", Name);
             if (Name.Length > MaxLengthName)
                 throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
         }
+
+        protected virtual void PostValidate() { }
 
         public void Save()
         {
@@ -55,6 +71,8 @@ namespace RatableTracker.Rework.ObjAddOns
         {
             return false;
         }
+
+        public virtual void ApplySettingsChanges(Settings settings) { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {

@@ -1,5 +1,4 @@
-﻿using RatableTracker.Framework;
-using RatableTracker.Rework.Exceptions;
+﻿using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
@@ -19,12 +18,12 @@ namespace RatableTracker.Rework.ObjAddOns
         protected IList<RatingCategory> RatingCategories { get; private set; } = new List<RatingCategory>();
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodCategoryExtension> _loadSave;
-        protected readonly ILogger _logger;
+        public ILogger Logger { get; private set; }
 
         public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave, ILogger logger = null)
         {
             _loadSave = loadSave;
-            _logger = logger;
+            Logger = logger;
         }
 
         public virtual void LoadData()
@@ -47,16 +46,8 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void SaveRatingCategory(RatingCategory ratingCategory)
         {
-            _logger?.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
-            try
-            {
-                ratingCategory.Validate();
-            }
-            catch (ValidationException e)
-            {
-                _logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
+            Logger?.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
+            ratingCategory.Validate();
 
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
@@ -68,7 +59,7 @@ namespace RatableTracker.Rework.ObjAddOns
                     }
                     catch (ExceededLimitException e)
                     {
-                        _logger?.Log(e.GetType().Name + ": " + e.Message);
+                        Logger?.Log(e.GetType().Name + ": " + e.Message);
                         throw;
                     }
                 }
@@ -84,7 +75,7 @@ namespace RatableTracker.Rework.ObjAddOns
 
         internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
         {
-            _logger?.Log("DeleteRatingCategory - " + ratingCategory.UniqueID.ToString());
+            Logger?.Log("DeleteRatingCategory - " + ratingCategory.UniqueID.ToString());
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
                 try
@@ -93,7 +84,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 }
                 catch (InvalidObjectStateException e)
                 {
-                    _logger?.Log(e.GetType().Name + ": " + e.Message);
+                    Logger?.Log(e.GetType().Name + ": " + e.Message);
                     throw;
                 }
             }
@@ -116,6 +107,22 @@ namespace RatableTracker.Rework.ObjAddOns
                     {
                         conn.SaveOneCategory(ratingCategory);
                     }
+                }
+            }
+        }
+
+        public virtual void ApplySettingsChanges(Settings settings)
+        {
+            foreach (RatingCategory category in RatingCategories)
+            {
+                category.ApplySettingsChanges(settings);
+            }
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (RatingCategory category in RatingCategories)
+                {
+                    category.Validate();
+                    conn.SaveOneCategory(category);
                 }
             }
         }

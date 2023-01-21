@@ -40,16 +40,22 @@ namespace RatableTracker.Rework.Model
             CategoryExtension = categoryExtension;
         }
 
-        public override void Validate()
+        protected override void ValidateFields()
         {
-            base.Validate();
-            CategoryExtension.Validate();
+            base.ValidateFields();
+            CategoryExtension.ValidateFields();
         }
 
         public override bool RemoveReferenceToObject(IKeyable obj, Type type)
         {
             // deliberately not using || to avoid short-circuit behavior
             return base.RemoveReferenceToObject(obj, type) | CategoryExtension.RemoveReferenceToObject(obj, type);
+        }
+
+        public override void ApplySettingsChanges(Settings settings)
+        {
+            base.ApplySettingsChanges(settings);
+            CategoryExtension.ApplySettingsChanges(settings);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

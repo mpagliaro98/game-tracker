@@ -83,15 +83,7 @@ namespace RatableTracker.Rework.Modules
         internal void SaveScoreRange(ScoreRange scoreRange)
         {
             Logger?.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
-            try
-            {
-                scoreRange.Validate();
-            }
-            catch (ValidationException e)
-            {
-                Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
-                throw;
-            }
+            scoreRange.Validate();
 
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
@@ -139,6 +131,23 @@ namespace RatableTracker.Rework.Modules
                 conn.DeleteOneScoreRange(scoreRange);
             }
             scoreRange.PostDelete();
+        }
+
+        public override void ApplySettingsChanges(Settings settings)
+        {
+            base.ApplySettingsChanges(settings);
+            foreach (ScoreRange scoreRange in ScoreRanges)
+            {
+                scoreRange.ApplySettingsChanges(settings);
+            }
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (ScoreRange scoreRange in ScoreRanges)
+                {
+                    scoreRange.Validate();
+                    conn.SaveOneScoreRange(scoreRange);
+                }
+            }
         }
 
         public IList<ScoreRelationship> GetScoreRelationshipList()

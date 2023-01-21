@@ -44,7 +44,21 @@ namespace RatableTracker.Rework.ScoreRanges
             this.module = module;
         }
 
-        public virtual void Validate()
+        public void Validate()
+        {
+            try
+            {
+                ValidateFields();
+            }
+            catch (ValidationException e)
+            {
+                module.Logger?.Log(e.GetType().Name + ": " + e.Message + " - invalid value: " + e.InvalidValue.ToString());
+                throw;
+            }
+            PostValidate();
+        }
+
+        protected virtual void ValidateFields()
         {
             if (Name == "")
                 throw new ValidationException("A name is required", Name);
@@ -56,6 +70,8 @@ namespace RatableTracker.Rework.ScoreRanges
             if (sr.NumValuesRequired != ValueList.Count())
                 throw new ValidationException("The " + sr.Name + " relationship requires " + sr.NumValuesRequired.ToString() + " values, but " + ValueList.Count().ToString() + " were given", "list{" + string.Join(",", ValueList) + "}");
         }
+
+        protected virtual void PostValidate() { }
 
         public void Save()
         {
@@ -74,6 +90,19 @@ namespace RatableTracker.Rework.ScoreRanges
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {
             return false;
+        }
+
+        public virtual void ApplySettingsChanges(Settings settings)
+        {
+            if (settings is SettingsScore settingsScore)
+            {
+                IList<double> newValueList = new List<double>();
+                foreach (double value in ValueList)
+                {
+                    newValueList.Add(settingsScore.ScaleValueToNewMinMaxRange(value));
+                }
+                ValueList = newValueList;
+            }
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

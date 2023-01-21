@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Exceptions;
+﻿using Microsoft.VisualBasic;
+using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
@@ -45,7 +46,7 @@ namespace RatableTracker.Rework.ObjAddOns
             return total;
         }
 
-        public virtual void Validate()
+        public virtual void ValidateFields()
         {
             foreach (CategoryValue categoryValue in GetCategoryValues())
             {
@@ -73,6 +74,17 @@ namespace RatableTracker.Rework.ObjAddOns
                 return toDelete.Count > 0;
             }
             return false;
+        }
+
+        public virtual void ApplySettingsChanges(Settings settings)
+        {
+            if (settings is SettingsScore settingsScore)
+            {
+                foreach (CategoryValue cv in CategoryValues)
+                {
+                    cv.PointValue = settingsScore.ScaleValueToNewMinMaxRange(cv.PointValue);
+                }
+            }
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)

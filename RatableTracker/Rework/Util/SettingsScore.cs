@@ -30,11 +30,17 @@ namespace RatableTracker.Rework.Util
 
         public SettingsScore() : base() { }
 
-        public override void Validate()
+        protected override void ValidateFields()
         {
-            base.Validate();
+            base.ValidateFields();
             if (_tempMinScore >= _tempMaxScore)
                 throw new ValidationException("Minimum score must be less than maximum score", _tempMinScore.ToString() + ", " + _tempMaxScore.ToString());
+        }
+
+        protected override void PostValidate()
+        {
+            base.PostValidate();
+
             // new min and max are valid, so swap them into the main variables
             (_tempMinScore, _minScore) = (_minScore, _tempMinScore);
             (_tempMaxScore, _maxScore) = (_maxScore, _tempMaxScore);
@@ -43,11 +49,23 @@ namespace RatableTracker.Rework.Util
         public override void PostSave(TrackerModule module)
         {
             base.PostSave(module);
-            // TODO scale min and max score of all model objects by calling module
 
             // set temp values back equal to the real values
             _tempMinScore = _minScore;
             _tempMaxScore = _maxScore;
+        }
+
+        public double ScaleValueToNewMinMaxRange(double value)
+        {
+            if (_tempMinScore == _minScore && _tempMaxScore == _maxScore) return value;
+            double newValue;
+            double oldRange = _tempMaxScore - _tempMinScore;
+            double newRange = _maxScore - _minScore;
+            if (oldRange == 0)
+                newValue = _minScore;
+            else
+                newValue = ((value - _tempMinScore) * newRange / oldRange) + _minScore;
+            return newValue;
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

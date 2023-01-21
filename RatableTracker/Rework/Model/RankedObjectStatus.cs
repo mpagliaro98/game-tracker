@@ -25,16 +25,22 @@ namespace RatableTracker.Rework.Model
             StatusExtension = statusExtension;
         }
 
-        public override void Validate()
+        protected override void ValidateFields()
         {
-            base.Validate();
-            StatusExtension.Validate();
+            base.ValidateFields();
+            StatusExtension.ValidateFields();
         }
 
         public override bool RemoveReferenceToObject(IKeyable obj, Type type)
         {
             // deliberately not using || to avoid short-circuit behavior
             return base.RemoveReferenceToObject(obj, type) | StatusExtension.RemoveReferenceToObject(obj, type);
+        }
+
+        public override void ApplySettingsChanges(Settings settings)
+        {
+            base.ApplySettingsChanges(settings);
+            StatusExtension.ApplySettingsChanges(settings);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()
