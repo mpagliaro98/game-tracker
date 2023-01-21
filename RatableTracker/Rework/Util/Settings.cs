@@ -16,12 +16,12 @@ namespace RatableTracker.Rework.Util
     {
         public Settings() { }
 
-        public override void Save(TrackerModule module)
+        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            module.SaveSettings(this);
+            module.SaveSettings(this, conn);
         }
 
-        internal override void PostSave(TrackerModule module)
+        protected override void PostSave(TrackerModule module)
         {
             module.ApplySettingsChanges(this);
         }

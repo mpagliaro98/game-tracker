@@ -44,10 +44,9 @@ namespace RatableTracker.Rework.ObjAddOns
             return RatingCategories.Count;
         }
 
-        internal void SaveRatingCategory(RatingCategory ratingCategory, TrackerModule module)
+        internal void SaveRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
             Logger?.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
-            ratingCategory.Validate(Logger);
 
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
@@ -66,13 +65,20 @@ namespace RatableTracker.Rework.ObjAddOns
                 RatingCategories.Add(ratingCategory);
             }
 
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.SaveOne(module, ratingCategory, conn, conn.SaveOneCategory);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.SaveOneCategory(ratingCategory);
+                }
+            }
+            else
+            {
+                conn.SaveOneCategory(ratingCategory);
             }
         }
 
-        internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
+        internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
             Logger?.Log("DeleteRatingCategory - " + ratingCategory.UniqueID.ToString());
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
@@ -89,9 +95,16 @@ namespace RatableTracker.Rework.ObjAddOns
             }
             module.RemoveReferencesToObject(ratingCategory, typeof(RatingCategory));
             RatingCategories.Remove(ratingCategory);
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.DeleteOne(module, ratingCategory, conn, conn.SaveOneCategory);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.DeleteOneCategory(ratingCategory);
+                }
+            }
+            else
+            {
+                conn.DeleteOneCategory(ratingCategory);
             }
         }
 
@@ -103,7 +116,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 {
                     if (ratingCategory.RemoveReferenceToObject(obj, type))
                     {
-                        Util.Util.SaveOne(module, ratingCategory, conn, conn.SaveOneCategory);
+                        ratingCategory.Save(module, conn);
                     }
                 }
             }
@@ -119,7 +132,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 foreach (RatingCategory category in RatingCategories)
                 {
-                    Util.Util.SaveOne(module, category, conn, conn.SaveOneCategory);
+                    category.Save(module, conn);
                 }
             }
         }

@@ -44,10 +44,9 @@ namespace RatableTracker.Rework.ObjAddOns
             return Statuses.Count;
         }
 
-        internal void SaveStatus(Status status, TrackerModule module)
+        internal void SaveStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
             Logger?.Log("SaveStatus - " + status.UniqueID.ToString());
-            status.Validate(Logger);
 
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
@@ -66,13 +65,20 @@ namespace RatableTracker.Rework.ObjAddOns
                 Statuses.Add(status);
             }
 
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.SaveOne(module, status, conn, conn.SaveOneStatus);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.SaveOneStatus(status);
+                }
+            }
+            else
+            {
+                conn.SaveOneStatus(status);
             }
         }
 
-        internal void DeleteStatus(Status status, TrackerModule module)
+        internal void DeleteStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
             Logger?.Log("DeleteStatus - " + status.UniqueID.ToString());
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
@@ -89,9 +95,16 @@ namespace RatableTracker.Rework.ObjAddOns
             }
             module.RemoveReferencesToObject(status, typeof(Status));
             Statuses.Remove(status);
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.DeleteOne(module, status, conn, conn.DeleteOneStatus);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.DeleteOneStatus(status);
+                }
+            }
+            else
+            {
+                conn.DeleteOneStatus(status);
             }
         }
 
@@ -103,7 +116,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 {
                     if (status.RemoveReferenceToObject(obj, type))
                     {
-                        Util.Util.SaveOne(module, status, conn, conn.SaveOneStatus);
+                        status.Save(module, conn);
                     }
                 }
             }
@@ -119,7 +132,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 foreach (Status status in Statuses)
                 {
-                    Util.Util.SaveOne(module, status, conn, conn.SaveOneStatus);
+                    status.Save(module, conn);
                 }
             }
         }

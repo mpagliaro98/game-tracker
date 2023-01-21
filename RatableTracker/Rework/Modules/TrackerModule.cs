@@ -64,7 +64,7 @@ namespace RatableTracker.Rework.Modules
                 {
                     if (rankedObject.RemoveReferenceToObject(obj, type))
                     {
-                        Util.Util.SaveOne(this, rankedObject, conn, conn.SaveOneModelObject);
+                        rankedObject.Save(this, conn);
                     }
                 }
             }
@@ -84,10 +84,9 @@ namespace RatableTracker.Rework.Modules
             return ModelObjects.Count;
         }
 
-        internal void SaveModelObject(RankedObject modelObject)
+        internal void SaveModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
             Logger?.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
-            modelObject.Validate(Logger);
 
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
@@ -106,13 +105,20 @@ namespace RatableTracker.Rework.Modules
                 ModelObjects.Add(modelObject);
             }
 
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.SaveOne(this, modelObject, conn, conn.SaveOneModelObject);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.SaveOneModelObject(modelObject);
+                }
+            }
+            else
+            {
+                conn.SaveOneModelObject(modelObject);
             }
         }
 
-        internal void DeleteModelObject(RankedObject modelObject)
+        internal void DeleteModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
             Logger?.Log("DeleteModelObject - " + modelObject.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
@@ -129,9 +135,16 @@ namespace RatableTracker.Rework.Modules
             }
             RemoveReferencesToObject(modelObject, typeof(RankedObject));
             ModelObjects.Remove(modelObject);
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.DeleteOne(this, modelObject, conn, conn.DeleteOneModelObject);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.DeleteOneModelObject(modelObject);
+                }
+            }
+            else
+            {
+                conn.DeleteOneModelObject(modelObject);
             }
         }
 
@@ -160,16 +173,23 @@ namespace RatableTracker.Rework.Modules
             {
                 for (int i = currentPosition; i <= newPosition; i++)
                 {
-                    Util.Util.SaveOne(this, ModelObjects[i], conn, conn.SaveOneModelObject);
+                    ModelObjects[i].Save(this, conn);
                 }
             }
         }
 
-        internal void SaveSettings(Settings settings)
+        internal void SaveSettings(Settings settings, ILoadSaveMethod conn)
         {
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.SaveOne(this, settings, conn, conn.SaveSettings);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.SaveSettings(settings);
+                }
+            }
+            else
+            {
+                conn.SaveSettings(settings);
             }
         }
 
@@ -183,7 +203,7 @@ namespace RatableTracker.Rework.Modules
             {
                 foreach (RankedObject obj in ModelObjects)
                 {
-                    Util.Util.SaveOne(this, obj, conn, conn.SaveOneModelObject);
+                    obj.Save(this, conn);
                 }
             }
         }

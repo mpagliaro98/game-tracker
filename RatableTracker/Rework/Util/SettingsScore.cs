@@ -37,16 +37,16 @@ namespace RatableTracker.Rework.Util
                 throw new ValidationException("Minimum score must be less than maximum score", _tempMinScore.ToString() + ", " + _tempMaxScore.ToString());
         }
 
-        protected override void PostValidate()
+        protected override void PreSave(TrackerModule module)
         {
-            base.PostValidate();
+            base.PreSave(module);
 
             // new min and max are valid, so swap them into the main variables
             (_tempMinScore, _minScore) = (_minScore, _tempMinScore);
             (_tempMaxScore, _maxScore) = (_maxScore, _tempMaxScore);
         }
 
-        internal override void PostSave(TrackerModule module)
+        protected override void PostSave(TrackerModule module)
         {
             base.PostSave(module);
 

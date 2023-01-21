@@ -7,6 +7,7 @@ using RatableTracker.Rework.Util;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -64,7 +65,7 @@ namespace RatableTracker.Rework.Modules
                 {
                     if (scoreRange.RemoveReferenceToObject(obj, type))
                     {
-                        Util.Util.SaveOne(this, scoreRange, conn, conn.SaveOneScoreRange);
+                        scoreRange.Save(this, conn);
                     }
                 }
             }
@@ -80,10 +81,9 @@ namespace RatableTracker.Rework.Modules
             return ScoreRanges.Count;
         }
 
-        internal void SaveScoreRange(ScoreRange scoreRange)
+        internal void SaveScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
             Logger?.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
-            scoreRange.Validate(Logger);
 
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
@@ -102,13 +102,20 @@ namespace RatableTracker.Rework.Modules
                 ScoreRanges.Add(scoreRange);
             }
 
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.SaveOne(this, scoreRange, conn, conn.SaveOneScoreRange);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.SaveOneScoreRange(scoreRange);
+                }
+            }
+            else
+            {
+                conn.SaveOneScoreRange(scoreRange);
             }
         }
 
-        internal void DeleteScoreRange(ScoreRange scoreRange)
+        internal void DeleteScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
             Logger?.Log("DeleteScoreRange - " + scoreRange.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
@@ -125,9 +132,16 @@ namespace RatableTracker.Rework.Modules
             }
             RemoveReferencesToObject(scoreRange, typeof(ScoreRange));
             ScoreRanges.Remove(scoreRange);
-            using (var conn = _loadSave.NewConnection())
+            if (conn == null)
             {
-                Util.Util.DeleteOne(this, scoreRange, conn, conn.DeleteOneScoreRange);
+                using (var connNew = _loadSave.NewConnection())
+                {
+                    connNew.DeleteOneScoreRange(scoreRange);
+                }
+            }
+            else
+            {
+                conn.DeleteOneScoreRange(scoreRange);
             }
         }
 
@@ -142,7 +156,7 @@ namespace RatableTracker.Rework.Modules
             {
                 foreach (ScoreRange scoreRange in ScoreRanges)
                 {
-                    Util.Util.SaveOne(this, scoreRange, conn, conn.SaveOneScoreRange);
+                    scoreRange.Save(this, conn);
                 }
             }
         }

@@ -4,6 +4,7 @@ using RatableTracker.Rework.Modules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,7 @@ namespace RatableTracker.Rework.Model
     {
         public void Validate(ILogger logger = null)
         {
+            PreValidate();
             try
             {
                 ValidateFields();
@@ -25,13 +27,38 @@ namespace RatableTracker.Rework.Model
             PostValidate();
         }
 
+        protected virtual void PreValidate() { }
+
         protected virtual void ValidateFields() { }
 
         protected virtual void PostValidate() { }
 
-        public abstract void Save(TrackerModule module);
+        public void Save(TrackerModule module)
+        {
+            Save(module, null);
+        }
 
-        internal virtual void PostSave(TrackerModule module) { }
+        public void Save(TrackerModule module, ILoadSaveMethod conn)
+        {
+            try
+            {
+                Validate(module.Logger);
+                PreSave(module);
+                SaveObjectToModule(module, conn);
+                PostSave(module);
+            }
+            catch
+            {
+                conn?.SetCancel(true);
+                throw;
+            }
+        }
+
+        protected virtual void PreSave(TrackerModule module) { }
+
+        protected abstract void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn);
+
+        protected virtual void PostSave(TrackerModule module) { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {

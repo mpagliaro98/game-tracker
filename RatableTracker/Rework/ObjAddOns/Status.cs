@@ -38,14 +38,14 @@ namespace RatableTracker.Rework.ObjAddOns
                 throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
         }
 
-        public override void Save(TrackerModule module)
+        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.SaveStatus(this, module);
+            this.module.SaveStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
         }
 
-        public override void Delete(TrackerModule module)
+        protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.DeleteStatus(this, module);
+            this.module.DeleteStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
         }
 
         public virtual void ApplySettingsChanges(Settings settings) { }

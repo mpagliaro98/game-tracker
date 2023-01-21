@@ -41,14 +41,14 @@ namespace RatableTracker.Rework.ObjAddOns
                 throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
 
-        public override void Save(TrackerModule module)
+        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.SaveRatingCategory(this, module);
+            this.module.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
 
-        public override void Delete(TrackerModule module)
+        protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.DeleteRatingCategory(this, module);
+            this.module.DeleteRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
 
         public virtual void ApplySettingsChanges(Settings settings) { }

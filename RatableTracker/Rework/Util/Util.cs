@@ -33,34 +33,5 @@ namespace RatableTracker.Rework.Util
             }
             return list;
         }
-
-        public static void SaveOne<T>(TrackerModule module, T obj, ILoadSaveMethod conn, Action<T> saveAction) where T : SavableObject
-        {
-            try
-            {
-                obj.Validate(module.Logger);
-                saveAction(obj);
-                obj.PostSave(module);
-            }
-            catch
-            {
-                conn.SetCancel(true);
-                throw;
-            }
-        }
-
-        public static void DeleteOne<T>(TrackerModule module, T obj, ILoadSaveMethod conn, Action<T> deleteAction) where T : SaveDeleteObject
-        {
-            try
-            {
-                deleteAction(obj);
-                obj.PostDelete(module);
-            }
-            catch
-            {
-                conn.SetCancel(true);
-                throw;
-            }
-        }
     }
 }
