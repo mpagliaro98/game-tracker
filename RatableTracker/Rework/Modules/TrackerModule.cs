@@ -64,7 +64,7 @@ namespace RatableTracker.Rework.Modules
                 {
                     if (rankedObject.RemoveReferenceToObject(obj, type))
                     {
-                        conn.SaveOneModelObject(rankedObject);
+                        Util.Util.SaveOne(this, rankedObject, conn, conn.SaveOneModelObject);
                     }
                 }
             }
@@ -108,9 +108,8 @@ namespace RatableTracker.Rework.Modules
 
             using (var conn = _loadSave.NewConnection())
             {
-                conn.SaveOneModelObject(modelObject);
+                Util.Util.SaveOne(this, modelObject, conn, conn.SaveOneModelObject);
             }
-            modelObject.PostSave(this);
         }
 
         internal void DeleteModelObject(RankedObject modelObject)
@@ -132,9 +131,8 @@ namespace RatableTracker.Rework.Modules
             ModelObjects.Remove(modelObject);
             using (var conn = _loadSave.NewConnection())
             {
-                conn.DeleteOneModelObject(modelObject);
+                Util.Util.DeleteOne(this, modelObject, conn, conn.DeleteOneModelObject);
             }
-            modelObject.PostDelete(this);
         }
 
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
@@ -162,21 +160,17 @@ namespace RatableTracker.Rework.Modules
             {
                 for (int i = currentPosition; i <= newPosition; i++)
                 {
-                    var objIterate = ModelObjects[i];
-                    conn.SaveOneModelObject(objIterate);
-                    objIterate.PostSave(this);
+                    Util.Util.SaveOne(this, ModelObjects[i], conn, conn.SaveOneModelObject);
                 }
             }
         }
 
         internal void SaveSettings(Settings settings)
         {
-            settings.Validate(Logger);
             using (var conn = _loadSave.NewConnection())
             {
-                conn.SaveSettings(settings);
+                Util.Util.SaveOne(this, settings, conn, conn.SaveSettings);
             }
-            settings.PostSave(this);
         }
 
         public virtual void ApplySettingsChanges(Settings settings)
@@ -189,9 +183,7 @@ namespace RatableTracker.Rework.Modules
             {
                 foreach (RankedObject obj in ModelObjects)
                 {
-                    obj.Validate(Logger);
-                    conn.SaveOneModelObject(obj);
-                    obj.PostSave(this);
+                    Util.Util.SaveOne(this, obj, conn, conn.SaveOneModelObject);
                 }
             }
         }

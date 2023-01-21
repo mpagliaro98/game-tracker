@@ -37,6 +37,7 @@ namespace RatableTracker.Rework.LoadSave
         protected bool scoreRangesChanged = false;
         protected bool statusesChanged = false;
         protected bool categoriesChanged = false;
+        protected bool operationCanceled = false;
 
         protected readonly IFileHandler fileHandler;
         protected readonly RatableTrackerFactory factory;
@@ -236,12 +237,15 @@ namespace RatableTracker.Rework.LoadSave
 
         public virtual void Dispose()
         {
-            SaveModelObjectsIfLoaded();
-            SaveSettingsIfLoaded();
-            SaveScoreRangesIfLoaded();
-            SaveStatusesIfLoaded();
-            SaveCategoriesIfLoaded();
-            logger?.Log(GetType().Name + " connection closed");
+            if (!operationCanceled)
+            {
+                SaveModelObjectsIfLoaded();
+                SaveSettingsIfLoaded();
+                SaveScoreRangesIfLoaded();
+                SaveStatusesIfLoaded();
+                SaveCategoriesIfLoaded();
+            }
+            logger?.Log(GetType().Name + " connection closed (canceled: " + operationCanceled.ToString() + ")");
         }
         #endregion
 
@@ -431,6 +435,11 @@ namespace RatableTracker.Rework.LoadSave
             return sr;
         }
         #endregion
+
+        public void SetCancel(bool cancel)
+        {
+            operationCanceled = cancel;
+        }
 
         public void DeleteOneModelObject(RankedObject rankedObject)
         {

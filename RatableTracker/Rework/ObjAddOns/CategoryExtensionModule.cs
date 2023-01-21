@@ -68,9 +68,8 @@ namespace RatableTracker.Rework.ObjAddOns
 
             using (var conn = _loadSave.NewConnection())
             {
-                conn.SaveOneCategory(ratingCategory);
+                Util.Util.SaveOne(module, ratingCategory, conn, conn.SaveOneCategory);
             }
-            ratingCategory.PostSave(module);
         }
 
         internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module)
@@ -92,12 +91,11 @@ namespace RatableTracker.Rework.ObjAddOns
             RatingCategories.Remove(ratingCategory);
             using (var conn = _loadSave.NewConnection())
             {
-                conn.DeleteOneCategory(ratingCategory);
+                Util.Util.DeleteOne(module, ratingCategory, conn, conn.SaveOneCategory);
             }
-            ratingCategory.PostDelete(module);
         }
 
-        public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
+        public virtual void RemoveReferencesToObject(IKeyable obj, Type type, TrackerModule module)
         {
             using (var conn = _loadSave.NewConnection())
             {
@@ -105,7 +103,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 {
                     if (ratingCategory.RemoveReferenceToObject(obj, type))
                     {
-                        conn.SaveOneCategory(ratingCategory);
+                        Util.Util.SaveOne(module, ratingCategory, conn, conn.SaveOneCategory);
                     }
                 }
             }
@@ -121,9 +119,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 foreach (RatingCategory category in RatingCategories)
                 {
-                    category.Validate(Logger);
-                    conn.SaveOneCategory(category);
-                    category.PostSave(module);
+                    Util.Util.SaveOne(module, category, conn, conn.SaveOneCategory);
                 }
             }
         }

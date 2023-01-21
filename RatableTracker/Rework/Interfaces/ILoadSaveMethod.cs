@@ -17,5 +17,6 @@ namespace RatableTracker.Rework.Interfaces
         IList<RankedObject> LoadModelObjects(Settings settings, TrackerModule module);
         void SaveSettings(Settings settings);
         Settings LoadSettings();
+        void SetCancel(bool cancel);
     }
 }

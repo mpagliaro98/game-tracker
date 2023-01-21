@@ -49,7 +49,7 @@ namespace RatableTracker.Rework.Modules
         public override void RemoveReferencesToObject(IKeyable obj, Type type)
         {
             base.RemoveReferencesToObject(obj, type);
-            CategoryExtension.RemoveReferencesToObject(obj, type);
+            CategoryExtension.RemoveReferencesToObject(obj, type, this);
         }
 
         public override void ApplySettingsChanges(Settings settings)

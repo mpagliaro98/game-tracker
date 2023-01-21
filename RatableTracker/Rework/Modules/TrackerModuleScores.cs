@@ -64,7 +64,7 @@ namespace RatableTracker.Rework.Modules
                 {
                     if (scoreRange.RemoveReferenceToObject(obj, type))
                     {
-                        conn.SaveOneScoreRange(scoreRange);
+                        Util.Util.SaveOne(this, scoreRange, conn, conn.SaveOneScoreRange);
                     }
                 }
             }
@@ -104,9 +104,8 @@ namespace RatableTracker.Rework.Modules
 
             using (var conn = _loadSave.NewConnection())
             {
-                conn.SaveOneScoreRange(scoreRange);
+                Util.Util.SaveOne(this, scoreRange, conn, conn.SaveOneScoreRange);
             }
-            scoreRange.PostSave(this);
         }
 
         internal void DeleteScoreRange(ScoreRange scoreRange)
@@ -128,9 +127,8 @@ namespace RatableTracker.Rework.Modules
             ScoreRanges.Remove(scoreRange);
             using (var conn = _loadSave.NewConnection())
             {
-                conn.DeleteOneScoreRange(scoreRange);
+                Util.Util.DeleteOne(this, scoreRange, conn, conn.DeleteOneScoreRange);
             }
-            scoreRange.PostDelete(this);
         }
 
         public override void ApplySettingsChanges(Settings settings)
@@ -144,9 +142,7 @@ namespace RatableTracker.Rework.Modules
             {
                 foreach (ScoreRange scoreRange in ScoreRanges)
                 {
-                    scoreRange.Validate(Logger);
-                    conn.SaveOneScoreRange(scoreRange);
-                    scoreRange.PostSave(this);
+                    Util.Util.SaveOne(this, scoreRange, conn, conn.SaveOneScoreRange);
                 }
             }
         }

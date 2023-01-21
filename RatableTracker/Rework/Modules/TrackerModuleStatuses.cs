@@ -50,7 +50,7 @@ namespace RatableTracker.Rework.Modules
         public override void RemoveReferencesToObject(IKeyable obj, Type type)
         {
             base.RemoveReferencesToObject(obj, type);
-            StatusExtension.RemoveReferencesToObject(obj, type);
+            StatusExtension.RemoveReferencesToObject(obj, type, this);
         }
 
         public override void ApplySettingsChanges(Settings settings)
