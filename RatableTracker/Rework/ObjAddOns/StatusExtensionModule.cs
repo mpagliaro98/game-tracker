@@ -52,15 +52,9 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 if (Statuses.Count() >= LimitStatuses)
                 {
-                    try
-                    {
-                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitStatuses.ToString() + " for list of statuses");
-                    }
-                    catch (ExceededLimitException e)
-                    {
-                        Logger?.Log(e.GetType().Name + ": " + e.Message);
-                        throw;
-                    }
+                    string message = "Attempted to exceed limit of " + LimitStatuses.ToString() + " for list of statuses";
+                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    throw new ExceededLimitException(message);
                 }
                 Statuses.Add(status);
             }
@@ -83,15 +77,9 @@ namespace RatableTracker.Rework.ObjAddOns
             Logger?.Log("DeleteStatus - " + status.UniqueID.ToString());
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Status " + status.Name.ToString() + " has not been saved yet and cannot be deleted");
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Status " + status.Name.ToString() + " has not been saved yet and cannot be deleted";
+                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
             module.RemoveReferencesToObject(status, typeof(Status));
             Statuses.Remove(status);

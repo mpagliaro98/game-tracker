@@ -69,15 +69,9 @@ namespace RatableTracker.Rework.Model
             module.Logger?.Log("MoveUpOneRank - " + UniqueID.ToString());
             if (Rank <= 1)
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Cannot raise rank any further");
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    module.Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Cannot raise rank any further";
+                module.Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
             ChangeRank(Rank - 1);
         }
@@ -87,15 +81,9 @@ namespace RatableTracker.Rework.Model
             module.Logger?.Log("MoveDownOneRank - " + UniqueID.ToString());
             if (Rank >= module.TotalNumModelObjects())
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Cannot lower rank any further");
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    module.Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Cannot lower rank any further";
+                module.Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
             ChangeRank(Rank + 1);
         }
@@ -105,15 +93,9 @@ namespace RatableTracker.Rework.Model
             module.Logger?.Log("ChangeRank - " + UniqueID.ToString());
             if (newRank < 1 || newRank > module.TotalNumModelObjects())
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Rank out of range: " + newRank.ToString());
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    module.Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Rank out of range: " + newRank.ToString();
+                module.Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
             module.ChangeModelObjectPositionInList(this, newRank - 1);
         }

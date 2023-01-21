@@ -89,15 +89,9 @@ namespace RatableTracker.Rework.Modules
             {
                 if (ScoreRanges.Count() >= LimitRanges)
                 {
-                    try
-                    {
-                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitRanges.ToString() + " for list of score ranges");
-                    }
-                    catch (ExceededLimitException e)
-                    {
-                        Logger?.Log(e.GetType().Name + ": " + e.Message);
-                        throw;
-                    }
+                    string message = "Attempted to exceed limit of " + LimitRanges.ToString() + " for list of score ranges";
+                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    throw new ExceededLimitException(message);
                 }
                 ScoreRanges.Add(scoreRange);
             }
@@ -120,15 +114,9 @@ namespace RatableTracker.Rework.Modules
             Logger?.Log("DeleteScoreRange - " + scoreRange.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Score range " + scoreRange.Name.ToString() + " has not been saved yet and cannot be deleted");
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Score range " + scoreRange.Name.ToString() + " has not been saved yet and cannot be deleted";
+                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
             RemoveReferencesToObject(scoreRange, typeof(ScoreRange));
             ScoreRanges.Remove(scoreRange);

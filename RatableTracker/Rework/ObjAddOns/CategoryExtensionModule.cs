@@ -52,15 +52,9 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 if (RatingCategories.Count() >= LimitRatingCategories)
                 {
-                    try
-                    {
-                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitRatingCategories.ToString() + " for list of categories");
-                    }
-                    catch (ExceededLimitException e)
-                    {
-                        Logger?.Log(e.GetType().Name + ": " + e.Message);
-                        throw;
-                    }
+                    string message = "Attempted to exceed limit of " + LimitRatingCategories.ToString() + " for list of categories";
+                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    throw new ExceededLimitException(message);
                 }
                 RatingCategories.Add(ratingCategory);
             }
@@ -83,15 +77,9 @@ namespace RatableTracker.Rework.ObjAddOns
             Logger?.Log("DeleteRatingCategory - " + ratingCategory.UniqueID.ToString());
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Category " + ratingCategory.Name.ToString() + " has not been saved yet and cannot be deleted");
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Category " + ratingCategory.Name.ToString() + " has not been saved yet and cannot be deleted";
+                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
             module.RemoveReferencesToObject(ratingCategory, typeof(RatingCategory));
             RatingCategories.Remove(ratingCategory);

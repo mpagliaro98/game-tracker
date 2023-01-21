@@ -92,15 +92,9 @@ namespace RatableTracker.Rework.Modules
             {
                 if (ModelObjects.Count() >= LimitModelObjects)
                 {
-                    try
-                    {
-                        throw new ExceededLimitException("Attempted to exceed limit of " + LimitModelObjects.ToString() + " for list of model objects");
-                    }
-                    catch (ExceededLimitException e)
-                    {
-                        Logger?.Log(e.GetType().Name + ": " + e.Message);
-                        throw;
-                    }
+                    string message = "Attempted to exceed limit of " + LimitModelObjects.ToString() + " for list of model objects";
+                    Logger?.Log(typeof(ExceededLimitException).Name + ": " + message);
+                    throw new ExceededLimitException(message);
                 }
                 ModelObjects.Add(modelObject);
             }
@@ -123,15 +117,9 @@ namespace RatableTracker.Rework.Modules
             Logger?.Log("DeleteModelObject - " + modelObject.UniqueID.ToString());
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Model object " + modelObject.Name.ToString() + " has not been saved yet and cannot be deleted");
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Model object " + modelObject.Name.ToString() + " has not been saved yet and cannot be deleted";
+                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
             RemoveReferencesToObject(modelObject, typeof(RankedObject));
             ModelObjects.Remove(modelObject);
@@ -156,15 +144,9 @@ namespace RatableTracker.Rework.Modules
             int currentPosition = ModelObjects.IndexOf(modelObject);
             if (currentPosition == -1)
             {
-                try
-                {
-                    throw new InvalidObjectStateException("Object " + modelObject.UniqueID.ToString() + " has not been saved yet and cannot be modified");
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    Logger?.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
+                string message = "Object " + modelObject.UniqueID.ToString() + " has not been saved yet and cannot be modified";
+                Logger?.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                throw new InvalidObjectStateException(message);
             }
 
             ModelObjects.Move(currentPosition, newPosition);
