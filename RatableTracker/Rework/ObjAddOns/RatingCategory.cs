@@ -51,8 +51,6 @@ namespace RatableTracker.Rework.ObjAddOns
             this.module.DeleteRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
 
-        public virtual void ApplySettingsChanges(Settings settings) { }
-
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

@@ -118,8 +118,6 @@ namespace RatableTracker.Rework.Model
             module.ChangeModelObjectPositionInList(this, newRank - 1);
         }
 
-        public virtual void ApplySettingsChanges(Settings settings) { }
-
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

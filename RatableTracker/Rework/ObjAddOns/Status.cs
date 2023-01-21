@@ -48,8 +48,6 @@ namespace RatableTracker.Rework.ObjAddOns
             this.module.DeleteStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
         }
 
-        public virtual void ApplySettingsChanges(Settings settings) { }
-
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

@@ -68,8 +68,9 @@ namespace RatableTracker.Rework.ScoreRanges
             this.module.DeleteScoreRange(this, (ILoadSaveMethodScores)conn);
         }
 
-        public virtual void ApplySettingsChanges(Settings settings)
+        public override void ApplySettingsChanges(Settings settings)
         {
+            base.ApplySettingsChanges(settings);
             if (settings is SettingsScore settingsScore)
             {
                 IList<double> newValueList = new List<double>();

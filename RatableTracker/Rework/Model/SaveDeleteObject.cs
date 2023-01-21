@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,5 +36,7 @@ namespace RatableTracker.Rework.Model
         protected abstract void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn);
 
         protected virtual void PostDelete(TrackerModule module) { }
+
+        public virtual void ApplySettingsChanges(Settings settings) { }
     }
 }
