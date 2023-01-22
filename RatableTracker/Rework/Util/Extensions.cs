@@ -58,5 +58,10 @@ namespace RatableTracker.Rework.Util
             source.RemoveAt(oldIndex);
             source.Insert(newIndex, obj);
         }
+
+        public static string CleanForSorting(this string input)
+        {
+            return input.ToLower().StartsWith("the ") ? input.Substring(4) : input;
+        }
     }
 }

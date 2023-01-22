@@ -25,7 +25,7 @@ namespace RatableTracker.Rework.ListManipulation
             switch (sortMethod)
             {
                 case SORT_Name:
-                    sortFunction = obj => obj.Name.ToLower().StartsWith("the ") ? obj.Name.Substring(4) : obj.Name;
+                    sortFunction = obj => obj.Name.CleanForSorting();
                     break;
                 case SORT_HasComment:
                     sortFunction = obj => obj.Comment.Length > 0;
@@ -36,7 +36,7 @@ namespace RatableTracker.Rework.ListManipulation
 
         protected override Func<RankedObject, object> DefaultSort()
         {
-            return obj => obj.Name.ToLower().StartsWith("the ") ? obj.Name.Substring(4) : obj.Name;
+            return obj => obj.Name.CleanForSorting();
         }
     }
 }

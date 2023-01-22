@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Rework.ListManipulation;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +34,7 @@ namespace GameTracker.Rework
             switch (sortMethod)
             {
                 case SORT_Name:
-                    sortFunction = platform => platform.Name.ToLower().StartsWith("the ") ? platform.Name.Substring(4) : platform.Name;
+                    sortFunction = platform => platform.Name.CleanForSorting();
                     break;
                 case SORT_NumGames:
                     sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Count();
@@ -63,7 +64,7 @@ namespace GameTracker.Rework
 
         protected override Func<Platform, object> DefaultSort()
         {
-            return obj => obj.Name.ToLower().StartsWith("the ") ? obj.Name.Substring(4) : obj.Name;
+            return obj => obj.Name.CleanForSorting();
         }
     }
 }
