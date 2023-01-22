@@ -36,7 +36,17 @@ namespace GameTracker.Rework
             get
             {
                 if (IsRemaster && UseOriginalGameScore)
-                    return OriginalGame == null ? settings.MinScore : OriginalGame.Score;
+                {
+                    try
+                    {
+                        return OriginalGame == null ? settings.MinScore : OriginalGame.Score;
+                    }
+                    catch (StackOverflowException e)
+                    {
+                        module.Logger.Log("GameObject Score " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
+                        return settings.MinScore;
+                    }
+                }
                 else
                     return base.Score;
             }

@@ -10,50 +10,18 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.ListManipulation
 {
-    public class SortRankedObjects
+    public class SortRankedObjects : SortBase<RankedObject>
     {
-        public const int SORT_None = 0;
         public const int SORT_Name = 1;
         public const int SORT_HasComment = 2;
 
-        public int SortMethod { get; set; } = SORT_None;
-        public SortMode SortMode { get; set; } = SortMode.Ascending;
+        public SortRankedObjects() : base() { }
 
-        protected readonly Settings settings;
+        public SortRankedObjects(TrackerModule module, Settings settings) : base(module, settings) { }
 
-        public SortRankedObjects(Settings settings)
+        protected override Func<RankedObject, object> GetSortFunction(int sortMethod)
         {
-            this.settings = settings;
-        }
-
-        public IList<RankedObject> ApplySorting(IList<RankedObject> list, TrackerModule module)
-        {
-            Func<RankedObject, object> sortFunction = GetSortFunction(SortMethod, module);
-            if (sortFunction == null)
-            {
-                if (SortMode == SortMode.Descending)
-                    list.ToList().Reverse();
-                return list;
-            }
-
-            try
-            {
-                if (SortMode == SortMode.Ascending)
-                    return list.OrderBy(obj => obj.Name.ToLower().StartsWith("the ") ? obj.Name.Substring(4) : obj.Name).OrderBy(sortFunction).ToList();
-                else if (SortMode == SortMode.Descending)
-                    return list.OrderBy(obj => obj.Name.ToLower().StartsWith("the ") ? obj.Name.Substring(4) : obj.Name).OrderByDescending(sortFunction).ToList();
-                else
-                    throw new ListManipulationException("Unhandled sort mode", SortMode);
-            }
-            catch (InvalidCastException e)
-            {
-                throw new ListManipulationException(GetType().Name + " - Chosen sort method requires all objects in list be a more specific derived type (" + e.GetType().Name + ": " + e.Message + ")", SortMethod);
-            }
-        }
-
-        protected virtual Func<RankedObject, object> GetSortFunction(int sortMethod, TrackerModule module)
-        {
-            Func<RankedObject, object> sortFunction = null;
+            Func<RankedObject, object> sortFunction = base.GetSortFunction(sortMethod);
             switch (sortMethod)
             {
                 case SORT_Name:
@@ -64,6 +32,11 @@ namespace RatableTracker.Rework.ListManipulation
                     break;
             }
             return sortFunction;
+        }
+
+        protected override Func<RankedObject, object> DefaultSort()
+        {
+            return obj => obj.Name.ToLower().StartsWith("the ") ? obj.Name.Substring(4) : obj.Name;
         }
     }
 }

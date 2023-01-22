@@ -130,12 +130,14 @@
     <Compile Include="Rework\Interfaces\IModuleCategorical.cs" />
     <Compile Include="Rework\Interfaces\IModuleStatus.cs" />
     <Compile Include="Rework\Interfaces\IPathController.cs" />
+    <Compile Include="Rework\ListManipulation\FilterBase.cs" />
     <Compile Include="Rework\ListManipulation\FilterRankedObjects.cs" />
     <Compile Include="Rework\ListManipulation\FilterRankedObjectStatus.cs" />
     <Compile Include="Rework\ListManipulation\FilterRatedObjectCategorical.cs" />
     <Compile Include="Rework\ListManipulation\FilterRatedObjects.cs" />
     <Compile Include="Rework\ListManipulation\FilterRatedObjectStatus.cs" />
     <Compile Include="Rework\ListManipulation\FilterRatedObjectStatusCategorical.cs" />
+    <Compile Include="Rework\ListManipulation\SortBase.cs" />
     <Compile Include="Rework\ListManipulation\SortMode.cs" />
     <Compile Include="Rework\ListManipulation\SortRankedObjects.cs" />
     <Compile Include="Rework\ListManipulation\SortRankedObjectStatus.cs" />

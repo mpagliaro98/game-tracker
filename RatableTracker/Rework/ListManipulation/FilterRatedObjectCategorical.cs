@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Util;
+﻿using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace RatableTracker.Rework.ListManipulation
 {
     public class FilterRatedObjectCategorical : FilterRatedObjects
     {
-        public FilterRatedObjectCategorical(SettingsScore settings) : base(settings) { }
+        public new TrackerModuleScoreCategorical Module { get; set; }
+
+        public FilterRatedObjectCategorical() : base() { }
+
+        public FilterRatedObjectCategorical(TrackerModuleScoreCategorical module, SettingsScore settings) : base(module, settings) { }
     }
 }

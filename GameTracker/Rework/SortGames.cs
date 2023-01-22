@@ -18,13 +18,16 @@ namespace GameTracker.Rework
         public const int SORT_StartedOn = 104;
         public const int SORT_FinishedOn = 105;
 
-        protected readonly new SettingsGame settings;
+        public new GameModule Module { get; set; }
+        public new SettingsGame Settings { get; set; }
 
-        public SortGames(SettingsGame settings) : base(settings) { }
+        public SortGames() : base() { }
 
-        protected override Func<RankedObject, object> GetSortFunction(int sortMethod, TrackerModule module)
+        public SortGames(GameModule module, SettingsGame settings) : base(module, settings) { }
+
+        protected override Func<RankedObject, object> GetSortFunction(int sortMethod)
         {
-            Func<RankedObject, object> sortFunction = base.GetSortFunction(sortMethod, module);
+            Func<RankedObject, object> sortFunction = base.GetSortFunction(sortMethod);
             switch (sortMethod)
             {
                 case SORT_Platform:

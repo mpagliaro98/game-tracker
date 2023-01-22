@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Util;
+﻿using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,10 @@ namespace RatableTracker.Rework.ListManipulation
 {
     public class FilterRankedObjectStatus : FilterRankedObjects
     {
-        public FilterRankedObjectStatus(Settings settings) : base(settings) { }
+        public new TrackerModuleStatuses Module { get; set; }
+
+        public FilterRankedObjectStatus() : base() { }
+
+        public FilterRankedObjectStatus(TrackerModuleStatuses module, Settings settings) : base(module, settings) { }
     }
 }

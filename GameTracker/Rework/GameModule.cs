@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
@@ -65,7 +66,33 @@ namespace GameTracker.Rework
 
         public IList<Platform> GetPlatformList()
         {
-            return new List<Platform>(Platforms);
+            return GetPlatformList(null, null);
+        }
+
+        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions)
+        {
+            return GetPlatformList(filterOptions, null);
+        }
+
+        public IList<Platform> GetPlatformList(SortPlatforms sortOptions)
+        {
+            return GetPlatformList(null, sortOptions);
+        }
+
+        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SortPlatforms sortOptions)
+        {
+            try
+            {
+                IList<Platform> list = new List<Platform>(Platforms);
+                if (filterOptions != null) list = filterOptions.ApplyFilters(list);
+                if (sortOptions != null) list = sortOptions.ApplySorting(list);
+                return list;
+            }
+            catch (ListManipulationException e)
+            {
+                Logger.Log(e.GetType().Name + ": " + e.Message + " - value " + e.InvalidValue.ToString());
+                throw;
+            }
         }
 
         public int TotalNumPlatforms()
@@ -154,5 +181,15 @@ namespace GameTracker.Rework
         }
 
         // TODO functions for platform stats
+        public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings)
+        {
+            return GetGamesOnPlatform(platform, new FilterGames(this, settings));
+        }
+
+        public IList<GameObject> GetGamesOnPlatform(Platform platform, FilterGames filterOptions)
+        {
+            filterOptions.Platform = platform;
+            return GetModelObjectList(filterOptions).OfType<GameObject>().ToList();
+        }
     }
 }

@@ -63,6 +63,7 @@
     <Compile Include="RatingModuleGame.cs" />
     <Compile Include="RatingModuleGameTemplate.cs" />
     <Compile Include="Rework\FilterGames.cs" />
+    <Compile Include="Rework\FilterPlatforms.cs" />
     <Compile Include="Rework\GameCompilation.cs" />
     <Compile Include="Rework\GameModule.cs" />
     <Compile Include="Rework\GameObject.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Rework\Platform.cs" />
     <Compile Include="Rework\SettingsGame.cs" />
     <Compile Include="Rework\SortGames.cs" />
+    <Compile Include="Rework\SortPlatforms.cs" />
     <Compile Include="Rework\StatusGame.cs" />
     <Compile Include="Rework\Util.cs" />
     <Compile Include="SortOptionsGame.cs" />

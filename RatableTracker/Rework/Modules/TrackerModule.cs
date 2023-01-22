@@ -93,8 +93,8 @@ namespace RatableTracker.Rework.Modules
             try
             {
                 IList<RankedObject> list = new List<RankedObject>(ModelObjects);
-                if (filterOptions != null) list = filterOptions.ApplyFilters(list, this);
-                if (sortOptions != null) list = sortOptions.ApplySorting(list, this);
+                if (filterOptions != null) list = filterOptions.ApplyFilters(list);
+                if (sortOptions != null) list = sortOptions.ApplySorting(list);
                 return list;
             }
             catch (ListManipulationException e)

@@ -12,18 +12,24 @@ namespace GameTracker.Rework
     public class FilterGames : FilterRatedObjectStatusCategorical
     {
         public bool ShowCompilations { get; set; } = false;
+        public Platform Platform { get; set; } = null;
 
-        protected readonly new SettingsGame settings;
+        public new GameModule Module { get; set; }
+        public new SettingsGame Settings { get; set; }
 
-        public FilterGames(SettingsGame settings) : base(settings) { }
+        public FilterGames() : base() { }
 
-        protected override IList<RankedObject> ApplyFiltering(IList<RankedObject> list, TrackerModule module)
+        public FilterGames(GameModule module, SettingsGame settings) : base(module, settings) { }
+
+        protected override IList<RankedObject> ApplyFiltering(IList<RankedObject> list)
         {
-            IList<RankedObject> newList = base.ApplyFiltering(list, module);
+            IList<RankedObject> newList = base.ApplyFiltering(list);
             if (ShowCompilations)
-                newList = newList.Where(obj => !((GameObject)obj).IsPartOfCompilation || ((GameObject)obj).IsCompilation).ToList();
+                newList = newList.OfType<GameObject>().Where(obj => !obj.IsPartOfCompilation || obj.IsCompilation).Cast<RankedObject>().ToList();
             else
-                newList = newList.Where(obj => !((GameObject)obj).IsCompilation).ToList();
+                newList = newList.OfType<GameObject>().Where(obj => !obj.IsCompilation).Cast<RankedObject>().ToList();
+            if (Platform != null)
+                newList = newList.OfType<GameObject>().Where(obj => obj.Platform != null && obj.Platform.Equals(Platform)).Cast<RankedObject>().ToList();
             return newList;
         }
     }

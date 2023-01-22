@@ -10,30 +10,10 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Rework.ListManipulation
 {
-    public class FilterRankedObjects
+    public class FilterRankedObjects : FilterBase<RankedObject>
     {
-        protected readonly Settings settings;
+        public FilterRankedObjects() : base() { }
 
-        public FilterRankedObjects(Settings settings)
-        {
-            this.settings = settings;
-        }
-
-        public IList<RankedObject> ApplyFilters(IList<RankedObject> list, TrackerModule module)
-        {
-            try
-            {
-                return ApplyFiltering(list, module);
-            }
-            catch (InvalidCastException e)
-            {
-                throw new ListManipulationException(GetType().Name + " - Chosen filtering requires all objects in list be a more specific derived type (" + e.GetType().Name + ": " + e.Message + ")");
-            }
-        }
-
-        protected virtual IList<RankedObject> ApplyFiltering(IList<RankedObject> list, TrackerModule module)
-        {
-            return list;
-        }
+        public FilterRankedObjects(TrackerModule module, Settings settings) : base(module, settings) { }
     }
 }

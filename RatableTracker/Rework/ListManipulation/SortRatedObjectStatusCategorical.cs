@@ -14,15 +14,18 @@ namespace RatableTracker.Rework.ListManipulation
     {
         public const int SORT_CategoryStart = 5100;
 
-        public SortRatedObjectStatusCategorical(SettingsScore settings) : base(settings) { }
+        public new TrackerModuleScoreStatusCategorical Module { get; set; }
 
-        protected override Func<RankedObject, object> GetSortFunction(int sortMethod, TrackerModule module)
+        public SortRatedObjectStatusCategorical() : base() { }
+
+        public SortRatedObjectStatusCategorical(TrackerModuleScoreStatusCategorical module, SettingsScore settings) : base(module, settings) { }
+
+        protected override Func<RankedObject, object> GetSortFunction(int sortMethod)
         {
-            Func<RankedObject, object> sortFunction = base.GetSortFunction(sortMethod, module);
-            TrackerModuleScoreCategorical moduleCast = module as TrackerModuleScoreCategorical;
-            if (sortMethod >= SORT_CategoryStart && sortMethod < SORT_CategoryStart + moduleCast.CategoryExtension.LimitRatingCategories)
+            Func<RankedObject, object> sortFunction = base.GetSortFunction(sortMethod);
+            if (sortMethod >= SORT_CategoryStart && sortMethod < SORT_CategoryStart + Module.CategoryExtension.LimitRatingCategories)
             {
-                RatingCategory cat = moduleCast.CategoryExtension.GetRatingCategoryList().ElementAt(sortMethod - SORT_CategoryStart);
+                RatingCategory cat = Module.CategoryExtension.GetRatingCategoryList().ElementAt(sortMethod - SORT_CategoryStart);
                 sortFunction = obj => ((RatedObjectCategorical)obj).CategoryExtension.GetCategoryValues().First((cv) => cv.RatingCategory.Equals(cat)).PointValue;
             }
             return sortFunction;

@@ -13,11 +13,15 @@ namespace RatableTracker.Rework.ListManipulation
     {
         public const int SORT_Status = 10;
 
-        public SortRankedObjectStatus(Settings settings) : base(settings) { }
+        public new TrackerModuleStatuses Module { get; set; }
 
-        protected override Func<RankedObject, object> GetSortFunction(int sortMethod, TrackerModule module)
+        public SortRankedObjectStatus() : base() { }
+
+        public SortRankedObjectStatus(TrackerModuleStatuses module, Settings settings) : base(module, settings) { }
+
+        protected override Func<RankedObject, object> GetSortFunction(int sortMethod)
         {
-            Func<RankedObject, object> sortFunction = base.GetSortFunction(sortMethod, module);
+            Func<RankedObject, object> sortFunction = base.GetSortFunction(sortMethod);
             switch (sortMethod)
             {
                 case SORT_Status:
