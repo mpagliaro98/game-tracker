@@ -100,10 +100,11 @@ namespace GameTracker.Rework
             return Platforms.Count;
         }
 
-        internal void SavePlatform(Platform platform, ILoadSaveMethodGame conn)
+        internal bool SavePlatform(Platform platform, ILoadSaveMethodGame conn)
         {
             Logger.Log("SavePlatform - " + platform.UniqueID.ToString());
 
+            bool isNew = false;
             if (RatableTracker.Rework.Util.Util.FindObjectInList(Platforms, platform.UniqueID) == null)
             {
                 if (Platforms.Count() >= LimitPlatforms)
@@ -113,6 +114,7 @@ namespace GameTracker.Rework
                     throw new ExceededLimitException(message);
                 }
                 Platforms.Add(platform);
+                isNew = true;
             }
 
             if (conn == null)
@@ -126,6 +128,7 @@ namespace GameTracker.Rework
             {
                 conn.SaveOnePlatform(platform);
             }
+            return isNew;
         }
 
         internal void DeletePlatform(Platform platform, ILoadSaveMethodGame conn)

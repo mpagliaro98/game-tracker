@@ -15,7 +15,25 @@ namespace RatableTracker.Rework.ObjAddOns
 {
     public class CategoryExtension
     {
-        protected IList<CategoryValue> CategoryValues { get; private set; } = new List<CategoryValue>();
+        public IList<CategoryValue> CategoryValues { get; private set; } = new List<CategoryValue>();
+
+        public virtual double TotalScoreFromCategoryValues
+        {
+            get
+            {
+                double sumOfWeights = module.GetRatingCategoryList().Select(cat => cat.Weight).Sum();
+                double total = CategoryValues.Select(cv => (cv.RatingCategory.Weight / sumOfWeights) * cv.PointValue).Sum();
+                return total;
+            }
+        }
+
+        public virtual IList<CategoryValue> CategoryValuesDisplay
+        {
+            get
+            {
+                return CategoryValues;
+            }
+        }
 
         public bool IgnoreCategories { get; set; } = false;
 
@@ -34,24 +52,19 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
-        public IList<CategoryValue> GetCategoryValues()
-        {
-            return CategoryValues;
-        }
-
-        public virtual double CalculateTotalCategoryScore()
-        {
-            double sumOfWeights = module.GetRatingCategoryList().Select(cat => cat.Weight).Sum();
-            double total = GetCategoryValues().Select(cv => (cv.RatingCategory.Weight / sumOfWeights) * cv.PointValue).Sum();
-            return total;
-        }
-
         public virtual void ValidateFields()
         {
-            foreach (CategoryValue categoryValue in GetCategoryValues())
+            var categories = module.GetRatingCategoryList();
+            foreach (CategoryValue categoryValue in CategoryValues)
             {
                 if (categoryValue.PointValue < settings.MinScore || categoryValue.PointValue > settings.MaxScore)
                     throw new ValidationException(categoryValue.RatingCategory.Name + " score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString(), categoryValue.PointValue);
+                if (categories.Count <= 0)
+                    throw new ValidationException("Category values were illegally modified - category " + categoryValue.RatingCategory.Name + " could not be found", categoryValue.RatingCategory.UniqueID);
+                int indexOfCategory = categories.IndexOf(categoryValue.RatingCategory);
+                if (indexOfCategory < 0)
+                    throw new ValidationException("Category values were illegally modified - category " + categoryValue.RatingCategory.Name + " is a duplicate or does not exist on the module", categoryValue.RatingCategory.UniqueID);
+                categories.RemoveAt(indexOfCategory);
             }
         }
 

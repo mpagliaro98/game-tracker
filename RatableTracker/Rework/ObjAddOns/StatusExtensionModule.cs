@@ -46,10 +46,11 @@ namespace RatableTracker.Rework.ObjAddOns
             return Statuses.Count;
         }
 
-        internal void SaveStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
+        internal bool SaveStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
             Logger.Log("SaveStatus - " + status.UniqueID.ToString());
 
+            bool isNew = false;
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
                 if (Statuses.Count() >= LimitStatuses)
@@ -59,6 +60,7 @@ namespace RatableTracker.Rework.ObjAddOns
                     throw new ExceededLimitException(message);
                 }
                 Statuses.Add(status);
+                isNew = true;
             }
 
             if (conn == null)
@@ -72,6 +74,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.SaveOneStatus(status);
             }
+            return isNew;
         }
 
         internal void DeleteStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)

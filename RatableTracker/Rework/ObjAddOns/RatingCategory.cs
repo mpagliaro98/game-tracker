@@ -41,9 +41,15 @@ namespace RatableTracker.Rework.ObjAddOns
                 throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
 
-        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
+        protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
+            return this.module.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
+        }
+
+        protected override void PostSave(TrackerModule module, bool isNew)
+        {
+            // TODO add a new category value to all objects (if new)
+            base.PostSave(module, isNew);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)

@@ -171,15 +171,19 @@ namespace RatableTracker.Rework.LoadSave
         protected void SaveOne<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, T toSave, ref bool changed, string keyName = "UniqueID") where T : RepresentationObject, IKeyable
         {
             ensureLoaded();
+            bool found = false;
             for (int i = 0; i < data.Count; i++)
             {
                 var sr = data[i];
                 if (sr.GetValue(keyName).GetUniqueID().Equals(toSave.UniqueID))
                 {
                     data[i] = toSave.LoadIntoRepresentation();
+                    found = true;
                     break;
                 }
             }
+            if (!found)
+                data.Add(toSave.LoadIntoRepresentation());
             changed = true;
         }
 

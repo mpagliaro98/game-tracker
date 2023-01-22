@@ -50,8 +50,8 @@ namespace RatableTracker.Rework.Model
             {
                 Validate(module.Logger);
                 PreSave(module);
-                SaveObjectToModule(module, conn);
-                PostSave(module);
+                bool isNew = SaveObjectToModule(module, conn);
+                PostSave(module, isNew);
             }
             catch
             {
@@ -62,9 +62,9 @@ namespace RatableTracker.Rework.Model
 
         protected virtual void PreSave(TrackerModule module) { }
 
-        protected abstract void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn);
+        protected abstract bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn);
 
-        protected virtual void PostSave(TrackerModule module) { }
+        protected virtual void PostSave(TrackerModule module, bool isNew) { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {

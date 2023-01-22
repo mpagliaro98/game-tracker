@@ -167,9 +167,9 @@ namespace GameTracker.Rework
             return changed;
         }
 
-        protected override void PostSave(TrackerModule module)
+        protected override void PostSave(TrackerModule module, bool isNew)
         {
-            base.PostSave(module);
+            base.PostSave(module, isNew);
             this.module.DeleteEmptyCompilations();
         }
 

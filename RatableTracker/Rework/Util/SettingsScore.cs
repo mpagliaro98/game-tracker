@@ -46,9 +46,9 @@ namespace RatableTracker.Rework.Util
             (_tempMaxScore, _maxScore) = (_maxScore, _tempMaxScore);
         }
 
-        protected override void PostSave(TrackerModule module)
+        protected override void PostSave(TrackerModule module, bool isNew)
         {
-            base.PostSave(module);
+            base.PostSave(module, isNew);
 
             // set temp values back equal to the real values
             _tempMinScore = _minScore;

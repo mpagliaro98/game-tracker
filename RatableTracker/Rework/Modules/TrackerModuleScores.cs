@@ -83,10 +83,11 @@ namespace RatableTracker.Rework.Modules
             return ScoreRanges.Count;
         }
 
-        internal void SaveScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
+        internal bool SaveScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
             Logger.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
 
+            bool isNew = false;
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
                 if (ScoreRanges.Count() >= LimitRanges)
@@ -96,6 +97,7 @@ namespace RatableTracker.Rework.Modules
                     throw new ExceededLimitException(message);
                 }
                 ScoreRanges.Add(scoreRange);
+                isNew = true;
             }
 
             if (conn == null)
@@ -109,6 +111,7 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.SaveOneScoreRange(scoreRange);
             }
+            return isNew;
         }
 
         internal void DeleteScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)

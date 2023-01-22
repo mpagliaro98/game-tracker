@@ -54,9 +54,9 @@ namespace RatableTracker.Rework.Model
                 throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
 
-        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
+        protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            module.SaveModelObject(this, conn);
+            return module.SaveModelObject(this, conn);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)

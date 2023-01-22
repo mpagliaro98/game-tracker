@@ -43,9 +43,9 @@ namespace GameTracker.Rework
                 throw new ValidationException("Abbreviation cannot be longer than " + MaxLengthAbbreviation.ToString() + " characters", Abbreviation);
         }
 
-        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
+        protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.SavePlatform(this, (ILoadSaveMethodGame)conn);
+            return this.module.SavePlatform(this, (ILoadSaveMethodGame)conn);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)

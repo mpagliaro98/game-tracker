@@ -58,9 +58,9 @@ namespace RatableTracker.Rework.ScoreRanges
                 throw new ValidationException("The " + sr.Name + " relationship requires " + sr.NumValuesRequired.ToString() + " values, but " + ValueList.Count().ToString() + " were given", "list{" + string.Join(",", ValueList) + "}");
         }
 
-        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
+        protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.SaveScoreRange(this, (ILoadSaveMethodScores)conn);
+            return this.module.SaveScoreRange(this, (ILoadSaveMethodScores)conn);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)

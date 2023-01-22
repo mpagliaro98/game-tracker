@@ -109,10 +109,11 @@ namespace RatableTracker.Rework.Modules
             return ModelObjects.Count;
         }
 
-        internal void SaveModelObject(RankedObject modelObject, ILoadSaveMethod conn)
+        internal bool SaveModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
             Logger.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
 
+            bool isNew = false;
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
                 if (ModelObjects.Count() >= LimitModelObjects)
@@ -122,6 +123,7 @@ namespace RatableTracker.Rework.Modules
                     throw new ExceededLimitException(message);
                 }
                 ModelObjects.Add(modelObject);
+                isNew = true;
             }
 
             if (conn == null)
@@ -135,6 +137,7 @@ namespace RatableTracker.Rework.Modules
             {
                 conn.SaveOneModelObject(modelObject);
             }
+            return isNew;
         }
 
         internal void DeleteModelObject(RankedObject modelObject, ILoadSaveMethod conn)

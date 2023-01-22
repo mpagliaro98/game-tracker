@@ -38,9 +38,9 @@ namespace RatableTracker.Rework.ObjAddOns
                 throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
         }
 
-        protected override void SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
+        protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.SaveStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
+            return this.module.SaveStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)

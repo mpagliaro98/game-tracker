@@ -25,7 +25,7 @@ namespace RatableTracker.Rework.Model
                 }
                 else
                 {
-                    return CategoryExtension.CalculateTotalCategoryScore();
+                    return CategoryExtension.TotalScoreFromCategoryValues;
                 }
             }
         }

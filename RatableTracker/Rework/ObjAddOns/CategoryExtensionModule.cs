@@ -46,10 +46,11 @@ namespace RatableTracker.Rework.ObjAddOns
             return RatingCategories.Count;
         }
 
-        internal void SaveRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
+        internal bool SaveRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
             Logger.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
 
+            bool isNew = false;
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
                 if (RatingCategories.Count() >= LimitRatingCategories)
@@ -59,6 +60,7 @@ namespace RatableTracker.Rework.ObjAddOns
                     throw new ExceededLimitException(message);
                 }
                 RatingCategories.Add(ratingCategory);
+                isNew = true;
             }
 
             if (conn == null)
@@ -72,6 +74,7 @@ namespace RatableTracker.Rework.ObjAddOns
             {
                 conn.SaveOneCategory(ratingCategory);
             }
+            return isNew;
         }
 
         internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
