@@ -16,6 +16,14 @@ namespace RatableTracker.Rework.Util
     {
         public Settings() { }
 
+        public static Settings Load(ILoadSaveHandler<ILoadSaveMethod> loadSaveHandler)
+        {
+            using (var conn = loadSaveHandler.NewConnection())
+            {
+                return conn.LoadSettings();
+            }
+        }
+
         protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
             module.SaveSettings(this, conn);

@@ -125,7 +125,7 @@ namespace RatableTracker.Rework.Util
 
         public Settings GetSettings(string typeName)
         {
-            Settings obj = null;
+            Settings obj = CreateSettingsFromTypeName(typeName);
             if (obj == null)
                 throw new ArgumentException("Unknown type: " + typeName);
             else
