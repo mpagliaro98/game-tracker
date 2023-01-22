@@ -27,15 +27,10 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
-        public virtual IList<CategoryValue> CategoryValuesDisplay
-        {
-            get
-            {
-                return CategoryValues;
-            }
-        }
+        public virtual IList<CategoryValue> CategoryValuesDisplay { get { return CategoryValues; } }
 
         public bool IgnoreCategories { get; set; } = false;
+        public virtual bool AreCategoryValuesEditable { get { return !IgnoreCategories; } }
 
         protected readonly CategoryExtensionModule module;
         protected readonly SettingsScore settings;

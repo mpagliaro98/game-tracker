@@ -13,8 +13,31 @@ namespace GameTracker.Rework
         {
             get
             {
-                // TODO different behavior if using original game
-                return base.CategoryValuesDisplay;
+                if (BaseObject.IsRemaster && BaseObject.UseOriginalGameScore)
+                {
+                    try
+                    {
+                        return BaseObject.OriginalGame == null ? ListOfEmptyCategoryValues() : BaseObject.OriginalGame.CategoryExtension.CategoryValuesDisplay;
+                    }
+                    catch (StackOverflowException e)
+                    {
+                        module.Logger.Log("CategoryExtensionGame CategoryValuesDisplay " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
+                        return ListOfEmptyCategoryValues();
+                    }
+                }
+                else
+                    return base.CategoryValuesDisplay;
+            }
+        }
+
+        public override bool AreCategoryValuesEditable
+        {
+            get
+            {
+                if (BaseObject.IsRemaster && BaseObject.UseOriginalGameScore)
+                    return false;
+                else
+                    return base.AreCategoryValuesEditable;
             }
         }
 
@@ -23,5 +46,15 @@ namespace GameTracker.Rework
         public new GameObject BaseObject { get; }
 
         public CategoryExtensionGame(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
+
+        protected IList<CategoryValue> ListOfEmptyCategoryValues()
+        {
+            IList<CategoryValue> list = new List<CategoryValue>();
+            foreach (RatingCategory category in module.GetRatingCategoryList())
+            {
+                list.Add(new CategoryValue(module, settings, category));
+            }
+            return list;
+        }
     }
 }
