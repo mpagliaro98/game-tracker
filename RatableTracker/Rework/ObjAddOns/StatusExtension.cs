@@ -29,6 +29,7 @@ namespace RatableTracker.Rework.ObjAddOns
         }
 
         protected readonly StatusExtensionModule module;
+        public IModelObjectStatus BaseObject { get; internal set; }
 
         public StatusExtension(StatusExtensionModule module)
         {

@@ -25,6 +25,7 @@ namespace RatableTracker.Rework.Modules
         public TrackerModuleScoreStatuses(ILoadSaveHandler<ILoadSaveMethodScoreStatuses> loadSave, StatusExtensionModule statusExtension, Logger logger) : base(loadSave, logger)
         {
             StatusExtension = statusExtension;
+            StatusExtension.BaseModule = this;
         }
 
         public override void LoadData(Settings settings)

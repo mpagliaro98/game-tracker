@@ -25,6 +25,7 @@ namespace RatableTracker.Rework.Modules
         public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave, CategoryExtensionModule categoryExtension, Logger logger) : base(loadSave, logger)
         {
             CategoryExtension = categoryExtension;
+            CategoryExtension.BaseModule = this;
         }
 
         public override void LoadData(Settings settings)

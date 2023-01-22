@@ -19,6 +19,7 @@ namespace RatableTracker.Rework.ObjAddOns
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodCategoryExtension> _loadSave;
         public Logger Logger { get; private set; }
+        public IModuleCategorical BaseModule { get; internal set; }
 
         public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave) : this(loadSave, new Logger()) { }
 

@@ -23,6 +23,7 @@ namespace RatableTracker.Rework.Model
         public RatedObjectStatus(SettingsScore settings, TrackerModuleScoreStatuses module, StatusExtension statusExtension) : base(settings, module)
         {
             StatusExtension = statusExtension;
+            StatusExtension.BaseObject = this;
         }
 
         protected override void ValidateFields()

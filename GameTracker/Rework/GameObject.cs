@@ -3,6 +3,7 @@ using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.LoadSave;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.ObjAddOns;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace GameTracker.Rework
         public static int MaxLengthCompletionCriteria => 1000;
         public static int MaxLengthCompletionComment => 1000;
         public static int MaxLengthTimeSpent => 1000;
+
+        public new CategoryExtensionGame CategoryExtension { get; }
 
         public string CompletionCriteria { get; set; } = "";
         public string CompletionComment { get; set; } = "";
@@ -111,7 +114,7 @@ namespace GameTracker.Rework
         protected readonly new SettingsGame settings;
         protected readonly new GameModule module;
 
-        public GameObject(SettingsGame settings, GameModule module) : base(settings, module) { }
+        public GameObject(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGame(module.CategoryExtension, settings)) { }
 
         protected override void ValidateFields()
         {

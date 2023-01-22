@@ -22,7 +22,7 @@ namespace RatableTracker.Rework.ObjAddOns
             get
             {
                 double sumOfWeights = module.GetRatingCategoryList().Select(cat => cat.Weight).Sum();
-                double total = CategoryValues.Select(cv => (cv.RatingCategory.Weight / sumOfWeights) * cv.PointValue).Sum();
+                double total = CategoryValuesDisplay.Select(cv => (cv.RatingCategory.Weight / sumOfWeights) * cv.PointValue).Sum();
                 return total;
             }
         }
@@ -39,6 +39,7 @@ namespace RatableTracker.Rework.ObjAddOns
 
         protected readonly CategoryExtensionModule module;
         protected readonly SettingsScore settings;
+        public IModelObjectCategorical BaseObject { get; internal set; }
 
         public CategoryExtension(CategoryExtensionModule module, SettingsScore settings)
         {

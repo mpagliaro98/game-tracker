@@ -38,6 +38,7 @@ namespace RatableTracker.Rework.Model
         public RatedObjectCategorical(SettingsScore settings, TrackerModuleScoreCategorical module, CategoryExtension categoryExtension) : base(settings, module)
         {
             CategoryExtension = categoryExtension;
+            CategoryExtension.BaseObject = this;
         }
 
         protected override void ValidateFields()
