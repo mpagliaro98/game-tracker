@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,12 @@ namespace RatableTracker.Rework.ListManipulation
         public int SortMethod { get; set; } = SORT_None;
         public SortMode SortMode { get; set; } = SortMode.Ascending;
 
-        public SortRankedObjects() { }
+        protected readonly Settings settings;
+
+        public SortRankedObjects(Settings settings)
+        {
+            this.settings = settings;
+        }
 
         public IList<RankedObject> ApplySorting(IList<RankedObject> list, TrackerModule module)
         {

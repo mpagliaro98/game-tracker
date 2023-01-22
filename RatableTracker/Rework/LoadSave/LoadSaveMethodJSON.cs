@@ -37,6 +37,7 @@ namespace RatableTracker.Rework.LoadSave
         protected bool scoreRangesChanged = false;
         protected bool statusesChanged = false;
         protected bool categoriesChanged = false;
+
         protected bool operationCanceled = false;
 
         protected readonly IFileHandler fileHandler;
@@ -127,25 +128,25 @@ namespace RatableTracker.Rework.LoadSave
             SaveFileContentIfLoaded(CATEGORY_FILE, categories, SRListToBytes, categoriesChanged);
         }
 
-        private IList<SavableRepresentation> InterpretBytesToSRList(byte[] bytes)
+        protected IList<SavableRepresentation> InterpretBytesToSRList(byte[] bytes)
         {
             string json = Util.Util.TextEncoding.GetString(bytes);
             return JSONToSavableRepresentationList(json);
         }
 
-        private SavableRepresentation InterpretBytesToSR(byte[] bytes)
+        protected SavableRepresentation InterpretBytesToSR(byte[] bytes)
         {
             string json = Util.Util.TextEncoding.GetString(bytes);
             return JSONToSavableRepresentation(json);
         }
 
-        private byte[] SRListToBytes(IList<SavableRepresentation> representation)
+        protected byte[] SRListToBytes(IList<SavableRepresentation> representation)
         {
             string json = CreateJSONArray(representation);
             return Util.Util.TextEncoding.GetBytes(json);
         }
 
-        private byte[] SRToBytes(SavableRepresentation representation)
+        protected byte[] SRToBytes(SavableRepresentation representation)
         {
             string json = SavableRepresentationToJSON(representation);
             return Util.Util.TextEncoding.GetBytes(json);

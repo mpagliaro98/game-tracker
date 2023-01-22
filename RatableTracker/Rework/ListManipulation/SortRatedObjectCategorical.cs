@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.ObjAddOns;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace RatableTracker.Rework.ListManipulation
     {
         public const int SORT_CategoryStart = 5100;
 
-        public SortRatedObjectCategorical() : base() { }
+        public SortRatedObjectCategorical(SettingsScore settings) : base(settings) { }
 
         protected override Func<RankedObject, object> GetSortFunction(int sortMethod, TrackerModule module)
         {

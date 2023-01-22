@@ -75,17 +75,17 @@ namespace RatableTracker.Rework.Modules
 
         public IList<RankedObject> GetModelObjectList()
         {
-            return GetModelObjectList(new FilterRankedObjects(), new SortRankedObjects());
+            return GetModelObjectList(null, null);
         }
 
         public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions)
         {
-            return GetModelObjectList(filterOptions, new SortRankedObjects());
+            return GetModelObjectList(filterOptions, null);
         }
 
         public IList<RankedObject> GetModelObjectList(SortRankedObjects sortOptions)
         {
-            return GetModelObjectList(new FilterRankedObjects(), sortOptions);
+            return GetModelObjectList(null, sortOptions);
         }
 
         public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, SortRankedObjects sortOptions)
@@ -93,8 +93,8 @@ namespace RatableTracker.Rework.Modules
             try
             {
                 IList<RankedObject> list = new List<RankedObject>(ModelObjects);
-                list = filterOptions.ApplyFilters(list, this);
-                list = sortOptions.ApplySorting(list, this);
+                if (filterOptions != null) list = filterOptions.ApplyFilters(list, this);
+                if (sortOptions != null) list = sortOptions.ApplySorting(list, this);
                 return list;
             }
             catch (ListManipulationException e)
