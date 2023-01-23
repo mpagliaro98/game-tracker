@@ -63,6 +63,7 @@
     <Compile Include="RatingModuleGame.cs" />
     <Compile Include="RatingModuleGameTemplate.cs" />
     <Compile Include="Rework\CategoryExtensionGame.cs" />
+    <Compile Include="Rework\CategoryExtensionGameCompilation.cs" />
     <Compile Include="Rework\FilterGames.cs" />
     <Compile Include="Rework\FilterPlatforms.cs" />
     <Compile Include="Rework\GameCompilation.cs" />

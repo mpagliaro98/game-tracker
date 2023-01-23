@@ -131,6 +131,11 @@ namespace RatableTracker.Rework.ObjAddOns
             }
         }
 
+        public double SumOfCategoryWeights()
+        {
+            return RatingCategories.Select(cat => cat.Weight).Sum();
+        }
+
         internal void AddCategoryValueToAllModelObjects(TrackerModule module, SettingsScore settings, RatingCategory category)
         {
             using (var conn = _loadSave.NewConnection())
@@ -139,7 +144,7 @@ namespace RatableTracker.Rework.ObjAddOns
                 {
                     if (obj is IModelObjectCategorical objCat)
                     {
-                        objCat.CategoryExtension.CategoryValues.Add(new CategoryValue(this, settings, category));
+                        objCat.CategoryExtension.CategoryValuesManual.Add(new CategoryValue(this, settings, category));
                         conn.SaveOneModelObject(obj);
                     }
                 }

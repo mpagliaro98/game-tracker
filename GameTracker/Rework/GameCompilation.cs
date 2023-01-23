@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.Modules;
+using RatableTracker.Rework.ObjAddOns;
 using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
@@ -14,15 +15,28 @@ namespace GameTracker.Rework
         {
             get
             {
-                // TODO potentially average categories by weight instead of flat average
-                return GamesInCompilation().Select((obj) => obj.Score).Average();
+                double sumOfWeights = module.CategoryExtension.SumOfCategoryWeights();
+                List<double> categoryAverages = new List<double>();
+                IList<GameObject> gamesInComp = GamesInCompilation();
+                IList<RatingCategory> ratingCategories = module.CategoryExtension.GetRatingCategoryList();
+                foreach (RatingCategory category in ratingCategories)
+                {
+                    categoryAverages.Add(gamesInComp.Select(obj => obj.CategoryExtension.CategoryValuesDisplay.First(cv => cv.RatingCategory.Equals(category)).PointValue).Average());
+                }
+
+                double total = 0;
+                for (int i = 0; i < ratingCategories.Count(); i++)
+                {
+                    total += (ratingCategories[i].Weight / sumOfWeights) * categoryAverages[i];
+                }
+                return total;
             }
         }
 
         public override bool IsCompilation { get { return true; } }
         public override GameCompilation Compilation { get { return null; } set { } }
 
-        public GameCompilation(SettingsGame settings, GameModule module) : base(settings, module) { }
+        public GameCompilation(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGameCompilation(module.CategoryExtension, settings)) { }
 
         public IList<GameObject> GamesInCompilation()
         {

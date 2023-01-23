@@ -17,12 +17,12 @@ namespace GameTracker.Rework
                 {
                     try
                     {
-                        return BaseObject.OriginalGame == null ? ListOfEmptyCategoryValues() : BaseObject.OriginalGame.CategoryExtension.CategoryValuesDisplay;
+                        return BaseObject.OriginalGame == null ? CreateListOfEmptyCategoryValues() : BaseObject.OriginalGame.CategoryExtension.CategoryValuesDisplay;
                     }
                     catch (StackOverflowException e)
                     {
                         module.Logger.Log("CategoryExtensionGame CategoryValuesDisplay " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
-                        return ListOfEmptyCategoryValues();
+                        return CreateListOfEmptyCategoryValues();
                     }
                 }
                 else
@@ -47,7 +47,7 @@ namespace GameTracker.Rework
 
         public CategoryExtensionGame(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
 
-        protected IList<CategoryValue> ListOfEmptyCategoryValues()
+        protected IList<CategoryValue> CreateListOfEmptyCategoryValues()
         {
             IList<CategoryValue> list = new List<CategoryValue>();
             foreach (RatingCategory category in module.GetRatingCategoryList())

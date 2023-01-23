@@ -116,6 +116,8 @@ namespace GameTracker.Rework
 
         public GameObject(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGame(module.CategoryExtension, settings)) { }
 
+        protected GameObject(SettingsGame settings, GameModule module, CategoryExtensionGame categoryExtension) : base(settings, module, categoryExtension) { }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();
