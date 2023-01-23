@@ -513,9 +513,9 @@ namespace RatableTracker.Rework.LoadSave
             DeleteOne(EnsureCategoriesAreLoaded, ref categories, ratingCategory, ref categoriesChanged);
         }
 
-        public IList<RatingCategory> LoadCategories(CategoryExtensionModule module)
+        public IList<RatingCategory> LoadCategories(CategoryExtensionModule module, SettingsScore settings)
         {
-            return LoadAll(EnsureCategoriesAreLoaded, categories, (s) => factory.GetRatingCategory(s, module));
+            return LoadAll(EnsureCategoriesAreLoaded, categories, (s) => factory.GetRatingCategory(s, module, settings));
         }
 
         public void SaveOneStatus(Status status)

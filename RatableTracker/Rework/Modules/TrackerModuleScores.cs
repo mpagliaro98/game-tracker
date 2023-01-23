@@ -41,7 +41,7 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
-        public void TransferToNewModule(TrackerModuleScores newModule, Settings settings)
+        public void TransferToNewModule(TrackerModuleScores newModule, SettingsScore settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
@@ -52,7 +52,7 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
-        protected void TransferToNewModule(ILoadSaveMethodScores connCurrent, ILoadSaveMethodScores connNew, Settings settings)
+        protected void TransferToNewModule(ILoadSaveMethodScores connCurrent, ILoadSaveMethodScores connNew, SettingsScore settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
             connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges(this));

@@ -46,7 +46,7 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
-        protected virtual void TransferToNewModule(ILoadSaveMethodStatusExtension connCurrent, ILoadSaveMethodStatusExtension connNew, Settings settings)
+        protected virtual void TransferToNewModule(ILoadSaveMethodStatuses connCurrent, ILoadSaveMethodStatuses connNew, Settings settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
             connNew.SaveAllStatuses(connCurrent.LoadStatuses(StatusExtension));

@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
+using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
 using RatableTracker.Rework.Util;
 using System;
@@ -29,11 +30,11 @@ namespace RatableTracker.Rework.ObjAddOns
             Logger = logger;
         }
 
-        public virtual void LoadData()
+        public virtual void LoadData(SettingsScore settings)
         {
             using (var conn = _loadSave.NewConnection())
             {
-                RatingCategories = conn.LoadCategories(this);
+                RatingCategories = conn.LoadCategories(this, settings);
             }
         }
 
@@ -126,6 +127,21 @@ namespace RatableTracker.Rework.ObjAddOns
                 foreach (RatingCategory category in RatingCategories)
                 {
                     category.Save(module, conn);
+                }
+            }
+        }
+
+        internal void AddCategoryValueToAllModelObjects(TrackerModule module, SettingsScore settings, RatingCategory category)
+        {
+            using (var conn = _loadSave.NewConnection())
+            {
+                foreach (RankedObject obj in module.GetModelObjectList())
+                {
+                    if (obj is IModelObjectCategorical objCat)
+                    {
+                        objCat.CategoryExtension.CategoryValues.Add(new CategoryValue(this, settings, category));
+                        conn.SaveOneModelObject(obj);
+                    }
                 }
             }
         }

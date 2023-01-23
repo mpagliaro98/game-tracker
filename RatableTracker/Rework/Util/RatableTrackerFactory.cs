@@ -78,25 +78,25 @@ namespace RatableTracker.Rework.Util
             return obj;
         }
 
-        public RatingCategory GetRatingCategory(string typeName, CategoryExtensionModule module)
+        public RatingCategory GetRatingCategory(string typeName, CategoryExtensionModule module, SettingsScore settings)
         {
-            RatingCategory obj = CreateRatingCategoryFromTypeName(typeName, module);
+            RatingCategory obj = CreateRatingCategoryFromTypeName(typeName, module, settings);
             if (obj == null)
                 throw new ArgumentException("Unknown type: " + typeName);
             else
                 return obj;
         }
 
-        protected virtual RatingCategory CreateRatingCategoryFromTypeName(string typeName, CategoryExtensionModule module)
+        protected virtual RatingCategory CreateRatingCategoryFromTypeName(string typeName, CategoryExtensionModule module, SettingsScore settings)
         {
             RatingCategory obj = null;
             switch (typeName.ToLower())
             {
                 case "ratingcategory":
-                    obj = new RatingCategory(module);
+                    obj = new RatingCategory(module, settings);
                     break;
                 case "ratingcategoryweighted":
-                    obj = new RatingCategoryWeighted(module);
+                    obj = new RatingCategoryWeighted(module, settings);
                     break;
             }
             return obj;

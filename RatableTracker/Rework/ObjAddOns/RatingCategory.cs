@@ -24,10 +24,12 @@ namespace RatableTracker.Rework.ObjAddOns
         public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
         protected readonly CategoryExtensionModule module;
+        protected readonly SettingsScore settings;
 
-        public RatingCategory(CategoryExtensionModule module)
+        public RatingCategory(CategoryExtensionModule module, SettingsScore settings)
         {
             this.module = module;
+            this.settings = settings;
         }
 
         protected override void ValidateFields()
@@ -48,8 +50,9 @@ namespace RatableTracker.Rework.ObjAddOns
 
         protected override void PostSave(TrackerModule module, bool isNew)
         {
-            // TODO add a new category value to all objects (if new)
             base.PostSave(module, isNew);
+            if (isNew)
+                this.module.AddCategoryValueToAllModelObjects(module, settings, this);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)

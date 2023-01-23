@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Rework.ObjAddOns;
+using RatableTracker.Rework.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,6 @@ namespace RatableTracker.Rework.Interfaces
         void SaveOneCategory(RatingCategory ratingCategory);
         void SaveAllCategories(IList<RatingCategory> ratingCategories);
         void DeleteOneCategory(RatingCategory ratingCategory);
-        IList<RatingCategory> LoadCategories(CategoryExtensionModule module);
+        IList<RatingCategory> LoadCategories(CategoryExtensionModule module, SettingsScore settings);
     }
 }

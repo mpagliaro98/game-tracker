@@ -39,10 +39,17 @@ namespace RatableTracker.Rework.Modules
         public override void LoadData(Settings settings)
         {
             base.LoadData(settings);
-            CategoryExtension.LoadData();
+            try
+            {
+                CategoryExtension.LoadData((SettingsScore)settings);
+            }
+            catch (InvalidCastException e)
+            {
+                throw new InvalidCastException("Settings for loading categories must be of type SettingsScore or more derived", e);
+            }
         }
 
-        public void TransferToNewModule(TrackerModuleScoreStatusCategorical newModule, Settings settings)
+        public void TransferToNewModule(TrackerModuleScoreStatusCategorical newModule, SettingsScore settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
@@ -53,10 +60,10 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
-        protected virtual void TransferToNewModule(ILoadSaveMethodCategoryExtension connCurrent, ILoadSaveMethodCategoryExtension connNew, Settings settings)
+        protected virtual void TransferToNewModule(ILoadSaveMethodScoreStatusCategorical connCurrent, ILoadSaveMethodScoreStatusCategorical connNew, SettingsScore settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
-            connNew.SaveAllCategories(connCurrent.LoadCategories(CategoryExtension));
+            connNew.SaveAllCategories(connCurrent.LoadCategories(CategoryExtension, settings));
         }
 
         public override void RemoveReferencesToObject(IKeyable obj, Type type)

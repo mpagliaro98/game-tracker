@@ -35,7 +35,7 @@ namespace RatableTracker.Rework.ObjAddOns
             this.module = module;
             this.settings = settings;
             if (ratingCategory != null) _category = ratingCategory.UniqueID;
-            PointValue = settings.MinScore;
+            PointValue = this.settings.MinScore;
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

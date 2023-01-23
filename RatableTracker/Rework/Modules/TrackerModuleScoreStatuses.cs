@@ -34,7 +34,7 @@ namespace RatableTracker.Rework.Modules
             StatusExtension.LoadData();
         }
 
-        public void TransferToNewModule(TrackerModuleScoreStatuses newModule, Settings settings)
+        public void TransferToNewModule(TrackerModuleScoreStatuses newModule, SettingsScore settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
@@ -45,7 +45,7 @@ namespace RatableTracker.Rework.Modules
             }
         }
 
-        protected virtual void TransferToNewModule(ILoadSaveMethodStatusExtension connCurrent, ILoadSaveMethodStatusExtension connNew, Settings settings)
+        protected virtual void TransferToNewModule(ILoadSaveMethodScoreStatuses connCurrent, ILoadSaveMethodScoreStatuses connNew, SettingsScore settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
             connNew.SaveAllStatuses(connCurrent.LoadStatuses(StatusExtension));
