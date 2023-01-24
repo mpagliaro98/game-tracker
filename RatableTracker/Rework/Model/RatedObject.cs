@@ -29,7 +29,7 @@ namespace RatableTracker.Rework.Model
                 {
                     try
                     {
-                        if (range.ScoreRelationship.IsValueInRange(Score, range.ValueList)) return range;
+                        if (range.ScoreRelationship.IsValueInRange(ScoreDisplay, range.ValueList)) return range;
                     }
                     catch (InvalidObjectStateException e)
                     {
@@ -45,7 +45,7 @@ namespace RatableTracker.Rework.Model
         {
             get
             {
-                IList<RankedObject> rankedObjects = module.GetModelObjectList().OrderByDescending(obj => obj.Score).ToList();
+                IList<RankedObject> rankedObjects = module.GetModelObjectList().OrderByDescending(obj => obj.ScoreDisplay).ToList();
                 return rankedObjects.IndexOf(this) + 1;
             }
         }

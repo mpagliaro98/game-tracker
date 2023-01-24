@@ -13,6 +13,22 @@ namespace RatableTracker.Rework.Model
 {
     public class RankedObjectStatus : RankedObject, IModelObjectStatus
     {
+        public override double ScoreDisplay
+        {
+            get
+            {
+                if (StatusExtension.Status == null ? true : StatusExtension.Status.HideScoreOfModelObject)
+                    return 0;
+                else
+                    return base.ScoreDisplay;
+            }
+        }
+
+        public override bool ShowScore
+        {
+            get { return StatusExtension.Status == null ? false : !StatusExtension.Status.HideScoreOfModelObject; }
+        }
+
         public StatusExtension StatusExtension { get; private set; }
 
         // Module re-declared as a different derived type

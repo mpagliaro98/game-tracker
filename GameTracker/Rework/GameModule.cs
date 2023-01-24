@@ -1,4 +1,5 @@
-﻿using RatableTracker.Rework.Exceptions;
+﻿using RatableTracker.Framework.ObjectHierarchy;
+using RatableTracker.Rework.Exceptions;
 using RatableTracker.Rework.Interfaces;
 using RatableTracker.Rework.Model;
 using RatableTracker.Rework.Modules;
@@ -183,7 +184,6 @@ namespace GameTracker.Rework
             }
         }
 
-        // TODO functions for platform stats
         public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings)
         {
             return GetGamesOnPlatform(platform, new FilterGames(this, settings));
@@ -194,5 +194,85 @@ namespace GameTracker.Rework
             filterOptions.Platform = platform;
             return GetModelObjectList(filterOptions).OfType<GameObject>().ToList();
         }
+
+        public IList<GameObject> GetFinishableGamesOnPlatform(Platform platform, SettingsGame settings)
+        {
+            return GetGamesOnPlatform(platform, settings).Where(obj => obj.StatusExtension.Status == null || !obj.StatusExtension.Status.ExcludeModelObjectFromStats).ToList();
+        }
+
+        public IList<GameObject> GetFinishedGamesOnPlatform(Platform platform, SettingsGame settings)
+        {
+            return GetGamesOnPlatform(platform, settings).Where(obj => obj.StatusExtension.Status != null && !obj.StatusExtension.Status.HideScoreOfModelObject).ToList();
+        }
+
+        public int GetNumGamesFinishableByPlatform(Platform platform, SettingsGame settings)
+        {
+            return GetFinishableGamesOnPlatform(platform, settings).Count();
+        }
+
+        public double GetNumGamesFinishedByPlatform(Platform platform, SettingsGame settings)
+        {
+            return GetFinishedGamesOnPlatform(platform, settings).Count();
+        }
+
+        public double GetProportionGamesFinishedByPlatform(Platform platform, SettingsGame settings)
+        {
+            int numFinishable = GetNumGamesFinishableByPlatform(platform, settings);
+            if (numFinishable <= 0) numFinishable = 1;
+            return GetNumGamesFinishedByPlatform(platform, settings) / numFinishable;
+        }
+
+        //public IEnumerable<TListedObj> GetFinishedGamesExcludeStatsOnPlatform(Platform platform)
+        //{
+        //    return ListedObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
+        //        .Where(ro => ro.RefStatus.HasReference() && FindStatus(ro.RefStatus).UseAsFinished && !FindStatus(ro.RefStatus).ExcludeFromStats);
+        //}
+
+        //public int GetNumGamesByPlatform(Platform platform)
+        //{
+        //    return GetGamesOnPlatform(platform).Count();
+        //}
+
+        //public double GetAverageScoreOfGamesByPlatform(Platform platform)
+        //{
+        //    var games = GetFinishedGamesOnPlatform(platform);
+        //    return games.Count() <= 0 ? Settings.MinScore : games.Average(ro => GetScoreOfObject(ro));
+        //}
+
+        //public double GetHighestScoreFromGamesByPlatform(Platform platform)
+        //{
+        //    var games = GetFinishedGamesOnPlatform(platform);
+        //    return games.Count() <= 0 ? Settings.MinScore : games.Max(ro => GetScoreOfObject(ro));
+        //}
+
+        //public double GetLowestScoreFromGamesByPlatform(Platform platform)
+        //{
+        //    var games = GetFinishedGamesOnPlatform(platform);
+        //    return games.Count() <= 0 ? Settings.MinScore : games.Min(ro => GetScoreOfObject(ro));
+        //}
+
+        //public IEnumerable<TListedObj> GetTopGamesByPlatform(Platform platform, int numToGet)
+        //{
+        //    return GetFinishedGamesOnPlatform(platform)
+        //        .OrderByDescending(ro => GetScoreOfObject(ro))
+        //        .Take(numToGet);
+        //}
+
+        //public IEnumerable<TListedObj> GetBottomGamesByPlatform(Platform platform, int numToGet)
+        //{
+        //    return GetFinishedGamesOnPlatform(platform)
+        //        .OrderBy(ro => GetScoreOfObject(ro))
+        //        .Take(numToGet);
+        //}
+
+        //public int GetRankOfScoreByPlatform(double score, Platform platform)
+        //{
+        //    return GetRankOfScore(score, ListedObjects, game => game.RefPlatform.IsReferencedObject(platform), null);
+        //}
+
+        //public int GetRankOfScoreByPlatform(double score, Platform platform, TListedObj obj)
+        //{
+        //    return GetRankOfScore(score, ListedObjects, game => game.RefPlatform.IsReferencedObject(platform), obj);
+        //}
     }
 }

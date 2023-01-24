@@ -32,6 +32,16 @@ namespace RatableTracker.Rework.Model
             get { return Rank; }
         }
 
+        public virtual double ScoreDisplay
+        {
+            get { return Score; }
+        }
+
+        public virtual bool ShowScore
+        {
+            get { return true; }
+        }
+
         public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
         protected readonly Settings settings;

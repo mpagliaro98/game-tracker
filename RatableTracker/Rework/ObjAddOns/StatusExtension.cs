@@ -36,10 +36,7 @@ namespace RatableTracker.Rework.ObjAddOns
             this.module = module;
         }
 
-        public virtual void ValidateFields()
-        {
-
-        }
+        public virtual void ValidateFields() { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
         {

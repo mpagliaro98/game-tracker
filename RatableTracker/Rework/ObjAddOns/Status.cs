@@ -20,6 +20,9 @@ namespace RatableTracker.Rework.ObjAddOns
         public string Name { get; set; } = "";
         public Color Color { get; set; } = new Color();
 
+        public virtual bool HideScoreOfModelObject { get { return false; } }
+        public virtual bool ExcludeModelObjectFromStats { get { return false; } }
+
         public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
         protected readonly StatusExtensionModule module;

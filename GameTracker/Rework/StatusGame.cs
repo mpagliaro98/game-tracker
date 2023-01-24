@@ -13,6 +13,16 @@ namespace GameTracker.Rework
         public bool UseAsFinished { get; set; } = false;
         public bool ExcludeFromStats { get; set; } = false;
 
+        public override bool HideScoreOfModelObject
+        {
+            get { return !UseAsFinished; }
+        }
+
+        public override bool ExcludeModelObjectFromStats
+        {
+            get { return ExcludeFromStats; }
+        }
+
         public StatusGame(StatusExtensionModule module) : base(module) { }
 
         public override SavableRepresentation LoadIntoRepresentation()

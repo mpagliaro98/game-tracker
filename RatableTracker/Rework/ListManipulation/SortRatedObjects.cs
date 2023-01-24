@@ -27,7 +27,7 @@ namespace RatableTracker.Rework.ListManipulation
             switch (sortMethod)
             {
                 case SORT_Score:
-                    sortFunction = obj => ((RatedObject)obj).Score;
+                    sortFunction = obj => ((RatedObject)obj).ScoreDisplay;
                     break;
             }
             return sortFunction;

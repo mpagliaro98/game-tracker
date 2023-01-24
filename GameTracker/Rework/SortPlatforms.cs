@@ -40,18 +40,17 @@ namespace GameTracker.Rework
                     sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Count();
                     break;
                 case SORT_Average:
-                    sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Select(obj => obj.Score).Average();
+                    sortFunction = platform => Module.GetFinishedGamesOnPlatform(platform, Settings).Select(obj => obj.ScoreDisplay).Average();
                     break;
                 case SORT_Highest:
-                    sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Select(obj => obj.Score).Max();
+                    sortFunction = platform => Module.GetFinishedGamesOnPlatform(platform, Settings).Select(obj => obj.ScoreDisplay).Max();
                     break;
                 case SORT_Lowest:
-                    sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Select(obj => obj.Score).Min();
+                    sortFunction = platform => Module.GetFinishedGamesOnPlatform(platform, Settings).Select(obj => obj.ScoreDisplay).Min();
                     break;
-                // TODO this one
-                //case SORT_PercentFinished:
-                //    sortFunction = platform => rm.GetPercentageGamesFinishedByPlatform(platform);
-                //    break;
+                case SORT_PercentFinished:
+                    sortFunction = platform => Module.GetProportionGamesFinishedByPlatform(platform, Settings);
+                    break;
                 case SORT_Release:
                     sortFunction = platform => platform.ReleaseYear;
                     break;
