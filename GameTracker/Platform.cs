@@ -1,70 +1,94 @@
-﻿using System;
+﻿using RatableTracker.Exceptions;
+using RatableTracker.Interfaces;
+using RatableTracker.LoadSave;
+using RatableTracker.Model;
+using RatableTracker.Modules;
+using RatableTracker.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Drawing;
-using RatableTracker.Framework.Interfaces;
-using RatableTracker.Framework.LoadSave;
-using RatableTracker.Framework;
 
-namespace GameTracker.Model
+namespace GameTracker
 {
-    public class Platform : ISavable, IReferable
+    public class Platform : SaveDeleteObject
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthAbbreviation => 10;
 
         public string Name { get; set; } = "";
-
+        public Color Color { get; set; } = new Color();
         public string Abbreviation { get; set; } = "";
-
         public int ReleaseYear { get; set; } = 0;
-
         public int AcquiredYear { get; set; } = 0;
 
-        private ObjectReference referenceKey = new ObjectReference(true);
-        public ObjectReference ReferenceKey => referenceKey;
+        public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
-        public Color Color { get; set; } = new Color();
+        protected readonly GameModule module;
 
-        public Platform() { }
-
-        public SavableRepresentation<T> LoadIntoRepresentation<T>() where T : IValueContainer<T>, new()
+        public Platform(GameModule module)
         {
-            SavableRepresentation<T> sr = new SavableRepresentation<T>();
-            sr.SaveValue("referenceKey", referenceKey);
-            sr.SaveValue("name", Name);
-            sr.SaveValue("color", Color);
-            sr.SaveValue("releaseYear", ReleaseYear);
-            sr.SaveValue("acquiredYear", AcquiredYear);
-            sr.SaveValue("abbreviation", Abbreviation);
+            this.module = module;
+        }
+
+        protected override void ValidateFields()
+        {
+            base.ValidateFields();
+            if (Name == "")
+                throw new ValidationException("A name is required", Name);
+            if (Name.Length > MaxLengthName)
+                throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
+            if (Abbreviation.Length > MaxLengthAbbreviation)
+                throw new ValidationException("Abbreviation cannot be longer than " + MaxLengthAbbreviation.ToString() + " characters", Abbreviation);
+        }
+
+        protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
+        {
+            return this.module.SavePlatform(this, (ILoadSaveMethodGame)conn);
+        }
+
+        protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
+        {
+            this.module.DeletePlatform(this, (ILoadSaveMethodGame)conn);
+        }
+
+        public override SavableRepresentation LoadIntoRepresentation()
+        {
+            SavableRepresentation sr = base.LoadIntoRepresentation();
+            sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
+            sr.SaveValue("Name", new ValueContainer(Name));
+            sr.SaveValue("Color", new ValueContainer(Color));
+            sr.SaveValue("Abbreviation", new ValueContainer(Abbreviation));
+            sr.SaveValue("ReleaseYear", new ValueContainer(ReleaseYear));
+            sr.SaveValue("AcquiredYear", new ValueContainer(AcquiredYear));
             return sr;
         }
 
-        public void RestoreFromRepresentation<T>(SavableRepresentation<T> sr) where T : IValueContainer<T>, new()
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)
                 {
-                    case "referenceKey":
-                        referenceKey = sr.GetISavable<ObjectReference>(key);
+                    case "UniqueID":
+                        UniqueID = sr.GetValue(key).GetUniqueID();
                         break;
-                    case "name":
-                        Name = sr.GetString(key);
+                    case "Name":
+                        Name = sr.GetValue(key).GetString();
                         break;
-                    case "color":
-                        Color = sr.GetColor(key);
+                    case "Color":
+                        Color = sr.GetValue(key).GetColor();
                         break;
-                    case "releaseYear":
-                        ReleaseYear = sr.GetInt(key);
+                    case "Abbreviation":
+                        Abbreviation = sr.GetValue(key).GetString();
                         break;
-                    case "acquiredYear":
-                        AcquiredYear = sr.GetInt(key);
+                    case "ReleaseYear":
+                        ReleaseYear = sr.GetValue(key).GetInt();
                         break;
-                    case "abbreviation":
-                        Abbreviation = sr.GetString(key);
+                    case "AcquiredYear":
+                        AcquiredYear = sr.GetValue(key).GetInt();
                         break;
                     default:
                         break;
@@ -72,28 +96,17 @@ namespace GameTracker.Model
             }
         }
 
-        public void OverwriteReferenceKey(IReferable orig)
+        public override bool Equals(object obj)
         {
-            if (orig is Platform origPlatform)
-                referenceKey = origPlatform.referenceKey;
+            if (obj == null) return false;
+            if (!(obj is Platform)) return false;
+            Platform other = (Platform)obj;
+            return UniqueID.Equals(other.UniqueID);
         }
 
         public override int GetHashCode()
         {
-            return ReferenceKey.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if ((obj == null) || !GetType().Equals(obj.GetType()))
-            {
-                return false;
-            }
-            else
-            {
-                Platform o = (Platform)obj;
-                return !ReferenceKey.Equals(Guid.Empty) && ReferenceKey.Equals(o.ReferenceKey);
-            }
+            return UniqueID.GetHashCode();
         }
 
         public override string ToString()

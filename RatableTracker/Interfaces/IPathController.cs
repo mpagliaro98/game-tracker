@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RatableTracker.Framework.Interfaces
+namespace RatableTracker.Interfaces
 {
     public interface IPathController
     {
-        string BaseDirectory();
+        string ApplicationDirectory();
         string Combine(string path1, string path2);
         void WriteToFile(string filepath, string text);
         Task WriteToFileAsync(string filepath, string text);
@@ -20,5 +20,7 @@ namespace RatableTracker.Framework.Interfaces
         System.IO.FileStream CreateFile(string filepath);
         void CreateFileIfDoesNotExist(string filepath);
         void DeleteFile(string filepath);
+        void AppendToFile(string filepath, string text);
+        Task AppendToFileAsync(string filepath, string text);
     }
 }
