@@ -24,5 +24,10 @@ namespace RatableTracker.Rework.Util
         {
             logger?.Log(message);
         }
+
+        public string MostRecentLogs()
+        {
+            return logger == null ? "No logger has been attached" : logger.MostRecentLogs();
+        }
     }
 }

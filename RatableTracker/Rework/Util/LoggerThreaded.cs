@@ -67,5 +67,15 @@ namespace RatableTracker.Rework.Util
 #endif
             }
         }
+
+        public string MostRecentLogs()
+        {
+            byte[] fileContent;
+            lock (fileLock)
+            {
+                fileContent = fileHandler.LoadFile(logFileName);
+            }
+            return Util.TextEncoding.GetString(fileContent);
+        }
     }
 }

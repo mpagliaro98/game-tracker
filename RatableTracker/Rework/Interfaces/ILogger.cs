@@ -9,5 +9,6 @@ namespace RatableTracker.Rework.Interfaces
     public interface ILogger
     {
         void Log(string message);
+        string MostRecentLogs();
     }
 }
