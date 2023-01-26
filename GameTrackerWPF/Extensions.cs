@@ -43,24 +43,24 @@ namespace GameTrackerWPF
             return foundChild;
         }
 
-        public static RatableTracker.Framework.Color ToDrawingColor(this Color? color)
+        public static RatableTracker.Util.Color ToDrawingColor(this Color? color)
         {
             var colorInput = color ?? new Color();
-            return RatableTracker.Framework.Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
+            return RatableTracker.Util.Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
         }
 
-        public static RatableTracker.Framework.Color ToDrawingColor(this Color color)
+        public static RatableTracker.Util.Color ToDrawingColor(this Color color)
         {
-            return RatableTracker.Framework.Color.FromArgb(color.A, color.R, color.G, color.B);
+            return RatableTracker.Util.Color.FromArgb(color.A, color.R, color.G, color.B);
         }
 
-        public static Color ToMediaColor(this RatableTracker.Framework.Color? color)
+        public static Color ToMediaColor(this RatableTracker.Util.Color? color)
         {
-            var colorInput = color ?? new RatableTracker.Framework.Color();
+            var colorInput = color ?? new RatableTracker.Util.Color();
             return Color.FromArgb(colorInput.A, colorInput.R, colorInput.G, colorInput.B);
         }
 
-        public static Color ToMediaColor(this RatableTracker.Framework.Color color)
+        public static Color ToMediaColor(this RatableTracker.Util.Color color)
         {
             return Color.FromArgb(color.A, color.R, color.G, color.B);
         }

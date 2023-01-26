@@ -13,7 +13,7 @@ namespace GameTracker
         {
             get
             {
-                if (BaseObject.IsRemaster && BaseObject.UseOriginalGameScore)
+                if (BaseObject.IsUsingOriginalGameScore)
                 {
                     try
                     {
@@ -34,16 +34,16 @@ namespace GameTracker
         {
             get
             {
-                if (BaseObject.IsRemaster && BaseObject.UseOriginalGameScore)
+                if (BaseObject.IsUsingOriginalGameScore)
                     return false;
                 else
                     return base.AreCategoryValuesEditable;
             }
         }
 
-        protected readonly new SettingsGame settings;
+        protected new SettingsGame settings => (SettingsGame)base.settings;
 
-        public new GameObject BaseObject { get; }
+        public new GameObject BaseObject { get { return (GameObject)base.BaseObject; } }
 
         public CategoryExtensionGame(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
 

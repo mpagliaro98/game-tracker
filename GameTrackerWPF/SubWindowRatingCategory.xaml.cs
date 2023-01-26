@@ -10,10 +10,12 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework;
-using RatableTracker.Framework.Exceptions;
+using GameTracker;
+using RatableTracker.Exceptions;
+using RatableTracker.ObjAddOns;
+using RatableTracker.Util;
 
 namespace GameTrackerWPF
 {
@@ -22,15 +24,16 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class SubWindowRatingCategory : Window
     {
-        private RatingModuleGame rm;
+        private GameModule rm;
         private RatingCategoryWeighted orig;
 
-        public SubWindowRatingCategory(RatingModuleGame rm, SubWindowMode mode, RatingCategoryWeighted orig = null)
+        public SubWindowRatingCategory(GameModule rm, SettingsScore settings, SubWindowMode mode, RatingCategoryWeighted orig = null)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
+            if (this.orig == null) this.orig = new RatingCategoryWeighted(rm.CategoryExtension, settings);
             switch (mode)
             {
                 case SubWindowMode.MODE_ADD:
@@ -61,19 +64,18 @@ namespace GameTrackerWPF
 
         private void SaveResult()
         {
-            if (!ValidateInputs(out string name, out string comment, out double weight)) return;
-            var cat = new RatingCategoryWeighted()
+            orig.Name = TextboxName.Text;
+            orig.Comment = TextboxComment.Text;
+            if (!double.TryParse(TextboxWeight.Text, out double weight))
             {
-                Name = name,
-                Comment = comment
-            };
-            cat.SetWeight(weight);
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "The value for weight must be a number";
+                return;
+            }
+            orig.SetWeight(weight);
             try
             {
-                if (orig == null)
-                    rm.AddRatingCategory(cat);
-                else
-                    rm.UpdateRatingCategory(cat, orig);
+                orig.Save(rm);
             }
             catch (ValidationException e)
             {
@@ -82,19 +84,6 @@ namespace GameTrackerWPF
                 return;
             }
             Close();
-        }
-
-        private bool ValidateInputs(out string name, out string comment, out double weight)
-        {
-            name = TextboxName.Text;
-            comment = TextboxComment.Text;
-            if (!double.TryParse(TextboxWeight.Text, out weight))
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "The value for weight must be a number";
-                return false;
-            }
-            return true;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace RatableTracker.Util
         public LoggerThreaded(IFileHandler fileHandler)
         {
             this.fileHandler = fileHandler;
-            logFileName = "log_" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH-mm-ss-fff") + ".log";
+            logFileName = "log_" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH-mm-ss") + ".log";
 
             LogSystemInfoOnLoggerStart();
 

@@ -150,5 +150,12 @@ namespace RatableTracker.ObjAddOns
                 }
             }
         }
+
+        public double GetTotalScoreFromCategoryValues(IList<CategoryValue> categoryValues)
+        {
+            double sumOfWeights = SumOfCategoryWeights();
+            double total = categoryValues.Select(cv => (cv.RatingCategory.Weight / sumOfWeights) * cv.PointValue).Sum();
+            return total;
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace GameTracker
         public static int MaxLengthCompletionComment => 1000;
         public static int MaxLengthTimeSpent => 1000;
 
-        public new CategoryExtensionGame CategoryExtension { get; }
+        public new CategoryExtensionGame CategoryExtension { get { return (CategoryExtensionGame)base.CategoryExtension; } }
 
         public string CompletionCriteria { get; set; } = "";
         public string CompletionComment { get; set; } = "";
@@ -34,15 +34,18 @@ namespace GameTracker
         public virtual bool IsCompilation { get { return false; } }
         public bool IsUnfinishable { get; set; } = false;
 
+        public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
+        public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
+
         public override double Score
         {
             get
             {
-                if (IsRemaster && UseOriginalGameScore)
+                if (IsUsingOriginalGameScore)
                 {
                     try
                     {
-                        return OriginalGame == null ? settings.MinScore : OriginalGame.Score;
+                        return OriginalGame.Score;
                     }
                     catch (StackOverflowException e)
                     {
@@ -111,8 +114,8 @@ namespace GameTracker
             }
         }
 
-        protected readonly new SettingsGame settings;
-        protected readonly new GameModule module;
+        protected new SettingsGame settings => (SettingsGame)base.settings;
+        protected new GameModule module => (GameModule)base.module;
 
         public GameObject(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGame(module.CategoryExtension, settings)) { }
 

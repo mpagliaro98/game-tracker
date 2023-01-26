@@ -18,8 +18,8 @@ namespace GameTracker
         public const int SORT_StartedOn = 104;
         public const int SORT_FinishedOn = 105;
 
-        public new GameModule Module { get; set; }
-        public new SettingsGame Settings { get; set; }
+        public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
+        public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
 
         public SortGames() : base() { }
 

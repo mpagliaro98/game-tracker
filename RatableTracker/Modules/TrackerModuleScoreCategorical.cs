@@ -14,7 +14,7 @@ namespace RatableTracker.Modules
     {
         public CategoryExtensionModule CategoryExtension { get; private set; }
 
-        protected readonly new ILoadSaveHandler<ILoadSaveMethodScoreCategorical> _loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodScoreCategorical> _loadSave => (ILoadSaveHandler<ILoadSaveMethodScoreCategorical>)base._loadSave;
 
         public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave) : this(loadSave, new Logger()) { }
 

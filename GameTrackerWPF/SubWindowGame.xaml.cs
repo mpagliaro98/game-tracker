@@ -11,10 +11,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework;
-using RatableTracker.Framework.Exceptions;
-using RatableTracker.Framework.Global;
+using GameTracker;
+using RatableTracker.Exceptions;
+using RatableTracker.ObjAddOns;
+using RatableTracker.ScoreRanges;
+using RatableTracker.Util;
 
 namespace GameTrackerWPF
 {
@@ -23,227 +24,104 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class SubWindowGame : Window
     {
-        private RatingModuleGame rm;
-        private RatableGame orig;
+        private GameModule rm;
+        private GameObject orig;
+        private SettingsGame settings;
+        private GameCompilation comp;
         
-        public SubWindowGame(RatingModuleGame rm, SubWindowMode mode, RatableGame orig = null)
+        public SubWindowGame(GameModule rm, SettingsGame settings, SubWindowMode mode, GameObject orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
+            this.settings = settings;
+            this.comp = orig.IsPartOfCompilation ? orig.Compilation : new GameCompilation(settings, rm);
+
+            // initialize UI containers
+            CreateRatingCategories();
             FillComboboxStatuses(ComboBoxStatus);
             FillComboboxPlatforms(ComboBoxPlatform);
             FillComboboxPlatforms(ComboBoxPlatformPlayedOn);
             FillComboboxGames(ComboboxOriginalGame);
-            ComboBoxStatus.SelectedIndex = 0;
-            ComboBoxPlatform.SelectedIndex = 0;
-            ComboBoxPlatformPlayedOn.SelectedIndex = 0;
-            ComboboxOriginalGame.SelectedIndex = 0;
-            bool defaultIgnore = new RatableGame().IgnoreCategories;
-            CreateRatingCategories(rm.RatingCategories,
-                orig == null ? new List<RatingCategoryValue>() :
-                    orig.IsRemaster && orig.UseOriginalGameScore ? rm.FindListedObject(orig.RefOriginalGame).CategoryValues : orig.CategoryValues,
-                rm.Settings,
-                orig == null ? !defaultIgnore : !orig.IgnoreCategories);
-            UpdateScoreEditButton(orig == null ? !defaultIgnore : !orig.IgnoreCategories);
-            switch (mode)
-            {
-                case SubWindowMode.MODE_ADD:
-                    ButtonSave.Visibility = Visibility.Visible;
-                    ButtonUpdate.Visibility = Visibility.Collapsed;
-                    break;
-                case SubWindowMode.MODE_EDIT:
-                    ButtonSave.Visibility = Visibility.Collapsed;
-                    ButtonUpdate.Visibility = Visibility.Visible;
-                    TextboxName.Text = orig.Name;
-                    if (orig.RefStatus.HasReference()) ComboBoxStatus.SelectedItem = rm.FindStatus(orig.RefStatus);
-                    if (orig.RefPlatform.HasReference()) ComboBoxPlatform.SelectedItem = rm.FindPlatform(orig.RefPlatform);
-                    if (orig.RefPlatformPlayedOn.HasReference()) ComboBoxPlatformPlayedOn.SelectedItem = rm.FindPlatform(orig.RefPlatformPlayedOn);
-                    if (orig.RefOriginalGame.HasReference()) ComboboxOriginalGame.SelectedItem = rm.FindListedObject(orig.RefOriginalGame);
-                    TextboxCompletionCriteria.Text = orig.CompletionCriteria;
-                    TextboxCompletionComment.Text = orig.CompletionComment;
-                    TextboxTimeSpent.Text = orig.TimeSpent;
-                    if (!orig.ReleaseDate.Equals(DateTime.MinValue)) DatePickerRelease.SelectedDate = orig.ReleaseDate;
-                    if (!orig.AcquiredOn.Equals(DateTime.MinValue)) DatePickerAcquired.SelectedDate = orig.AcquiredOn;
-                    if (!orig.StartedOn.Equals(DateTime.MinValue)) DatePickerStarted.SelectedDate = orig.StartedOn;
-                    if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
-                    TextBoxComments.Text = orig.Comment;
-                    TextBoxFinalScore.Text = rm.GetScoreOfObject(orig).ToString("0.##");
-                    CheckboxRemaster.IsChecked = orig.IsRemaster;
-                    CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
-                    CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
-                    if (orig.RefCompilation.HasReference()) TextboxCompilation.Text = rm.FindGameCompilation(orig.RefCompilation).Name;
-                    CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
-                    break;
-                default:
-                    throw new Exception("Unhandled mode");
-            }
+            ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
+
+            // set fields in the UI
+            TextboxName.Text = orig.Name;
+            if (orig.StatusExtension.Status != null) ComboBoxStatus.SelectedItem = orig.StatusExtension.Status;
+            if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform;
+            if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
+            if (orig.OriginalGame != null) ComboboxOriginalGame.SelectedItem = orig.OriginalGame;
+            CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
+            CheckboxRemaster.IsChecked = orig.IsRemaster;
+            CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
+            TextboxCompletionCriteria.Text = orig.CompletionCriteria;
+            TextboxCompletionComment.Text = orig.CompletionComment;
+            TextboxTimeSpent.Text = orig.TimeSpent;
+            if (!orig.ReleaseDate.Equals(DateTime.MinValue)) DatePickerRelease.SelectedDate = orig.ReleaseDate;
+            if (!orig.AcquiredOn.Equals(DateTime.MinValue)) DatePickerAcquired.SelectedDate = orig.AcquiredOn;
+            if (!orig.StartedOn.Equals(DateTime.MinValue)) DatePickerStarted.SelectedDate = orig.StartedOn;
+            if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
+            TextBoxComments.Text = orig.Comment;
+            TextBoxFinalScore.Text = orig.Score.ToString("0.##");
+            CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
+            TextboxCompilation.Text = comp.Name;
+
+            // set event handlers
+            TextboxName.TextChanged += TextboxName_TextChanged;
+            ComboBoxPlatform.SelectionChanged += ComboBoxPlatform_SelectionChanged;
+            CheckboxRemaster.Checked += CheckboxRemaster_Checked;
+            CheckboxRemaster.Unchecked += CheckboxRemaster_Checked;
+            CheckboxUseOriginalGameScore.Checked += CheckboxUseOriginalGameScore_Checked;
+            CheckboxUseOriginalGameScore.Unchecked += CheckboxUseOriginalGameScore_Checked;
+            ComboboxOriginalGame.SelectionChanged += ComboboxOriginalGame_SelectionChanged;
+            ComboBoxStatus.SelectionChanged += ComboBoxStatus_SelectionChanged;
+            CheckboxUnfinishable.Checked += CheckboxUnfinishable_Checked;
+            CheckboxUnfinishable.Unchecked += CheckboxUnfinishable_Checked;
+            ComboBoxPlatformPlayedOn.SelectionChanged += ComboBoxPlatformPlayedOn_SelectionChanged;
+            CheckboxCompilation.Checked += CheckboxCompilation_Checked;
+            CheckboxCompilation.Unchecked += CheckboxCompilation_Checked;
+            TextboxCompilation.TextChanged += TextboxCompilation_TextChanged;
+            TextBoxFinalScore.TextChanged += TextBoxFinalScore_TextChanged;
+            TextboxCompletionCriteria.TextChanged += TextboxCompletionCriteria_TextChanged;
+            TextboxCompletionComment.TextChanged += TextboxCompletionComment_TextChanged;
+            TextboxTimeSpent.TextChanged += TextboxTimeSpent_TextChanged;
+            DatePickerRelease.SelectedDateChanged += DatePickerRelease_SelectedDateChanged;
+            DatePickerAcquired.SelectedDateChanged += DatePickerAcquired_SelectedDateChanged;
+            DatePickerStarted.SelectedDateChanged += DatePickerStarted_SelectedDateChanged;
+            DatePickerFinished.SelectedDateChanged += DatePickerFinished_SelectedDateChanged;
+            TextBoxComments.TextChanged += TextBoxComments_TextChanged;
+
+            // refresh UI logic
+            UpdateScores();
             UpdateRemasterFields();
+            UpdateDateFieldVisibility();
             UpdateCompilationFields();
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            SaveResult();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            SaveResult();
-        }
-
-        private void SaveResult()
-        {
-            if (!ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
-                out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
-                out string timeSpent, out DateTime releaseDate, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
-                out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
-                out string compilationName, out bool isUnfinishable)) return;
-            if (!ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
-                out bool ignoreCategories)) return;
-            var game = new RatableGame()
-            {
-                Name = name,
-                CompletionCriteria = completionCriteria,
-                CompletionComment = completionComment,
-                TimeSpent = timeSpent,
-                ReleaseDate = releaseDate,
-                AcquiredOn = acquiredOn,
-                StartedOn = startedOn,
-                FinishedOn = finishedOn,
-                Comment = comment,
-                IgnoreCategories = ignoreCategories,
-                FinalScoreManual = finalScore,
-                CategoryValues = vals,
-                IsRemaster = isRemaster,
-                UseOriginalGameScore = useOriginalGameScore,
-                IsUnfinishable = isUnfinishable,
-            };
-            if (status != null)
-                game.SetStatus(status);
-            else
-                game.RemoveStatus();
-            if (platform != null)
-                game.SetPlatform(platform);
-            else
-                game.RemovePlatform();
-            if (platformPlayedOn != null)
-                game.SetPlatformPlayedOn(platformPlayedOn);
-            else
-                game.RemovePlatformPlayedOn();
-            if (originalGame != null)
-                game.SetOriginalGame(originalGame);
-            else
-                game.RemoveOriginalGame();
-            bool newCompilation = false;
-            GameCompilation comp = null;
-            if (CheckboxCompilation.IsChecked.Value)
-            {
-                string compName = TextboxCompilation.Text.Trim();
-                var matches = rm.GameCompilations.Where(c => c.Name == compName);
-                if (matches.Count() >= 1)
-                {
-                    comp = matches.First();
-                }
-                else
-                {
-                    comp = new GameCompilation()
-                    {
-                        Name = compName
-                    };
-                    newCompilation = true;
-                }
-                game.SetCompilation(comp);
-            }
-            else
-                game.RemoveCompilation();
             try
             {
-                if (newCompilation)
-                    rm.AddGameCompilation(comp);
-                if (orig == null)
-                    rm.AddListedObject(game);
-                else
-                    rm.UpdateListedObject(game, orig);
+                if (CheckboxCompilation.IsChecked.Value && comp.Name.Length <= 0)
+                    throw new ValidationException("Compilation must be given a name");
+                if (!CheckboxCompilation.IsChecked.Value)
+                    orig.Compilation = null;
+                orig.Save(rm);
+                if (CheckboxCompilation.IsChecked.Value)
+                {
+                    orig.Compilation = comp;
+                    comp.Save(rm);
+                    orig.Save(rm);
+                }
             }
-            catch (ValidationException e)
+            catch (ValidationException ex)
             {
                 LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = e.Message;
+                LabelError.Content = ex.Message;
                 return;
             }
             Close();
-        }
-
-        private bool ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
-            out Platform platformPlayedOn, out string completionCriteria, out string completionComment,
-            out string timeSpent, out DateTime releaseDate, out DateTime acquiredOn, out DateTime startedOn, out DateTime finishedOn,
-            out string comment, out bool isRemaster, out RatableGame originalGame, out bool useOriginalGameScore,
-            out string compilationName, out bool isUnfinishable)
-        {
-            name = TextboxName.Text;
-            status = ComboBoxStatus.SelectedIndex == 0 ? null : (CompletionStatus)ComboBoxStatus.SelectedItem;
-            platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
-            platformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatformPlayedOn.SelectedItem;
-            completionCriteria = TextboxCompletionCriteria.Text;
-            completionComment = TextboxCompletionComment.Text;
-            timeSpent = TextboxTimeSpent.Text;
-            releaseDate = DatePickerRelease.SelectedDate.HasValue ? DatePickerRelease.SelectedDate.Value : DateTime.MinValue;
-            acquiredOn = DatePickerAcquired.SelectedDate.HasValue ? DatePickerAcquired.SelectedDate.Value : DateTime.MinValue;
-            startedOn = DatePickerStarted.SelectedDate.HasValue ? DatePickerStarted.SelectedDate.Value : DateTime.MinValue;
-            finishedOn = DatePickerFinished.SelectedDate.HasValue ? DatePickerFinished.SelectedDate.Value : DateTime.MinValue;
-            comment = TextBoxComments.Text;
-            isRemaster = CheckboxRemaster.IsChecked.Value;
-            originalGame = isRemaster && ComboboxOriginalGame.SelectedIndex > 0 ? (RatableGame)ComboboxOriginalGame.SelectedItem : null;
-            useOriginalGameScore = isRemaster && originalGame != null ? CheckboxUseOriginalGameScore.IsChecked.Value : false;
-            compilationName = CheckboxCompilation.IsChecked.Value ? TextboxCompilation.Text : "";
-            isUnfinishable = CheckboxUnfinishable.IsChecked.Value;
-            if (name == "")
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "A name is required";
-                return false;
-            }
-            if (CheckboxCompilation.IsChecked.Value && compilationName == "")
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "A compilation name is required if the compilation checkbox is checked";
-                return false;
-            }
-            return true;
-        }
-
-        private bool ValidateScores(out IEnumerable<RatingCategoryValue> vals, out double finalScore,
-            out bool ignoreCategories)
-        {
-            if (CheckboxRemaster.IsChecked.Value && ComboboxOriginalGame.SelectedIndex > 0 && CheckboxUseOriginalGameScore.IsChecked.Value)
-            {
-                vals = orig == null ? new List<RatingCategoryValue>() : orig.CategoryValues;
-                finalScore = orig == null ? rm.Settings.MinScore : orig.FinalScoreManual;
-                ignoreCategories = orig == null ? new RatableGame().IgnoreCategories : orig.IgnoreCategories;
-                return true;
-            }
-            vals = GetCategoryValueInputs(rm.RatingCategories);
-            ignoreCategories = TextBoxFinalScore.IsEnabled;
-            if (!double.TryParse(TextBoxFinalScore.Text, out finalScore))
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "The value of score must be a number";
-                return false;
-            }
-            try
-            {
-                rm.ValidateScore(finalScore);
-                rm.ValidateCategoryScores(vals);
-            }
-            catch (ValidationException e)
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = e.Message;
-                return false;
-            }
-            return true;
         }
 
         private void FillComboboxStatuses(ComboBox cb)
@@ -252,10 +130,11 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (CompletionStatus cs in rm.Statuses.OrderBy(s => s.Name))
+            foreach (Status cs in rm.StatusExtension.GetStatusList().OrderBy(s => s.Name))
             {
                 cb.Items.Add(cs);
             }
+            cb.SelectedIndex = 0;
         }
 
         private void FillComboboxPlatforms(ComboBox cb)
@@ -264,10 +143,11 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (Platform platform in rm.Platforms.OrderBy(p => p.Name))
+            foreach (Platform platform in rm.GetPlatformList().OrderBy(p => p.Name))
             {
                 cb.Items.Add(platform);
             }
+            cb.SelectedIndex = 0;
         }
 
         private void FillComboboxGames(ComboBox cb)
@@ -276,21 +156,22 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "--Select the game this is a remaster of--";
             cb.Items.Add(item);
-            foreach (RatableGame game in rm.ListedObjects.OrderBy(ro => ro.Name))
+            foreach (GameObject game in rm.GetModelObjectList().OfType<GameObject>().OrderBy(ro => ro.Name))
             {
-                if (game.Equals(orig)) continue;
+                if (game.Equals(orig) || game.Equals(comp)) continue;
                 cb.Items.Add(game);
             }
+            cb.SelectedIndex = 0;
         }
 
-        private void CreateRatingCategories(IEnumerable<RatingCategory> ratingCategories,
-            IEnumerable<RatingCategoryValue> pointValues, SettingsScore settings, bool isEnabled)
+        private void CreateRatingCategories()
         {
             GridRatingCategories.Children.Clear();
             GridRatingCategories.ColumnDefinitions.Clear();
             int i = 0;
-            foreach (RatingCategory rc in ratingCategories)
+            foreach (CategoryValue categoryValue in orig.CategoryExtension.CategoryValuesDisplay)
             {
+                RatingCategory rc = categoryValue.RatingCategory;
                 GridRatingCategories.ColumnDefinitions.Add(new ColumnDefinition());
                 DockPanel dock = new DockPanel
                 {
@@ -310,8 +191,6 @@ namespace GameTrackerWPF
                 };
                 DockPanel.SetDock(label, Dock.Top);
 
-                var matches = pointValues.Where(rcv => rcv.RefRatingCategory.IsReferencedObject(rc));
-                RatingCategoryValue match = matches.FirstOrDefault();
                 TextBox text = new TextBox
                 {
                     Name = "TextBoxValue",
@@ -319,10 +198,11 @@ namespace GameTrackerWPF
                     BorderThickness = new Thickness { Top = 0, Left = 0, Bottom = 0, Right = 0 },
                     Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9}),
                     FontSize = 32,
-                    IsEnabled = isEnabled,
-                    Text = match == null ? settings.MinScore.ToString("0.##") : match.PointValue.ToString()
+                    IsEnabled = orig.CategoryExtension.AreCategoryValuesEditable,
+                    Text = categoryValue.PointValue.ToString()
                 };
                 text.TextChanged += TextBoxScore_TextChanged;
+                text.Tag = rc;
                 dock.Children.Add(label);
                 dock.Children.Add(text);
                 Grid.SetColumn(dock, i);
@@ -331,146 +211,61 @@ namespace GameTrackerWPF
             }
         }
 
-        private double CalculateFinalScoreFromText()
+        private void ButtonCompilationLink_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<RatingCategoryValue> vals = GetCategoryValueInputs(rm.RatingCategories);
-            return rm.GetScoreOfCategoryValues(vals);
+            Hide();
+            Window window = new SubWindowCompilation(rm, SubWindowMode.MODE_VIEW, orig.Compilation);
+            window.ShowDialog();
+            Show();
         }
 
-        private IEnumerable<RatingCategoryValue> GetCategoryValueInputs(IEnumerable<RatingCategory> ratingCategories)
+        #region "Handlers"
+        private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            List<RatingCategoryValue> result = new List<RatingCategoryValue>();
-            ratingCategories = ratingCategories.ToList();
-            for (int i = 0; i < ratingCategories.Count(); i++)
-            {
-                RatingCategory rc = ratingCategories.ElementAt(i);
-                DockPanel dock = (DockPanel)GridRatingCategories.Children.Cast<UIElement>().First(d => Grid.GetColumn(d) == i);
-                TextBox text = dock.FindChild<TextBox>("TextBoxValue");
-                bool valid = double.TryParse(text.Text, out double value);
-                if (!valid) value = rm.Settings.MinScore;
-                RatingCategoryValue rcv = new RatingCategoryValue
-                {
-                    PointValue = value
-                };
-                rcv.SetRatingCategory(rc);
-                result.Add(rcv);
-            }
-            return result;
+            orig.Name = TextboxName.Text.Trim();
         }
 
-        private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
+        private void ComboBoxStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateFinalScoreTextBoxAuto();
+            orig.StatusExtension.Status = ComboBoxStatus.SelectedIndex > 0 ? (Status)ComboBoxStatus.SelectedItem : null;
         }
 
-        private void UpdateScoreEditButton(bool finalScoreEnabled)
+        private void CheckboxUnfinishable_Checked(object sender, RoutedEventArgs e)
         {
-            TextBoxFinalScore.IsEnabled = !finalScoreEnabled;
-            for (int i = 0; i < rm.RatingCategories.Count(); i++)
-            {
-                DockPanel dock = (DockPanel)GridRatingCategories.Children.Cast<UIElement>().First(d => Grid.GetColumn(d) == i);
-                TextBox text = dock.FindChild<TextBox>("TextBoxValue");
-                text.IsEnabled = finalScoreEnabled;
-            }
-            Image image = new Image();
-            image.Source = (ImageSource)Resources[finalScoreEnabled ? "ButtonEdit" : "ButtonLock"];
-            ButtonEditScore.Content = image;
-            ButtonEditScore.ToolTip = finalScoreEnabled ? "Edit the final score manually" : "Use categories to automatically calculate the final score";
-            if (finalScoreEnabled)
-                UpdateFinalScoreTextBoxAuto();
-            else
-                UpdateFinalScoreTextBox();
-        }
-
-        private void ButtonEditScore_Click(object sender, RoutedEventArgs e)
-        {
-            UpdateScoreEditButton(TextBoxFinalScore.IsEnabled);
-        }
-
-        private void UpdateFinalScoreTextBoxAuto()
-        {
-            double score = CalculateFinalScoreFromText();
-            TextBoxFinalScore.Text = score.ToString("0.##");
-            FinalScoreUpdate(score);
-        }
-
-        private void UpdateFinalScoreColor(double score)
-        {
-            RatableTracker.Framework.Color color = rm.GetRangeColorFromValue(score);
-            if (color.Equals(new RatableTracker.Framework.Color()))
-            {
-                TextBoxFinalScore.Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
-            }
-            else
-            {
-                TextBoxFinalScore.Background = new SolidColorBrush(color.ToMediaColor());
-            }
-        }
-
-        private void TextBoxFinalScore_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            UpdateFinalScoreTextBox();
-        }
-
-        private void UpdateFinalScoreTextBox()
-        {
-            bool result = double.TryParse(TextBoxFinalScore.Text, out double score);
-            if (result) FinalScoreUpdate(score);
-        }
-
-        private void FinalScoreUpdate(double score)
-        {
-            UpdateFinalScoreColor(score);
-            UpdateStats(score);
-        }
-
-        private void UpdateStats(double score)
-        {
-            int rankOverall = rm.GetRankOfScore(score, orig);
-            int rankPlatform = -1;
-            Platform platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
-            if (platform != null) rankPlatform = rm.GetRankOfScoreByPlatform(score, platform, orig);
-
-            string text = "";
-            if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
-            text += "#" + rankOverall.ToString() + " overall";
-            TextBlockStats.Text = text;
+            orig.IsUnfinishable = CheckboxUnfinishable.IsChecked.Value;
+            UpdateDateFieldVisibility();
         }
 
         private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateFinalScoreTextBox();
+            orig.Platform = ComboBoxPlatform.SelectedIndex > 0 ? (Platform)ComboBoxPlatform.SelectedItem : null;
+            UpdateStats();
+        }
+
+        private void ComboBoxPlatformPlayedOn_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex > 0 ? (Platform)ComboBoxPlatformPlayedOn.SelectedItem : null;
         }
 
         private void CheckboxRemaster_Checked(object sender, RoutedEventArgs e)
         {
+            orig.IsRemaster = CheckboxRemaster.IsChecked.Value;
             UpdateRemasterFields();
+            UpdateScores();
         }
 
         private void ComboboxOriginalGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            orig.OriginalGame = ComboboxOriginalGame.SelectedIndex > 0 ? (GameObject)ComboboxOriginalGame.SelectedItem : null;
             UpdateRemasterFields();
+            UpdateScores();
         }
 
         private void CheckboxUseOriginalGameScore_Checked(object sender, RoutedEventArgs e)
         {
+            orig.UseOriginalGameScore = CheckboxUseOriginalGameScore.IsChecked.Value;
             UpdateRemasterFields();
-        }
-
-        private void UpdateRemasterFields()
-        {
-            ComboboxOriginalGame.Visibility = CheckboxRemaster.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
-            CheckboxUseOriginalGameScore.Visibility = CheckboxRemaster.IsChecked.Value && ComboboxOriginalGame.SelectedIndex > 0 ? Visibility.Visible : Visibility.Hidden;
-            bool useOriginalGame = CheckboxRemaster.IsChecked.Value && ComboboxOriginalGame.SelectedIndex > 0 && CheckboxUseOriginalGameScore.IsChecked.Value;
-            GridRatingCategories.IsEnabled = !useOriginalGame;
-            GridFinalScore.IsEnabled = !useOriginalGame;
-
-            bool defaultIgnore = new RatableGame().IgnoreCategories;
-            RatableGame originalGame = ComboboxOriginalGame.SelectedIndex > 0 ? (RatableGame)ComboboxOriginalGame.SelectedItem : null;
-            CreateRatingCategories(rm.RatingCategories,
-                useOriginalGame ? originalGame.CategoryValues : orig == null ? new List<RatingCategoryValue>() : orig.CategoryValues,
-                rm.Settings, orig == null ? !defaultIgnore : !orig.IgnoreCategories);
-            UpdateScoreEditButton(orig == null ? !defaultIgnore : !orig.IgnoreCategories);
+            UpdateScores();
         }
 
         private void CheckboxCompilation_Checked(object sender, RoutedEventArgs e)
@@ -478,25 +273,156 @@ namespace GameTrackerWPF
             UpdateCompilationFields();
         }
 
+        private void TextboxCompilation_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            comp.Name = TextboxCompilation.Text.Trim();
+        }
+
+        private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textbox = (TextBox)sender;
+            bool result = double.TryParse(textbox.Text, out double score);
+            RatingCategory rc = textbox.Tag as RatingCategory;
+            // don't continue past this point if the character just entered was a period
+            if (e.Changes.Count > 0 && e.Changes.ElementAt(0).AddedLength > 0)
+            {
+                var change = e.Changes.ElementAt(0);
+                var addition = textbox.Text.Substring(change.Offset, change.AddedLength);
+                if (addition.Contains('.')) return;
+            }
+
+            orig.CategoryExtension.CategoryValuesManual.First(cv => cv.RatingCategory.Equals(rc)).PointValue = result ? score : settings.MinScore;
+            UpdateScores();
+        }
+
+        private void ButtonEditScore_Click(object sender, RoutedEventArgs e)
+        {
+            orig.ManualScore = orig.Score;
+            orig.CategoryExtension.IgnoreCategories = !orig.CategoryExtension.IgnoreCategories;
+            UpdateScores();
+        }
+
+        private void TextBoxFinalScore_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textbox = (TextBox)sender;
+            bool result = double.TryParse(textbox.Text, out double score);
+            // don't continue past this point if the character just entered was a period
+            if (e.Changes.Count > 0 && e.Changes.ElementAt(0).AddedLength > 0)
+            {
+                var change = e.Changes.ElementAt(0);
+                var addition = textbox.Text.Substring(change.Offset, change.AddedLength);
+                if (addition.Contains('.')) return;
+            }
+
+            orig.ManualScore = result ? score : settings.MinScore;
+            UpdateScores();
+        }
+
+        private void TextboxCompletionCriteria_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.CompletionCriteria = TextboxCompletionCriteria.Text.Trim();
+        }
+
+        private void TextboxCompletionComment_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.CompletionComment = TextboxCompletionComment.Text.Trim();
+        }
+
+        private void TextboxTimeSpent_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.TimeSpent = TextboxTimeSpent.Text.Trim();
+        }
+
+        private void DatePickerRelease_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.ReleaseDate = DatePickerRelease.SelectedDate.HasValue ? DatePickerRelease.SelectedDate.Value : DateTime.MinValue;
+        }
+
+        private void DatePickerAcquired_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.AcquiredOn = DatePickerAcquired.SelectedDate.HasValue ? DatePickerAcquired.SelectedDate.Value : DateTime.MinValue;
+        }
+
+        private void DatePickerStarted_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.StartedOn = DatePickerStarted.SelectedDate.HasValue ? DatePickerStarted.SelectedDate.Value : DateTime.MinValue;
+        }
+
+        private void DatePickerFinished_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.FinishedOn = DatePickerFinished.SelectedDate.HasValue ? DatePickerFinished.SelectedDate.Value : DateTime.MinValue;
+        }
+
+        private void TextBoxComments_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.Comment = TextBoxComments.Text.Trim();
+        }
+        #endregion
+
+        private void UpdateScores()
+        {
+            for (int i = 0; i < rm.CategoryExtension.TotalNumRatingCategories(); i++)
+            {
+                DockPanel dock = (DockPanel)GridRatingCategories.Children.Cast<UIElement>().First(d => Grid.GetColumn(d) == i);
+                TextBox text = dock.FindChild<TextBox>("TextBoxValue");
+                text.IsEnabled = orig.CategoryExtension.AreCategoryValuesEditable;
+                RatingCategory rc = (RatingCategory)text.Tag;
+                text.Text = orig.CategoryExtension.ScoreOfCategory(rc).ToString("0.##");
+            }
+
+            Image image = new Image();
+            image.Source = (ImageSource)Resources[!orig.CategoryExtension.IgnoreCategories ? "ButtonEdit" : "ButtonLock"];
+            ButtonEditScore.Content = image;
+            ButtonEditScore.ToolTip = !orig.CategoryExtension.IgnoreCategories ? "Edit the final score manually" : "Use categories to automatically calculate the final score";
+            TextBoxFinalScore.IsEnabled = orig.CategoryExtension.IgnoreCategories;
+
+            TextBoxFinalScore.Text = orig.Score.ToString("0.##");
+            ScoreRange sr = orig.ScoreRange;
+            RatableTracker.Util.Color color = sr == null ? new RatableTracker.Util.Color() : sr.Color;
+            if (color.Equals(new RatableTracker.Util.Color()))
+            {
+                TextBoxFinalScore.Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
+            }
+            else
+            {
+                TextBoxFinalScore.Background = new SolidColorBrush(color.ToMediaColor());
+            }
+            UpdateStats();
+        }
+
+        private void UpdateRemasterFields()
+        {
+            ComboboxOriginalGame.Visibility = orig.IsRemaster ? Visibility.Visible : Visibility.Hidden;
+            CheckboxUseOriginalGameScore.Visibility = orig.IsRemaster && orig.HasOriginalGame ? Visibility.Visible : Visibility.Hidden;
+            GridRatingCategories.IsEnabled = !orig.IsUsingOriginalGameScore;
+            GridFinalScore.IsEnabled = !orig.IsUsingOriginalGameScore;
+        }
+
+        private void UpdateDateFieldVisibility()
+        {
+            StackPanelFinishedOn.Visibility = orig.IsUnfinishable ? Visibility.Hidden : Visibility.Visible;
+            Grid.SetColumnSpan(StackPanelStartedOn, orig.IsUnfinishable ? 2 : 1);
+            LabelStartedOn.Content = orig.IsUnfinishable ? "Played On" : "Started On";
+        }
+
+        private void UpdateStats()
+        {
+            // TODO
+            int rankOverall = orig.Rank;
+            int rankPlatform = -1;
+            Platform platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
+            if (platform != null) rankPlatform = 1; // rm.GetRankOfScoreByPlatform(score, platform, orig);
+
+            string text = "";
+            if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
+            text += "#" + rankOverall.ToString() + " overall";
+            TextBlockStats.Text = text;
+        }
+
         private void UpdateCompilationFields()
         {
             TextboxCompilation.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
-            ButtonCompilationLink.Visibility = CheckboxCompilation.IsChecked.Value && orig != null && orig.RefCompilation.HasReference() ? Visibility.Visible : Visibility.Hidden;
-        }
-
-        private void ButtonCompilationLink_Click(object sender, RoutedEventArgs e)
-        {
-            Hide();
-            Window window = new SubWindowCompilation(rm, SubWindowMode.MODE_VIEW, rm.FindGameCompilation(orig.RefCompilation));
-            window.ShowDialog();
-            Show();
-        }
-
-        private void CheckboxUnfinishable_Checked(object sender, RoutedEventArgs e)
-        {
-            StackPanelFinishedOn.Visibility = CheckboxUnfinishable.IsChecked.Value ? Visibility.Hidden: Visibility.Visible;
-            Grid.SetColumnSpan(StackPanelStartedOn, CheckboxUnfinishable.IsChecked.Value ? 2 : 1);
-            LabelStartedOn.Content = CheckboxUnfinishable.IsChecked.Value ? "Played On" : "Started On";
+            ButtonCompilationLink.Visibility = CheckboxCompilation.IsChecked.Value && orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Hidden;
         }
     }
 }

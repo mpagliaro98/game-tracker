@@ -11,9 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework.Global;
-using RatableTracker.Framework.Exceptions;
+using GameTracker;
+using RatableTracker.Exceptions;
 
 namespace GameTrackerWPF
 {
@@ -22,15 +21,16 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class SubWindowPlatform : Window
     {
-        private RatingModuleGame rm;
+        private GameModule rm;
         private Platform orig;
 
-        public SubWindowPlatform(RatingModuleGame rm, SubWindowMode mode, Platform orig = null)
+        public SubWindowPlatform(GameModule rm, SubWindowMode mode, Platform orig = null)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
+            if (this.orig == null) this.orig = new Platform(rm);
             switch (mode)
             {
                 case SubWindowMode.MODE_ADD:
@@ -63,22 +63,14 @@ namespace GameTrackerWPF
 
         private void SaveResult()
         {
-            if (!ValidateInputs(out string name, out RatableTracker.Framework.Color color,
-                out int releaseYear, out int acquiredYear, out string abbreviation)) return;
-            var platform = new Platform()
-            {
-                Name = name,
-                Color = color,
-                ReleaseYear = releaseYear,
-                AcquiredYear = acquiredYear,
-                Abbreviation = abbreviation
-            };
+            orig.Name = TextboxName.Text;
+            orig.ReleaseYear = TextboxYear.Text == "" ? 0 : TextboxYear.Value.HasValue ? TextboxYear.Value.Value : 0;
+            orig.AcquiredYear = TextboxAcquiredYear.Text == "" ? 0 : TextboxAcquiredYear.Value.HasValue ? TextboxAcquiredYear.Value.Value : 0;
+            orig.Color = ColorPickerColor.SelectedColor.ToDrawingColor();
+            orig.Abbreviation = TextboxAbbreviation.Text;
             try
             {
-                if (orig == null)
-                    rm.AddPlatform(platform);
-                else
-                    rm.UpdatePlatform(platform, orig);
+                orig.Save(rm);
             }
             catch (ValidationException e)
             {
@@ -87,17 +79,6 @@ namespace GameTrackerWPF
                 return;
             }
             Close();
-        }
-
-        private bool ValidateInputs(out string name, out RatableTracker.Framework.Color color,
-            out int releaseYear, out int acquiredYear, out string abbreviation)
-        {
-            name = TextboxName.Text;
-            releaseYear = TextboxYear.Text == "" ? 0 : TextboxYear.Value.HasValue ? TextboxYear.Value.Value : 0;
-            acquiredYear = TextboxAcquiredYear.Text == "" ? 0 : TextboxAcquiredYear.Value.HasValue ? TextboxAcquiredYear.Value.Value : 0;
-            color = ColorPickerColor.SelectedColor.ToDrawingColor();
-            abbreviation = TextboxAbbreviation.Text;
-            return true;
         }
     }
 }

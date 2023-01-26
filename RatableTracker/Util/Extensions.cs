@@ -1,6 +1,10 @@
-﻿using System;
+﻿using RatableTracker.Exceptions;
+using RatableTracker.Modules;
+using RatableTracker.ScoreRanges;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,6 +66,36 @@ namespace RatableTracker.Util
         public static string CleanForSorting(this string input)
         {
             return input.ToLower().StartsWith("the ") ? input.Substring(4) : input;
+        }
+
+        public static ScoreRange GetScoreRange(this double input, TrackerModuleScores module)
+        {
+            foreach (ScoreRange range in module.GetScoreRangeList())
+            {
+                try
+                {
+                    if (range.ScoreRelationship.IsValueInRange(input, range.ValueList)) return range;
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    module.Logger.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
+            return null;
+        }
+
+        public static double AverageIfEmpty(this IEnumerable<double> source, double useIfEmpty)
+        {
+            try
+            {
+                source.ThrowIfNull("source");
+                return source.Average();
+            }
+            catch (InvalidOperationException)
+            {
+                return useIfEmpty;
+            }
         }
     }
 }

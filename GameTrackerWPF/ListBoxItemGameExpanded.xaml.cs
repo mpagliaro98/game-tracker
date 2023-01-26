@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework;
-using RatableTracker.Framework.Global;
+using GameTracker;
+using RatableTracker.ObjAddOns;
+using RatableTracker.ScoreRanges;
 
 namespace GameTrackerWPF
 {
@@ -25,20 +25,20 @@ namespace GameTrackerWPF
     {
         private const string DECIMAL_FORMAT = "0.##";
 
-        private RatableGame rg;
-        public RatableGame Game
+        private GameObject rg;
+        public GameObject Game
         {
             get { return rg; }
         }
 
-        public ListBoxItemGameExpanded(RatingModuleGame rm, RatableGame rg)
+        public ListBoxItemGameExpanded(GameModule rm, GameObject rg)
         {
             InitializeComponent();
             this.rg = rg;
 
-            var platform = rm.FindPlatform(rg.RefPlatform);
-            var playedOn = rm.FindPlatform(rg.RefPlatformPlayedOn);
-            var completionStatus = rm.FindStatus(rg.RefStatus);
+            var platform = rg.Platform;
+            var playedOn = rg.PlatformPlayedOn;
+            var completionStatus = rg.StatusExtension.Status;
 
             TextBlockName.Text = rg.Name;
             TextBlockPlatform.Text = platform != null ? platform.Name : "";
@@ -49,14 +49,18 @@ namespace GameTrackerWPF
             if (completionStatus != null)
                 TextBlockStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
             BuildCategories(rm, rg);
-            TextBlockFinalScore.Text = rm.GetScoreOfObject(rg).ToString(DECIMAL_FORMAT);
-            TextBlockFinalScore.Background = new SolidColorBrush(rm.GetRangeColorFromObject(rg).ToMediaColor());
+            TextBlockFinalScore.Text = rg.ShowScore ? rg.ScoreDisplay.ToString(DECIMAL_FORMAT) : "";
+            if (rg.ShowScore)
+            {
+                ScoreRange sr = rg.ScoreRange;
+                if (sr != null) TextBlockFinalScore.Background = new SolidColorBrush(sr.Color.ToMediaColor());
+            }
             TextBlockComment.Text = rg.Comment;
         }
 
-        private void BuildCategories(RatingModuleGame rm, RatableGame rg)
+        private void BuildCategories(GameModule rm, GameObject rg)
         {
-            for (int i = 0; i < rm.RatingCategories.Count(); i+=2)
+            for (int i = 0; i < rm.CategoryExtension.TotalNumRatingCategories(); i+=2)
             {
                 var col = new ColumnDefinition()
                 {
@@ -69,7 +73,7 @@ namespace GameTrackerWPF
                 Height = new GridLength(1, GridUnitType.Star)
             };
             GridCategories.RowDefinitions.Add(row);
-            if (rm.RatingCategories.Count() > 1)
+            if (rm.CategoryExtension.TotalNumRatingCategories() > 1)
             {
                 row = new RowDefinition()
                 {
@@ -78,10 +82,11 @@ namespace GameTrackerWPF
                 GridCategories.RowDefinitions.Add(row);
             }
 
+            if (!rg.ShowScore) return;
             int slot = 0;
-            foreach (RatingCategoryWeighted cat in rm.RatingCategories)
+            foreach (RatingCategory cat in rm.CategoryExtension.GetRatingCategoryList())
             {
-                double score = rm.GetScoreOfCategory(rg, cat);
+                double score = rg.CategoryExtension.ScoreOfCategory(cat);
                 StackPanel panel = new StackPanel
                 {
                     Background = new SolidColorBrush(new System.Windows.Media.Color() { A = 0xFF, R = 0xF4, G = 0xF4, B = 0xF4 }),

@@ -32,7 +32,7 @@ namespace RatableTracker.Model
         public StatusExtension StatusExtension { get; private set; }
 
         // Module re-declared as a different derived type
-        protected readonly new TrackerModuleStatuses module;
+        protected new TrackerModuleStatuses module => (TrackerModuleStatuses)base.module;
 
         public RankedObjectStatus(Settings settings, TrackerModuleStatuses module) : this(settings, module, new StatusExtension(module.StatusExtension)) { }
 

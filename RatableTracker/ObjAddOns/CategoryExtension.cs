@@ -21,9 +21,7 @@ namespace RatableTracker.ObjAddOns
         {
             get
             {
-                double sumOfWeights = module.SumOfCategoryWeights();
-                double total = CategoryValuesDisplay.Select(cv => (cv.RatingCategory.Weight / sumOfWeights) * cv.PointValue).Sum();
-                return total;
+                return module.GetTotalScoreFromCategoryValues(CategoryValuesDisplay);
             }
         }
 
@@ -62,6 +60,8 @@ namespace RatableTracker.ObjAddOns
                     throw new ValidationException("Category values were illegally modified - category " + categoryValue.RatingCategory.Name + " is a duplicate or does not exist on the module", categoryValue.RatingCategory.UniqueID);
                 categories.RemoveAt(indexOfCategory);
             }
+            if (categories.Count() > 0)
+                throw new ValidationException("Category values were illegally modified - more categories are represented than exist", string.Join(", ", categories.Select(cat => cat.UniqueID.ToString())));
         }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
@@ -94,6 +94,11 @@ namespace RatableTracker.ObjAddOns
                     cv.PointValue = settingsScore.ScaleValueToNewMinMaxRange(cv.PointValue);
                 }
             }
+        }
+
+        public virtual double ScoreOfCategory(RatingCategory ratingCategory)
+        {
+            return CategoryValuesDisplay.First(cv => cv.RatingCategory.Equals(ratingCategory)).PointValue;
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)

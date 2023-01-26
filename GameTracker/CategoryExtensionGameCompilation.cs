@@ -1,4 +1,5 @@
 ﻿using RatableTracker.ObjAddOns;
+using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace GameTracker
                 IList<CategoryValue> categoryValues = new List<CategoryValue>();
                 foreach (RatingCategory category in ratingCategories)
                 {
-                    double score = gamesInComp.Select(obj => obj.CategoryExtension.CategoryValuesDisplay.First(cv => cv.RatingCategory.Equals(category)).PointValue).Average();
+                    double score = gamesInComp.Select(obj => obj.CategoryExtension.ScoreOfCategory(category)).AverageIfEmpty(settings.MinScore);
                     categoryValues.Add(new CategoryValue(module, settings, category) { PointValue = score });
                 }
                 return categoryValues;
@@ -27,7 +28,7 @@ namespace GameTracker
 
         public override bool AreCategoryValuesEditable { get { return false; } }
 
-        public new GameCompilation BaseObject { get; }
+        public new GameCompilation BaseObject { get { return (GameCompilation)base.BaseObject; } }
 
         public CategoryExtensionGameCompilation(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
     }

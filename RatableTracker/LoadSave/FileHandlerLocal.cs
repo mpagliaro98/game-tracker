@@ -32,7 +32,7 @@ namespace RatableTracker.LoadSave
             if (pathController.FileExists(fullPath))
             {
                 var bytes = Util.Util.TextEncoding.GetBytes(pathController.ReadFromFile(fullPath));
-                logger.Log("Found " + bytes.Length.ToString() + " at " + fullPath);
+                logger.Log("Found " + bytes.Length.ToString() + " bytes at " + fullPath);
                 return bytes;
             }
             else
@@ -51,6 +51,7 @@ namespace RatableTracker.LoadSave
         {
             string fullPath = pathController.Combine(baseDirectory, relativePath);
             logger.Log(GetType().Name + " SaveFile - writing " + data.Length.ToString() + " bytes to " + fullPath);
+            pathController.CreateFileIfDoesNotExist(fullPath);
             pathController.WriteToFile(fullPath, Util.Util.TextEncoding.GetString(data));
         }
 
@@ -63,6 +64,7 @@ namespace RatableTracker.LoadSave
         {
             string fullPath = pathController.Combine(baseDirectory, relativePath);
             logger.Log(GetType().Name + " AppendFile - appending " + data.Length.ToString() + " bytes to " + fullPath);
+            pathController.CreateFileIfDoesNotExist(fullPath);
             pathController.AppendToFile(fullPath, Util.Util.TextEncoding.GetString(data));
         }
 
@@ -85,6 +87,7 @@ namespace RatableTracker.LoadSave
 
         public IList<Util.FileInfo> GetFilesInCurrentDirectory(Logger logger)
         {
+            pathController.CreateDirectory(baseDirectory);
             var dir = new DirectoryInfo(baseDirectory);
             IList<Util.FileInfo> files = new List<Util.FileInfo>();
             logger.Log(GetType().Name + " GetFilesInCurrentDirectory - found " + files.Count.ToString() + " files in " + baseDirectory);

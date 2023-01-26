@@ -13,7 +13,7 @@ namespace RatableTracker.ListManipulation
     {
         public const int SORT_Status = 10;
 
-        public new TrackerModuleScoreStatuses Module { get; set; }
+        public new TrackerModuleScoreStatuses Module { get { return (TrackerModuleScoreStatuses)base.Module; } set { base.Module = value; } }
 
         public SortRatedObjectStatus() : base() { }
 

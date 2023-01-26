@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using GameTracker.Model;
+using GameTracker;
 
 namespace GameTrackerWPF
 {
     public interface IListBoxItemGame
     {
-        RatableGame Game { get; }
+        GameObject Game { get; }
     }
 }

@@ -12,15 +12,16 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework.IO;
-using RatableTracker.Framework;
-using RatableTracker.Framework.Global;
-using RatableTracker.Framework.LoadSave;
-using RatableTracker.Framework.Interfaces;
-using Microsoft.Win32;
 using GameTracker;
-using RatableTracker.List_Manipulation;
+using Microsoft.Win32;
+using RatableTracker.Util;
+using System.Windows.Media.Animation;
+using RatableTracker.LoadSave;
+using RatableTracker.Interfaces;
+using RatableTracker.ListManipulation;
+using RatableTracker.ObjAddOns;
+using RatableTracker.ScoreRanges;
+using RatableTracker.Exceptions;
 
 namespace GameTrackerWPF
 {
@@ -35,17 +36,17 @@ namespace GameTrackerWPF
 
         private const string SORT_CM_PREFIX = "sort";
 
-        private RatingModuleGame rm;
+        private GameModule rm;
+        private SettingsGame settings;
 
         private class SavedState
         {
-            public int gamesSortMethod = SortOptionsGame.SORT_None;
-            public SortMode gamesSortMode = SortMode.ASCENDING;
-            public int platformsSortMethod = SortOptionsPlatform.SORT_None;
-            public SortMode platformsSortMode = SortMode.ASCENDING;
+            public FilterGames filterGames = new FilterGames();
+            public SortGames sortGames = new SortGames();
+            public FilterPlatforms filterPlatforms = new FilterPlatforms();
+            public SortPlatforms sortPlatforms = new SortPlatforms();
             public bool loaded = false;
             public GameDisplayMode displayMode = GameDisplayMode.DISPLAY_SMALL;
-            public bool showCompilations = false;
         }
 
         private SavedState savedState = new SavedState();
@@ -53,21 +54,35 @@ namespace GameTrackerWPF
         public MainWindow()
         {
             savedState.loaded = false;
-            PathController.PathControllerInstance = new PathControllerWindows();
-            GlobalSettings.Autosave = false;
-            IContentLoadSave<string, string> cls;
-            if (ContentLoadSaveAWSS3.KeyFileExists())
-                cls = new ContentLoadSaveAWSS3();
-            else
-                cls = new ContentLoadSaveLocal();
-            LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
+
+            // TODO use aws file handler if key file exists
+            IPathController pathController = new PathControllerWindows();
+            IFileHandler fileHandlerSaves = new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
+            GameTrackerFactory factory = new GameTrackerFactory();
+            ILoadSaveHandler<ILoadSaveMethodGame> loadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(fileHandlerSaves, factory, App.Logger));
+            rm = new GameModule(loadSave, App.Logger);
+            try
             {
-                ContentLoadSaveInstance = cls
-            };
-            rm = new RatingModuleGame(engine);
+                settings = (SettingsGame)Settings.Load(loadSave);
+            }
+            catch (NoDataFoundException)
+            {
+                // first load
+                settings = new SettingsGame();
+            }
+
+            savedState.filterGames.Module = rm;
+            savedState.filterGames.Settings = settings;
+            savedState.sortGames.Module = rm;
+            savedState.sortGames.Settings = settings;
+            savedState.filterPlatforms.Module = rm;
+            savedState.filterPlatforms.Settings = settings;
+            savedState.sortPlatforms.Module = rm;
+            savedState.sortPlatforms.Settings = settings;
+
             InitializeComponent();
-            PlatformsButtonSortMode.Tag = savedState.platformsSortMode;
-            GamesButtonSortMode.Tag = savedState.gamesSortMode;
+            PlatformsButtonSortMode.Tag = savedState.sortPlatforms.SortMode;
+            GamesButtonSortMode.Tag = savedState.sortGames.SortMode;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -79,21 +94,11 @@ namespace GameTrackerWPF
         {
             EnableNewButtons(false);
             mainWindow.Title = "Game Tracker (Loading...)";
-            await Task.Run(() => rm.InitAsync());
+            await Task.Run(() => rm.LoadData(settings));
             savedState.loaded = true;
             UpdateCurrentTab();
             EnableNewButtons(true);
             mainWindow.Title = "Game Tracker";
-        }
-
-        private void mainWindow_Closed(object sender, EventArgs e)
-        {
-            //rm.SaveListedObjects();
-            //rm.SavePlatforms();
-            //rm.SaveRanges();
-            //rm.SaveRatingCategories();
-            //rm.SaveSettings();
-            //rm.SaveStatuses();
         }
 
         #region General Functionality and Utilities
@@ -163,19 +168,19 @@ namespace GameTrackerWPF
             Image image;
             switch (mode)
             {
-                case SortMode.ASCENDING:
+                case SortMode.Ascending:
                     image = new Image();
                     image.Source = (ImageSource)Resources["ButtonDown"];
                     button.Content = image;
                     button.ToolTip = "Descending";
-                    button.Tag = SortMode.DESCENDING;
+                    button.Tag = SortMode.Descending;
                     break;
-                case SortMode.DESCENDING:
+                case SortMode.Descending:
                     image = new Image();
                     image.Source = (ImageSource)Resources["ButtonUp"];
                     button.Content = image;
                     button.ToolTip = "Ascending";
-                    button.Tag = SortMode.ASCENDING;
+                    button.Tag = SortMode.Ascending;
                     break;
                 default:
                     throw new Exception("Unhandled mode");
@@ -199,16 +204,6 @@ namespace GameTrackerWPF
         #endregion
 
         #region Games Tab
-        private FilterOptionsGame GetGameFilterOptions()
-        {
-            return new FilterOptionsGame(savedState.showCompilations);
-        }
-
-        private SortOptionsGame GetGameSortOptions()
-        {
-            return new SortOptionsGame(savedState.gamesSortMethod, savedState.gamesSortMode);
-        }
-
         private void UpdateGamesUI()
         {
             GamesListbox.ClearItems();
@@ -236,7 +231,7 @@ namespace GameTrackerWPF
                 default:
                     throw new NotImplementedException();
             }
-            foreach (RatableGame rg in rm.GetListedObjectView(GetGameFilterOptions(), GetGameSortOptions()))
+            foreach (GameObject rg in rm.GetModelObjectList(savedState.filterGames, savedState.sortGames))
             {
                 UserControl item;
                 switch (savedState.displayMode)
@@ -264,14 +259,14 @@ namespace GameTrackerWPF
                 else
                     item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
             }
-            BuildCategoriesHeader(rm.RatingCategories);
-            BuildGamesSortOptions(rm.RatingCategories);
+            BuildCategoriesHeader(rm.CategoryExtension.GetRatingCategoryList());
+            BuildGamesSortOptions(rm.CategoryExtension.GetRatingCategoryList());
 
-            var vis = rm.ListedObjects.Count() >= rm.LimitListedObjects ? Visibility.Hidden : Visibility.Visible;
+            var vis = rm.TotalNumModelObjects() >= rm.LimitModelObjects ? Visibility.Hidden : Visibility.Visible;
             GamesButtonNew.Visibility = vis;
         }
 
-        private void BuildCategoriesHeader(IEnumerable<RatingCategory> cats)
+        private void BuildCategoriesHeader(IList<RatingCategory> cats)
         {
             GridCategories.Children.Clear();
             GridCategories.ColumnDefinitions.Clear();
@@ -295,23 +290,23 @@ namespace GameTrackerWPF
             }
         }
 
-        private void BuildGamesSortOptions(IEnumerable<RatingCategory> cats)
+        private void BuildGamesSortOptions(IList<RatingCategory> cats)
         {
             if (!savedState.loaded || GamesButtonSort.ContextMenu.Items.Count > 0) return;
             GamesButtonSort.ContextMenu.Items.Clear();
             MenuItem item;
             foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
             {
-                new Tuple<string, string>(SortOptionsGame.SORT_Name.ToString(), "Name"),
-                new Tuple<string, string>(SortOptionsGame.SORT_Status.ToString(), "Completion Status"),
-                new Tuple<string, string>(SortOptionsGame.SORT_Platform.ToString(), "Platform"),
-                new Tuple<string, string>(SortOptionsGame.SORT_PlatformPlayedOn.ToString(), "Platform Played On"),
-                new Tuple<string, string>(SortOptionsGame.SORT_Score.ToString(), "Final Score"),
-                new Tuple<string, string>(SortOptionsGame.SORT_HasComment.ToString(), "Has Comment"),
-                new Tuple<string, string>(SortOptionsGame.SORT_ReleaseDate.ToString(), "Release Date"),
-                new Tuple<string, string>(SortOptionsGame.SORT_AcquiredOn.ToString(), "Acquired On"),
-                new Tuple<string, string>(SortOptionsGame.SORT_StartedOn.ToString(), "Started On"),
-                new Tuple<string, string>(SortOptionsGame.SORT_FinishedOn.ToString(), "Finished On")
+                new Tuple<string, string>(SortGames.SORT_Name.ToString(), "Name"),
+                new Tuple<string, string>(SortGames.SORT_Status.ToString(), "Completion Status"),
+                new Tuple<string, string>(SortGames.SORT_Platform.ToString(), "Platform"),
+                new Tuple<string, string>(SortGames.SORT_PlatformPlayedOn.ToString(), "Platform Played On"),
+                new Tuple<string, string>(SortGames.SORT_Score.ToString(), "Final Score"),
+                new Tuple<string, string>(SortGames.SORT_HasComment.ToString(), "Has Comment"),
+                new Tuple<string, string>(SortGames.SORT_ReleaseDate.ToString(), "Release Date"),
+                new Tuple<string, string>(SortGames.SORT_AcquiredOn.ToString(), "Acquired On"),
+                new Tuple<string, string>(SortGames.SORT_StartedOn.ToString(), "Started On"),
+                new Tuple<string, string>(SortGames.SORT_FinishedOn.ToString(), "Finished On")
             })
             {
                 item = new MenuItem
@@ -330,7 +325,7 @@ namespace GameTrackerWPF
                 item = new MenuItem
                 {
                     Header = cat.Name,
-                    Name = SORT_CM_PREFIX + (SortOptionsGame.SORT_CategoryStart + i).ToString(),
+                    Name = SORT_CM_PREFIX + (SortGames.SORT_CategoryStart + i).ToString(),
                     IsCheckable = true
                 };
                 item.Checked += GamesSort_Checked;
@@ -341,7 +336,7 @@ namespace GameTrackerWPF
 
         private void GamesButtonNew_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowGame(SubWindowMode.MODE_ADD);
+            OpenSubWindowGame(SubWindowMode.MODE_ADD, new GameObject(settings, rm));
         }
 
         private void GameEdit(object sender, RoutedEventArgs e)
@@ -363,45 +358,31 @@ namespace GameTrackerWPF
             OpenSubWindowGame(SubWindowMode.MODE_EDIT, lbi.Game);
         }
 
-        private async void GameDelete(object sender, RoutedEventArgs e)
+        private void GameDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemGameSmall lbi = GetControlFromMenuItem<ListBoxItemGameSmall>((MenuItem)sender);
 
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this game?", "Delete Game Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            RatableGame game = lbi.Game;
-            rm.DeleteListedObject(game);
+            lbi.Game.Delete(rm);
             UpdateGamesUI();
-            await SaveListedObjectsAsync();
         }
 
-        private void OpenSubWindowGame(SubWindowMode mode, RatableGame orig = null)
+        private void OpenSubWindowGame(SubWindowMode mode, GameObject orig)
         {
             Window window;
-            if (orig != null && orig is GameCompilation)
+            if (orig != null && orig.IsCompilation)
                 window = new SubWindowCompilation(rm, mode, orig as GameCompilation);
             else
-                window = new SubWindowGame(rm, mode, orig);
+                window = new SubWindowGame(rm, settings, mode, orig);
             window.Closed += GameWindow_Closed;
             window.ShowDialog();
         }
 
-        private async void GameWindow_Closed(object sender, EventArgs e)
+        private void GameWindow_Closed(object sender, EventArgs e)
         {
             UpdateGamesUI();
-            await SaveListedObjectsAsync();
-            await SaveGameCompilationsAsync();
-        }
-
-        private async Task SaveListedObjectsAsync()
-        {
-            await rm.SaveListedObjectsAsync();
-        }
-
-        private async Task SaveGameCompilationsAsync()
-        {
-            await rm.SaveGameCompilationsAsync();
         }
 
         private void GamesButtonSort_Click(object sender, RoutedEventArgs e)
@@ -426,14 +407,14 @@ namespace GameTrackerWPF
 
         private void GamesSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.gamesSortMethod = SortOptionsGame.SORT_None;
+            savedState.sortGames.SortMethod = SortGames.SORT_None;
             UpdateGamesUI();
         }
 
         private void GamesSort(string sortField)
         {
-            savedState.gamesSortMode = GetSortModeFromButton(GamesButtonSortMode);
-            savedState.gamesSortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
+            savedState.sortGames.SortMode = GetSortModeFromButton(GamesButtonSortMode);
+            savedState.sortGames.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
             UpdateGamesUI();
         }
 
@@ -481,28 +462,18 @@ namespace GameTrackerWPF
 
         private void CheckboxShowCompilations_Checked(object sender, RoutedEventArgs e)
         {
-            savedState.showCompilations = CheckboxShowCompilations.IsChecked.Value;
+            savedState.filterGames.ShowCompilations = CheckboxShowCompilations.IsChecked.Value;
             UpdateGamesUI();
         }
         #endregion
 
         #region Platforms Tab
-        private FilterOptionsPlatform GetPlatformFilterOptions()
-        {
-            return new FilterOptionsPlatform();
-        }
-
-        private SortOptionsPlatform GetPlatformSortOptions()
-        {
-            return new SortOptionsPlatform(savedState.platformsSortMethod, savedState.platformsSortMode);
-        }
-
         private void UpdatePlatformsUI()
         {
             PlatformsListbox.ClearItems();
-            foreach (Platform platform in rm.GetPlatformView(GetPlatformFilterOptions(), GetPlatformSortOptions()))
+            foreach (Platform platform in rm.GetPlatformList(savedState.filterPlatforms, savedState.sortPlatforms))
             {
-                ListBoxItemPlatform item = new ListBoxItemPlatform(rm, platform);
+                ListBoxItemPlatform item = new ListBoxItemPlatform(rm, settings, platform);
                 item.MouseDoubleClick += PlatformEdit;
                 PlatformsListbox.AddItem(item);
 
@@ -511,7 +482,7 @@ namespace GameTrackerWPF
 
             BuildPlatformsSortOptions();
 
-            var vis = rm.Platforms.Count() >= rm.LimitPlatforms ? Visibility.Hidden : Visibility.Visible;
+            var vis = rm.TotalNumPlatforms() >= rm.LimitPlatforms ? Visibility.Hidden : Visibility.Visible;
             PlatformsButtonNew.Visibility = vis;
         }
 
@@ -522,14 +493,14 @@ namespace GameTrackerWPF
             MenuItem item;
             foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
             {
-                new Tuple<string, string>(SortOptionsPlatform.SORT_Name.ToString(), "Name"),
-                new Tuple<string, string>(SortOptionsPlatform.SORT_NumGames.ToString(), "# Games"),
-                new Tuple<string, string>(SortOptionsPlatform.SORT_Average.ToString(), "Average Score"),
-                new Tuple<string, string>(SortOptionsPlatform.SORT_Highest.ToString(), "Highest Score"),
-                new Tuple<string, string>(SortOptionsPlatform.SORT_Lowest.ToString(), "Lowest Score"),
-                new Tuple<string, string>(SortOptionsPlatform.SORT_PercentFinished.ToString(), "% Finished"),
-                new Tuple<string, string>(SortOptionsPlatform.SORT_Release.ToString(), "Release Year"),
-                new Tuple<string, string>(SortOptionsPlatform.SORT_Acquired.ToString(), "Acquired Year")
+                new Tuple<string, string>(SortPlatforms.SORT_Name.ToString(), "Name"),
+                new Tuple<string, string>(SortPlatforms.SORT_NumGames.ToString(), "# Games"),
+                new Tuple<string, string>(SortPlatforms.SORT_Average.ToString(), "Average Score"),
+                new Tuple<string, string>(SortPlatforms.SORT_Highest.ToString(), "Highest Score"),
+                new Tuple<string, string>(SortPlatforms.SORT_Lowest.ToString(), "Lowest Score"),
+                new Tuple<string, string>(SortPlatforms.SORT_PercentFinished.ToString(), "% Finished"),
+                new Tuple<string, string>(SortPlatforms.SORT_Release.ToString(), "Release Year"),
+                new Tuple<string, string>(SortPlatforms.SORT_Acquired.ToString(), "Acquired Year")
             })
             {
                 item = new MenuItem
@@ -563,17 +534,15 @@ namespace GameTrackerWPF
             OpenSubWindowPlatform(SubWindowMode.MODE_EDIT, lbi.Platform);
         }
 
-        private async void PlatformDelete(object sender, RoutedEventArgs e)
+        private void PlatformDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemPlatform lbi = GetControlFromMenuItem<ListBoxItemPlatform>((MenuItem)sender);
 
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this platform and all data associated with it?", "Delete Platform Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            Platform platform = lbi.Platform;
-            rm.DeletePlatform(platform);
+            lbi.Platform.Delete(rm);
             UpdatePlatformsUI();
-            await SavePlatformsAsync();
         }
 
         private void OpenSubWindowPlatform(SubWindowMode mode, Platform orig = null)
@@ -583,16 +552,9 @@ namespace GameTrackerWPF
             window.ShowDialog();
         }
 
-        private async void PlatformWindow_Closed(object sender, EventArgs e)
+        private void PlatformWindow_Closed(object sender, EventArgs e)
         {
             UpdatePlatformsUI();
-            await SavePlatformsAsync();
-        }
-
-        private async Task SavePlatformsAsync()
-        {
-            await rm.SavePlatformsAsync();
-            await rm.SaveListedObjectsAsync();
         }
 
         private void PlatformsButtonSort_Click(object sender, RoutedEventArgs e)
@@ -617,14 +579,14 @@ namespace GameTrackerWPF
 
         private void PlatformsSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.platformsSortMethod = SortOptionsPlatform.SORT_None;
+            savedState.sortPlatforms.SortMethod = SortPlatforms.SORT_None;
             UpdatePlatformsUI();
         }
 
         private void PlatformSort(string sortField)
         {
-            savedState.platformsSortMode = GetSortModeFromButton(PlatformsButtonSortMode);
-            savedState.platformsSortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
+            savedState.sortPlatforms.SortMode = GetSortModeFromButton(PlatformsButtonSortMode);
+            savedState.sortPlatforms.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
             UpdatePlatformsUI();
         }
 
@@ -651,9 +613,10 @@ namespace GameTrackerWPF
         #region General Settings
         private void UpdateSettingsUI()
         {
-            SettingsTextboxMin.Text = rm.Settings.MinScore.ToString();
-            SettingsTextboxMax.Text = rm.Settings.MaxScore.ToString();
-            SettingsAWSButton.Content = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
+            SettingsTextboxMin.Text = settings.MinScore.ToString();
+            SettingsTextboxMax.Text = settings.MaxScore.ToString();
+            // TODO
+            //SettingsAWSButton.Content = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
         private void ResetSettingsLabels()
@@ -662,7 +625,7 @@ namespace GameTrackerWPF
             SettingsLabelSuccess.Visibility = Visibility.Collapsed;
         }
 
-        private async void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
+        private void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
         {
             ResetSettingsLabels();
             string minScoreInput = SettingsTextboxMin.Text;
@@ -673,37 +636,41 @@ namespace GameTrackerWPF
                 return;
             }
 
-            if (minScore != rm.Settings.MinScore || maxScore != rm.Settings.MaxScore)
+            if (minScore != settings.MinScore || maxScore != settings.MaxScore)
             {
                 MessageBoxResult mbr = MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
                 if (mbr != MessageBoxResult.Yes) return;
-                rm.SetScoresAndUpdate(minScore, maxScore);
+                settings.MinScore = minScore;
+                settings.MaxScore = maxScore;
+                settings.Save(rm);
             }
 
             UpdateSettingsUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
-            await SaveSettingsAsync();
         }
 
         private async void SettingsAWSButton_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.IsEnabled = false;
-            if (ContentLoadSaveAWSS3.KeyFileExists())
+
+            // TODO
+            if (mainWindow.IsEnabled) //(ContentLoadSaveAWSS3.KeyFileExists())
             {
                 // Remove key file
                 var result = MessageBox.Show("Transfer AWS save files to local? This will overwrite anything currently on this device.", "Overwrite local?", MessageBoxButton.YesNo);
-                IContentLoadSave<string, string> cls = new ContentLoadSaveLocal();
-                if (result == MessageBoxResult.Yes)
-                {
-                    IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
-                    await rm.TransferSaveFilesAsync(from, cls);
-                }
-                ContentLoadSaveAWSS3.DeleteKeyFile();
-                LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
-                {
-                    ContentLoadSaveInstance = cls
-                };
-                rm = new RatingModuleGame(engine);
+                // TODO transfer save files, make new module object
+                //IContentLoadSave<string, string> cls = new ContentLoadSaveLocal();
+                //if (result == MessageBoxResult.Yes)
+                //{
+                //    IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
+                //    await rm.TransferSaveFilesAsync(from, cls);
+                //}
+                //ContentLoadSaveAWSS3.DeleteKeyFile();
+                //LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
+                //{
+                //    ContentLoadSaveInstance = cls
+                //};
+                //rm = new RatingModuleGame(engine);
                 await LoadAllData();
             }
             else
@@ -715,18 +682,19 @@ namespace GameTrackerWPF
                     var result = MessageBox.Show("Transfer local save files to AWS? This will overwrite anything currently on your AWS account.", "Overwrite AWS?", MessageBoxButton.YesNo);
                     try
                     {
-                        ContentLoadSaveAWSS3.CreateKeyFile(fileDialog.FileName);
-                        IContentLoadSave<string, string> cls = new ContentLoadSaveAWSS3();
-                        if (result == MessageBoxResult.Yes)
-                        {
-                            IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
-                            await rm.TransferSaveFilesAsync(from, cls);
-                        }
-                        LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
-                        {
-                            ContentLoadSaveInstance = cls
-                        };
-                        rm = new RatingModuleGame(engine);
+                        // TODO transfer save files, make new module object
+                        //ContentLoadSaveAWSS3.CreateKeyFile(fileDialog.FileName);
+                        //IContentLoadSave<string, string> cls = new ContentLoadSaveAWSS3();
+                        //if (result == MessageBoxResult.Yes)
+                        //{
+                        //    IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
+                        //    await rm.TransferSaveFilesAsync(from, cls);
+                        //}
+                        //LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
+                        //{
+                        //    ContentLoadSaveInstance = cls
+                        //};
+                        //rm = new RatingModuleGame(engine);
                         await LoadAllData();
                     }
                     catch (Exception ex)
@@ -737,18 +705,13 @@ namespace GameTrackerWPF
             }
             mainWindow.IsEnabled = true;
         }
-
-        private async Task SaveSettingsAsync()
-        {
-            await rm.SaveSettingsAsync();
-        }
         #endregion
 
         #region Rating Categories
         private void UpdateRatingCategoryUI()
         {
             SettingsListboxRatingCategories.ClearItems();
-            foreach (RatingCategoryWeighted rc in rm.RatingCategories)
+            foreach (RatingCategoryWeighted rc in rm.CategoryExtension.GetRatingCategoryList().OfType<RatingCategoryWeighted>())
             {
                 ListBoxItemRatingCategory item = new ListBoxItemRatingCategory(rc);
                 item.MouseDoubleClick += RatingCategoryEdit;
@@ -757,10 +720,10 @@ namespace GameTrackerWPF
                 item.ContextMenu = EditDeleteContextMenu(RatingCategoryEdit, RatingCategoryDelete);
             }
 
-            var vis = rm.RatingCategories.Count() >= rm.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
+            var vis = rm.CategoryExtension.TotalNumRatingCategories() >= rm.CategoryExtension.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewRatingCategory.Visibility = vis;
             GamesButtonSort.ContextMenu.Items.Clear();
-            savedState.gamesSortMethod = SortOptionsGame.SORT_None;
+            savedState.sortGames.SortMethod = SortGames.SORT_None;
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
@@ -782,36 +745,27 @@ namespace GameTrackerWPF
             OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, lbi.RatingCategory);
         }
 
-        private async void RatingCategoryDelete(object sender, RoutedEventArgs e)
+        private void RatingCategoryDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemRatingCategory lbi = GetControlFromMenuItem<ListBoxItemRatingCategory>((MenuItem)sender);
 
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this rating category and all data associated with it?", "Delete Rating Category Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            RatingCategoryWeighted rc = lbi.RatingCategory;
-            rm.DeleteRatingCategory(rc);
+            lbi.RatingCategory.Delete(rm);
             UpdateRatingCategoryUI();
-            await SaveRatingCategoriesAsync();
         }
 
         private void OpenSubWindowRatingCategory(SubWindowMode mode, RatingCategoryWeighted orig = null)
         {
-            var window = new SubWindowRatingCategory(rm, mode, orig);
+            var window = new SubWindowRatingCategory(rm, settings, mode, orig);
             window.Closed += RatingCategoryWindow_Closed;
             window.ShowDialog();
         }
 
-        private async void RatingCategoryWindow_Closed(object sender, EventArgs e)
+        private void RatingCategoryWindow_Closed(object sender, EventArgs e)
         {
             UpdateRatingCategoryUI();
-            await SaveRatingCategoriesAsync();
-        }
-
-        private async Task SaveRatingCategoriesAsync()
-        {
-            await rm.SaveRatingCategoriesAsync();
-            await rm.SaveListedObjectsAsync();
         }
         #endregion
 
@@ -819,7 +773,7 @@ namespace GameTrackerWPF
         private void UpdateCompletionStatusUI()
         {
             SettingsListboxCompletionStatuses.ClearItems();
-            foreach (CompletionStatus cs in rm.Statuses)
+            foreach (StatusGame cs in rm.StatusExtension.GetStatusList().OfType<StatusGame>())
             {
                 ListBoxItemCompletionStatus item = new ListBoxItemCompletionStatus(cs);
                 item.MouseDoubleClick += CompletionStatusEdit;
@@ -828,7 +782,7 @@ namespace GameTrackerWPF
                 item.ContextMenu = EditDeleteContextMenu(CompletionStatusEdit, CompletionStatusDelete);
             }
 
-            var vis = rm.Statuses.Count() >= rm.LimitStatuses ? Visibility.Hidden : Visibility.Visible;
+            var vis = rm.StatusExtension.TotalNumStatuses() >= rm.StatusExtension.LimitStatuses ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewCompletionStatus.Visibility = vis;
         }
 
@@ -851,36 +805,27 @@ namespace GameTrackerWPF
             OpenSubWindowCompletionStatus(SubWindowMode.MODE_EDIT, lbi.CompletionStatus);
         }
 
-        private async void CompletionStatusDelete(object sender, RoutedEventArgs e)
+        private void CompletionStatusDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemCompletionStatus lbi = GetControlFromMenuItem<ListBoxItemCompletionStatus>((MenuItem)sender);
 
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this completion status and all data associated with it?", "Delete Completion Status Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            CompletionStatus cs = lbi.CompletionStatus;
-            rm.DeleteStatus(cs);
+            lbi.CompletionStatus.Delete(rm);
             UpdateCompletionStatusUI();
-            await SaveCompletionStatusesAsync();
         }
 
-        private void OpenSubWindowCompletionStatus(SubWindowMode mode, CompletionStatus orig = null)
+        private void OpenSubWindowCompletionStatus(SubWindowMode mode, StatusGame orig = null)
         {
             var window = new SubWindowCompletionStatus(rm, mode, orig);
             window.Closed += CompletionStatusWindow_Closed;
             window.ShowDialog();
         }
 
-        private async void CompletionStatusWindow_Closed(object sender, EventArgs e)
+        private void CompletionStatusWindow_Closed(object sender, EventArgs e)
         {
             UpdateCompletionStatusUI();
-            await SaveCompletionStatusesAsync();
-        }
-
-        private async Task SaveCompletionStatusesAsync()
-        {
-            await rm.SaveStatusesAsync();
-            await rm.SaveListedObjectsAsync();
         }
         #endregion
 
@@ -888,7 +833,7 @@ namespace GameTrackerWPF
         private void UpdateScoreRangeUI()
         {
             SettingsListboxScoreRanges.ClearItems();
-            foreach (ScoreRange sr in rm.Ranges)
+            foreach (ScoreRange sr in rm.GetScoreRangeList())
             {
                 ListBoxItemScoreRange item = new ListBoxItemScoreRange(rm, sr);
                 item.MouseDoubleClick += ScoreRangeEdit;
@@ -897,7 +842,7 @@ namespace GameTrackerWPF
                 item.ContextMenu = EditDeleteContextMenu(ScoreRangeEdit, ScoreRangeDelete);
             }
 
-            var vis = rm.Ranges.Count() >= rm.LimitRanges ? Visibility.Hidden : Visibility.Visible;
+            var vis = rm.TotalNumScoreRanges() >= rm.LimitRanges ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewScoreRange.Visibility = vis;
         }
 
@@ -920,17 +865,15 @@ namespace GameTrackerWPF
             OpenSubWindowScoreRange(SubWindowMode.MODE_EDIT, lbi.ScoreRange);
         }
 
-        private async void ScoreRangeDelete(object sender, RoutedEventArgs e)
+        private void ScoreRangeDelete(object sender, RoutedEventArgs e)
         {
             ListBoxItemScoreRange lbi = GetControlFromMenuItem<ListBoxItemScoreRange>((MenuItem)sender);
 
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this score range?", "Delete Score Range Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            ScoreRange sr = lbi.ScoreRange;
-            rm.DeleteRange(sr);
+            lbi.ScoreRange.Delete(rm);
             UpdateScoreRangeUI();
-            await SaveScoreRangesAsync();
         }
 
         private void OpenSubWindowScoreRange(SubWindowMode mode, ScoreRange orig = null)
@@ -940,15 +883,9 @@ namespace GameTrackerWPF
             window.ShowDialog();
         }
 
-        private async void ScoreRangeWindow_Closed(object sender, EventArgs e)
+        private void ScoreRangeWindow_Closed(object sender, EventArgs e)
         {
             UpdateScoreRangeUI();
-            await SaveScoreRangesAsync();
-        }
-
-        private async Task SaveScoreRangesAsync()
-        {
-            await rm.SaveRangesAsync();
         }
         #endregion
 

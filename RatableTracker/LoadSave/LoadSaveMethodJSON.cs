@@ -13,6 +13,7 @@ using System.Windows.Media;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using RatableTracker.Exceptions;
 
 namespace RatableTracker.LoadSave
 {
@@ -159,9 +160,15 @@ namespace RatableTracker.LoadSave
             changed = true;
         }
 
-        public T LoadOne<T>(Action ensureLoaded, SavableRepresentation data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject
+        public T LoadOne<T>(Action ensureLoaded, ref SavableRepresentation data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject
         {
             ensureLoaded();
+            if (data == null)
+            {
+                string message = "No data found when attempting to load " + typeof(T).Name;
+                logger.Log(typeof(NoDataFoundException).Name + ": " + message);
+                throw new NoDataFoundException(message);
+            }
             string typeName = data.GetValue(keyTypeName).GetString();
             T obj = generateObj(typeName);
             obj.RestoreFromRepresentation(data);
@@ -213,18 +220,19 @@ namespace RatableTracker.LoadSave
             changed = true;
         }
 
-        protected IList<T> LoadAll<T>(Action ensureLoaded, IList<SavableRepresentation> data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
+        protected IList<T> LoadAll<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
         {
-            return LoadAll<T, int>(ensureLoaded, data, generateObj, null, keyTypeName: keyTypeName);
+            return LoadAll<T, int>(ensureLoaded, ref data, generateObj, null, keyTypeName: keyTypeName);
         }
 
-        protected IList<T> LoadAll<T, TSort>(Action ensureLoaded, IList<SavableRepresentation> data, Func<string, T> generateObj, Func<T, TSort> sortExpression, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
+        protected IList<T> LoadAll<T, TSort>(Action ensureLoaded, ref IList<SavableRepresentation> data, Func<string, T> generateObj, Func<T, TSort> sortExpression, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
         {
             ensureLoaded();
+            if (data == null) data = new List<SavableRepresentation>();
             IList<T> list = new List<T>();
             foreach (var sr in data)
             {
-                string typeName = sr.GetValue(keyTypeName).ToString();
+                string typeName = sr.GetValue(keyTypeName).GetString().ToString();
                 T obj;
                 try
                 {
@@ -259,7 +267,7 @@ namespace RatableTracker.LoadSave
         #region "JSON Util"
         public static string FixJSONSpecialChars(string str)
         {
-            return str.Replace("\"", "\\\"").Replace("\n", "\\n");
+            return str.Replace("\"", "\\\"").Replace("\n", "\\n").Replace("\r", "\\r").Replace("\t", "\\t");
         }
 
         public static string CreateJSONArray(IEnumerable<SavableRepresentation> objs)
@@ -455,7 +463,7 @@ namespace RatableTracker.LoadSave
 
         public IList<RankedObject> LoadModelObjects(Settings settings, TrackerModule module)
         {
-            return LoadAll(EnsureModelObjectsAreLoaded, modelObjects, (s) => factory.GetModelObject(s, settings, module), (obj) => obj.Rank);
+            return LoadAll(EnsureModelObjectsAreLoaded, ref modelObjects, (s) => factory.GetModelObject(s, settings, module), (obj) => obj.Rank);
         }
 
         public void SaveAllModelObjects(IList<RankedObject> rankedObjects)
@@ -485,7 +493,7 @@ namespace RatableTracker.LoadSave
 
         public IList<ScoreRange> LoadScoreRanges(TrackerModuleScores module)
         {
-            return LoadAll(EnsureScoreRangesAreLoaded, scoreRanges, (s) => factory.GetScoreRange(s, module));
+            return LoadAll(EnsureScoreRangesAreLoaded, ref scoreRanges, (s) => factory.GetScoreRange(s, module));
         }
 
         public void SaveSettings(Settings settings)
@@ -495,7 +503,7 @@ namespace RatableTracker.LoadSave
 
         public Settings LoadSettings()
         {
-            return LoadOne(EnsureSettingsAreLoaded, settings, (s) => factory.GetSettings(s));
+            return LoadOne(EnsureSettingsAreLoaded, ref settings, (s) => factory.GetSettings(s));
         }
 
         public void SaveOneCategory(RatingCategory ratingCategory)
@@ -515,7 +523,7 @@ namespace RatableTracker.LoadSave
 
         public IList<RatingCategory> LoadCategories(CategoryExtensionModule module, SettingsScore settings)
         {
-            return LoadAll(EnsureCategoriesAreLoaded, categories, (s) => factory.GetRatingCategory(s, module, settings));
+            return LoadAll(EnsureCategoriesAreLoaded, ref categories, (s) => factory.GetRatingCategory(s, module, settings));
         }
 
         public void SaveOneStatus(Status status)
@@ -535,7 +543,7 @@ namespace RatableTracker.LoadSave
 
         public IList<Status> LoadStatuses(StatusExtensionModule module)
         {
-            return LoadAll(EnsureStatusesAreLoaded, statuses, (s) => factory.GetStatus(s, module));
+            return LoadAll(EnsureStatusesAreLoaded, ref statuses, (s) => factory.GetStatus(s, module));
         }
     }
 }

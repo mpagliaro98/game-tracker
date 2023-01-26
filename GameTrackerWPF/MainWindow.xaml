@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
         mc:Ignorable="d"
-        Title="Game Tracker" Height="600" Width="1100" MinHeight="600" MinWidth="1100" Loaded="Window_Loaded" Closed="mainWindow_Closed">
+        Title="Game Tracker" Height="600" Width="1100" MinHeight="600" MinWidth="1100" Loaded="Window_Loaded">
     <Window.Resources>
         <BitmapImage x:Key="ButtonSearch" UriSource="../Images/button_search.png" />
         <BitmapImage x:Key="ButtonSort" UriSource="../Images/button_sort.png" />

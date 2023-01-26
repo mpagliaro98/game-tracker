@@ -12,9 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using RatableTracker.Framework;
-using RatableTracker.Framework.Global;
-using GameTracker.Model;
+using GameTracker;
 
 namespace GameTrackerWPF
 {
@@ -23,13 +21,13 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class ListBoxItemCompletionStatus : UserControl
     {
-        private CompletionStatus cs;
-        public CompletionStatus CompletionStatus
+        private StatusGame cs;
+        public StatusGame CompletionStatus
         {
             get { return cs; }
         }
 
-        public ListBoxItemCompletionStatus(CompletionStatus cs)
+        public ListBoxItemCompletionStatus(StatusGame cs)
         {
             InitializeComponent();
             this.cs = cs;

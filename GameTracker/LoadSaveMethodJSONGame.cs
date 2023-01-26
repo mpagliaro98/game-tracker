@@ -17,7 +17,7 @@ namespace GameTracker
 
         protected bool platformsChanged = false;
 
-        protected readonly new GameTrackerFactory factory;
+        protected new GameTrackerFactory factory => (GameTrackerFactory)base.factory;
 
         public LoadSaveMethodJSONGame(IFileHandler fileHandler, GameTrackerFactory factory) : base(fileHandler, factory) { }
 
@@ -49,7 +49,7 @@ namespace GameTracker
 
         public IList<Platform> LoadPlatforms(GameModule module)
         {
-            return LoadAll(EnsurePlatformsAreLoaded, platforms, (s) => factory.GetPlatform(s, module));
+            return LoadAll(EnsurePlatformsAreLoaded, ref platforms, (s) => factory.GetPlatform(s, module));
         }
 
         public void SaveAllPlatforms(IList<Platform> platform)

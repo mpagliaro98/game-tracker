@@ -10,7 +10,7 @@ namespace RatableTracker.ListManipulation
 {
     public class FilterRatedObjectCategorical : FilterRatedObjects
     {
-        public new TrackerModuleScoreCategorical Module { get; set; }
+        public new TrackerModuleScoreCategorical Module { get { return (TrackerModuleScoreCategorical)base.Module; } set { base.Module = value; } }
 
         public FilterRatedObjectCategorical() : base() { }
 

@@ -51,8 +51,8 @@ namespace RatableTracker.Model
         }
 
         // Re-declared as a different derived type
-        protected readonly new SettingsScore settings;
-        protected readonly new TrackerModuleScores module;
+        protected new SettingsScore settings => (SettingsScore)base.settings;
+        protected new TrackerModuleScores module => (TrackerModuleScores)base.module;
 
         public RatedObject(SettingsScore settings, TrackerModuleScores module) : base(settings, module)
         {

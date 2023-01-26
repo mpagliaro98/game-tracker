@@ -11,11 +11,9 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using RatableTracker.Framework;
-using GameTracker.Model;
-using RatableTracker.Framework.ScoreRelationships;
-using RatableTracker.Framework.Global;
-using RatableTracker.Framework.Exceptions;
+using GameTracker;
+using RatableTracker.ScoreRanges;
+using RatableTracker.Exceptions;
 
 namespace GameTrackerWPF
 {
@@ -24,15 +22,16 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class SubWindowScoreRange : Window
     {
-        private RatingModuleGame rm;
+        private GameModule rm;
         private ScoreRange orig;
         
-        public SubWindowScoreRange(RatingModuleGame rm, SubWindowMode mode, ScoreRange orig = null)
+        public SubWindowScoreRange(GameModule rm, SubWindowMode mode, ScoreRange orig = null)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
+            if (this.orig == null) this.orig = new ScoreRange(rm);
             FillCombobox();
             switch (mode)
             {
@@ -46,7 +45,7 @@ namespace GameTrackerWPF
                     ButtonSave.Visibility = Visibility.Collapsed;
                     ButtonUpdate.Visibility = Visibility.Visible;
                     TextboxName.Text = orig.Name;
-                    ComboboxRelationship.SelectedItem = rm.FindScoreRelationship(orig.RefScoreRelationship);
+                    ComboboxRelationship.SelectedItem = orig.ScoreRelationship;
                     ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
                     SetValueList(orig.ValueList);
                     break;
@@ -67,21 +66,31 @@ namespace GameTrackerWPF
 
         private void SaveResult()
         {
-            if (!ValidateInputs(out string name, out IEnumerable<double> valueList,
-                out ScoreRelationship sr, out RatableTracker.Framework.Color color)) return;
-            var range = new ScoreRange()
+            orig.Name = TextboxName.Text;
+            IList<double> valueList = new List<double>();
+            IList<string> list = GetValueListText();
+            foreach (string str in list)
             {
-                Name = name,
-                ValueList = valueList,
-                Color = color
-            };
-            range.SetScoreRelationship(sr);
+                if (!double.TryParse(str, out _) || str == "")
+                {
+                    LabelError.Visibility = Visibility.Visible;
+                    LabelError.Content = "All values must be numbers";
+                    return;
+                }
+                valueList.Add(double.Parse(str));
+            }
+            orig.ValueList = valueList;
+            ScoreRelationship sr = (ScoreRelationship)ComboboxRelationship.SelectedItem;
+            if (sr == null)
+            {
+                LabelError.Visibility = Visibility.Visible;
+                LabelError.Content = "You must select a score relationship";
+                return;
+            }
+            orig.Color = ColorPickerColor.SelectedColor.ToDrawingColor();
             try
             {
-                if (orig == null)
-                    rm.AddRange(range);
-                else
-                    rm.UpdateRange(range, orig);
+                orig.Save(rm);
             }
             catch (ValidationException e)
             {
@@ -92,37 +101,10 @@ namespace GameTrackerWPF
             Close();
         }
 
-        private bool ValidateInputs(out string name, out IEnumerable<double> valueList, out ScoreRelationship sr,
-            out RatableTracker.Framework.Color color)
-        {
-            name = TextboxName.Text;
-            valueList = new List<double>();
-            IEnumerable<string> list = GetValueListText();
-            sr = (ScoreRelationship)ComboboxRelationship.SelectedItem;
-            color = ColorPickerColor.SelectedColor.ToDrawingColor();
-            if (sr == null)
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "You must select a score relationship";
-                return false;
-            }
-            foreach (string str in list)
-            {
-                if (!double.TryParse(str, out _) || str == "")
-                {
-                    LabelError.Visibility = Visibility.Visible;
-                    LabelError.Content = "All values must be numbers";
-                    return false;
-                }
-                valueList = valueList.Append(double.Parse(str));
-            }
-            return true;
-        }
-
         private void FillCombobox()
         {
             ComboboxRelationship.Items.Clear();
-            foreach (ScoreRelationship sr in rm.ScoreRelationships)
+            foreach (ScoreRelationship sr in rm.GetScoreRelationshipList())
             {
                 ComboboxRelationship.Items.Add(sr);
             }
@@ -162,7 +144,7 @@ namespace GameTrackerWPF
             }
         }
 
-        private void SetValueList(IEnumerable<double> valueList)
+        private void SetValueList(IList<double> valueList)
         {
             RefreshValueList();
             if (valueList == null) return;
@@ -174,7 +156,7 @@ namespace GameTrackerWPF
             }
         }
 
-        private IEnumerable<string> GetValueListText()
+        private IList<string> GetValueListText()
         {
             List<string> list = new List<string>();
             foreach (TextBox tb in StackPanelValueList.Children)

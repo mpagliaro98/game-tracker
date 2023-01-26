@@ -21,8 +21,8 @@ namespace GameTracker
         public const int SORT_Release = 7;
         public const int SORT_Acquired = 8;
 
-        public new GameModule Module { get; set; }
-        public new SettingsGame Settings { get; set; }
+        public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
+        public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
 
         public SortPlatforms() : base() { }
 
@@ -40,7 +40,7 @@ namespace GameTracker
                     sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Count();
                     break;
                 case SORT_Average:
-                    sortFunction = platform => Module.GetFinishedGamesOnPlatform(platform, Settings).Select(obj => obj.ScoreDisplay).Average();
+                    sortFunction = platform => Module.GetFinishedGamesOnPlatform(platform, Settings).Select(obj => obj.ScoreDisplay).AverageIfEmpty(Settings.MinScore);
                     break;
                 case SORT_Highest:
                     sortFunction = platform => Module.GetFinishedGamesOnPlatform(platform, Settings).Select(obj => obj.ScoreDisplay).Max();

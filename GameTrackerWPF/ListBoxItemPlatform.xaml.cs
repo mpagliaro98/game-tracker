@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameTracker;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +13,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework.Global;
 
 namespace GameTrackerWPF
 {
@@ -28,26 +27,27 @@ namespace GameTrackerWPF
             get { return platform; }
         }
 
-        public ListBoxItemPlatform(RatingModuleGame rm, Platform platform)
+        public ListBoxItemPlatform(GameModule rm, SettingsGame settings, Platform platform)
         {
+            // TODO
             InitializeComponent();
             this.platform = platform;
             RectangeColor.Fill = new SolidColorBrush(platform.Color.ToMediaColor());
             LabelName.Content = platform.Name;
-            LabelNumOwned.Content = rm.GetNumGamesByPlatform(platform).ToString();
-            LabelAverage.Content = rm.GetAverageScoreOfGamesByPlatform(platform).ToString("0.#####");
-            LabelHighest.Content = rm.GetHighestScoreFromGamesByPlatform(platform).ToString("0.##");
-            LabelLowest.Content = rm.GetLowestScoreFromGamesByPlatform(platform).ToString("0.##");
-            LabelFinishPercent.Content = rm.GetPercentageGamesFinishedByPlatform(platform).ToString("0.##") + "%";
-            LabelFinishRatio.Content = rm.GetNumGamesFinishedByPlatform(platform).ToString() + "/" + rm.GetNumGamesFinishableByPlatform(platform).ToString() + " games";
-            SetStackPanelLabels(StackPanelTop, rm.GetTopGamesByPlatform(platform, 3));
-            SetStackPanelLabels(StackPanelBottom, rm.GetBottomGamesByPlatform(platform, 3));
+            LabelNumOwned.Content = "0"; // rm.GetNumGamesByPlatform(platform).ToString();
+            LabelAverage.Content = "0"; // rm.GetAverageScoreOfGamesByPlatform(platform).ToString("0.#####");
+            LabelHighest.Content = "0"; // rm.GetHighestScoreFromGamesByPlatform(platform).ToString("0.##");
+            LabelLowest.Content = "0"; // rm.GetLowestScoreFromGamesByPlatform(platform).ToString("0.##");
+            LabelFinishPercent.Content = rm.GetProportionGamesFinishedByPlatform(platform, settings).ToString("P2") + "%";
+            LabelFinishRatio.Content = rm.GetNumGamesFinishedByPlatform(platform, settings).ToString() + "/" + rm.GetNumGamesFinishableByPlatform(platform, settings).ToString() + " games";
+            SetStackPanelLabels(StackPanelTop, rm.GetGamesOnPlatform(platform, settings).Take(3).ToList()); // rm.GetTopGamesByPlatform(platform, 3));
+            SetStackPanelLabels(StackPanelBottom, rm.GetGamesOnPlatform(platform, settings).Take(3).ToList()); // rm.GetBottomGamesByPlatform(platform, 3));
         }
 
-        private void SetStackPanelLabels(StackPanel panel, IEnumerable<RatableGame> list)
+        private void SetStackPanelLabels(StackPanel panel, IList<GameObject> list)
         {
             panel.Children.Clear();
-            foreach (RatableGame rg in list)
+            foreach (GameObject rg in list)
             {
                 Label label = new Label();
                 label.Content = rg.Name;

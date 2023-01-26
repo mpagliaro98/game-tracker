@@ -1,4 +1,9 @@
-﻿using System;
+﻿using GameTracker;
+using RatableTracker.Exceptions;
+using RatableTracker.ObjAddOns;
+using RatableTracker.ScoreRanges;
+using RatableTracker.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,10 +16,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework;
-using RatableTracker.Framework.Exceptions;
-using RatableTracker.Framework.Global;
 
 namespace GameTrackerWPF
 {
@@ -23,10 +24,10 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class SubWindowCompilation : Window
     {
-        private RatingModuleGame rm;
+        private GameModule rm;
         private GameCompilation orig;
 
-        public SubWindowCompilation(RatingModuleGame rm, SubWindowMode mode, GameCompilation orig)
+        public SubWindowCompilation(GameModule rm, SubWindowMode mode, GameCompilation orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
@@ -42,10 +43,10 @@ namespace GameTrackerWPF
             CreateGamesInCompilation(rm, orig);
 
             TextboxName.Text = orig.Name;
-            if (orig.RefStatus.HasReference()) ComboBoxStatus.SelectedItem = rm.FindStatus(orig.RefStatus);
-            if (orig.RefPlatform.HasReference()) ComboBoxPlatform.SelectedItem = rm.FindPlatform(orig.RefPlatform);
-            if (orig.RefPlatformPlayedOn.HasReference()) ComboBoxPlatformPlayedOn.SelectedItem = rm.FindPlatform(orig.RefPlatformPlayedOn);
-            TextBoxFinalScore.Text = rm.GetScoreOfObject(orig).ToString("0.##");
+            if (orig.StatusExtension.Status != null) ComboBoxStatus.SelectedItem = orig.StatusExtension.Status;
+            if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform;
+            if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
+            TextBoxFinalScore.Text = orig.Score.ToString("0.##");
             UpdateFinalScoreTextBox();
 
             if (mode == SubWindowMode.MODE_VIEW)
@@ -65,27 +66,13 @@ namespace GameTrackerWPF
 
         private void SaveResult()
         {
-            if (!ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
-                out Platform platformPlayedOn)) return;
-            var comp = new GameCompilation()
-            {
-                Name = name
-            };
-            if (status != null)
-                comp.SetStatus(status);
-            else
-                comp.RemoveStatus();
-            if (platform != null)
-                comp.SetPlatform(platform);
-            else
-                comp.RemovePlatform();
-            if (platformPlayedOn != null)
-                comp.SetPlatformPlayedOn(platformPlayedOn);
-            else
-                comp.RemovePlatformPlayedOn();
+            orig.Name = TextboxName.Text;
+            orig.StatusExtension.Status = ComboBoxStatus.SelectedIndex == 0 ? null : (StatusGame)ComboBoxStatus.SelectedItem;
+            orig.Platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
+            orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatformPlayedOn.SelectedItem;
             try
             {
-                rm.UpdateGameCompilation(comp, orig);
+                orig.Save(rm);
             }
             catch (ValidationException e)
             {
@@ -96,29 +83,13 @@ namespace GameTrackerWPF
             Close();
         }
 
-        private bool ValidateInputs(out string name, out CompletionStatus status, out Platform platform,
-            out Platform platformPlayedOn)
-        {
-            name = TextboxName.Text;
-            status = ComboBoxStatus.SelectedIndex == 0 ? null : (CompletionStatus)ComboBoxStatus.SelectedItem;
-            platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
-            platformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatformPlayedOn.SelectedItem;
-            if (name == "")
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "A name is required";
-                return false;
-            }
-            return true;
-        }
-
         private void FillComboboxStatuses(ComboBox cb)
         {
             cb.Items.Clear();
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (CompletionStatus cs in rm.Statuses.OrderBy(s => s.Name))
+            foreach (StatusGame cs in rm.StatusExtension.GetStatusList().OrderBy(s => s.Name))
             {
                 cb.Items.Add(cs);
             }
@@ -130,18 +101,18 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (Platform platform in rm.Platforms.OrderBy(p => p.Name))
+            foreach (Platform platform in rm.GetPlatformList().OrderBy(p => p.Name))
             {
                 cb.Items.Add(platform);
             }
         }
 
-        private void CreateRatingCategories(RatingModuleGame rm, GameCompilation gc)
+        private void CreateRatingCategories(GameModule rm, GameCompilation gc)
         {
             GridRatingCategories.Children.Clear();
             GridRatingCategories.ColumnDefinitions.Clear();
             int i = 0;
-            foreach (RatingCategoryWeighted rc in rm.RatingCategories)
+            foreach (RatingCategoryWeighted rc in rm.CategoryExtension.GetRatingCategoryList())
             {
                 GridRatingCategories.ColumnDefinitions.Add(new ColumnDefinition());
                 DockPanel dock = new DockPanel
@@ -170,7 +141,7 @@ namespace GameTrackerWPF
                     Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 }),
                     FontSize = 32,
                     IsReadOnly = true,
-                    Text = rm.GetScoreOfCategory(gc, rc).ToString("0.##")
+                    Text = gc.CategoryExtension.ScoreOfCategory(rc).ToString("0.##")
                 };
                 dock.Children.Add(label);
                 dock.Children.Add(text);
@@ -182,8 +153,9 @@ namespace GameTrackerWPF
 
         private void UpdateFinalScoreColor(double score)
         {
-            RatableTracker.Framework.Color color = rm.GetRangeColorFromValue(score);
-            if (color.Equals(new RatableTracker.Framework.Color()))
+            ScoreRange sr = score.GetScoreRange(rm);
+            RatableTracker.Util.Color color = sr == null ? new RatableTracker.Util.Color() : sr.Color;
+            if (color.Equals(new RatableTracker.Util.Color()))
             {
                 TextBoxFinalScore.Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
             }
@@ -207,10 +179,11 @@ namespace GameTrackerWPF
 
         private void UpdateStats(double score)
         {
-            int rankOverall = rm.GetRankOfScore(score, orig);
+            // TODO
+            int rankOverall = orig.Rank;
             int rankPlatform = -1;
             Platform platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
-            if (platform != null) rankPlatform = rm.GetRankOfScoreByPlatform(score, platform, orig);
+            if (platform != null) rankPlatform = 1; // rm.GetRankOfScoreByPlatform(score, platform, orig);
 
             string text = "";
             if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
@@ -223,9 +196,9 @@ namespace GameTrackerWPF
             UpdateFinalScoreTextBox();
         }
 
-        private void CreateGamesInCompilation(RatingModuleGame rm, GameCompilation gc)
+        private void CreateGamesInCompilation(GameModule rm, GameCompilation gc)
         {
-            var games = rm.FindGamesInCompilation(gc);
+            var games = gc.GamesInCompilation();
             GamesListBoxWrap.Items.Clear();
             foreach (var game in games)
             {

@@ -49,7 +49,7 @@
                 </Grid>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label Content="Platform" />
-                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" SelectionChanged="ComboBoxPlatform_SelectionChanged" />
+                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" />
                 </StackPanel>
                 <Grid Grid.Row="2" Margin="5">
                     <Grid.ColumnDefinitions>
@@ -60,9 +60,9 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <CheckBox x:Name="CheckboxRemaster" Content="Remaster/Re-release" Checked="CheckboxRemaster_Checked" Unchecked="CheckboxRemaster_Checked" />
-                    <CheckBox x:Name="CheckboxUseOriginalGameScore" Content="Use score of original game" Grid.Column="1" Checked="CheckboxUseOriginalGameScore_Checked" Unchecked="CheckboxUseOriginalGameScore_Checked" />
-                    <ComboBox x:Name="ComboboxOriginalGame" Grid.Row="1" Grid.ColumnSpan="2" SelectionChanged="ComboboxOriginalGame_SelectionChanged" />
+                    <CheckBox x:Name="CheckboxRemaster" Content="Remaster/Re-release" />
+                    <CheckBox x:Name="CheckboxUseOriginalGameScore" Content="Use score of original game" Grid.Column="1" />
+                    <ComboBox x:Name="ComboboxOriginalGame" Grid.Row="1" Grid.ColumnSpan="2" />
                 </Grid>
             </Grid>
             <Grid Grid.Column="2">
@@ -84,7 +84,7 @@
                         <Label Content="Completion Status" />
                         <ComboBox x:Name="ComboBoxStatus" Margin="5,0" />
                     </StackPanel>
-                    <CheckBox x:Name="CheckboxUnfinishable" Grid.Row="1" Content="Doesn't have a start/end" Checked="CheckboxUnfinishable_Checked" Unchecked="CheckboxUnfinishable_Checked" Margin="5,0" />
+                    <CheckBox x:Name="CheckboxUnfinishable" Grid.Row="1" Content="Doesn't have a start/end" Margin="5,0" />
                 </Grid>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label Content="Platform Played On" />
@@ -99,10 +99,9 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <CheckBox x:Name="CheckboxCompilation" Content="Part of a compilation" Checked="CheckboxCompilation_Checked" Unchecked="CheckboxCompilation_Checked" />
+                    <CheckBox x:Name="CheckboxCompilation" Content="Part of a compilation" />
                     <Button x:Name="ButtonCompilationLink" Grid.Column="1" Content="Go to compilation" Visibility="Hidden" Click="ButtonCompilationLink_Click" />
                     <TextBox x:Name="TextboxCompilation" Grid.Row="1" Grid.ColumnSpan="2" ToolTip="Name of the compilation" />
-                    
                 </Grid>
             </Grid>
         </Grid>
@@ -124,7 +123,7 @@
                             <Image Source="{StaticResource ButtonEdit}" />
                         </Button>
                     </StackPanel>
-                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" TextChanged="TextBoxFinalScore_TextChanged" />
+                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" />
                 </DockPanel>
                 <TextBlock x:Name="TextBlockStats" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" />
             </Grid>
@@ -178,7 +177,6 @@
         </StackPanel>
         <StackPanel Grid.Row="5" HorizontalAlignment="Center">
             <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonSave_Click" />
-            <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
             <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>

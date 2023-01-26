@@ -10,7 +10,7 @@ namespace RatableTracker.ListManipulation
 {
     public class FilterRankedObjectStatus : FilterRankedObjects
     {
-        public new TrackerModuleStatuses Module { get; set; }
+        public new TrackerModuleStatuses Module { get { return (TrackerModuleStatuses)base.Module; } set { base.Module = value; } }
 
         public FilterRankedObjectStatus() : base() { }
 

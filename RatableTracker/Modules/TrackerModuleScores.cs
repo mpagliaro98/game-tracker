@@ -21,7 +21,7 @@ namespace RatableTracker.Modules
         protected IList<ScoreRange> ScoreRanges { get; private set; } = new List<ScoreRange>();
         protected IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
 
-        protected readonly new ILoadSaveHandler<ILoadSaveMethodScores> _loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodScores> _loadSave => (ILoadSaveHandler<ILoadSaveMethodScores>)base._loadSave;
 
         public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave) : this(loadSave, new Logger()) { }
 

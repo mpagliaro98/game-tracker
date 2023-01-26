@@ -31,7 +31,7 @@ namespace RatableTracker.Model
         }
 
         // Module re-declared as a different derived type
-        protected readonly new TrackerModuleScoreCategorical module;
+        protected new TrackerModuleScoreCategorical module => (TrackerModuleScoreCategorical)base.module;
 
         public RatedObjectCategorical(SettingsScore settings, TrackerModuleScoreCategorical module) : this(settings, module, new CategoryExtension(module.CategoryExtension, settings)) { }
 

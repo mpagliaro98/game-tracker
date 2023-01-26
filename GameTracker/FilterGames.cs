@@ -14,8 +14,8 @@ namespace GameTracker
         public bool ShowCompilations { get; set; } = false;
         public Platform Platform { get; set; } = null;
 
-        public new GameModule Module { get; set; }
-        public new SettingsGame Settings { get; set; }
+        public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
+        public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
 
         public FilterGames() : base() { }
 

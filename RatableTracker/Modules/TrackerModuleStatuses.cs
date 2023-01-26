@@ -15,7 +15,7 @@ namespace RatableTracker.Modules
     {
         public StatusExtensionModule StatusExtension { get; private set; }
 
-        protected readonly new ILoadSaveHandler<ILoadSaveMethodStatuses> _loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodStatuses> _loadSave => (ILoadSaveHandler<ILoadSaveMethodStatuses>)base._loadSave;
 
         public TrackerModuleStatuses(ILoadSaveHandler<ILoadSaveMethodStatuses> loadSave) : this(loadSave, new Logger()) { }
 

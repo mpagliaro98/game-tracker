@@ -21,7 +21,7 @@ namespace GameTracker
                 IList<RatingCategory> ratingCategories = module.CategoryExtension.GetRatingCategoryList();
                 foreach (RatingCategory category in ratingCategories)
                 {
-                    categoryAverages.Add(gamesInComp.Select(obj => obj.CategoryExtension.CategoryValuesDisplay.First(cv => cv.RatingCategory.Equals(category)).PointValue).Average());
+                    categoryAverages.Add(gamesInComp.Select(obj => obj.CategoryExtension.ScoreOfCategory(category)).AverageIfEmpty(settings.MinScore));
                 }
 
                 double total = 0;
@@ -33,14 +33,16 @@ namespace GameTracker
             }
         }
 
+        public new CategoryExtensionGameCompilation CategoryExtension { get { return (CategoryExtensionGameCompilation)base.CategoryExtension; } }
+
         public override bool IsCompilation { get { return true; } }
-        public override GameCompilation Compilation { get { return null; } set { } }
+        public override GameCompilation Compilation { get { return null; } set { throw new InvalidOperationException("Cannot set the compilation of a compilation"); } }
 
         public GameCompilation(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGameCompilation(module.CategoryExtension, settings)) { }
 
         public IList<GameObject> GamesInCompilation()
         {
-            return module.GetModelObjectList().OfType<GameObject>().Where((obj) => obj.Compilation != null && obj.Compilation.Equals(this)).ToList();
+            return module.GetModelObjectList().OfType<GameObject>().Where((obj) => obj.Compilation != null && obj.Compilation.Equals(this)).ToList() ?? new List<GameObject>();
         }
 
         public int NumGamesInCompilation()

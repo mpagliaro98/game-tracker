@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GameTracker;
+using RatableTracker.ScoreRanges;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using GameTracker.Model;
-using RatableTracker.Framework.Global;
 
 namespace GameTrackerWPF
 {
@@ -24,27 +24,31 @@ namespace GameTrackerWPF
     {
         private const string DECIMAL_FORMAT = "0.##";
 
-        private RatableGame rg;
-        public RatableGame Game
+        private GameObject rg;
+        public GameObject Game
         {
             get { return rg; }
         }
 
-        public ListBoxItemGameBox(RatingModuleGame rm, RatableGame rg)
+        public ListBoxItemGameBox(GameModule rm, GameObject rg)
         {
             InitializeComponent();
             this.rg = rg;
 
-            var platform = rm.FindPlatform(rg.RefPlatform);
-            var completionStatus = rm.FindStatus(rg.RefStatus);
+            var platform = rg.Platform;
+            var completionStatus = rg.StatusExtension.Status;
 
             TextBlockName.Text = rg.Name;
             TextBlockPlatform.Text = platform != null ? platform.Name : "";
             TextBlockStatus.Text = completionStatus != null ? completionStatus.Name : "";
             if (completionStatus != null)
                 TextBlockStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
-            TextBlockFinalScore.Text = rm.GetScoreOfObject(rg).ToString(DECIMAL_FORMAT);
-            TextBlockFinalScore.Background = new SolidColorBrush(rm.GetRangeColorFromObject(rg).ToMediaColor());
+            TextBlockFinalScore.Text = rg.ShowScore ? rg.ScoreDisplay.ToString(DECIMAL_FORMAT) : "";
+            if (rg.ShowScore)
+            {
+                ScoreRange sr = rg.ScoreRange;
+                if (sr != null) TextBlockFinalScore.Background = new SolidColorBrush(sr.Color.ToMediaColor());
+            }
         }
     }
 }

@@ -11,10 +11,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using RatableTracker.Framework;
-using RatableTracker.Framework.Global;
-using GameTracker.Model;
-using RatableTracker.Framework.Exceptions;
+using GameTracker;
+using RatableTracker.Exceptions;
 
 namespace GameTrackerWPF
 {
@@ -23,15 +21,16 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class SubWindowCompletionStatus : Window
     {
-        private RatingModuleGame rm;
-        private CompletionStatus orig;
+        private GameModule rm;
+        private StatusGame orig;
 
-        public SubWindowCompletionStatus(RatingModuleGame rm, SubWindowMode mode, CompletionStatus orig = null)
+        public SubWindowCompletionStatus(GameModule rm, SubWindowMode mode, StatusGame orig = null)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
+            if (this.orig == null) this.orig = new StatusGame(rm.StatusExtension);
             switch (mode)
             {
                 case SubWindowMode.MODE_ADD:
@@ -63,21 +62,13 @@ namespace GameTrackerWPF
 
         private void SaveResult()
         {
-            if (!ValidateInputs(out string name, out bool useAsFinished,
-                out bool excludeFromStats, out RatableTracker.Framework.Color color)) return;
-            var status = new CompletionStatus()
-            {
-                Name = name,
-                UseAsFinished = useAsFinished,
-                ExcludeFromStats = excludeFromStats,
-                Color = color
-            };
+            orig.Name = TextboxName.Text;
+            orig.UseAsFinished = CheckboxUseAsFinished.IsChecked.Value;
+            orig.ExcludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
+            orig.Color = ColorPickerColor.SelectedColor.ToDrawingColor();
             try
             {
-                if (orig == null)
-                    rm.AddStatus(status);
-                else
-                    rm.UpdateStatus(status, orig);
+                orig.Save(rm);
             }
             catch (ValidationException e)
             {
@@ -86,16 +77,6 @@ namespace GameTrackerWPF
                 return;
             }
             Close();
-        }
-
-        private bool ValidateInputs(out string name, out bool useAsFinished, out bool excludeFromStats,
-            out RatableTracker.Framework.Color color)
-        {
-            name = TextboxName.Text;
-            useAsFinished = CheckboxUseAsFinished.IsChecked.Value;
-            excludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
-            color = ColorPickerColor.SelectedColor.ToDrawingColor();
-            return true;
         }
     }
 }

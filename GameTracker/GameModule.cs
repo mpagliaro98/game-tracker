@@ -17,7 +17,7 @@ namespace GameTracker
 
         protected IList<Platform> Platforms { get; private set; } = new List<Platform>();
 
-        protected readonly new ILoadSaveHandler<ILoadSaveMethodGame> _loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodGame> _loadSave => (ILoadSaveHandler<ILoadSaveMethodGame>)base._loadSave;
 
         public GameModule(ILoadSaveHandler<ILoadSaveMethodGame> loadSave) : this(loadSave, new Logger()) { }
 
