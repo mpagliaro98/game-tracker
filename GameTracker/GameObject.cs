@@ -121,6 +121,26 @@ namespace GameTracker
 
         protected GameObject(SettingsGame settings, GameModule module, CategoryExtensionGame categoryExtension) : base(settings, module, categoryExtension) { }
 
+        public GameObject(GameObject copyFrom) : this(copyFrom, new CategoryExtensionGame(copyFrom.CategoryExtension)) { }
+
+        protected GameObject(GameObject copyFrom, CategoryExtensionGame categoryExtension) : base(copyFrom, new StatusExtension(copyFrom.StatusExtension), categoryExtension)
+        {
+            CompletionCriteria = copyFrom.CompletionCriteria;
+            CompletionComment = copyFrom.CompletionComment;
+            TimeSpent = copyFrom.TimeSpent;
+            ReleaseDate = copyFrom.ReleaseDate;
+            AcquiredOn = copyFrom.AcquiredOn;
+            StartedOn = copyFrom.StartedOn;
+            FinishedOn = copyFrom.FinishedOn;
+            IsRemaster = copyFrom.IsRemaster;
+            UseOriginalGameScore = copyFrom.UseOriginalGameScore;
+            IsUnfinishable = copyFrom.IsUnfinishable;
+            _platform = UniqueID.Copy(copyFrom._platform);
+            _platformPlayedOn = UniqueID.Copy(copyFrom._platformPlayedOn);
+            _originalGame = UniqueID.Copy(copyFrom._originalGame);
+            _compilation = UniqueID.Copy(copyFrom._compilation);
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

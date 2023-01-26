@@ -355,7 +355,7 @@ namespace GameTrackerWPF
             {
                 lbi = (IListBoxItemGame)sender;
             }
-            OpenSubWindowGame(SubWindowMode.MODE_EDIT, lbi.Game);
+            OpenSubWindowGame(SubWindowMode.MODE_EDIT, new GameObject(lbi.Game));
         }
 
         private void GameDelete(object sender, RoutedEventArgs e)
@@ -517,7 +517,7 @@ namespace GameTrackerWPF
 
         private void PlatformsButtonNew_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowPlatform(SubWindowMode.MODE_ADD);
+            OpenSubWindowPlatform(SubWindowMode.MODE_ADD, new Platform(rm));
         }
 
         private void PlatformEdit(object sender, RoutedEventArgs e)
@@ -531,7 +531,7 @@ namespace GameTrackerWPF
             {
                 lbi = (ListBoxItemPlatform)sender;
             }
-            OpenSubWindowPlatform(SubWindowMode.MODE_EDIT, lbi.Platform);
+            OpenSubWindowPlatform(SubWindowMode.MODE_EDIT, new Platform(lbi.Platform));
         }
 
         private void PlatformDelete(object sender, RoutedEventArgs e)
@@ -728,7 +728,7 @@ namespace GameTrackerWPF
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowRatingCategory(SubWindowMode.MODE_ADD);
+            OpenSubWindowRatingCategory(SubWindowMode.MODE_ADD, new RatingCategoryWeighted(rm.CategoryExtension, settings));
         }
 
         private void RatingCategoryEdit(object sender, RoutedEventArgs e)
@@ -742,7 +742,7 @@ namespace GameTrackerWPF
             {
                 lbi = (ListBoxItemRatingCategory)sender;
             }
-            OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, lbi.RatingCategory);
+            OpenSubWindowRatingCategory(SubWindowMode.MODE_EDIT, new RatingCategoryWeighted(lbi.RatingCategory));
         }
 
         private void RatingCategoryDelete(object sender, RoutedEventArgs e)
@@ -788,7 +788,7 @@ namespace GameTrackerWPF
 
         private void SettingsButtonNewCompletionStatus_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowCompletionStatus(SubWindowMode.MODE_ADD);
+            OpenSubWindowCompletionStatus(SubWindowMode.MODE_ADD, new StatusGame(rm.StatusExtension));
         }
 
         private void CompletionStatusEdit(object sender, RoutedEventArgs e)
@@ -802,7 +802,7 @@ namespace GameTrackerWPF
             {
                 lbi = (ListBoxItemCompletionStatus)sender;
             }
-            OpenSubWindowCompletionStatus(SubWindowMode.MODE_EDIT, lbi.CompletionStatus);
+            OpenSubWindowCompletionStatus(SubWindowMode.MODE_EDIT, new StatusGame(lbi.CompletionStatus));
         }
 
         private void CompletionStatusDelete(object sender, RoutedEventArgs e)
@@ -848,7 +848,7 @@ namespace GameTrackerWPF
 
         private void SettingsButtonNewScoreRange_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowScoreRange(SubWindowMode.MODE_ADD);
+            OpenSubWindowScoreRange(SubWindowMode.MODE_ADD, new ScoreRange(rm));
         }
 
         private void ScoreRangeEdit(object sender, RoutedEventArgs e)
@@ -862,7 +862,7 @@ namespace GameTrackerWPF
             {
                 lbi = (ListBoxItemScoreRange)sender;
             }
-            OpenSubWindowScoreRange(SubWindowMode.MODE_EDIT, lbi.ScoreRange);
+            OpenSubWindowScoreRange(SubWindowMode.MODE_EDIT, new ScoreRange(lbi.ScoreRange));
         }
 
         private void ScoreRangeDelete(object sender, RoutedEventArgs e)

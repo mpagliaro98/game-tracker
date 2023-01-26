@@ -44,6 +44,16 @@ namespace RatableTracker.ScoreRanges
             this.module = module;
         }
 
+        public ScoreRange(ScoreRange copyFrom)
+        {
+            module = copyFrom.module;
+            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
+            Name = copyFrom.Name;
+            ValueList = new List<double>(copyFrom.ValueList);
+            Color = copyFrom.Color;
+            _scoreRelationship = UniqueID.Copy(copyFrom._scoreRelationship);
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

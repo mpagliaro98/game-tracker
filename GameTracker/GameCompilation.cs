@@ -40,6 +40,8 @@ namespace GameTracker
 
         public GameCompilation(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGameCompilation(module.CategoryExtension, settings)) { }
 
+        public GameCompilation(GameCompilation copyFrom) : base(copyFrom, new CategoryExtensionGameCompilation(copyFrom.CategoryExtension)) { }
+
         public IList<GameObject> GamesInCompilation()
         {
             return module.GetModelObjectList().OfType<GameObject>().Where((obj) => obj.Compilation != null && obj.Compilation.Equals(this)).ToList() ?? new List<GameObject>();

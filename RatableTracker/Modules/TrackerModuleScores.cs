@@ -99,6 +99,10 @@ namespace RatableTracker.Modules
                 ScoreRanges.Add(scoreRange);
                 isNew = true;
             }
+            else
+            {
+                ScoreRanges.Replace(scoreRange);
+            }
 
             if (conn == null)
             {

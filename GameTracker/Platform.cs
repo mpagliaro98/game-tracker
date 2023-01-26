@@ -32,6 +32,17 @@ namespace GameTracker
             this.module = module;
         }
 
+        public Platform(Platform copyFrom)
+        {
+            module = copyFrom.module;
+            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
+            Name = copyFrom.Name;
+            Color = copyFrom.Color;
+            Abbreviation = copyFrom.Abbreviation;
+            ReleaseYear = copyFrom.ReleaseYear;
+            AcquiredYear = copyFrom.AcquiredYear;
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

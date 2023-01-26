@@ -27,7 +27,7 @@ namespace GameTrackerWPF
         private GameModule rm;
         private RatingCategoryWeighted orig;
 
-        public SubWindowRatingCategory(GameModule rm, SettingsScore settings, SubWindowMode mode, RatingCategoryWeighted orig = null)
+        public SubWindowRatingCategory(GameModule rm, SettingsScore settings, SubWindowMode mode, RatingCategoryWeighted orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;

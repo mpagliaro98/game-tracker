@@ -59,6 +59,11 @@ namespace RatableTracker.Model
             ManualScore = settings.MinScore;
         }
 
+        public RatedObject(RatedObject copyFrom) : base(copyFrom)
+        {
+            ManualScore = copyFrom.ManualScore;
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

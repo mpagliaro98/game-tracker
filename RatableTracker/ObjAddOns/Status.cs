@@ -32,6 +32,14 @@ namespace RatableTracker.ObjAddOns
             this.module = module;
         }
 
+        public Status(Status copyFrom)
+        {
+            module = copyFrom.module;
+            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
+            Name = copyFrom.Name;
+            Color = copyFrom.Color;
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

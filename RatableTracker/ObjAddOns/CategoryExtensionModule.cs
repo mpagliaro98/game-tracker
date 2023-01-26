@@ -64,6 +64,10 @@ namespace RatableTracker.ObjAddOns
                 RatingCategories.Add(ratingCategory);
                 isNew = true;
             }
+            else
+            {
+                RatingCategories.Replace(ratingCategory);
+            }
 
             if (conn == null)
             {

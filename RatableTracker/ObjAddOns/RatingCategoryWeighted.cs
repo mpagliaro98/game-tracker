@@ -11,6 +11,8 @@ namespace RatableTracker.ObjAddOns
     {
         public RatingCategoryWeighted(CategoryExtensionModule module, SettingsScore settings) : base(module, settings) { }
 
+        public RatingCategoryWeighted(RatingCategoryWeighted copyFrom) : base(copyFrom) { }
+
         public void SetWeight(double val)
         {
             Weight = val;

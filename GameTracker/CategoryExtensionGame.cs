@@ -47,6 +47,8 @@ namespace GameTracker
 
         public CategoryExtensionGame(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
 
+        public CategoryExtensionGame(CategoryExtensionGame copyFrom) : base(copyFrom) { }
+
         protected IList<CategoryValue> CreateListOfEmptyCategoryValues()
         {
             IList<CategoryValue> list = new List<CategoryValue>();

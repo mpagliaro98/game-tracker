@@ -32,6 +32,16 @@ namespace RatableTracker.ObjAddOns
             this.settings = settings;
         }
 
+        public RatingCategory(RatingCategory copyFrom)
+        {
+            module = copyFrom.module;
+            settings = copyFrom.settings;
+            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
+            Name = copyFrom.Name;
+            Comment = copyFrom.Comment;
+            Weight = copyFrom.Weight;
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

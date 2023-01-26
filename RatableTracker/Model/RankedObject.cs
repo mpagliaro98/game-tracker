@@ -53,6 +53,15 @@ namespace RatableTracker.Model
             this.module = module;
         }
 
+        public RankedObject(RankedObject copyFrom)
+        {
+            this.settings = copyFrom.settings;
+            this.module = copyFrom.module;
+            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
+            Name = copyFrom.Name;
+            Comment = copyFrom.Comment;
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

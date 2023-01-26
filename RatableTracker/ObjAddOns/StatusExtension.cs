@@ -36,6 +36,12 @@ namespace RatableTracker.ObjAddOns
             this.module = module;
         }
 
+        public StatusExtension(StatusExtension copyFrom)
+        {
+            this.module = copyFrom.module;
+            _status = UniqueID.Copy(copyFrom._status);
+        }
+
         public virtual void ValidateFields() { }
 
         public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)

@@ -46,6 +46,14 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
+        public CategoryExtension(CategoryExtension copyFrom)
+        {
+            this.module = copyFrom.module;
+            this.settings = copyFrom.settings;
+            CategoryValuesManual = copyFrom.CategoryValuesManual;
+            IgnoreCategories = copyFrom.IgnoreCategories;
+        }
+
         public virtual void ValidateFields()
         {
             var categories = module.GetRatingCategoryList();

@@ -25,6 +25,12 @@ namespace GameTracker
 
         public StatusGame(StatusExtensionModule module) : base(module) { }
 
+        public StatusGame(StatusGame copyFrom) : base(copyFrom)
+        {
+            UseAsFinished = copyFrom.UseAsFinished;
+            ExcludeFromStats = copyFrom.ExcludeFromStats;
+        }
+
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

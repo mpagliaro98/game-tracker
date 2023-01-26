@@ -24,7 +24,7 @@ namespace GameTrackerWPF
         private GameModule rm;
         private StatusGame orig;
 
-        public SubWindowCompletionStatus(GameModule rm, SubWindowMode mode, StatusGame orig = null)
+        public SubWindowCompletionStatus(GameModule rm, SubWindowMode mode, StatusGame orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;

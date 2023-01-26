@@ -24,7 +24,7 @@ namespace GameTrackerWPF
         private GameModule rm;
         private Platform orig;
 
-        public SubWindowPlatform(GameModule rm, SubWindowMode mode, Platform orig = null)
+        public SubWindowPlatform(GameModule rm, SubWindowMode mode, Platform orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;

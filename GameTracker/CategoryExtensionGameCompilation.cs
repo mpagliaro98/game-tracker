@@ -31,5 +31,7 @@ namespace GameTracker
         public new GameCompilation BaseObject { get { return (GameCompilation)base.BaseObject; } }
 
         public CategoryExtensionGameCompilation(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
+
+        public CategoryExtensionGameCompilation(CategoryExtensionGameCompilation copyFrom) : base(copyFrom) { }
     }
 }

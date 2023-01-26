@@ -125,6 +125,10 @@ namespace RatableTracker.Modules
                 ModelObjects.Add(modelObject);
                 isNew = true;
             }
+            else
+            {
+                ModelObjects.Replace(modelObject);
+            }
 
             if (conn == null)
             {

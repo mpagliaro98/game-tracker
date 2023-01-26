@@ -42,6 +42,12 @@ namespace RatableTracker.Model
             StatusExtension.BaseObject = this;
         }
 
+        public RatedObjectStatus(RatedObjectStatus copyFrom, StatusExtension statusExtension) : base(copyFrom)
+        {
+            StatusExtension = statusExtension;
+            StatusExtension.BaseObject = this;
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

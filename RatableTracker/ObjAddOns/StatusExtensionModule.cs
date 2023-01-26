@@ -63,6 +63,10 @@ namespace RatableTracker.ObjAddOns
                 Statuses.Add(status);
                 isNew = true;
             }
+            else
+            {
+                Statuses.Replace(status);
+            }
 
             if (conn == null)
             {

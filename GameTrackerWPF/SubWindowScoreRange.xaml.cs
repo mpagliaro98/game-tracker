@@ -25,7 +25,7 @@ namespace GameTrackerWPF
         private GameModule rm;
         private ScoreRange orig;
         
-        public SubWindowScoreRange(GameModule rm, SubWindowMode mode, ScoreRange orig = null)
+        public SubWindowScoreRange(GameModule rm, SubWindowMode mode, ScoreRange orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;

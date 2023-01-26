@@ -45,6 +45,12 @@ namespace RatableTracker.Model
             CategoryExtension.BaseObject = this;
         }
 
+        public RatedObjectStatusCategorical(RatedObjectStatusCategorical copyFrom, StatusExtension statusExtension, CategoryExtension categoryExtension) : base(copyFrom, statusExtension)
+        {
+            CategoryExtension = categoryExtension;
+            CategoryExtension.BaseObject = this;
+        }
+
         protected override void ValidateFields()
         {
             base.ValidateFields();

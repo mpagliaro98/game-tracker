@@ -116,6 +116,10 @@ namespace GameTracker
                 Platforms.Add(platform);
                 isNew = true;
             }
+            else
+            {
+                Platforms.Replace(platform);
+            }
 
             if (conn == null)
             {

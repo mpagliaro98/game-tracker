@@ -97,5 +97,24 @@ namespace RatableTracker.Util
                 return useIfEmpty;
             }
         }
+
+        public static void Replace<T>(this IList<T> source, T value)
+        {
+            source.ThrowIfNull("source");
+            int indexReplace = -1;
+            for (int i = 0; i < source.Count; i++)
+            {
+                var find = source[i];
+                if (find.Equals(value))
+                {
+                    indexReplace = i;
+                    break;
+                }
+            }
+            if (indexReplace >= 0)
+                source[indexReplace] = value;
+            else
+                throw new InvalidObjectStateException("Object " + value.ToString() + " was not found in list");
+        }
     }
 }
