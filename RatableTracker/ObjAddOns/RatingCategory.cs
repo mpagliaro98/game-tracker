@@ -32,10 +32,8 @@ namespace RatableTracker.ObjAddOns
             this.settings = settings;
         }
 
-        public RatingCategory(RatingCategory copyFrom)
+        public RatingCategory(RatingCategory copyFrom) : this(copyFrom.module, copyFrom.settings)
         {
-            module = copyFrom.module;
-            settings = copyFrom.settings;
             UniqueID = UniqueID.Copy(copyFrom.UniqueID);
             Name = copyFrom.Name;
             Comment = copyFrom.Comment;

@@ -16,6 +16,8 @@ namespace RatableTracker.Util
 
         private readonly static object fileLock = new object();
 
+        private int logCounter = 0;
+
         protected readonly IFileHandler fileHandler;
         protected readonly string logFileName;
 
@@ -41,18 +43,17 @@ namespace RatableTracker.Util
 
         protected virtual void LogSystemInfoOnLoggerStart()
         {
-            Log("OS INFO - " + Environment.OSVersion.VersionString + "\nCLR INFO - " + Environment.Version.ToString() + "\nFRAMEWORK INFO - " + Util.FrameworkVersion.ToString(), false);
+            Log("OS INFO - " + Environment.OSVersion.VersionString + "\nCLR INFO - " + Environment.Version.ToString() + "\nFRAMEWORK VERSION - " + Util.FrameworkVersion.ToString(), false);
         }
 
         public void Log(string message)
         {
-            Thread thread = new Thread(() => LogToFileThreadSafe(message, false));
-            thread.Start();
+            Log(message, true);
         }
 
         private void Log(string message, bool newlineAtStart)
         {
-            Thread thread = new Thread(() => LogToFileThreadSafe(message, !newlineAtStart));
+            Thread thread = new Thread(() => LogToFileThreadSafe((++logCounter).ToString("D5") + " - " + message, !newlineAtStart));
             thread.Start();
         }
 

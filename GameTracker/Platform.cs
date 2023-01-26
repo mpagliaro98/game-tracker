@@ -32,9 +32,8 @@ namespace GameTracker
             this.module = module;
         }
 
-        public Platform(Platform copyFrom)
+        public Platform(Platform copyFrom) : this(copyFrom.module)
         {
-            module = copyFrom.module;
             UniqueID = UniqueID.Copy(copyFrom.UniqueID);
             Name = copyFrom.Name;
             Color = copyFrom.Color;

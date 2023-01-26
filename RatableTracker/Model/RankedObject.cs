@@ -53,10 +53,8 @@ namespace RatableTracker.Model
             this.module = module;
         }
 
-        public RankedObject(RankedObject copyFrom)
+        public RankedObject(RankedObject copyFrom) : this(copyFrom.settings, copyFrom.module)
         {
-            this.settings = copyFrom.settings;
-            this.module = copyFrom.module;
             UniqueID = UniqueID.Copy(copyFrom.UniqueID);
             Name = copyFrom.Name;
             Comment = copyFrom.Comment;

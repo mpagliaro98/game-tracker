@@ -44,9 +44,8 @@ namespace RatableTracker.ScoreRanges
             this.module = module;
         }
 
-        public ScoreRange(ScoreRange copyFrom)
+        public ScoreRange(ScoreRange copyFrom) : this(copyFrom.module)
         {
-            module = copyFrom.module;
             UniqueID = UniqueID.Copy(copyFrom.UniqueID);
             Name = copyFrom.Name;
             ValueList = new List<double>(copyFrom.ValueList);
