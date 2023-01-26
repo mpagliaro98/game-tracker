@@ -10,7 +10,7 @@ namespace GameTracker
 {
     public class CategoryExtensionGameCompilation : CategoryExtensionGame
     {
-        public override IList<CategoryValue> CategoryValuesDisplay
+        public override IList<CategoryValue> CategoryValueList
         {
             get
             {

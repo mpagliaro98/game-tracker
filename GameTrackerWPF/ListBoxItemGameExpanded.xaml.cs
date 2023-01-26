@@ -86,7 +86,7 @@ namespace GameTrackerWPF
             int slot = 0;
             foreach (RatingCategory cat in rm.CategoryExtension.GetRatingCategoryList())
             {
-                double score = rg.CategoryExtension.ScoreOfCategory(cat);
+                double score = rg.CategoryExtension.ScoreOfCategoryDisplay(cat);
                 StackPanel panel = new StackPanel
                 {
                     Background = new SolidColorBrush(new System.Windows.Media.Color() { A = 0xFF, R = 0xF4, G = 0xF4, B = 0xF4 }),

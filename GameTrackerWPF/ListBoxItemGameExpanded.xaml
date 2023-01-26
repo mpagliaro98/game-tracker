@@ -9,7 +9,7 @@
     <Border BorderThickness="1" BorderBrush="Gainsboro">
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.6*" />
+                <ColumnDefinition Width="0*" />  <!--<ColumnDefinition Width="0.6*" />-->
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="0.7*" />

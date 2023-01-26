@@ -71,7 +71,7 @@
                         </Grid>
                         <Grid x:Name="GamesTopExpanded" Margin="5,0" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.6*" />
+                                <ColumnDefinition Width="0*" />  <!--<ColumnDefinition Width="0.6*" />-->
                                 <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="0.7*" />

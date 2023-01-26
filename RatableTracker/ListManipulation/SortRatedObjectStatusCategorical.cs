@@ -26,7 +26,7 @@ namespace RatableTracker.ListManipulation
             if (sortMethod >= SORT_CategoryStart && sortMethod < SORT_CategoryStart + Module.CategoryExtension.LimitRatingCategories)
             {
                 RatingCategory cat = Module.CategoryExtension.GetRatingCategoryList().ElementAt(sortMethod - SORT_CategoryStart);
-                sortFunction = obj => ((RatedObjectCategorical)obj).CategoryExtension.ScoreOfCategory(cat);
+                sortFunction = obj => ((RatedObjectCategorical)obj).CategoryExtension.ScoreOfCategoryDisplay(cat);
             }
             return sortFunction;
         }

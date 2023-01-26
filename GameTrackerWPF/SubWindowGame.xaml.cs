@@ -169,7 +169,7 @@ namespace GameTrackerWPF
             GridRatingCategories.Children.Clear();
             GridRatingCategories.ColumnDefinitions.Clear();
             int i = 0;
-            foreach (CategoryValue categoryValue in orig.CategoryExtension.CategoryValuesDisplay)
+            foreach (CategoryValue categoryValue in orig.CategoryExtension.CategoryValueList)
             {
                 RatingCategory rc = categoryValue.RatingCategory;
                 GridRatingCategories.ColumnDefinitions.Add(new ColumnDefinition());

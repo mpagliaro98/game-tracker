@@ -55,7 +55,7 @@ namespace GameTrackerWPF
             foreach (RatingCategory cat in rm.CategoryExtension.GetRatingCategoryList())
             {
                 GridCategories.ColumnDefinitions.Add(new ColumnDefinition());
-                double score = rg.CategoryExtension.ScoreOfCategory(cat);
+                double score = rg.CategoryExtension.ScoreOfCategoryDisplay(cat);
                 Label label = new Label();
                 label.Content = rg.ShowScore ? score.ToString(DECIMAL_FORMAT) : "";
                 Grid.SetColumn(label, i);

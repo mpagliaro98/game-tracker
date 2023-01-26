@@ -21,11 +21,13 @@ namespace RatableTracker.ObjAddOns
         {
             get
             {
-                return module.GetTotalScoreFromCategoryValues(CategoryValuesDisplay);
+                return module.GetTotalScoreFromCategoryValues(CategoryValueList);
             }
         }
 
-        public virtual IList<CategoryValue> CategoryValuesDisplay { get { return CategoryValuesManual; } }
+        public virtual IList<CategoryValue> CategoryValueList { get { return CategoryValuesManual; } }
+
+        public virtual IList<CategoryValue> CategoryValuesDisplay { get { return CategoryValueList; } }
 
         public bool IgnoreCategories { get; set; } = false;
         public virtual bool AreCategoryValuesEditable { get { return !IgnoreCategories; } }
@@ -106,7 +108,22 @@ namespace RatableTracker.ObjAddOns
 
         public virtual double ScoreOfCategory(RatingCategory ratingCategory)
         {
+            return CategoryValueList.First(cv => cv.RatingCategory.Equals(ratingCategory)).PointValue;
+        }
+
+        public virtual double ScoreOfCategoryDisplay(RatingCategory ratingCategory)
+        {
             return CategoryValuesDisplay.First(cv => cv.RatingCategory.Equals(ratingCategory)).PointValue;
+        }
+
+        protected IList<CategoryValue> CreateListOfEmptyCategoryValues()
+        {
+            IList<CategoryValue> list = new List<CategoryValue>();
+            foreach (RatingCategory category in module.GetRatingCategoryList())
+            {
+                list.Add(new CategoryValue(module, settings, category));
+            }
+            return list;
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)

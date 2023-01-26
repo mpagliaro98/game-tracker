@@ -17,7 +17,7 @@ namespace RatableTracker.Model
         {
             get
             {
-                if (StatusExtension.Status == null ? true : StatusExtension.Status.HideScoreOfModelObject)
+                if (StatusExtension.Status == null || StatusExtension.Status.HideScoreOfModelObject)
                     return settings.MinScore;
                 else
                     return base.ScoreDisplay;

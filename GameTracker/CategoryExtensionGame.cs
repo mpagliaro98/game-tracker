@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace GameTracker
 {
-    public class CategoryExtensionGame : CategoryExtension
+    public class CategoryExtensionGame : CategoryExtensionWithStatus
     {
-        public override IList<CategoryValue> CategoryValuesDisplay
+        public override IList<CategoryValue> CategoryValueList
         {
             get
             {
@@ -17,7 +17,7 @@ namespace GameTracker
                 {
                     try
                     {
-                        return BaseObject.OriginalGame == null ? CreateListOfEmptyCategoryValues() : BaseObject.OriginalGame.CategoryExtension.CategoryValuesDisplay;
+                        return BaseObject.OriginalGame == null ? CreateListOfEmptyCategoryValues() : BaseObject.OriginalGame.CategoryExtension.CategoryValueList;
                     }
                     catch (StackOverflowException e)
                     {
@@ -26,7 +26,7 @@ namespace GameTracker
                     }
                 }
                 else
-                    return base.CategoryValuesDisplay;
+                    return base.CategoryValueList;
             }
         }
 
@@ -48,15 +48,5 @@ namespace GameTracker
         public CategoryExtensionGame(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
 
         public CategoryExtensionGame(CategoryExtensionGame copyFrom) : base(copyFrom) { }
-
-        protected IList<CategoryValue> CreateListOfEmptyCategoryValues()
-        {
-            IList<CategoryValue> list = new List<CategoryValue>();
-            foreach (RatingCategory category in module.GetRatingCategoryList())
-            {
-                list.Add(new CategoryValue(module, settings, category));
-            }
-            return list;
-        }
     }
 }
