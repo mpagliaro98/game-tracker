@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Model
 {
-    public class RankedObject : SaveDeleteObject
+    public class RankedObject : SaveDeleteObject, IDisposable
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthComment => 10000;
@@ -166,5 +166,12 @@ namespace RatableTracker.Model
         {
             return Name;
         }
+
+        public void Dispose()
+        {
+            RemoveEventHandlers();
+        }
+
+        protected virtual void RemoveEventHandlers() { }
     }
 }

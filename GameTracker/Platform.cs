@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GameTracker
 {
-    public class Platform : SaveDeleteObject
+    public class Platform : SaveDeleteObject, IDisposable
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthAbbreviation => 10;
@@ -62,6 +62,13 @@ namespace GameTracker
         {
             this.module.DeletePlatform(this, (ILoadSaveMethodGame)conn);
         }
+
+        public void Dispose()
+        {
+            RemoveEventHandlers();
+        }
+
+        protected virtual void RemoveEventHandlers() { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
         mc:Ignorable="d"
-        Title="Game" Height="600" Width="900" MinHeight="600" MinWidth="900">
+        Title="Game" Height="600" Width="900" MinHeight="600" MinWidth="900" Closed="Window_Closed">
     <Window.Resources>
         <BitmapImage x:Key="ButtonEdit" UriSource="/Images/button_pencil.png" />
         <BitmapImage x:Key="ButtonLock" UriSource="/Images/button_lock.png" />

@@ -35,17 +35,17 @@ namespace RatableTracker.Model
 
         public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module) : this(settings, module, new StatusExtension(module.StatusExtension)) { }
 
-        public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module, StatusExtension statusExtension) : this(settings, module, statusExtension, new CategoryExtension(module.CategoryExtension, settings)) { }
+        public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module, StatusExtension statusExtension) : this(settings, module, statusExtension, new CategoryExtensionWithStatus(module.CategoryExtension, settings)) { }
 
-        public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module, CategoryExtension categoryExtension) : this(settings, module, new StatusExtension(module.StatusExtension), categoryExtension) { }
+        public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module, CategoryExtensionWithStatus categoryExtension) : this(settings, module, new StatusExtension(module.StatusExtension), categoryExtension) { }
 
-        public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module, StatusExtension statusExtension, CategoryExtension categoryExtension) : base(settings, module, statusExtension)
+        public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module, StatusExtension statusExtension, CategoryExtensionWithStatus categoryExtension) : base(settings, module, statusExtension)
         {
             CategoryExtension = categoryExtension;
             CategoryExtension.BaseObject = this;
         }
 
-        public RatedObjectStatusCategorical(RatedObjectStatusCategorical copyFrom, StatusExtension statusExtension, CategoryExtension categoryExtension) : base(copyFrom, statusExtension)
+        public RatedObjectStatusCategorical(RatedObjectStatusCategorical copyFrom, StatusExtension statusExtension, CategoryExtensionWithStatus categoryExtension) : base(copyFrom, statusExtension)
         {
             CategoryExtension = categoryExtension;
             CategoryExtension.BaseObject = this;
@@ -57,16 +57,16 @@ namespace RatableTracker.Model
             CategoryExtension.ValidateFields();
         }
 
-        public override bool RemoveReferenceToObject(IKeyable obj, Type type)
-        {
-            // deliberately not using || to avoid short-circuit behavior
-            return base.RemoveReferenceToObject(obj, type) | CategoryExtension.RemoveReferenceToObject(obj, type);
-        }
-
         public override void ApplySettingsChanges(Settings settings)
         {
             base.ApplySettingsChanges(settings);
             CategoryExtension.ApplySettingsChanges(settings);
+        }
+
+        protected override void RemoveEventHandlers()
+        {
+            base.RemoveEventHandlers();
+            CategoryExtension.Dispose();
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

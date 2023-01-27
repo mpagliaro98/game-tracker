@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.ScoreRanges
 {
-    public class ScoreRange : SaveDeleteObject
+    public class ScoreRange : SaveDeleteObject, IDisposable
     {
         public static int MaxLengthName => 200;
 
@@ -90,6 +90,13 @@ namespace RatableTracker.ScoreRanges
                 ValueList = newValueList;
             }
         }
+
+        public void Dispose()
+        {
+            RemoveEventHandlers();
+        }
+
+        protected virtual void RemoveEventHandlers() { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {

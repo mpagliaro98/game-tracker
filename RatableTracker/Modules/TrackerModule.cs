@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation;
 using RatableTracker.LoadSave;
@@ -22,6 +23,9 @@ namespace RatableTracker.Modules
         public virtual int LimitModelObjects => 100000;
 
         protected IList<RankedObject> ModelObjects { get; private set; } = new List<RankedObject>();
+
+        public delegate void ModelObjectDeleteHandler(object sender, ModelObjectDeleteArgs args);
+        public event ModelObjectDeleteHandler ModelObjectDeleted;
 
         protected readonly ILoadSaveHandler<ILoadSaveMethod> _loadSave;
         public Logger Logger { get; private set; }
@@ -57,20 +61,6 @@ namespace RatableTracker.Modules
         {
             connNew.SaveAllModelObjects(connCurrent.LoadModelObjects(settings, this));
             connNew.SaveSettings(connCurrent.LoadSettings());
-        }
-
-        public virtual void RemoveReferencesToObject(IKeyable obj, Type type)
-        {
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (RankedObject rankedObject in ModelObjects)
-                {
-                    if (rankedObject.RemoveReferenceToObject(obj, type))
-                    {
-                        rankedObject.Save(this, conn);
-                    }
-                }
-            }
         }
 
         public IList<RankedObject> GetModelObjectList()
@@ -112,7 +102,6 @@ namespace RatableTracker.Modules
         internal bool SaveModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
             Logger.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
-
             bool isNew = false;
             if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
             {
@@ -127,20 +116,11 @@ namespace RatableTracker.Modules
             }
             else
             {
-                ModelObjects.Replace(modelObject);
+                var old = ModelObjects.Replace(modelObject);
+                if (old != modelObject)
+                    old.Dispose();
             }
-
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.SaveOneModelObject(modelObject);
-                }
-            }
-            else
-            {
-                conn.SaveOneModelObject(modelObject);
-            }
+            conn.SaveOneModelObject(modelObject);
             return isNew;
         }
 
@@ -153,19 +133,9 @@ namespace RatableTracker.Modules
                 Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
-            RemoveReferencesToObject(modelObject, typeof(RankedObject));
             ModelObjects.Remove(modelObject);
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.DeleteOneModelObject(modelObject);
-                }
-            }
-            else
-            {
-                conn.DeleteOneModelObject(modelObject);
-            }
+            conn.DeleteOneModelObject(modelObject);
+            ModelObjectDeleted?.Invoke(this, new ModelObjectDeleteArgs(modelObject, modelObject.GetType(), conn));
         }
 
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
@@ -194,32 +164,22 @@ namespace RatableTracker.Modules
 
         internal void SaveSettings(Settings settings, ILoadSaveMethod conn)
         {
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.SaveSettings(settings);
-                }
-            }
-            else
-            {
-                conn.SaveSettings(settings);
-            }
+            Logger.Log("SaveSettings");
+            conn.SaveSettings(settings);
         }
 
-        public virtual void ApplySettingsChanges(Settings settings)
+        public virtual void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
         {
             foreach (RankedObject obj in ModelObjects)
             {
                 obj.ApplySettingsChanges(settings);
+                obj.Save(this, conn);
             }
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (RankedObject obj in ModelObjects)
-                {
-                    obj.Save(this, conn);
-                }
-            }
+        }
+
+        internal ILoadSaveMethod GetNewConnection()
+        {
+            return _loadSave.NewConnection();
         }
     }
 }

@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.ObjAddOns
 {
-    public class Status : SaveDeleteObject
+    public class Status : SaveDeleteObject, IDisposable
     {
         public static int MaxLengthName => 200;
 
@@ -57,6 +57,13 @@ namespace RatableTracker.ObjAddOns
         {
             this.module.DeleteStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
         }
+
+        public void Dispose()
+        {
+            RemoveEventHandlers();
+        }
+
+        protected virtual void RemoveEventHandlers() { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {

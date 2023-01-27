@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Model;
@@ -7,6 +8,7 @@ using RatableTracker.Util;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
@@ -20,6 +22,9 @@ namespace RatableTracker.Modules
 
         protected IList<ScoreRange> ScoreRanges { get; private set; } = new List<ScoreRange>();
         protected IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
+
+        public delegate void ScoreRangeDeleteHandler(object sender, ScoreRangeDeleteArgs args);
+        public event ScoreRangeDeleteHandler ScoreRangeDeleted;
 
         protected new ILoadSaveHandler<ILoadSaveMethodScores> _loadSave => (ILoadSaveHandler<ILoadSaveMethodScores>)base._loadSave;
 
@@ -58,21 +63,6 @@ namespace RatableTracker.Modules
             connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges(this));
         }
 
-        public override void RemoveReferencesToObject(IKeyable obj, Type type)
-        {
-            base.RemoveReferencesToObject(obj, type);
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (ScoreRange scoreRange in ScoreRanges)
-                {
-                    if (scoreRange.RemoveReferenceToObject(obj, type))
-                    {
-                        scoreRange.Save(this, conn);
-                    }
-                }
-            }
-        }
-
         public IList<ScoreRange> GetScoreRangeList()
         {
             return new List<ScoreRange>(ScoreRanges);
@@ -86,7 +76,6 @@ namespace RatableTracker.Modules
         internal bool SaveScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
             Logger.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
-
             bool isNew = false;
             if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
             {
@@ -101,20 +90,11 @@ namespace RatableTracker.Modules
             }
             else
             {
-                ScoreRanges.Replace(scoreRange);
+                var old = ScoreRanges.Replace(scoreRange);
+                if (old != scoreRange)
+                    old.Dispose();
             }
-
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.SaveOneScoreRange(scoreRange);
-                }
-            }
-            else
-            {
-                conn.SaveOneScoreRange(scoreRange);
-            }
+            conn.SaveOneScoreRange(scoreRange);
             return isNew;
         }
 
@@ -128,32 +108,17 @@ namespace RatableTracker.Modules
                 throw new InvalidObjectStateException(message);
             }
             ScoreRanges.Remove(scoreRange);
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.DeleteOneScoreRange(scoreRange);
-                }
-            }
-            else
-            {
-                conn.DeleteOneScoreRange(scoreRange);
-            }
+            conn.DeleteOneScoreRange(scoreRange);
+            ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(scoreRange, scoreRange.GetType(), conn));
         }
 
-        public override void ApplySettingsChanges(Settings settings)
+        public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
         {
-            base.ApplySettingsChanges(settings);
+            base.ApplySettingsChanges(settings, conn);
             foreach (ScoreRange scoreRange in ScoreRanges)
             {
                 scoreRange.ApplySettingsChanges(settings);
-            }
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (ScoreRange scoreRange in ScoreRanges)
-                {
-                    scoreRange.Save(this, conn);
-                }
+                scoreRange.Save(this, conn);
             }
         }
 

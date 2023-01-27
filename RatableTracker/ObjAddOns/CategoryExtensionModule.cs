@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.Model;
 using RatableTracker.Modules;
@@ -6,6 +7,7 @@ using RatableTracker.Util;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.Data.OleDb;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,9 +20,12 @@ namespace RatableTracker.ObjAddOns
 
         protected IList<RatingCategory> RatingCategories { get; private set; } = new List<RatingCategory>();
 
+        public delegate void RatingCategoryDeleteHandler(object sender, RatingCategoryDeleteArgs args);
+        public event RatingCategoryDeleteHandler RatingCategoryDeleted;
+
         protected readonly ILoadSaveHandler<ILoadSaveMethodCategoryExtension> _loadSave;
         public Logger Logger { get; private set; }
-        public IModuleCategorical BaseModule { get; internal set; }
+        public TrackerModuleScores BaseModule { get; internal set; }
 
         public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave) : this(loadSave, new Logger()) { }
 
@@ -51,7 +56,6 @@ namespace RatableTracker.ObjAddOns
         internal bool SaveRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
             Logger.Log("SaveRatingCategory - " + ratingCategory.UniqueID.ToString());
-
             bool isNew = false;
             if (Util.Util.FindObjectInList(RatingCategories, ratingCategory.UniqueID) == null)
             {
@@ -66,20 +70,11 @@ namespace RatableTracker.ObjAddOns
             }
             else
             {
-                RatingCategories.Replace(ratingCategory);
+                var old = RatingCategories.Replace(ratingCategory);
+                if (old != ratingCategory)
+                    old.Dispose();
             }
-
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.SaveOneCategory(ratingCategory);
-                }
-            }
-            else
-            {
-                conn.SaveOneCategory(ratingCategory);
-            }
+            conn.SaveOneCategory(ratingCategory);
             return isNew;
         }
 
@@ -93,45 +88,16 @@ namespace RatableTracker.ObjAddOns
                 throw new InvalidObjectStateException(message);
             }
             RatingCategories.Remove(ratingCategory);
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.DeleteOneCategory(ratingCategory);
-                }
-            }
-            else
-            {
-                conn.DeleteOneCategory(ratingCategory);
-            }
+            conn.DeleteOneCategory(ratingCategory);
+            RatingCategoryDeleted?.Invoke(this, new RatingCategoryDeleteArgs(ratingCategory, ratingCategory.GetType(), conn));
         }
 
-        public virtual void RemoveReferencesToObject(IKeyable obj, Type type, TrackerModule module)
-        {
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (RatingCategory ratingCategory in RatingCategories)
-                {
-                    if (ratingCategory.RemoveReferenceToObject(obj, type))
-                    {
-                        ratingCategory.Save(module, conn);
-                    }
-                }
-            }
-        }
-
-        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module)
+        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
             foreach (RatingCategory category in RatingCategories)
             {
                 category.ApplySettingsChanges(settings);
-            }
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (RatingCategory category in RatingCategories)
-                {
-                    category.Save(module, conn);
-                }
+                category.Save(module, conn);
             }
         }
 
@@ -140,17 +106,14 @@ namespace RatableTracker.ObjAddOns
             return RatingCategories.Select(cat => cat.Weight).Sum();
         }
 
-        internal void AddCategoryValueToAllModelObjects(TrackerModule module, SettingsScore settings, RatingCategory category)
+        internal void AddCategoryValueToAllModelObjects(TrackerModule module, SettingsScore settings, RatingCategory category, ILoadSaveMethodCategoryExtension conn)
         {
-            using (var conn = _loadSave.NewConnection())
+            foreach (RankedObject obj in module.GetModelObjectList())
             {
-                foreach (RankedObject obj in module.GetModelObjectList())
+                if (obj is IModelObjectCategorical objCat)
                 {
-                    if (obj is IModelObjectCategorical objCat)
-                    {
-                        objCat.CategoryExtension.CategoryValuesManual.Add(new CategoryValue(this, settings, category));
-                        conn.SaveOneModelObject(obj);
-                    }
+                    objCat.CategoryExtension.CategoryValuesManual.Add(new CategoryValue(this, settings, category));
+                    conn.SaveOneModelObject(obj);
                 }
             }
         }

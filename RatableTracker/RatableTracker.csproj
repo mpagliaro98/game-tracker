@@ -45,6 +45,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Events\ModelObjectDeleteArgs.cs" />
+    <Compile Include="Events\ObjectDeleteArgs.cs" />
+    <Compile Include="Events\RatingCategoryDeleteArgs.cs" />
+    <Compile Include="Events\ScoreRangeDeleteArgs.cs" />
+    <Compile Include="Events\StatusDeleteArgs.cs" />
     <Compile Include="Exceptions\NoDataFoundException.cs" />
     <Compile Include="ObjAddOns\CategoryExtensionWithStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

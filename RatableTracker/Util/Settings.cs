@@ -30,9 +30,9 @@ namespace RatableTracker.Util
             return false;
         }
 
-        protected override void PostSave(TrackerModule module, bool isNew)
+        protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
-            module.ApplySettingsChanges(this);
+            module.ApplySettingsChanges(this, conn);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

@@ -30,7 +30,7 @@ namespace GameTracker
 
         protected void SavePlatformsIfLoaded()
         {
-            SaveFileContentIfLoaded(PLATFORMS_FILE, platforms, SRListToBytes, platformsChanged);
+            SaveFileContentIfLoaded(PLATFORMS_FILE, ref platforms, SRListToBytes, platformsChanged);
         }
 
         public override void Dispose()

@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualBasic;
+using RatableTracker.Events;
 using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
@@ -34,12 +35,13 @@ namespace RatableTracker.ObjAddOns
 
         protected readonly CategoryExtensionModule module;
         protected readonly SettingsScore settings;
-        public IModelObjectCategorical BaseObject { get; internal set; }
+        public RatedObject BaseObject { get; internal set; }
 
         public CategoryExtension(CategoryExtensionModule module, SettingsScore settings)
         {
             this.module = module;
             this.settings = settings;
+            this.module.RatingCategoryDeleted += OnRatingCategoryDeleted;
 
             foreach (RatingCategory category in module.GetRatingCategoryList())
             {
@@ -48,10 +50,8 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        public CategoryExtension(CategoryExtension copyFrom)
+        public CategoryExtension(CategoryExtension copyFrom) : this(copyFrom.module, copyFrom.settings)
         {
-            this.module = copyFrom.module;
-            this.settings = copyFrom.settings;
             CategoryValuesManual = copyFrom.CategoryValuesManual;
             IgnoreCategories = copyFrom.IgnoreCategories;
         }
@@ -74,25 +74,22 @@ namespace RatableTracker.ObjAddOns
                 throw new ValidationException("Category values were illegally modified - more categories are represented than exist", string.Join(", ", categories.Select(cat => cat.UniqueID.ToString())));
         }
 
-        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
+        private void OnRatingCategoryDeleted(object sender, RatingCategoryDeleteArgs args)
         {
-            if (type == typeof(RatingCategory))
+            ICollection<CategoryValue> toDelete = new List<CategoryValue>();
+            foreach (CategoryValue cv in CategoryValuesManual)
             {
-                ICollection<CategoryValue> toDelete = new List<CategoryValue>();
-                foreach (CategoryValue cv in CategoryValuesManual)
+                if (cv.CategoryEquals(args.DeletedObject))
                 {
-                    if (obj.Equals(cv.RatingCategory))
-                    {
-                        toDelete.Add(cv);
-                    }
+                    toDelete.Add(cv);
                 }
-                foreach (CategoryValue cv in toDelete)
-                {
-                    CategoryValuesManual.Remove(cv);
-                }
-                return toDelete.Count > 0;
             }
-            return false;
+            foreach (CategoryValue cv in toDelete)
+            {
+                CategoryValuesManual.Remove(cv);
+            }
+            if (toDelete.Count > 0)
+                BaseObject.Save(module.BaseModule, args.Connection);
         }
 
         public virtual void ApplySettingsChanges(Settings settings)
@@ -104,6 +101,15 @@ namespace RatableTracker.ObjAddOns
                     cv.PointValue = settingsScore.ScaleValueToNewMinMaxRange(cv.PointValue);
                 }
             }
+        }
+        public void Dispose()
+        {
+            RemoveEventHandlers();
+        }
+
+        protected virtual void RemoveEventHandlers()
+        {
+            module.RatingCategoryDeleted -= OnRatingCategoryDeleted;
         }
 
         public virtual double ScoreOfCategory(RatingCategory ratingCategory)

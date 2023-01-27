@@ -41,15 +41,6 @@ namespace RatableTracker.Model
             }
         }
 
-        public override int Rank
-        {
-            get
-            {
-                IList<RankedObject> rankedObjects = module.GetModelObjectList().OrderByDescending(obj => obj.ScoreDisplay).ToList();
-                return rankedObjects.IndexOf(this) + 1;
-            }
-        }
-
         // Re-declared as a different derived type
         protected new SettingsScore settings => (SettingsScore)base.settings;
         protected new TrackerModuleScores module => (TrackerModuleScores)base.module;

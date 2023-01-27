@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.ObjAddOns
 {
-    public class StatusExtension
+    public class StatusExtension : IDisposable
     {
         private UniqueID _status = UniqueID.BlankID();
         public Status Status
@@ -29,16 +29,16 @@ namespace RatableTracker.ObjAddOns
         }
 
         protected readonly StatusExtensionModule module;
-        public IModelObjectStatus BaseObject { get; internal set; }
+        public RankedObject BaseObject { get; internal set; }
 
         public StatusExtension(StatusExtensionModule module)
         {
             this.module = module;
+            this.module.StatusDeleted += OnStatusDeleted;
         }
 
-        public StatusExtension(StatusExtension copyFrom)
+        public StatusExtension(StatusExtension copyFrom) : this(copyFrom.module)
         {
-            this.module = copyFrom.module;
             _status = UniqueID.Copy(copyFrom._status);
         }
 
@@ -57,7 +57,26 @@ namespace RatableTracker.ObjAddOns
             return false;
         }
 
+        private void OnStatusDeleted(object sender, Events.StatusDeleteArgs args)
+        {
+            if (_status.Equals(args.DeletedObject.UniqueID))
+            {
+                Status = null;
+                BaseObject.Save(module.BaseModule, args.Connection);
+            }
+        }
+
         public virtual void ApplySettingsChanges(Settings settings) { }
+
+        public void Dispose()
+        {
+            RemoveEventHandlers();
+        }
+
+        protected virtual void RemoveEventHandlers()
+        {
+            module.StatusDeleted -= OnStatusDeleted;
+        }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
         {

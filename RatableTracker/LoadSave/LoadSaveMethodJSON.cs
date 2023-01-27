@@ -92,7 +92,7 @@ namespace RatableTracker.LoadSave
             EnsureFileContentIsLoaded(CATEGORY_FILE, ref categories, InterpretBytesToSRList);
         }
 
-        protected void SaveFileContentIfLoaded<T>(string fileName, T representation, Func<T, byte[]> representationToBytes, bool changed)
+        protected void SaveFileContentIfLoaded<T>(string fileName, ref T representation, Func<T, byte[]> representationToBytes, bool changed)
         {
             if (representation == null) return;
             if (!changed) return;
@@ -101,32 +101,33 @@ namespace RatableTracker.LoadSave
             Stopwatch sw = Stopwatch.StartNew();
             fileHandler.SaveFile(fileName, fileContent, logger);
             sw.Stop();
+            representation = default; // null
             logger.Log("Save to " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms");
         }
 
         protected void SaveModelObjectsIfLoaded()
         {
-            SaveFileContentIfLoaded(MODEL_OBJECT_FILE, modelObjects, SRListToBytes, modelObjectsChanged);
+            SaveFileContentIfLoaded(MODEL_OBJECT_FILE, ref modelObjects, SRListToBytes, modelObjectsChanged);
         }
 
         protected void SaveSettingsIfLoaded()
         {
-            SaveFileContentIfLoaded(SETTINGS_FILE, settings, SRToBytes, settingsChanged);
+            SaveFileContentIfLoaded(SETTINGS_FILE, ref settings, SRToBytes, settingsChanged);
         }
 
         protected void SaveScoreRangesIfLoaded()
         {
-            SaveFileContentIfLoaded(SCORE_RANGE_FILE, modelObjects, SRListToBytes, scoreRangesChanged);
+            SaveFileContentIfLoaded(SCORE_RANGE_FILE, ref modelObjects, SRListToBytes, scoreRangesChanged);
         }
 
         protected void SaveStatusesIfLoaded()
         {
-            SaveFileContentIfLoaded(STATUS_FILE, statuses, SRListToBytes, statusesChanged);
+            SaveFileContentIfLoaded(STATUS_FILE, ref statuses, SRListToBytes, statusesChanged);
         }
 
         protected void SaveCategoriesIfLoaded()
         {
-            SaveFileContentIfLoaded(CATEGORY_FILE, categories, SRListToBytes, categoriesChanged);
+            SaveFileContentIfLoaded(CATEGORY_FILE, ref categories, SRListToBytes, categoriesChanged);
         }
 
         protected IList<SavableRepresentation> InterpretBytesToSRList(byte[] bytes)

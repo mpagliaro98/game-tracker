@@ -46,29 +46,34 @@ namespace RatableTracker.Model
 
         public void Save(TrackerModule module, ILoadSaveMethod conn)
         {
+            bool newConn = false;
             try
             {
+                if (conn == null)
+                {
+                    conn = module.GetNewConnection();
+                    newConn = true;
+                }
                 Validate(module.Logger);
-                PreSave(module);
+                PreSave(module, conn);
                 bool isNew = SaveObjectToModule(module, conn);
-                PostSave(module, isNew);
+                PostSave(module, isNew, conn);
             }
             catch
             {
                 conn?.SetCancel(true);
                 throw;
             }
+            finally
+            {
+                if (newConn) conn?.Dispose();
+            }
         }
 
-        protected virtual void PreSave(TrackerModule module) { }
+        protected virtual void PreSave(TrackerModule module, ILoadSaveMethod conn) { }
 
         protected abstract bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn);
 
-        protected virtual void PostSave(TrackerModule module, bool isNew) { }
-
-        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
-        {
-            return false;
-        }
+        protected virtual void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn) { }
     }
 }

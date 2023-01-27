@@ -38,6 +38,11 @@ namespace RatableTracker.ObjAddOns
             PointValue = this.settings.MinScore;
         }
 
+        internal bool CategoryEquals(IKeyable category)
+        {
+            return _category.Equals(category.UniqueID);
+        }
+
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

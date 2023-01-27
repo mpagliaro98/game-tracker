@@ -28,6 +28,7 @@ namespace GameTrackerWPF
         private GameObject orig;
         private SettingsGame settings;
         private GameCompilation comp;
+        private bool saveComplete = false;
         
         public SubWindowGame(GameModule rm, SettingsGame settings, SubWindowMode mode, GameObject orig)
         {
@@ -36,7 +37,7 @@ namespace GameTrackerWPF
             this.rm = rm;
             this.orig = orig;
             this.settings = settings;
-            this.comp = orig.IsPartOfCompilation ? orig.Compilation : new GameCompilation(settings, rm);
+            this.comp = orig.IsPartOfCompilation ? new GameCompilation(orig.Compilation) : new GameCompilation(settings, rm);
 
             // initialize UI containers
             CreateRatingCategories();
@@ -99,6 +100,15 @@ namespace GameTrackerWPF
             UpdateCompilationFields();
         }
 
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            if (!saveComplete)
+            {
+                comp.Dispose();
+                orig.Dispose();
+            }
+        }
+
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -106,7 +116,10 @@ namespace GameTrackerWPF
                 if (CheckboxCompilation.IsChecked.Value && comp.Name.Length <= 0)
                     throw new ValidationException("Compilation must be given a name");
                 if (!CheckboxCompilation.IsChecked.Value)
+                {
                     orig.Compilation = null;
+                    comp.Dispose();
+                }
                 orig.Save(rm);
                 if (CheckboxCompilation.IsChecked.Value)
                 {
@@ -121,6 +134,7 @@ namespace GameTrackerWPF
                 LabelError.Content = ex.Message;
                 return;
             }
+            saveComplete = true;
             Close();
         }
 

@@ -98,7 +98,7 @@ namespace RatableTracker.Util
             }
         }
 
-        public static void Replace<T>(this IList<T> source, T value)
+        public static T Replace<T>(this IList<T> source, T value)
         {
             source.ThrowIfNull("source");
             int indexReplace = -1;
@@ -112,7 +112,11 @@ namespace RatableTracker.Util
                 }
             }
             if (indexReplace >= 0)
+            {
+                var temp = source[indexReplace];
                 source[indexReplace] = value;
+                return temp;
+            }
             else
                 throw new InvalidObjectStateException("Object " + value.ToString() + " was not found in list");
         }

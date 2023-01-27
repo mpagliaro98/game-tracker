@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Exceptions;
+using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Modules;
 using System;
@@ -37,18 +38,18 @@ namespace RatableTracker.Util
                 throw new ValidationException("Minimum score must be less than maximum score", _tempMinScore.ToString() + ", " + _tempMaxScore.ToString());
         }
 
-        protected override void PreSave(TrackerModule module)
+        protected override void PreSave(TrackerModule module, ILoadSaveMethod conn)
         {
-            base.PreSave(module);
+            base.PreSave(module, conn);
 
             // new min and max are valid, so swap them into the main variables
             (_tempMinScore, _minScore) = (_minScore, _tempMinScore);
             (_tempMaxScore, _maxScore) = (_maxScore, _tempMaxScore);
         }
 
-        protected override void PostSave(TrackerModule module, bool isNew)
+        protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
-            base.PostSave(module, isNew);
+            base.PostSave(module, isNew, conn);
 
             // set temp values back equal to the real values
             _tempMinScore = _minScore;

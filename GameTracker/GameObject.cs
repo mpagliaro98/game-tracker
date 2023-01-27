@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Model;
@@ -117,14 +118,20 @@ namespace GameTracker
         protected new SettingsGame settings => (SettingsGame)base.settings;
         protected new GameModule module => (GameModule)base.module;
 
-        public GameObject(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGame(module.CategoryExtension, settings)) { }
+        public GameObject(SettingsGame settings, GameModule module) : this(settings, module, new CategoryExtensionGame(module.CategoryExtension, settings)) { }
 
-        protected GameObject(SettingsGame settings, GameModule module, CategoryExtensionGame categoryExtension) : base(settings, module, categoryExtension) { }
+        protected GameObject(SettingsGame settings, GameModule module, CategoryExtensionGame categoryExtension) : base(settings, module, categoryExtension)
+        {
+            this.module.ModelObjectDeleted += OnModelObjectDeleted;
+            this.module.PlatformDeleted += OnPlatformDeleted;
+        }
 
         public GameObject(GameObject copyFrom) : this(copyFrom, new CategoryExtensionGame(copyFrom.CategoryExtension)) { }
 
         protected GameObject(GameObject copyFrom, CategoryExtensionGame categoryExtension) : base(copyFrom, new StatusExtension(copyFrom.StatusExtension), categoryExtension)
         {
+            module.ModelObjectDeleted += OnModelObjectDeleted;
+            module.PlatformDeleted += OnPlatformDeleted;
             CompletionCriteria = copyFrom.CompletionCriteria;
             CompletionComment = copyFrom.CompletionComment;
             TimeSpent = copyFrom.TimeSpent;
@@ -150,61 +157,62 @@ namespace GameTracker
                 throw new ValidationException("Completion comment cannot be longer than " + MaxLengthCompletionComment.ToString() + " characters", CompletionComment);
             if (TimeSpent.Length > MaxLengthTimeSpent)
                 throw new ValidationException("Time spent cannot be longer than " + MaxLengthTimeSpent.ToString() + " characters", TimeSpent);
-            try
-            {
-                var temp = Score;
-            }
-            catch (StackOverflowException)
-            {
-                throw new ValidationException("Cannot set the original game to a game that references this one", _originalGame);
-            }
         }
 
-        public override bool RemoveReferenceToObject(IKeyable obj, Type type)
+        private void OnModelObjectDeleted(object sender, ModelObjectDeleteArgs args)
         {
-            bool changed = base.RemoveReferenceToObject(obj, type);
-            if (type == typeof(Platform))
+            if (args.ObjectType == typeof(GameCompilation))
             {
-                if (obj.Equals(Platform))
-                {
-                    Platform = null;
-                    changed = true;
-                }
-                if (obj.Equals(PlatformPlayedOn))
-                {
-                    PlatformPlayedOn = null;
-                    changed = true;
-                }
-            }
-            else if (type == typeof(GameCompilation))
-            {
-                if (obj.Equals(Compilation))
+                if (_compilation.Equals(args.DeletedObject.UniqueID))
                 {
                     Compilation = null;
-                    changed = true;
+                    Save(module, args.Connection);
                 }
             }
-            else if (type == typeof(GameObject))
+            else if (args.ObjectType == typeof(GameObject))
             {
-                if (obj.Equals(OriginalGame))
+                if (_originalGame.Equals(args.DeletedObject.UniqueID))
                 {
                     OriginalGame = null;
-                    changed = true;
+                    Save(module, args.Connection);
                 }
             }
-            return changed;
         }
 
-        protected override void PostSave(TrackerModule module, bool isNew)
+        private void OnPlatformDeleted(object sender, PlatformDeleteArgs args)
         {
-            base.PostSave(module, isNew);
-            this.module.DeleteEmptyCompilations();
+            bool changed = false;
+            if (_platform.Equals(args.DeletedObject.UniqueID))
+            {
+                Platform = null;
+                changed = true;
+            }
+            if (_platformPlayedOn.Equals(args.DeletedObject.UniqueID))
+            {
+                PlatformPlayedOn = null;
+                changed = true;
+            }
+            if (changed)
+                Save(module, args.Connection);
         }
 
-        protected override void PostDelete(TrackerModule module)
+        protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
-            base.PostDelete(module);
-            this.module.DeleteEmptyCompilations();
+            base.PostSave(module, isNew, conn);
+            this.module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
+        }
+
+        protected override void PostDelete(TrackerModule module, ILoadSaveMethod conn)
+        {
+            base.PostDelete(module, conn);
+            this.module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
+        }
+
+        protected override void RemoveEventHandlers()
+        {
+            base.RemoveEventHandlers();
+            module.ModelObjectDeleted -= OnModelObjectDeleted;
+            module.PlatformDeleted -= OnPlatformDeleted;
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

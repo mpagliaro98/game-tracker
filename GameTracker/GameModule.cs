@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.Model;
 using RatableTracker.Modules;
@@ -16,6 +17,9 @@ namespace GameTracker
         public virtual int LimitPlatforms => 1000;
 
         protected IList<Platform> Platforms { get; private set; } = new List<Platform>();
+
+        public delegate void PlatformDeleteHandler(object sender, PlatformDeleteArgs args);
+        public event PlatformDeleteHandler PlatformDeleted;
 
         protected new ILoadSaveHandler<ILoadSaveMethodGame> _loadSave => (ILoadSaveHandler<ILoadSaveMethodGame>)base._loadSave;
 
@@ -47,21 +51,6 @@ namespace GameTracker
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
             connNew.SaveAllPlatforms(connCurrent.LoadPlatforms(this));
-        }
-
-        public override void RemoveReferencesToObject(IKeyable obj, Type type)
-        {
-            base.RemoveReferencesToObject(obj, type);
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (Platform platform in Platforms)
-                {
-                    if (platform.RemoveReferenceToObject(obj, type))
-                    {
-                        platform.Save(this, conn);
-                    }
-                }
-            }
         }
 
         public IList<Platform> GetPlatformList()
@@ -103,7 +92,6 @@ namespace GameTracker
         internal bool SavePlatform(Platform platform, ILoadSaveMethodGame conn)
         {
             Logger.Log("SavePlatform - " + platform.UniqueID.ToString());
-
             bool isNew = false;
             if (RatableTracker.Util.Util.FindObjectInList(Platforms, platform.UniqueID) == null)
             {
@@ -118,20 +106,11 @@ namespace GameTracker
             }
             else
             {
-                Platforms.Replace(platform);
+                var old = Platforms.Replace(platform);
+                if (old != platform)
+                    old.Dispose();
             }
-
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.SaveOnePlatform(platform);
-                }
-            }
-            else
-            {
-                conn.SaveOnePlatform(platform);
-            }
+            conn.SaveOnePlatform(platform);
             return isNew;
         }
 
@@ -145,32 +124,17 @@ namespace GameTracker
                 throw new InvalidObjectStateException(message);
             }
             Platforms.Remove(platform);
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.DeleteOnePlatform(platform);
-                }
-            }
-            else
-            {
-                conn.DeleteOnePlatform(platform);
-            }
+            conn.DeleteOnePlatform(platform);
+            PlatformDeleted?.Invoke(this, new PlatformDeleteArgs(platform, platform.GetType(), conn));
         }
 
-        public override void ApplySettingsChanges(Settings settings)
+        public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
         {
-            base.ApplySettingsChanges(settings);
+            base.ApplySettingsChanges(settings, conn);
             foreach (Platform platform in Platforms)
             {
                 platform.ApplySettingsChanges(settings);
-            }
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (Platform platform in Platforms)
-                {
-                    platform.Save(this, conn);
-                }
+                platform.Save(this, conn);
             }
         }
 
@@ -179,11 +143,11 @@ namespace GameTracker
             return ModelObjects.OfType<GameCompilation>().Where((obj) => obj.NumGamesInCompilation() <= 0).ToList();
         }
 
-        public void DeleteEmptyCompilations()
+        public void DeleteEmptyCompilations(ILoadSaveMethodGame conn)
         {
             foreach (var comp in GetEmptyCompilations())
             {
-                comp.Delete(this);
+                comp.Delete(this, conn);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.Modules;
 using RatableTracker.Util;
@@ -17,9 +18,12 @@ namespace RatableTracker.ObjAddOns
 
         protected IList<Status> Statuses { get; private set; } = new List<Status>();
 
+        public delegate void StatusDeleteHandler(object sender, StatusDeleteArgs args);
+        public event StatusDeleteHandler StatusDeleted;
+
         protected readonly ILoadSaveHandler<ILoadSaveMethodStatusExtension> _loadSave;
         public Logger Logger { get; private set; }
-        public IModuleStatus BaseModule { get; internal set; }
+        public TrackerModule BaseModule { get; internal set; }
 
         public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave) : this(loadSave, new Logger()) { }
 
@@ -50,7 +54,6 @@ namespace RatableTracker.ObjAddOns
         internal bool SaveStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
             Logger.Log("SaveStatus - " + status.UniqueID.ToString());
-
             bool isNew = false;
             if (Util.Util.FindObjectInList(Statuses, status.UniqueID) == null)
             {
@@ -65,20 +68,11 @@ namespace RatableTracker.ObjAddOns
             }
             else
             {
-                Statuses.Replace(status);
+                var old = Statuses.Replace(status);
+                if (old != status)
+                    old.Dispose();
             }
-
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.SaveOneStatus(status);
-                }
-            }
-            else
-            {
-                conn.SaveOneStatus(status);
-            }
+            conn.SaveOneStatus(status);
             return isNew;
         }
 
@@ -92,45 +86,16 @@ namespace RatableTracker.ObjAddOns
                 throw new InvalidObjectStateException(message);
             }
             Statuses.Remove(status);
-            if (conn == null)
-            {
-                using (var connNew = _loadSave.NewConnection())
-                {
-                    connNew.DeleteOneStatus(status);
-                }
-            }
-            else
-            {
-                conn.DeleteOneStatus(status);
-            }
+            conn.DeleteOneStatus(status);
+            StatusDeleted?.Invoke(this, new StatusDeleteArgs(status, status.GetType(), conn));
         }
 
-        public virtual void RemoveReferencesToObject(IKeyable obj, Type type, TrackerModule module)
-        {
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (Status status in Statuses)
-                {
-                    if (status.RemoveReferenceToObject(obj, type))
-                    {
-                        status.Save(module, conn);
-                    }
-                }
-            }
-        }
-
-        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module)
+        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
             foreach (Status status in Statuses)
             {
                 status.ApplySettingsChanges(settings);
-            }
-            using (var conn = _loadSave.NewConnection())
-            {
-                foreach (Status status in Statuses)
-                {
-                    status.Save(module, conn);
-                }
+                status.Save(module, conn);
             }
         }
     }

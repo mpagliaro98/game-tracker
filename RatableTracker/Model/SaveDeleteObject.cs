@@ -20,25 +20,34 @@ namespace RatableTracker.Model
 
         public void Delete(TrackerModule module, ILoadSaveMethod conn)
         {
+            bool newConn = false;
             try
             {
-                PreDelete(module);
+                if (conn == null)
+                {
+                    conn = module.GetNewConnection();
+                    newConn = true;
+                }
+                PreDelete(module, conn);
                 DeleteObjectFromModule(module, conn);
-                module.RemoveReferencesToObject(this, GetType());
-                PostDelete(module);
+                PostDelete(module, conn);
             }
             catch
             {
                 conn?.SetCancel(true);
                 throw;
             }
+            finally
+            {
+                if (newConn) conn?.Dispose();
+            }
         }
 
-        protected virtual void PreDelete(TrackerModule module) { }
+        protected virtual void PreDelete(TrackerModule module, ILoadSaveMethod conn) { }
 
         protected abstract void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn);
 
-        protected virtual void PostDelete(TrackerModule module) { }
+        protected virtual void PostDelete(TrackerModule module, ILoadSaveMethod conn) { }
 
         public virtual void ApplySettingsChanges(Settings settings) { }
     }

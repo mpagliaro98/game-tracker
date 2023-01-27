@@ -66,16 +66,10 @@ namespace RatableTracker.Modules
             connNew.SaveAllCategories(connCurrent.LoadCategories(CategoryExtension, settings));
         }
 
-        public override void RemoveReferencesToObject(IKeyable obj, Type type)
+        public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
         {
-            base.RemoveReferencesToObject(obj, type);
-            CategoryExtension.RemoveReferencesToObject(obj, type, this);
-        }
-
-        public override void ApplySettingsChanges(Settings settings)
-        {
-            base.ApplySettingsChanges(settings);
-            CategoryExtension.ApplySettingsChanges(settings, this);
+            base.ApplySettingsChanges(settings, conn);
+            CategoryExtension.ApplySettingsChanges(settings, this, conn as ILoadSaveMethodCategoryExtension);
         }
     }
 }

@@ -54,16 +54,16 @@ namespace RatableTracker.Model
             StatusExtension.ValidateFields();
         }
 
-        public override bool RemoveReferenceToObject(IKeyable obj, Type type)
-        {
-            // deliberately not using || to avoid short-circuit behavior
-            return base.RemoveReferenceToObject(obj, type) | StatusExtension.RemoveReferenceToObject(obj, type);
-        }
-
         public override void ApplySettingsChanges(Settings settings)
         {
             base.ApplySettingsChanges(settings);
             StatusExtension.ApplySettingsChanges(settings);
+        }
+
+        protected override void RemoveEventHandlers()
+        {
+            base.RemoveEventHandlers();
+            StatusExtension.Dispose();
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

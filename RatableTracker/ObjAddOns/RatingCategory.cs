@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.ObjAddOns
 {
-    public class RatingCategory : SaveDeleteObject
+    public class RatingCategory : SaveDeleteObject, IDisposable
     {
         public static int MaxLengthName => 200;
         public static int MaxLengthComment => 4000;
@@ -56,17 +56,24 @@ namespace RatableTracker.ObjAddOns
             return this.module.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
 
-        protected override void PostSave(TrackerModule module, bool isNew)
+        protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
-            base.PostSave(module, isNew);
+            base.PostSave(module, isNew, conn);
             if (isNew)
-                this.module.AddCategoryValueToAllModelObjects(module, settings, this);
+                this.module.AddCategoryValueToAllModelObjects(module, settings, this, conn as ILoadSaveMethodCategoryExtension);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
             this.module.DeleteRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
+
+        public void Dispose()
+        {
+            RemoveEventHandlers();
+        }
+
+        protected virtual void RemoveEventHandlers() { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {
