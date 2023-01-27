@@ -55,7 +55,7 @@ namespace RatableTracker.Modules
         protected virtual void TransferToNewModule(ILoadSaveMethodScoreCategorical connCurrent, ILoadSaveMethodScoreCategorical connNew, SettingsScore settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
-            connNew.SaveAllCategories(connCurrent.LoadCategories(CategoryExtension, settings));
+            connNew.SaveAllCategories(connCurrent.LoadCategories(this, settings));
         }
 
         public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)

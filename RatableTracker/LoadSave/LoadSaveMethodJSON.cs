@@ -492,9 +492,9 @@ namespace RatableTracker.LoadSave
             DeleteOne(EnsureScoreRangesAreLoaded, ref scoreRanges, scoreRange, ref scoreRangesChanged);
         }
 
-        public IList<ScoreRange> LoadScoreRanges(TrackerModuleScores module)
+        public IList<ScoreRange> LoadScoreRanges(TrackerModuleScores module, SettingsScore settings)
         {
-            return LoadAll(EnsureScoreRangesAreLoaded, ref scoreRanges, (s) => factory.GetScoreRange(s, module));
+            return LoadAll(EnsureScoreRangesAreLoaded, ref scoreRanges, (s) => factory.GetScoreRange(s, module, settings));
         }
 
         public void SaveSettings(Settings settings)
@@ -522,7 +522,7 @@ namespace RatableTracker.LoadSave
             DeleteOne(EnsureCategoriesAreLoaded, ref categories, ratingCategory, ref categoriesChanged);
         }
 
-        public IList<RatingCategory> LoadCategories(CategoryExtensionModule module, SettingsScore settings)
+        public IList<RatingCategory> LoadCategories(IModuleCategorical module, SettingsScore settings)
         {
             return LoadAll(EnsureCategoriesAreLoaded, ref categories, (s) => factory.GetRatingCategory(s, module, settings));
         }
@@ -542,9 +542,9 @@ namespace RatableTracker.LoadSave
             DeleteOne(EnsureStatusesAreLoaded, ref statuses, status, ref statusesChanged);
         }
 
-        public IList<Status> LoadStatuses(StatusExtensionModule module)
+        public IList<Status> LoadStatuses(IModuleStatus module, Settings settings)
         {
-            return LoadAll(EnsureStatusesAreLoaded, ref statuses, (s) => factory.GetStatus(s, module));
+            return LoadAll(EnsureStatusesAreLoaded, ref statuses, (s) => factory.GetStatus(s, module, settings));
         }
     }
 }

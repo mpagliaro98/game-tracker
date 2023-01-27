@@ -12,30 +12,20 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.ObjAddOns
 {
-    public class RatingCategory : SaveDeleteObject, IDisposable
+    public class RatingCategory : TrackerObjectBase
     {
-        public static int MaxLengthName => 200;
         public static int MaxLengthComment => 4000;
 
-        public string Name { get; set; } = "";
         public string Comment { get; set; } = "";
         public double Weight { get; protected set; } = 1.0;
 
-        public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
+        protected new IModuleCategorical module => (IModuleCategorical)base.Module;
+        protected new SettingsScore settings => (SettingsScore)base.Settings;
 
-        protected readonly CategoryExtensionModule module;
-        protected readonly SettingsScore settings;
+        public RatingCategory(IModuleCategorical module, SettingsScore settings) : base(settings, (TrackerModuleScores)module) { }
 
-        public RatingCategory(CategoryExtensionModule module, SettingsScore settings)
+        public RatingCategory(RatingCategory copyFrom) : base(copyFrom)
         {
-            this.module = module;
-            this.settings = settings;
-        }
-
-        public RatingCategory(RatingCategory copyFrom) : this(copyFrom.module, copyFrom.settings)
-        {
-            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
-            Name = copyFrom.Name;
             Comment = copyFrom.Comment;
             Weight = copyFrom.Weight;
         }
@@ -43,43 +33,30 @@ namespace RatableTracker.ObjAddOns
         protected override void ValidateFields()
         {
             base.ValidateFields();
-            if (Name == "")
-                throw new ValidationException("A name is required", Name);
-            if (Name.Length > MaxLengthName)
-                throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
             if (Comment.Length > MaxLengthComment)
                 throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
 
         protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            return this.module.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
+            return this.module.CategoryExtension.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
 
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
             base.PostSave(module, isNew, conn);
             if (isNew)
-                this.module.AddCategoryValueToAllModelObjects(module, settings, this, conn as ILoadSaveMethodCategoryExtension);
+                this.module.CategoryExtension.AddCategoryValueToAllModelObjects(module, settings, this, conn as ILoadSaveMethodCategoryExtension);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.DeleteRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
+            this.module.CategoryExtension.DeleteRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
-
-        public void Dispose()
-        {
-            RemoveEventHandlers();
-        }
-
-        protected virtual void RemoveEventHandlers() { }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
-            sr.SaveValue("Name", new ValueContainer(Name));
             sr.SaveValue("Comment", new ValueContainer(Comment));
             sr.SaveValue("Weight", new ValueContainer(Weight));
             return sr;
@@ -92,12 +69,6 @@ namespace RatableTracker.ObjAddOns
             {
                 switch (key)
                 {
-                    case "UniqueID":
-                        UniqueID = sr.GetValue(key).GetUniqueID();
-                        break;
-                    case "Name":
-                        Name = sr.GetValue(key).GetString();
-                        break;
                     case "Comment":
                         Comment = sr.GetValue(key).GetString();
                         break;
@@ -108,24 +79,6 @@ namespace RatableTracker.ObjAddOns
                         break;
                 }
             }
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (!(obj is RatingCategory)) return false;
-            RatingCategory other = (RatingCategory)obj;
-            return UniqueID.Equals(other.UniqueID);
-        }
-
-        public override int GetHashCode()
-        {
-            return UniqueID.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Name;
         }
     }
 }

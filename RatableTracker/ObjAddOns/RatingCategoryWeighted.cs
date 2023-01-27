@@ -1,4 +1,5 @@
-﻿using RatableTracker.Util;
+﻿using RatableTracker.Interfaces;
+using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class RatingCategoryWeighted : RatingCategory
     {
-        public RatingCategoryWeighted(CategoryExtensionModule module, SettingsScore settings) : base(module, settings) { }
+        public RatingCategoryWeighted(IModuleCategorical module, SettingsScore settings) : base(module, settings) { }
 
         public RatingCategoryWeighted(RatingCategoryWeighted copyFrom) : base(copyFrom) { }
 

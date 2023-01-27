@@ -1,4 +1,5 @@
-﻿using RatableTracker.Model;
+﻿using RatableTracker.Interfaces;
+using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.ObjAddOns;
 using RatableTracker.ScoreRanges;
@@ -57,37 +58,53 @@ namespace RatableTracker.Util
             return obj;
         }
 
-        public Status GetStatus(string typeName, StatusExtensionModule module)
+        public Status GetStatus(string typeName, IModuleStatus module, Settings settings)
         {
-            Status obj = CreateStatusFromTypeName(typeName, module);
+            Status obj;
+            try
+            {
+                obj = CreateStatusFromTypeName(typeName, module, settings);
+            }
+            catch (InvalidCastException e)
+            {
+                throw new ArgumentException("Incorrect parameters passed in for creating " + typeName + ": " + e.Message);
+            }
             if (obj == null)
                 throw new ArgumentException("Unknown type: " + typeName);
             else
                 return obj;
         }
 
-        protected virtual Status CreateStatusFromTypeName(string typeName, StatusExtensionModule module)
+        protected virtual Status CreateStatusFromTypeName(string typeName, IModuleStatus module, Settings settings)
         {
             Status obj = null;
             switch (typeName.ToLower())
             {
                 case "status":
-                    obj = new Status(module);
+                    obj = new Status(module, settings);
                     break;
             }
             return obj;
         }
 
-        public RatingCategory GetRatingCategory(string typeName, CategoryExtensionModule module, SettingsScore settings)
+        public RatingCategory GetRatingCategory(string typeName, IModuleCategorical module, SettingsScore settings)
         {
-            RatingCategory obj = CreateRatingCategoryFromTypeName(typeName, module, settings);
+            RatingCategory obj;
+            try
+            {
+                obj = CreateRatingCategoryFromTypeName(typeName, module, settings);
+            }
+            catch (InvalidCastException e)
+            {
+                throw new ArgumentException("Incorrect parameters passed in for creating " + typeName + ": " + e.Message);
+            }
             if (obj == null)
                 throw new ArgumentException("Unknown type: " + typeName);
             else
                 return obj;
         }
 
-        protected virtual RatingCategory CreateRatingCategoryFromTypeName(string typeName, CategoryExtensionModule module, SettingsScore settings)
+        protected virtual RatingCategory CreateRatingCategoryFromTypeName(string typeName, IModuleCategorical module, SettingsScore settings)
         {
             RatingCategory obj = null;
             switch (typeName.ToLower())
@@ -102,22 +119,30 @@ namespace RatableTracker.Util
             return obj;
         }
 
-        public ScoreRange GetScoreRange(string typeName, TrackerModuleScores module)
+        public ScoreRange GetScoreRange(string typeName, TrackerModuleScores module, SettingsScore settings)
         {
-            ScoreRange obj = CreateScoreRangeFromTypeName(typeName, module);
+            ScoreRange obj;
+            try
+            {
+                obj = CreateScoreRangeFromTypeName(typeName, module, settings);
+            }
+            catch (InvalidCastException e)
+            {
+                throw new ArgumentException("Incorrect parameters passed in for creating " + typeName + ": " + e.Message);
+            }
             if (obj == null)
                 throw new ArgumentException("Unknown type: " + typeName);
             else
                 return obj;
         }
         
-        protected virtual ScoreRange CreateScoreRangeFromTypeName(string typeName, TrackerModuleScores module)
+        protected virtual ScoreRange CreateScoreRangeFromTypeName(string typeName, TrackerModuleScores module, SettingsScore settings)
         {
             ScoreRange obj = null;
             switch (typeName.ToLower())
             {
                 case "scorerange":
-                    obj = new ScoreRange(module);
+                    obj = new ScoreRange(module, settings);
                     break;
             }
             return obj;
@@ -125,7 +150,15 @@ namespace RatableTracker.Util
 
         public Settings GetSettings(string typeName)
         {
-            Settings obj = CreateSettingsFromTypeName(typeName);
+            Settings obj;
+            try
+            {
+                obj = CreateSettingsFromTypeName(typeName);
+            }
+            catch (InvalidCastException e)
+            {
+                throw new ArgumentException("Incorrect parameters passed in for creating " + typeName + ": " + e.Message);
+            }
             if (obj == null)
                 throw new ArgumentException("Unknown type: " + typeName);
             else

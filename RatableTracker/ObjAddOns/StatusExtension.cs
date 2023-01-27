@@ -62,7 +62,7 @@ namespace RatableTracker.ObjAddOns
             if (_status.Equals(args.DeletedObject.UniqueID))
             {
                 Status = null;
-                BaseObject.Save(module.BaseModule, args.Connection);
+                BaseObject.Save((TrackerModule)module.BaseModule, args.Connection);
             }
         }
 

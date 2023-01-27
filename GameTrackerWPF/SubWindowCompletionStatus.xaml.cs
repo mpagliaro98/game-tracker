@@ -23,14 +23,16 @@ namespace GameTrackerWPF
     {
         private GameModule rm;
         private StatusGame orig;
+        private SettingsGame settings;
 
-        public SubWindowCompletionStatus(GameModule rm, SubWindowMode mode, StatusGame orig)
+        public SubWindowCompletionStatus(GameModule rm, SettingsGame settings, SubWindowMode mode, StatusGame orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
-            if (this.orig == null) this.orig = new StatusGame(rm.StatusExtension);
+            this.settings = settings;
+            if (this.orig == null) this.orig = new StatusGame(rm, settings);
             switch (mode)
             {
                 case SubWindowMode.MODE_ADD:

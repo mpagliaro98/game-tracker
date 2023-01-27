@@ -51,6 +51,7 @@
     <Compile Include="Events\ScoreRangeDeleteArgs.cs" />
     <Compile Include="Events\StatusDeleteArgs.cs" />
     <Compile Include="Exceptions\NoDataFoundException.cs" />
+    <Compile Include="Model\TrackerObjectBase.cs" />
     <Compile Include="ObjAddOns\CategoryExtensionWithStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Exceptions\ExceededLimitException.cs" />

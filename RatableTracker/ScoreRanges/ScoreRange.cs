@@ -13,11 +13,8 @@ using System.Xml.Linq;
 
 namespace RatableTracker.ScoreRanges
 {
-    public class ScoreRange : SaveDeleteObject, IDisposable
+    public class ScoreRange : TrackerObjectBase
     {
-        public static int MaxLengthName => 200;
-
-        public string Name { get; set; } = "";
         public IList<double> ValueList { get; set; } = new List<double>();
         public Color Color { get; set; } = new Color();
 
@@ -35,19 +32,13 @@ namespace RatableTracker.ScoreRanges
             }
         }
 
-        public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
+        protected new TrackerModuleScores module => (TrackerModuleScores)base.Module;
+        protected new SettingsScore settings => (SettingsScore)base.Settings;
 
-        protected readonly TrackerModuleScores module;
+        public ScoreRange(TrackerModuleScores module, SettingsScore settings) : base(settings, module) { }
 
-        public ScoreRange(TrackerModuleScores module)
+        public ScoreRange(ScoreRange copyFrom) : base(copyFrom)
         {
-            this.module = module;
-        }
-
-        public ScoreRange(ScoreRange copyFrom) : this(copyFrom.module)
-        {
-            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
-            Name = copyFrom.Name;
             ValueList = new List<double>(copyFrom.ValueList);
             Color = copyFrom.Color;
             _scoreRelationship = UniqueID.Copy(copyFrom._scoreRelationship);
@@ -56,10 +47,6 @@ namespace RatableTracker.ScoreRanges
         protected override void ValidateFields()
         {
             base.ValidateFields();
-            if (Name == "")
-                throw new ValidationException("A name is required", Name);
-            if (Name.Length > MaxLengthName)
-                throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
             ScoreRelationship sr = ScoreRelationship;
             if (sr == null)
                 throw new ValidationException("A score relationship is required");
@@ -91,18 +78,9 @@ namespace RatableTracker.ScoreRanges
             }
         }
 
-        public void Dispose()
-        {
-            RemoveEventHandlers();
-        }
-
-        protected virtual void RemoveEventHandlers() { }
-
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
-            sr.SaveValue("Name", new ValueContainer(Name));
             sr.SaveValue("ValueList", new ValueContainer(ValueList));
             sr.SaveValue("Color", new ValueContainer(Color));
             sr.SaveValue("ScoreRelationship", new ValueContainer(_scoreRelationship));
@@ -116,12 +94,6 @@ namespace RatableTracker.ScoreRanges
             {
                 switch (key)
                 {
-                    case "UniqueID":
-                        UniqueID = sr.GetValue(key).GetUniqueID();
-                        break;
-                    case "Name":
-                        Name = sr.GetValue(key).GetString();
-                        break;
                     case "ValueList":
                         ValueList = sr.GetValue(key).GetDoubleList().ToList();
                         break;
@@ -135,24 +107,6 @@ namespace RatableTracker.ScoreRanges
                         break;
                 }
             }
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (!(obj is ScoreRange)) return false;
-            ScoreRange other = (ScoreRange)obj;
-            return UniqueID.Equals(other.UniqueID);
-        }
-
-        public override int GetHashCode()
-        {
-            return UniqueID.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Name;
         }
     }
 }

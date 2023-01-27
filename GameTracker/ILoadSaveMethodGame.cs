@@ -13,6 +13,6 @@ namespace GameTracker
         void SaveOnePlatform(Platform platform);
         void SaveAllPlatforms(IList<Platform> platform);
         void DeleteOnePlatform(Platform platform);
-        IList<Platform> LoadPlatforms(GameModule module);
+        IList<Platform> LoadPlatforms(GameModule module, SettingsGame settings);
     }
 }

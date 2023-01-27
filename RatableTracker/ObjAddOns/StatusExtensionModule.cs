@@ -23,7 +23,7 @@ namespace RatableTracker.ObjAddOns
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodStatusExtension> _loadSave;
         public Logger Logger { get; private set; }
-        public TrackerModule BaseModule { get; internal set; }
+        public IModuleStatus BaseModule { get; internal set; }
 
         public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave) : this(loadSave, new Logger()) { }
 
@@ -33,11 +33,11 @@ namespace RatableTracker.ObjAddOns
             Logger = logger;
         }
 
-        public virtual void LoadData()
+        public virtual void LoadData(Settings settings)
         {
             using (var conn = _loadSave.NewConnection())
             {
-                Statuses = conn.LoadStatuses(this);
+                Statuses = conn.LoadStatuses(BaseModule, settings);
             }
         }
 

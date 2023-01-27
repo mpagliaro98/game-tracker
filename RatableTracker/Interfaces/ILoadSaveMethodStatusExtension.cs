@@ -1,4 +1,5 @@
 ﻿using RatableTracker.ObjAddOns;
+using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,6 @@ namespace RatableTracker.Interfaces
         void SaveOneStatus(Status status);
         void SaveAllStatuses(IList<Status> statuses);
         void DeleteOneStatus(Status status);
-        IList<Status> LoadStatuses(StatusExtensionModule module);
+        IList<Status> LoadStatuses(IModuleStatus module, Settings settings);
     }
 }

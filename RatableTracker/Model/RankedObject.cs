@@ -11,18 +11,17 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Model
 {
-    public class RankedObject : SaveDeleteObject, IDisposable
+    public class RankedObject : TrackerObjectBase
     {
-        public static int MaxLengthName => 200;
         public static int MaxLengthComment => 10000;
 
-        public string Name { get; set; } = "";
         public string Comment { get; set; } = "";
+
         public virtual int Rank
         {
             get
             {
-                IList<RankedObject> rankedObjects = module.GetModelObjectList();
+                IList<RankedObject> rankedObjects = Module.GetModelObjectList();
                 return rankedObjects.IndexOf(this) + 1;
             }
         }
@@ -42,31 +41,16 @@ namespace RatableTracker.Model
             get { return true; }
         }
 
-        public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
+        public RankedObject(Settings settings, TrackerModule module) : base(settings, module) { }
 
-        protected readonly Settings settings;
-        protected readonly TrackerModule module;
-
-        public RankedObject(Settings settings, TrackerModule module)
+        public RankedObject(RankedObject copyFrom) : base(copyFrom)
         {
-            this.settings = settings;
-            this.module = module;
-        }
-
-        public RankedObject(RankedObject copyFrom) : this(copyFrom.settings, copyFrom.module)
-        {
-            UniqueID = UniqueID.Copy(copyFrom.UniqueID);
-            Name = copyFrom.Name;
             Comment = copyFrom.Comment;
         }
 
         protected override void ValidateFields()
         {
             base.ValidateFields();
-            if (Name == "")
-                throw new ValidationException("A name is required", Name);
-            if (Name.Length > MaxLengthName)
-                throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
             if (Comment.Length > MaxLengthComment)
                 throw new ValidationException("Comment cannot be longer than " + MaxLengthComment.ToString() + " characters", Comment);
         }
@@ -83,11 +67,11 @@ namespace RatableTracker.Model
 
         public void MoveUpOneRank()
         {
-            module.Logger.Log("MoveUpOneRank - " + UniqueID.ToString());
+            Module.Logger.Log("MoveUpOneRank - " + UniqueID.ToString());
             if (Rank <= 1)
             {
                 string message = "Cannot raise rank any further";
-                module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             ChangeRank(Rank - 1);
@@ -95,11 +79,11 @@ namespace RatableTracker.Model
 
         public void MoveDownOneRank()
         {
-            module.Logger.Log("MoveDownOneRank - " + UniqueID.ToString());
-            if (Rank >= module.TotalNumModelObjects())
+            Module.Logger.Log("MoveDownOneRank - " + UniqueID.ToString());
+            if (Rank >= Module.TotalNumModelObjects())
             {
                 string message = "Cannot lower rank any further";
-                module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
             ChangeRank(Rank + 1);
@@ -107,21 +91,19 @@ namespace RatableTracker.Model
 
         public void ChangeRank(int newRank)
         {
-            module.Logger.Log("ChangeRank - " + UniqueID.ToString());
-            if (newRank < 1 || newRank > module.TotalNumModelObjects())
+            Module.Logger.Log("ChangeRank - " + UniqueID.ToString());
+            if (newRank < 1 || newRank > Module.TotalNumModelObjects())
             {
                 string message = "Rank out of range: " + newRank.ToString();
-                module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
+                Module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
-            module.ChangeModelObjectPositionInList(this, newRank - 1);
+            Module.ChangeModelObjectPositionInList(this, newRank - 1);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("UniqueID", new ValueContainer(UniqueID));
-            sr.SaveValue("Name", new ValueContainer(Name));
             sr.SaveValue("Comment", new ValueContainer(Comment));
             sr.SaveValue("Rank", new ValueContainer(Rank));
             return sr;
@@ -134,12 +116,6 @@ namespace RatableTracker.Model
             {
                 switch (key)
                 {
-                    case "UniqueID":
-                        UniqueID = sr.GetValue(key).GetUniqueID();
-                        break;
-                    case "Name":
-                        Name = sr.GetValue(key).GetString();
-                        break;
                     case "Comment":
                         Comment = sr.GetValue(key).GetString();
                         break;
@@ -148,30 +124,5 @@ namespace RatableTracker.Model
                 }
             }
         }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null) return false;
-            if (!(obj is RankedObject)) return false;
-            RankedObject other = (RankedObject)obj;
-            return UniqueID.Equals(other.UniqueID);
-        }
-
-        public override int GetHashCode()
-        {
-            return UniqueID.GetHashCode();
-        }
-
-        public override string ToString()
-        {
-            return Name;
-        }
-
-        public void Dispose()
-        {
-            RemoveEventHandlers();
-        }
-
-        protected virtual void RemoveEventHandlers() { }
     }
 }

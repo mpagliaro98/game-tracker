@@ -25,7 +25,7 @@ namespace RatableTracker.ObjAddOns
 
         protected readonly ILoadSaveHandler<ILoadSaveMethodCategoryExtension> _loadSave;
         public Logger Logger { get; private set; }
-        public TrackerModuleScores BaseModule { get; internal set; }
+        public IModuleCategorical BaseModule { get; internal set; }
 
         public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave) : this(loadSave, new Logger()) { }
 
@@ -39,7 +39,7 @@ namespace RatableTracker.ObjAddOns
         {
             using (var conn = _loadSave.NewConnection())
             {
-                RatingCategories = conn.LoadCategories(this, settings);
+                RatingCategories = conn.LoadCategories(BaseModule, settings);
             }
         }
 

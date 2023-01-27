@@ -1,4 +1,5 @@
-﻿using RatableTracker.LoadSave;
+﻿using RatableTracker.Interfaces;
+using RatableTracker.LoadSave;
 using RatableTracker.ObjAddOns;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,9 @@ namespace GameTracker
             get { return ExcludeFromStats; }
         }
 
-        public StatusGame(StatusExtensionModule module) : base(module) { }
+        protected new SettingsGame settings => (SettingsGame)base.Settings;
+
+        public StatusGame(IModuleStatus module, SettingsGame settings) : base(module, settings) { }
 
         public StatusGame(StatusGame copyFrom) : base(copyFrom)
         {

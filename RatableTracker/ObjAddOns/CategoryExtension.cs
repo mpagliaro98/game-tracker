@@ -89,7 +89,7 @@ namespace RatableTracker.ObjAddOns
                 CategoryValuesManual.Remove(cv);
             }
             if (toDelete.Count > 0)
-                BaseObject.Save(module.BaseModule, args.Connection);
+                BaseObject.Save((TrackerModuleScores)module.BaseModule, args.Connection);
         }
 
         public virtual void ApplySettingsChanges(Settings settings)

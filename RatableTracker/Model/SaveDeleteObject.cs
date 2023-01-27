@@ -48,7 +48,5 @@ namespace RatableTracker.Model
         protected abstract void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn);
 
         protected virtual void PostDelete(TrackerModule module, ILoadSaveMethod conn) { }
-
-        public virtual void ApplySettingsChanges(Settings settings) { }
     }
 }

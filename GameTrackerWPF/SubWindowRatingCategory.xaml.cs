@@ -26,14 +26,16 @@ namespace GameTrackerWPF
     {
         private GameModule rm;
         private RatingCategoryWeighted orig;
+        private SettingsGame settings;
 
-        public SubWindowRatingCategory(GameModule rm, SettingsScore settings, SubWindowMode mode, RatingCategoryWeighted orig)
+        public SubWindowRatingCategory(GameModule rm, SettingsGame settings, SubWindowMode mode, RatingCategoryWeighted orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
-            if (this.orig == null) this.orig = new RatingCategoryWeighted(rm.CategoryExtension, settings);
+            this.settings = settings;
+            if (this.orig == null) this.orig = new RatingCategoryWeighted(rm, settings);
             switch (mode)
             {
                 case SubWindowMode.MODE_ADD:

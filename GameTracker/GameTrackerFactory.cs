@@ -1,4 +1,5 @@
-﻿using RatableTracker.Model;
+﻿using RatableTracker.Interfaces;
+using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
@@ -27,13 +28,13 @@ namespace GameTracker
             return obj;
         }
 
-        protected override Status CreateStatusFromTypeName(string typeName, StatusExtensionModule module)
+        protected override Status CreateStatusFromTypeName(string typeName, IModuleStatus module, Settings settings)
         {
-            var obj = base.CreateStatusFromTypeName(typeName, module);
+            var obj = base.CreateStatusFromTypeName(typeName, module, settings);
             switch (typeName.ToLower())
             {
                 case "statusgame":
-                    obj = new StatusGame(module);
+                    obj = new StatusGame(module, (SettingsGame)settings);
                     break;
             }
             return obj;
@@ -51,22 +52,22 @@ namespace GameTracker
             return obj;
         }
 
-        public Platform GetPlatform(string typeName, GameModule module)
+        public Platform GetPlatform(string typeName, GameModule module, SettingsGame settings)
         {
-            Platform obj = CreatePlatformFromTypeName(typeName, module);
+            Platform obj = CreatePlatformFromTypeName(typeName, module, settings);
             if (obj == null)
                 throw new ArgumentException("Unknown type: " + typeName);
             else
                 return obj;
         }
 
-        protected virtual Platform CreatePlatformFromTypeName(string typeName, GameModule module)
+        protected virtual Platform CreatePlatformFromTypeName(string typeName, GameModule module, SettingsGame settings)
         {
             Platform obj = null;
             switch (typeName.ToLower())
             {
                 case "platform":
-                    obj = new Platform(module);
+                    obj = new Platform(module, settings);
                     break;
             }
             return obj;

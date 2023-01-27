@@ -42,7 +42,7 @@ namespace RatableTracker.Modules
             base.LoadData(settings);
             using (var conn = _loadSave.NewConnection())
             {
-                ScoreRanges = conn.LoadScoreRanges(this);
+                ScoreRanges = conn.LoadScoreRanges(this, (SettingsScore)settings);
             }
         }
 
@@ -60,7 +60,7 @@ namespace RatableTracker.Modules
         protected void TransferToNewModule(ILoadSaveMethodScores connCurrent, ILoadSaveMethodScores connNew, SettingsScore settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
-            connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges(this));
+            connNew.SaveAllScoreRanges(connCurrent.LoadScoreRanges(this, settings));
         }
 
         public IList<ScoreRange> GetScoreRangeList()

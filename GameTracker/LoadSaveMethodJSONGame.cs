@@ -47,9 +47,9 @@ namespace GameTracker
             DeleteOne(EnsurePlatformsAreLoaded, ref platforms, platform, ref platformsChanged);
         }
 
-        public IList<Platform> LoadPlatforms(GameModule module)
+        public IList<Platform> LoadPlatforms(GameModule module, SettingsGame settings)
         {
-            return LoadAll(EnsurePlatformsAreLoaded, ref platforms, (s) => factory.GetPlatform(s, module));
+            return LoadAll(EnsurePlatformsAreLoaded, ref platforms, (s) => factory.GetPlatform(s, module, settings));
         }
 
         public void SaveAllPlatforms(IList<Platform> platform)

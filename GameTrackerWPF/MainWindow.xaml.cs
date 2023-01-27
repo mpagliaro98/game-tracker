@@ -517,7 +517,7 @@ namespace GameTrackerWPF
 
         private void PlatformsButtonNew_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowPlatform(SubWindowMode.MODE_ADD, new Platform(rm));
+            OpenSubWindowPlatform(SubWindowMode.MODE_ADD, new Platform(rm, settings));
         }
 
         private void PlatformEdit(object sender, RoutedEventArgs e)
@@ -547,7 +547,7 @@ namespace GameTrackerWPF
 
         private void OpenSubWindowPlatform(SubWindowMode mode, Platform orig = null)
         {
-            var window = new SubWindowPlatform(rm, mode, orig);
+            var window = new SubWindowPlatform(rm, settings, mode, orig);
             window.Closed += PlatformWindow_Closed;
             window.ShowDialog();
         }
@@ -728,7 +728,7 @@ namespace GameTrackerWPF
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowRatingCategory(SubWindowMode.MODE_ADD, new RatingCategoryWeighted(rm.CategoryExtension, settings));
+            OpenSubWindowRatingCategory(SubWindowMode.MODE_ADD, new RatingCategoryWeighted(rm, settings));
         }
 
         private void RatingCategoryEdit(object sender, RoutedEventArgs e)
@@ -788,7 +788,7 @@ namespace GameTrackerWPF
 
         private void SettingsButtonNewCompletionStatus_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowCompletionStatus(SubWindowMode.MODE_ADD, new StatusGame(rm.StatusExtension));
+            OpenSubWindowCompletionStatus(SubWindowMode.MODE_ADD, new StatusGame(rm, settings));
         }
 
         private void CompletionStatusEdit(object sender, RoutedEventArgs e)
@@ -818,7 +818,7 @@ namespace GameTrackerWPF
 
         private void OpenSubWindowCompletionStatus(SubWindowMode mode, StatusGame orig = null)
         {
-            var window = new SubWindowCompletionStatus(rm, mode, orig);
+            var window = new SubWindowCompletionStatus(rm, settings, mode, orig);
             window.Closed += CompletionStatusWindow_Closed;
             window.ShowDialog();
         }
@@ -848,7 +848,7 @@ namespace GameTrackerWPF
 
         private void SettingsButtonNewScoreRange_Click(object sender, RoutedEventArgs e)
         {
-            OpenSubWindowScoreRange(SubWindowMode.MODE_ADD, new ScoreRange(rm));
+            OpenSubWindowScoreRange(SubWindowMode.MODE_ADD, new ScoreRange(rm, settings));
         }
 
         private void ScoreRangeEdit(object sender, RoutedEventArgs e)
@@ -878,7 +878,7 @@ namespace GameTrackerWPF
 
         private void OpenSubWindowScoreRange(SubWindowMode mode, ScoreRange orig = null)
         {
-            var window = new SubWindowScoreRange(rm, mode, orig);
+            var window = new SubWindowScoreRange(rm, settings, mode, orig);
             window.Closed += ScoreRangeWindow_Closed;
             window.ShowDialog();
         }

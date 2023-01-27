@@ -23,15 +23,17 @@ namespace GameTrackerWPF
     public partial class SubWindowScoreRange : Window
     {
         private GameModule rm;
+        private SettingsGame settings;
         private ScoreRange orig;
         
-        public SubWindowScoreRange(GameModule rm, SubWindowMode mode, ScoreRange orig)
+        public SubWindowScoreRange(GameModule rm, SettingsGame settings, SubWindowMode mode, ScoreRange orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
-            if (this.orig == null) this.orig = new ScoreRange(rm);
+            this.settings = settings;
+            if (this.orig == null) this.orig = new ScoreRange(rm, settings);
             FillCombobox();
             switch (mode)
             {

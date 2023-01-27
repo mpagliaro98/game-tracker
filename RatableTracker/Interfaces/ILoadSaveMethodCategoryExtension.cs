@@ -13,6 +13,6 @@ namespace RatableTracker.Interfaces
         void SaveOneCategory(RatingCategory ratingCategory);
         void SaveAllCategories(IList<RatingCategory> ratingCategories);
         void DeleteOneCategory(RatingCategory ratingCategory);
-        IList<RatingCategory> LoadCategories(CategoryExtensionModule module, SettingsScore settings);
+        IList<RatingCategory> LoadCategories(IModuleCategorical module, SettingsScore settings);
     }
 }

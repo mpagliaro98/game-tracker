@@ -32,11 +32,11 @@ namespace GameTracker
             base.LoadData(settings);
             using (var conn = _loadSave.NewConnection())
             {
-                Platforms = conn.LoadPlatforms(this);
+                Platforms = conn.LoadPlatforms(this, (SettingsGame)settings);
             }
         }
 
-        public void TransferToNewModule(GameModule newModule, Settings settings)
+        public void TransferToNewModule(GameModule newModule, SettingsGame settings)
         {
             using (var connCurrent = _loadSave.NewConnection())
             {
@@ -47,10 +47,10 @@ namespace GameTracker
             }
         }
 
-        protected void TransferToNewModule(ILoadSaveMethodGame connCurrent, ILoadSaveMethodGame connNew, Settings settings)
+        protected void TransferToNewModule(ILoadSaveMethodGame connCurrent, ILoadSaveMethodGame connNew, SettingsGame settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
-            connNew.SaveAllPlatforms(connCurrent.LoadPlatforms(this));
+            connNew.SaveAllPlatforms(connCurrent.LoadPlatforms(this, settings));
         }
 
         public IList<Platform> GetPlatformList()

@@ -32,7 +32,7 @@ namespace RatableTracker.Modules
         public override void LoadData(Settings settings)
         {
             base.LoadData(settings);
-            StatusExtension.LoadData();
+            StatusExtension.LoadData(settings);
         }
 
         public void TransferToNewModule(TrackerModuleStatuses newModule, Settings settings)
@@ -49,7 +49,7 @@ namespace RatableTracker.Modules
         protected virtual void TransferToNewModule(ILoadSaveMethodStatuses connCurrent, ILoadSaveMethodStatuses connNew, Settings settings)
         {
             base.TransferToNewModule(connCurrent, connNew, settings);
-            connNew.SaveAllStatuses(connCurrent.LoadStatuses(StatusExtension));
+            connNew.SaveAllStatuses(connCurrent.LoadStatuses(this, settings));
         }
 
         public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)

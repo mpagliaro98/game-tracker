@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.ScoreRanges;
+using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace RatableTracker.Interfaces
         void SaveOneScoreRange(ScoreRange scoreRange);
         void SaveAllScoreRanges(IList<ScoreRange> scoreRanges);
         void DeleteOneScoreRange(ScoreRange scoreRange);
-        IList<ScoreRange> LoadScoreRanges(TrackerModuleScores module);
+        IList<ScoreRange> LoadScoreRanges(TrackerModuleScores module, SettingsScore settings);
     }
 }
