@@ -14,7 +14,7 @@ namespace RatableTracker.Util
         public const string LOG_DIRECTORY = "logs";
         protected const int LOG_DELETE_THRESHOLD_DAYS = 14;
 
-        private readonly static object fileLock = new object();
+        private readonly static object fileLock = new();
 
         private int logCounter = 0;
 
@@ -53,7 +53,7 @@ namespace RatableTracker.Util
 
         private void Log(string message, bool newlineAtStart)
         {
-            Thread thread = new Thread(() => LogToFileThreadSafe((++logCounter).ToString("D5") + " - " + message, !newlineAtStart));
+            Thread thread = new(() => LogToFileThreadSafe((++logCounter).ToString("D5") + " - " + message, !newlineAtStart));
             thread.Start();
         }
 

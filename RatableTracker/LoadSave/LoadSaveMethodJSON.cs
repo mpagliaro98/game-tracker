@@ -96,7 +96,7 @@ namespace RatableTracker.LoadSave
             if (representation == null) return;
             if (!changed) return;
             byte[] fileContent = representationToBytes(representation);
-            logger.Log("Save started to file: " + fileName + "(" + fileContent.Length.ToString() + " bytes)");
+            logger.Log("Save started to file: " + fileName + " (" + fileContent.Length.ToString() + " bytes)");
             Stopwatch sw = Stopwatch.StartNew();
             fileHandler.SaveFile(fileName, fileContent, logger);
             sw.Stop();

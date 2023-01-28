@@ -11,6 +11,9 @@ namespace RatableTracker.LoadSave
 {
     public class FileHandlerLocal : IFileHandler
     {
+        protected readonly static object dictLock = new();
+        protected readonly static Dictionary<string, object> fileLocks = new();
+
         protected readonly string baseDirectory;
         protected readonly IPathController pathController;
 
@@ -29,17 +32,26 @@ namespace RatableTracker.LoadSave
         {
             string fullPath = pathController.Combine(baseDirectory, relativePath);
             logger.Log(GetType().Name + " LoadFile - attempting to read from " + fullPath);
-            if (pathController.FileExists(fullPath))
+            bool fileExists;
+            byte[] bytes;
+            lock (GetFileLock(fullPath))
             {
-                var bytes = Util.Util.TextEncoding.GetBytes(pathController.ReadFromFile(fullPath));
+                if (pathController.FileExists(fullPath))
+                {
+                    bytes = Util.Util.TextEncoding.GetBytes(pathController.ReadFromFile(fullPath));
+                    fileExists = true;
+                }
+                else
+                {
+                    bytes = Array.Empty<byte>();
+                    fileExists = false;
+                }
+            }
+            if (fileExists)
                 logger.Log("Found " + bytes.Length.ToString() + " bytes at " + fullPath);
-                return bytes;
-            }
             else
-            {
                 logger.Log("No file found at " + fullPath + ", returning 0 bytes");
-                return new byte[0];
-            }
+            return bytes;
         }
 
         public void SaveFile(string relativePath, byte[] data)
@@ -51,8 +63,11 @@ namespace RatableTracker.LoadSave
         {
             string fullPath = pathController.Combine(baseDirectory, relativePath);
             logger.Log(GetType().Name + " SaveFile - writing " + data.Length.ToString() + " bytes to " + fullPath);
-            pathController.CreateFileIfDoesNotExist(fullPath);
-            pathController.WriteToFile(fullPath, Util.Util.TextEncoding.GetString(data));
+            lock (GetFileLock(fullPath))
+            {
+                pathController.CreateFileIfDoesNotExist(fullPath);
+                pathController.WriteToFile(fullPath, Util.Util.TextEncoding.GetString(data));
+            }
         }
 
         public void AppendFile(string relativePath, byte[] data)
@@ -64,8 +79,11 @@ namespace RatableTracker.LoadSave
         {
             string fullPath = pathController.Combine(baseDirectory, relativePath);
             logger.Log(GetType().Name + " AppendFile - appending " + data.Length.ToString() + " bytes to " + fullPath);
-            pathController.CreateFileIfDoesNotExist(fullPath);
-            pathController.AppendToFile(fullPath, Util.Util.TextEncoding.GetString(data));
+            lock (GetFileLock(fullPath))
+            {
+                pathController.CreateFileIfDoesNotExist(fullPath);
+                pathController.AppendToFile(fullPath, Util.Util.TextEncoding.GetString(data));
+            }
         }
 
         public void DeleteFile(string relativePath)
@@ -77,7 +95,8 @@ namespace RatableTracker.LoadSave
         {
             string fullPath = pathController.Combine(baseDirectory, relativePath);
             logger.Log(GetType().Name + " DeleteFile - deleting " + fullPath);
-            pathController.DeleteFile(fullPath);
+            lock (GetFileLock(fullPath))
+                pathController.DeleteFile(fullPath);
         }
 
         public IList<Util.FileInfo> GetFilesInCurrentDirectory()
@@ -96,6 +115,21 @@ namespace RatableTracker.LoadSave
                 files.Add(new Util.FileInfo(file));
             }
             return files;
+        }
+
+        protected static object GetFileLock(string fullPath)
+        {
+            lock (dictLock)
+            {
+                if (fileLocks.TryGetValue(fullPath, out object value))
+                    return value;
+                else
+                {
+                    object newLock = new();
+                    fileLocks[fullPath] = newLock;
+                    return newLock;
+                }
+            }
         }
     }
 }
