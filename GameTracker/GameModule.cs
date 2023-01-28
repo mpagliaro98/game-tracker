@@ -30,10 +30,12 @@ namespace GameTracker
         public override void LoadData(Settings settings)
         {
             base.LoadData(settings);
+            Platforms.ForEach(obj => obj.Dispose());
             using (var conn = _loadSave.NewConnection())
             {
                 Platforms = conn.LoadPlatforms(this, (SettingsGame)settings);
             }
+            Platforms.ForEach(obj => obj.InitAdditionalResources());
         }
 
         public void TransferToNewModule(GameModule newModule, SettingsGame settings)
@@ -102,13 +104,17 @@ namespace GameTracker
                     throw new ExceededLimitException(message);
                 }
                 Platforms.Add(platform);
+                platform.InitAdditionalResources();
                 isNew = true;
             }
             else
             {
                 var old = Platforms.Replace(platform);
                 if (old != platform)
+                {
                     old.Dispose();
+                    platform.InitAdditionalResources();
+                }
             }
             conn.SaveOnePlatform(platform);
             return isNew;
@@ -124,7 +130,9 @@ namespace GameTracker
                 throw new InvalidObjectStateException(message);
             }
             Platforms.Remove(platform);
+            platform.Dispose();
             conn.DeleteOnePlatform(platform);
+            Logger.Log("Platform deleted - invoking event PlatformDeleted on " + (PlatformDeleted == null ? "0" : PlatformDeleted.GetInvocationList().Length.ToString()) + " delegates");
             PlatformDeleted?.Invoke(this, new PlatformDeleteArgs(platform, platform.GetType(), conn));
         }
 

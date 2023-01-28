@@ -20,7 +20,7 @@ namespace RatableTracker.ObjAddOns
         public virtual bool HideScoreOfModelObject { get { return false; } }
         public virtual bool ExcludeModelObjectFromStats { get { return false; } }
 
-        protected new IModuleStatus module => (IModuleStatus)base.Module;
+        protected new IModuleStatus Module => (IModuleStatus)base.Module;
 
         public Status(IModuleStatus module, Settings settings) : base(settings, (TrackerModule)module) { }
 
@@ -31,12 +31,12 @@ namespace RatableTracker.ObjAddOns
 
         protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            return this.module.StatusExtension.SaveStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
+            return this.Module.StatusExtension.SaveStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.StatusExtension.DeleteStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
+            this.Module.StatusExtension.DeleteStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

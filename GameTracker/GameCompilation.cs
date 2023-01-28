@@ -15,13 +15,13 @@ namespace GameTracker
         {
             get
             {
-                double sumOfWeights = module.CategoryExtension.SumOfCategoryWeights();
+                double sumOfWeights = Module.CategoryExtension.SumOfCategoryWeights();
                 List<double> categoryAverages = new List<double>();
                 IList<GameObject> gamesInComp = GamesInCompilation();
-                IList<RatingCategory> ratingCategories = module.CategoryExtension.GetRatingCategoryList();
+                IList<RatingCategory> ratingCategories = Module.CategoryExtension.GetRatingCategoryList();
                 foreach (RatingCategory category in ratingCategories)
                 {
-                    categoryAverages.Add(gamesInComp.Select(obj => obj.CategoryExtension.ScoreOfCategory(category)).AverageIfEmpty(settings.MinScore));
+                    categoryAverages.Add(gamesInComp.Select(obj => obj.CategoryExtension.ScoreOfCategory(category)).AverageIfEmpty(Settings.MinScore));
                 }
 
                 double total = 0;
@@ -44,7 +44,7 @@ namespace GameTracker
 
         public IList<GameObject> GamesInCompilation()
         {
-            return module.GetModelObjectList().OfType<GameObject>().Where((obj) => obj.Compilation != null && obj.Compilation.Equals(this)).ToList() ?? new List<GameObject>();
+            return Module.GetModelObjectList().OfType<GameObject>().Where((obj) => obj.Compilation != null && obj.Compilation.Equals(this)).ToList() ?? new List<GameObject>();
         }
 
         public int NumGamesInCompilation()

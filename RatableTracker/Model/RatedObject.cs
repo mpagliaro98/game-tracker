@@ -25,7 +25,7 @@ namespace RatableTracker.Model
         {
             get
             {
-                foreach (ScoreRange range in module.GetScoreRangeList())
+                foreach (ScoreRange range in Module.GetScoreRangeList())
                 {
                     try
                     {
@@ -33,7 +33,7 @@ namespace RatableTracker.Model
                     }
                     catch (InvalidObjectStateException e)
                     {
-                        module.Logger.Log(e.GetType().Name + ": " + e.Message);
+                        Module.Logger.Log(e.GetType().Name + ": " + e.Message);
                         throw;
                     }
                 }
@@ -42,8 +42,8 @@ namespace RatableTracker.Model
         }
 
         // Re-declared as a different derived type
-        protected new SettingsScore settings => (SettingsScore)base.Settings;
-        protected new TrackerModuleScores module => (TrackerModuleScores)base.Module;
+        protected new SettingsScore Settings => (SettingsScore)base.Settings;
+        protected new TrackerModuleScores Module => (TrackerModuleScores)base.Module;
 
         public RatedObject(SettingsScore settings, TrackerModuleScores module) : base(settings, module)
         {
@@ -58,8 +58,8 @@ namespace RatableTracker.Model
         protected override void ValidateFields()
         {
             base.ValidateFields();
-            if (ManualScore < settings.MinScore || ManualScore > settings.MaxScore)
-                throw new ValidationException("Score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString(), ManualScore);
+            if (ManualScore < Settings.MinScore || ManualScore > Settings.MaxScore)
+                throw new ValidationException("Score must be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString(), ManualScore);
         }
 
         public override void ApplySettingsChanges(Settings settings)

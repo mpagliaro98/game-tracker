@@ -43,7 +43,14 @@ namespace RatableTracker.Model
                 throw new ValidationException("Name cannot be longer than " + MaxLengthName.ToString() + " characters", Name);
         }
 
-        public void Dispose()
+        public virtual void InitAdditionalResources()
+        {
+            AddEventHandlers();
+        }
+
+        protected virtual void AddEventHandlers() { }
+
+        public virtual void Dispose()
         {
             RemoveEventHandlers();
         }

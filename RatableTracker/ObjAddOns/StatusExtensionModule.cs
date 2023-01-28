@@ -35,10 +35,12 @@ namespace RatableTracker.ObjAddOns
 
         public virtual void LoadData(Settings settings)
         {
+            Statuses.ForEach(obj => obj.Dispose());
             using (var conn = _loadSave.NewConnection())
             {
                 Statuses = conn.LoadStatuses(BaseModule, settings);
             }
+            Statuses.ForEach(obj => obj.InitAdditionalResources());
         }
 
         public IList<Status> GetStatusList()
@@ -64,13 +66,17 @@ namespace RatableTracker.ObjAddOns
                     throw new ExceededLimitException(message);
                 }
                 Statuses.Add(status);
+                status.InitAdditionalResources();
                 isNew = true;
             }
             else
             {
                 var old = Statuses.Replace(status);
                 if (old != status)
+                {
                     old.Dispose();
+                    status.InitAdditionalResources();
+                }
             }
             conn.SaveOneStatus(status);
             return isNew;
@@ -86,7 +92,9 @@ namespace RatableTracker.ObjAddOns
                 throw new InvalidObjectStateException(message);
             }
             Statuses.Remove(status);
+            status.Dispose();
             conn.DeleteOneStatus(status);
+            Logger.Log("Status deleted - invoking event StatusDeleted on " + (StatusDeleted == null ? "0" : StatusDeleted.GetInvocationList().Length.ToString()) + " delegates");
             StatusDeleted?.Invoke(this, new StatusDeleteArgs(status, status.GetType(), conn));
         }
 

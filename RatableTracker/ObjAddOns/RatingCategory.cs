@@ -19,8 +19,8 @@ namespace RatableTracker.ObjAddOns
         public string Comment { get; set; } = "";
         public double Weight { get; protected set; } = 1.0;
 
-        protected new IModuleCategorical module => (IModuleCategorical)base.Module;
-        protected new SettingsScore settings => (SettingsScore)base.Settings;
+        protected new IModuleCategorical Module => (IModuleCategorical)base.Module;
+        protected new SettingsScore Settings => (SettingsScore)base.Settings;
 
         public RatingCategory(IModuleCategorical module, SettingsScore settings) : base(settings, (TrackerModuleScores)module) { }
 
@@ -39,19 +39,19 @@ namespace RatableTracker.ObjAddOns
 
         protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            return this.module.CategoryExtension.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
+            return this.Module.CategoryExtension.SaveRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
 
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
             base.PostSave(module, isNew, conn);
             if (isNew)
-                this.module.CategoryExtension.AddCategoryValueToAllModelObjects(module, settings, this, conn as ILoadSaveMethodCategoryExtension);
+                this.Module.CategoryExtension.AddCategoryValueToAllModelObjects(module, Settings, this, conn as ILoadSaveMethodCategoryExtension);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.CategoryExtension.DeleteRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
+            this.Module.CategoryExtension.DeleteRatingCategory(this, module, (ILoadSaveMethodCategoryExtension)conn);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

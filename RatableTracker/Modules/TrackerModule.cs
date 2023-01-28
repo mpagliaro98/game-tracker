@@ -40,10 +40,12 @@ namespace RatableTracker.Modules
 
         public virtual void LoadData(Settings settings)
         {
+            ModelObjects.ForEach(obj => obj.Dispose());
             using (var conn = _loadSave.NewConnection())
             {
                 ModelObjects = conn.LoadModelObjects(settings, this);
             }
+            ModelObjects.ForEach(obj => obj.InitAdditionalResources());
         }
 
         public void TransferToNewModule(TrackerModule newModule, Settings settings)
@@ -112,13 +114,17 @@ namespace RatableTracker.Modules
                     throw new ExceededLimitException(message);
                 }
                 ModelObjects.Add(modelObject);
+                modelObject.InitAdditionalResources();
                 isNew = true;
             }
             else
             {
                 var old = ModelObjects.Replace(modelObject);
                 if (old != modelObject)
+                {
                     old.Dispose();
+                    modelObject.InitAdditionalResources();
+                }
             }
             conn.SaveOneModelObject(modelObject);
             return isNew;
@@ -134,7 +140,9 @@ namespace RatableTracker.Modules
                 throw new InvalidObjectStateException(message);
             }
             ModelObjects.Remove(modelObject);
+            modelObject.Dispose();
             conn.DeleteOneModelObject(modelObject);
+            Logger.Log("Model object deleted - invoking event ModelObjectDeleted on " + (ModelObjectDeleted == null ? "0" : ModelObjectDeleted.GetInvocationList().Length.ToString()) + " delegates");
             ModelObjectDeleted?.Invoke(this, new ModelObjectDeleteArgs(modelObject, modelObject.GetType(), conn));
         }
 

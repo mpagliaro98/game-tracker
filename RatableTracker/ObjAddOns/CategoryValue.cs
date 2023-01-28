@@ -19,23 +19,23 @@ namespace RatableTracker.ObjAddOns
             get
             {
                 if (!_category.HasValue()) return null;
-                return Util.Util.FindObjectInList(module.GetRatingCategoryList(), _category);
+                return Util.Util.FindObjectInList(Module.GetRatingCategoryList(), _category);
             }
         }
 
         public double PointValue { get; set; } = 0;
 
-        private readonly CategoryExtensionModule module;
-        private readonly SettingsScore settings;
+        private CategoryExtensionModule Module { get; set; }
+        private SettingsScore Settings { get; set; }
 
         internal CategoryValue(CategoryExtensionModule module, SettingsScore settings) : this(module, settings, null) { }
 
         public CategoryValue(CategoryExtensionModule module, SettingsScore settings, RatingCategory ratingCategory)
         {
-            this.module = module;
-            this.settings = settings;
+            this.Module = module;
+            this.Settings = settings;
             if (ratingCategory != null) _category = ratingCategory.UniqueID;
-            PointValue = this.settings.MinScore;
+            PointValue = this.Settings.MinScore;
         }
 
         internal bool CategoryEquals(IKeyable category)

@@ -21,8 +21,8 @@ namespace GameTracker
         public int ReleaseYear { get; set; } = 0;
         public int AcquiredYear { get; set; } = 0;
 
-        protected new GameModule module => (GameModule)base.Module;
-        protected new SettingsGame settings => (SettingsGame)base.Settings;
+        protected new GameModule Module => (GameModule)base.Module;
+        protected new SettingsGame Settings => (SettingsGame)base.Settings;
 
         public Platform(GameModule module, SettingsGame settings) : base(settings, module) { }
 
@@ -43,12 +43,12 @@ namespace GameTracker
 
         protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            return this.module.SavePlatform(this, (ILoadSaveMethodGame)conn);
+            return this.Module.SavePlatform(this, (ILoadSaveMethodGame)conn);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.DeletePlatform(this, (ILoadSaveMethodGame)conn);
+            this.Module.DeletePlatform(this, (ILoadSaveMethodGame)conn);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

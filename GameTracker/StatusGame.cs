@@ -24,7 +24,7 @@ namespace GameTracker
             get { return ExcludeFromStats; }
         }
 
-        protected new SettingsGame settings => (SettingsGame)base.Settings;
+        protected new SettingsGame Settings => (SettingsGame)base.Settings;
 
         public StatusGame(IModuleStatus module, SettingsGame settings) : base(module, settings) { }
 

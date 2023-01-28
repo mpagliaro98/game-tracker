@@ -22,7 +22,7 @@ namespace RatableTracker.ObjAddOns
         {
             get
             {
-                return module.GetTotalScoreFromCategoryValues(CategoryValueList);
+                return Module.GetTotalScoreFromCategoryValues(CategoryValueList);
             }
         }
 
@@ -33,15 +33,14 @@ namespace RatableTracker.ObjAddOns
         public bool IgnoreCategories { get; set; } = false;
         public virtual bool AreCategoryValuesEditable { get { return !IgnoreCategories; } }
 
-        protected readonly CategoryExtensionModule module;
-        protected readonly SettingsScore settings;
+        protected CategoryExtensionModule Module { get; private set; }
+        protected SettingsScore Settings { get; private set; }
         public RatedObject BaseObject { get; internal set; }
 
         public CategoryExtension(CategoryExtensionModule module, SettingsScore settings)
         {
-            this.module = module;
-            this.settings = settings;
-            this.module.RatingCategoryDeleted += OnRatingCategoryDeleted;
+            this.Module = module;
+            this.Settings = settings;
 
             foreach (RatingCategory category in module.GetRatingCategoryList())
             {
@@ -50,7 +49,7 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        public CategoryExtension(CategoryExtension copyFrom) : this(copyFrom.module, copyFrom.settings)
+        public CategoryExtension(CategoryExtension copyFrom) : this(copyFrom.Module, copyFrom.Settings)
         {
             CategoryValuesManual = copyFrom.CategoryValuesManual;
             IgnoreCategories = copyFrom.IgnoreCategories;
@@ -58,11 +57,11 @@ namespace RatableTracker.ObjAddOns
 
         public virtual void ValidateFields()
         {
-            var categories = module.GetRatingCategoryList();
+            var categories = Module.GetRatingCategoryList();
             foreach (CategoryValue categoryValue in CategoryValuesManual)
             {
-                if (categoryValue.PointValue < settings.MinScore || categoryValue.PointValue > settings.MaxScore)
-                    throw new ValidationException(categoryValue.RatingCategory.Name + " score must be between " + settings.MinScore.ToString() + " and " + settings.MaxScore.ToString(), categoryValue.PointValue);
+                if (categoryValue.PointValue < Settings.MinScore || categoryValue.PointValue > Settings.MaxScore)
+                    throw new ValidationException(categoryValue.RatingCategory.Name + " score must be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString(), categoryValue.PointValue);
                 if (categories.Count <= 0)
                     throw new ValidationException("Category values were illegally modified - category " + categoryValue.RatingCategory.Name + " could not be found", categoryValue.RatingCategory.UniqueID);
                 int indexOfCategory = categories.IndexOf(categoryValue.RatingCategory);
@@ -89,7 +88,7 @@ namespace RatableTracker.ObjAddOns
                 CategoryValuesManual.Remove(cv);
             }
             if (toDelete.Count > 0)
-                BaseObject.Save((TrackerModuleScores)module.BaseModule, args.Connection);
+                BaseObject.Save((TrackerModuleScores)Module.BaseModule, args.Connection);
         }
 
         public virtual void ApplySettingsChanges(Settings settings)
@@ -102,6 +101,17 @@ namespace RatableTracker.ObjAddOns
                 }
             }
         }
+
+        public void InitAdditionalResources()
+        {
+            AddEventHandlers();
+        }
+
+        protected virtual void AddEventHandlers()
+        {
+            Module.RatingCategoryDeleted += OnRatingCategoryDeleted;
+        }
+
         public void Dispose()
         {
             RemoveEventHandlers();
@@ -109,7 +119,7 @@ namespace RatableTracker.ObjAddOns
 
         protected virtual void RemoveEventHandlers()
         {
-            module.RatingCategoryDeleted -= OnRatingCategoryDeleted;
+            Module.RatingCategoryDeleted -= OnRatingCategoryDeleted;
         }
 
         public virtual double ScoreOfCategory(RatingCategory ratingCategory)
@@ -125,9 +135,9 @@ namespace RatableTracker.ObjAddOns
         protected IList<CategoryValue> CreateListOfEmptyCategoryValues()
         {
             IList<CategoryValue> list = new List<CategoryValue>();
-            foreach (RatingCategory category in module.GetRatingCategoryList())
+            foreach (RatingCategory category in Module.GetRatingCategoryList())
             {
-                list.Add(new CategoryValue(module, settings, category));
+                list.Add(new CategoryValue(Module, Settings, category));
             }
             return list;
         }
@@ -148,7 +158,7 @@ namespace RatableTracker.ObjAddOns
                         IgnoreCategories = sr.GetValue(key).GetBool();
                         break;
                     case "CategoryValues":
-                        CategoryValuesManual = sr.GetValue(key).GetRepresentationObjectList(() => new CategoryValue(module, settings)).ToList();
+                        CategoryValuesManual = sr.GetValue(key).GetRepresentationObjectList(() => new CategoryValue(Module, Settings)).ToList();
                         break;
                     default:
                         break;

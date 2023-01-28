@@ -24,7 +24,7 @@ namespace RatableTracker.ScoreRanges
             get
             {
                 if (!_scoreRelationship.HasValue()) return null;
-                return Util.Util.FindObjectInList(module.GetScoreRelationshipList(), _scoreRelationship);
+                return Util.Util.FindObjectInList(Module.GetScoreRelationshipList(), _scoreRelationship);
             }
             set
             {
@@ -32,8 +32,8 @@ namespace RatableTracker.ScoreRanges
             }
         }
 
-        protected new TrackerModuleScores module => (TrackerModuleScores)base.Module;
-        protected new SettingsScore settings => (SettingsScore)base.Settings;
+        protected new TrackerModuleScores Module => (TrackerModuleScores)base.Module;
+        protected new SettingsScore Settings => (SettingsScore)base.Settings;
 
         public ScoreRange(TrackerModuleScores module, SettingsScore settings) : base(settings, module) { }
 
@@ -56,12 +56,12 @@ namespace RatableTracker.ScoreRanges
 
         protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            return this.module.SaveScoreRange(this, (ILoadSaveMethodScores)conn);
+            return this.Module.SaveScoreRange(this, (ILoadSaveMethodScores)conn);
         }
 
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            this.module.DeleteScoreRange(this, (ILoadSaveMethodScores)conn);
+            this.Module.DeleteScoreRange(this, (ILoadSaveMethodScores)conn);
         }
 
         public override void ApplySettingsChanges(Settings settings)

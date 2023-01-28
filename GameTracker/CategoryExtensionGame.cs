@@ -21,7 +21,7 @@ namespace GameTracker
                     }
                     catch (StackOverflowException e)
                     {
-                        module.Logger.Log("CategoryExtensionGame CategoryValuesDisplay " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
+                        Module.Logger.Log("CategoryExtensionGame CategoryValuesDisplay " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
                         return CreateListOfEmptyCategoryValues();
                     }
                 }
@@ -41,7 +41,7 @@ namespace GameTracker
             }
         }
 
-        protected new SettingsGame settings => (SettingsGame)base.settings;
+        protected new SettingsGame Settings => (SettingsGame)base.Settings;
 
         public new GameObject BaseObject { get { return (GameObject)base.BaseObject; } }
 

@@ -40,10 +40,12 @@ namespace RatableTracker.Modules
         public override void LoadData(Settings settings)
         {
             base.LoadData(settings);
+            ScoreRanges.ForEach(obj => obj.Dispose());
             using (var conn = _loadSave.NewConnection())
             {
                 ScoreRanges = conn.LoadScoreRanges(this, (SettingsScore)settings);
             }
+            ScoreRanges.ForEach(obj => obj.InitAdditionalResources());
         }
 
         public void TransferToNewModule(TrackerModuleScores newModule, SettingsScore settings)
@@ -86,13 +88,17 @@ namespace RatableTracker.Modules
                     throw new ExceededLimitException(message);
                 }
                 ScoreRanges.Add(scoreRange);
+                scoreRange.InitAdditionalResources();
                 isNew = true;
             }
             else
             {
                 var old = ScoreRanges.Replace(scoreRange);
                 if (old != scoreRange)
+                {
                     old.Dispose();
+                    scoreRange.InitAdditionalResources();
+                }
             }
             conn.SaveOneScoreRange(scoreRange);
             return isNew;
@@ -108,7 +114,9 @@ namespace RatableTracker.Modules
                 throw new InvalidObjectStateException(message);
             }
             ScoreRanges.Remove(scoreRange);
+            scoreRange.Dispose();
             conn.DeleteOneScoreRange(scoreRange);
+            Logger.Log("Score range deleted - invoking event ScoreRangeDeleted on " + (ScoreRangeDeleted == null ? "0" : ScoreRangeDeleted.GetInvocationList().Length.ToString()) + " delegates");
             ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(scoreRange, scoreRange.GetType(), conn));
         }
 

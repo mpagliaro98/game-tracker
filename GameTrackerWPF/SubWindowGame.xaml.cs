@@ -100,15 +100,6 @@ namespace GameTrackerWPF
             UpdateCompilationFields();
         }
 
-        private void Window_Closed(object sender, EventArgs e)
-        {
-            if (!saveComplete)
-            {
-                comp.Dispose();
-                orig.Dispose();
-            }
-        }
-
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -118,7 +109,6 @@ namespace GameTrackerWPF
                 if (!CheckboxCompilation.IsChecked.Value)
                 {
                     orig.Compilation = null;
-                    comp.Dispose();
                 }
                 orig.Save(rm);
                 if (CheckboxCompilation.IsChecked.Value)

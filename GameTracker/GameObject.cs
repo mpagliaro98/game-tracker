@@ -50,8 +50,8 @@ namespace GameTracker
                     }
                     catch (StackOverflowException e)
                     {
-                        module.Logger.Log("GameObject Score " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
-                        return settings.MinScore;
+                        Module.Logger.Log("GameObject Score " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
+                        return Settings.MinScore;
                     }
                 }
                 else
@@ -65,7 +65,7 @@ namespace GameTracker
             get
             {
                 if (!_platform.HasValue()) return null;
-                return RatableTracker.Util.Util.FindObjectInList(module.GetPlatformList(), _platform);
+                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(), _platform);
             }
             set
             {
@@ -79,7 +79,7 @@ namespace GameTracker
             get
             {
                 if (!_platformPlayedOn.HasValue()) return null;
-                return RatableTracker.Util.Util.FindObjectInList(module.GetPlatformList(), _platformPlayedOn);
+                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(), _platformPlayedOn);
             }
             set
             {
@@ -93,7 +93,7 @@ namespace GameTracker
             get
             {
                 if (!_originalGame.HasValue()) return null;
-                return (GameObject)RatableTracker.Util.Util.FindObjectInList(module.GetModelObjectList(), _originalGame);
+                return (GameObject)RatableTracker.Util.Util.FindObjectInList(Module.GetModelObjectList(), _originalGame);
             }
             set
             {
@@ -107,7 +107,7 @@ namespace GameTracker
             get
             {
                 if (!_compilation.HasValue()) return null;
-                return (GameCompilation)RatableTracker.Util.Util.FindObjectInList(module.GetModelObjectList(), _compilation);
+                return (GameCompilation)RatableTracker.Util.Util.FindObjectInList(Module.GetModelObjectList(), _compilation);
             }
             set
             {
@@ -115,23 +115,17 @@ namespace GameTracker
             }
         }
 
-        protected new SettingsGame settings => (SettingsGame)base.settings;
-        protected new GameModule module => (GameModule)base.module;
+        protected new SettingsGame Settings => (SettingsGame)base.Settings;
+        protected new GameModule Module => (GameModule)base.Module;
 
         public GameObject(SettingsGame settings, GameModule module) : this(settings, module, new CategoryExtensionGame(module.CategoryExtension, settings)) { }
 
-        protected GameObject(SettingsGame settings, GameModule module, CategoryExtensionGame categoryExtension) : base(settings, module, categoryExtension)
-        {
-            this.module.ModelObjectDeleted += OnModelObjectDeleted;
-            this.module.PlatformDeleted += OnPlatformDeleted;
-        }
+        protected GameObject(SettingsGame settings, GameModule module, CategoryExtensionGame categoryExtension) : base(settings, module, categoryExtension) { }
 
         public GameObject(GameObject copyFrom) : this(copyFrom, new CategoryExtensionGame(copyFrom.CategoryExtension)) { }
 
         protected GameObject(GameObject copyFrom, CategoryExtensionGame categoryExtension) : base(copyFrom, new StatusExtension(copyFrom.StatusExtension), categoryExtension)
         {
-            module.ModelObjectDeleted += OnModelObjectDeleted;
-            module.PlatformDeleted += OnPlatformDeleted;
             CompletionCriteria = copyFrom.CompletionCriteria;
             CompletionComment = copyFrom.CompletionComment;
             TimeSpent = copyFrom.TimeSpent;
@@ -166,7 +160,7 @@ namespace GameTracker
                 if (_compilation.Equals(args.DeletedObject.UniqueID))
                 {
                     Compilation = null;
-                    Save(module, args.Connection);
+                    Save(Module, args.Connection);
                 }
             }
             else if (args.ObjectType == typeof(GameObject))
@@ -174,7 +168,7 @@ namespace GameTracker
                 if (_originalGame.Equals(args.DeletedObject.UniqueID))
                 {
                     OriginalGame = null;
-                    Save(module, args.Connection);
+                    Save(Module, args.Connection);
                 }
             }
         }
@@ -193,26 +187,33 @@ namespace GameTracker
                 changed = true;
             }
             if (changed)
-                Save(module, args.Connection);
+                Save(Module, args.Connection);
         }
 
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
             base.PostSave(module, isNew, conn);
-            this.module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
+            this.Module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
         }
 
         protected override void PostDelete(TrackerModule module, ILoadSaveMethod conn)
         {
             base.PostDelete(module, conn);
-            this.module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
+            this.Module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
+        }
+
+        protected override void AddEventHandlers()
+        {
+            base.AddEventHandlers();
+            Module.ModelObjectDeleted += OnModelObjectDeleted;
+            Module.PlatformDeleted += OnPlatformDeleted;
         }
 
         protected override void RemoveEventHandlers()
         {
             base.RemoveEventHandlers();
-            module.ModelObjectDeleted -= OnModelObjectDeleted;
-            module.PlatformDeleted -= OnPlatformDeleted;
+            Module.ModelObjectDeleted -= OnModelObjectDeleted;
+            Module.PlatformDeleted -= OnPlatformDeleted;
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

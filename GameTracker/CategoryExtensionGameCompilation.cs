@@ -14,13 +14,13 @@ namespace GameTracker
         {
             get
             {
-                IList<RatingCategory> ratingCategories = module.GetRatingCategoryList();
+                IList<RatingCategory> ratingCategories = Module.GetRatingCategoryList();
                 IList<GameObject> gamesInComp = BaseObject.GamesInCompilation();
                 IList<CategoryValue> categoryValues = new List<CategoryValue>();
                 foreach (RatingCategory category in ratingCategories)
                 {
-                    double score = gamesInComp.Select(obj => obj.CategoryExtension.ScoreOfCategory(category)).AverageIfEmpty(settings.MinScore);
-                    categoryValues.Add(new CategoryValue(module, settings, category) { PointValue = score });
+                    double score = gamesInComp.Select(obj => obj.CategoryExtension.ScoreOfCategory(category)).AverageIfEmpty(Settings.MinScore);
+                    categoryValues.Add(new CategoryValue(Module, Settings, category) { PointValue = score });
                 }
                 return categoryValues;
             }

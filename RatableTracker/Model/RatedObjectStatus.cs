@@ -18,7 +18,7 @@ namespace RatableTracker.Model
             get
             {
                 if (StatusExtension.Status == null || StatusExtension.Status.HideScoreOfModelObject)
-                    return settings.MinScore;
+                    return Settings.MinScore;
                 else
                     return base.ScoreDisplay;
             }
@@ -32,7 +32,7 @@ namespace RatableTracker.Model
         public StatusExtension StatusExtension { get; private set; }
 
         // Module re-declared as a different derived type
-        protected new TrackerModuleScoreStatuses module => (TrackerModuleScoreStatuses)base.module;
+        protected new TrackerModuleScoreStatuses Module => (TrackerModuleScoreStatuses)base.Module;
 
         public RatedObjectStatus(SettingsScore settings, TrackerModuleScoreStatuses module) : this(settings, module, new StatusExtension(module.StatusExtension)) { }
 
@@ -60,9 +60,15 @@ namespace RatableTracker.Model
             StatusExtension.ApplySettingsChanges(settings);
         }
 
-        protected override void RemoveEventHandlers()
+        public override void InitAdditionalResources()
         {
-            base.RemoveEventHandlers();
+            base.InitAdditionalResources();
+            StatusExtension.InitAdditionalResources();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
             StatusExtension.Dispose();
         }
 

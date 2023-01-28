@@ -31,7 +31,7 @@ namespace RatableTracker.Model
         }
 
         // Module re-declared as a different derived type
-        protected new TrackerModuleScoreStatusCategorical module => (TrackerModuleScoreStatusCategorical)base.module;
+        protected new TrackerModuleScoreStatusCategorical Module => (TrackerModuleScoreStatusCategorical)base.Module;
 
         public RatedObjectStatusCategorical(SettingsScore settings, TrackerModuleScoreStatusCategorical module) : this(settings, module, new StatusExtension(module.StatusExtension)) { }
 
@@ -63,9 +63,15 @@ namespace RatableTracker.Model
             CategoryExtension.ApplySettingsChanges(settings);
         }
 
-        protected override void RemoveEventHandlers()
+        public override void InitAdditionalResources()
         {
-            base.RemoveEventHandlers();
+            base.InitAdditionalResources();
+            CategoryExtension.InitAdditionalResources();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
             CategoryExtension.Dispose();
         }
 

@@ -32,7 +32,7 @@ namespace RatableTracker.Model
         public StatusExtension StatusExtension { get; private set; }
 
         // Module re-declared as a different derived type
-        protected new TrackerModuleStatuses module => (TrackerModuleStatuses)base.Module;
+        protected new TrackerModuleStatuses Module => (TrackerModuleStatuses)base.Module;
 
         public RankedObjectStatus(Settings settings, TrackerModuleStatuses module) : this(settings, module, new StatusExtension(module.StatusExtension)) { }
 
@@ -60,9 +60,15 @@ namespace RatableTracker.Model
             StatusExtension.ApplySettingsChanges(settings);
         }
 
-        protected override void RemoveEventHandlers()
+        public override void InitAdditionalResources()
         {
-            base.RemoveEventHandlers();
+            base.InitAdditionalResources();
+            StatusExtension.InitAdditionalResources();
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
             StatusExtension.Dispose();
         }
 

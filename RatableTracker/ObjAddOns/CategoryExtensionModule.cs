@@ -37,10 +37,12 @@ namespace RatableTracker.ObjAddOns
 
         public virtual void LoadData(SettingsScore settings)
         {
+            RatingCategories.ForEach(obj => obj.Dispose());
             using (var conn = _loadSave.NewConnection())
             {
                 RatingCategories = conn.LoadCategories(BaseModule, settings);
             }
+            RatingCategories.ForEach(obj => obj.InitAdditionalResources());
         }
 
         public IList<RatingCategory> GetRatingCategoryList()
@@ -66,13 +68,17 @@ namespace RatableTracker.ObjAddOns
                     throw new ExceededLimitException(message);
                 }
                 RatingCategories.Add(ratingCategory);
+                ratingCategory.InitAdditionalResources();
                 isNew = true;
             }
             else
             {
                 var old = RatingCategories.Replace(ratingCategory);
                 if (old != ratingCategory)
+                {
                     old.Dispose();
+                    ratingCategory.InitAdditionalResources();
+                }
             }
             conn.SaveOneCategory(ratingCategory);
             return isNew;
@@ -88,7 +94,9 @@ namespace RatableTracker.ObjAddOns
                 throw new InvalidObjectStateException(message);
             }
             RatingCategories.Remove(ratingCategory);
+            ratingCategory.Dispose();
             conn.DeleteOneCategory(ratingCategory);
+            Logger.Log("Rating category deleted - invoking event RatingCategoryDeleted on " + (RatingCategoryDeleted == null ? "0" : RatingCategoryDeleted.GetInvocationList().Length.ToString()) + " delegates");
             RatingCategoryDeleted?.Invoke(this, new RatingCategoryDeleteArgs(ratingCategory, ratingCategory.GetType(), conn));
         }
 

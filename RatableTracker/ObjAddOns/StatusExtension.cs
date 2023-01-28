@@ -20,7 +20,7 @@ namespace RatableTracker.ObjAddOns
             get
             {
                 if (!_status.HasValue()) return null;
-                return Util.Util.FindObjectInList(module.GetStatusList(), _status);
+                return Util.Util.FindObjectInList(Module.GetStatusList(), _status);
             }
             set
             {
@@ -28,45 +28,41 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        protected readonly StatusExtensionModule module;
+        protected StatusExtensionModule Module { get; private set; }
         public RankedObject BaseObject { get; internal set; }
 
         public StatusExtension(StatusExtensionModule module)
         {
-            this.module = module;
-            this.module.StatusDeleted += OnStatusDeleted;
+            this.Module = module;
         }
 
-        public StatusExtension(StatusExtension copyFrom) : this(copyFrom.module)
+        public StatusExtension(StatusExtension copyFrom) : this(copyFrom.Module)
         {
             _status = UniqueID.Copy(copyFrom._status);
         }
 
         public virtual void ValidateFields() { }
 
-        public virtual bool RemoveReferenceToObject(IKeyable obj, Type type)
-        {
-            if (type == typeof(Status))
-            {
-                if (obj.Equals(Status))
-                {
-                    Status = null;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void OnStatusDeleted(object sender, Events.StatusDeleteArgs args)
         {
             if (_status.Equals(args.DeletedObject.UniqueID))
             {
                 Status = null;
-                BaseObject.Save((TrackerModule)module.BaseModule, args.Connection);
+                BaseObject.Save((TrackerModule)Module.BaseModule, args.Connection);
             }
         }
 
         public virtual void ApplySettingsChanges(Settings settings) { }
+
+        public void InitAdditionalResources()
+        {
+            AddEventHandlers();
+        }
+
+        protected virtual void AddEventHandlers()
+        {
+            Module.StatusDeleted += OnStatusDeleted;
+        }
 
         public void Dispose()
         {
@@ -75,7 +71,7 @@ namespace RatableTracker.ObjAddOns
 
         protected virtual void RemoveEventHandlers()
         {
-            module.StatusDeleted -= OnStatusDeleted;
+            Module.StatusDeleted -= OnStatusDeleted;
         }
 
         public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
