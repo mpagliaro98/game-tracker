@@ -26,6 +26,15 @@ namespace RatableTracker.Model
             }
         }
 
+        protected internal int SortOrder
+        {
+            get
+            {
+                IList<RankedObject> rankedObjects = Module.GetModelObjectList();
+                return rankedObjects.IndexOf(this) + 1;
+            }
+        }
+
         public virtual double Score
         {
             get { return Rank; }
@@ -105,7 +114,7 @@ namespace RatableTracker.Model
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();
             sr.SaveValue("Comment", new ValueContainer(Comment));
-            sr.SaveValue("Rank", new ValueContainer(Rank));
+            sr.SaveValue("SortOrder", new ValueContainer(SortOrder));
             return sr;
         }
 

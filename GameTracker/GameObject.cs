@@ -151,6 +151,14 @@ namespace GameTracker
                 throw new ValidationException("Completion comment cannot be longer than " + MaxLengthCompletionComment.ToString() + " characters", CompletionComment);
             if (TimeSpent.Length > MaxLengthTimeSpent)
                 throw new ValidationException("Time spent cannot be longer than " + MaxLengthTimeSpent.ToString() + " characters", TimeSpent);
+            try
+            {
+                var temp = Score;
+            }
+            catch (StackOverflowException e)
+            {
+                throw new ValidationException("A game referenced by the Original Game references this one", e);
+            }
         }
 
         private void OnModelObjectDeleted(object sender, ModelObjectDeleteArgs args)

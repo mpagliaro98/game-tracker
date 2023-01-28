@@ -49,7 +49,7 @@ namespace RatableTracker.ObjAddOns
 
         public CategoryExtension(CategoryExtension copyFrom) : base(copyFrom)
         {
-            CategoryValuesManual = copyFrom.CategoryValuesManual;
+            CategoryValuesManual = new List<CategoryValue>(copyFrom.CategoryValuesManual.ForEach(cv => new CategoryValue(copyFrom.Module, copyFrom.Settings, cv.RatingCategory) { PointValue = cv.PointValue }));
             IgnoreCategories = copyFrom.IgnoreCategories;
         }
 

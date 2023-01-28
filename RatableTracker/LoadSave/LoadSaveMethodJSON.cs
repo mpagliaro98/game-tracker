@@ -463,7 +463,7 @@ namespace RatableTracker.LoadSave
 
         public IList<RankedObject> LoadModelObjects(Settings settings, TrackerModule module)
         {
-            return LoadAll(EnsureModelObjectsAreLoaded, ref modelObjects, (s) => factory.GetModelObject(s, settings, module), (obj) => obj.Rank);
+            return LoadAll(EnsureModelObjectsAreLoaded, ref modelObjects, (s) => factory.GetModelObject(s, settings, module), (obj) => obj.SortOrder);
         }
 
         public void SaveAllModelObjects(IList<RankedObject> rankedObjects)
