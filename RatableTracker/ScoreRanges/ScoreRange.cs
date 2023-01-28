@@ -87,7 +87,7 @@ namespace RatableTracker.ScoreRanges
                     newValueList.Add(settingsScore.ScaleValueToNewMinMaxRange(value));
                 }
                 ValueList = newValueList;
-                SaveWithoutValidation(Module, args.Connection);
+                SaveWithoutValidation(Module, Settings, args.Connection);
             }
         }
 

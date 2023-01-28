@@ -89,7 +89,7 @@ namespace RatableTracker.Model
             if (settings is SettingsScore settingsScore)
             {
                 ManualScore = settingsScore.ScaleValueToNewMinMaxRange(ManualScore);
-                SaveWithoutValidation(Module, args.Connection);
+                SaveWithoutValidation(Module, Settings, args.Connection);
             }
         }
 

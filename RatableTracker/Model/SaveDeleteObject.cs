@@ -1,4 +1,5 @@
-﻿using RatableTracker.Interfaces;
+﻿using RatableTracker.Exceptions;
+using RatableTracker.Interfaces;
 using RatableTracker.Modules;
 using RatableTracker.Util;
 using System;
@@ -13,12 +14,12 @@ namespace RatableTracker.Model
     {
         public abstract UniqueID UniqueID { get; protected set; }
 
-        public void Delete(TrackerModule module)
+        public void Delete(TrackerModule module, Settings settings)
         {
-            Delete(module, null);
+            Delete(module, settings, null);
         }
 
-        public void Delete(TrackerModule module, ILoadSaveMethod conn)
+        public void Delete(TrackerModule module, Settings settings, ILoadSaveMethod conn)
         {
             bool newConn = false;
             try
@@ -32,9 +33,13 @@ namespace RatableTracker.Model
                 DeleteObjectFromModule(module, conn);
                 PostDelete(module, conn);
             }
-            catch
+            catch (Exception ex)
             {
+                // something went wrong when saving additional objects from event handlers or in pre/post-delete
                 conn?.SetCancel(true);
+                module.Logger.Log(Util.Util.FormatUnhandledExceptionMessage(ex, "Delete " + GetType().Name));
+                // reload all data in the module to wipe out potentially corrupt data due to partially-changed objects
+                module.LoadData(settings);
                 throw;
             }
             finally

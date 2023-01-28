@@ -107,7 +107,7 @@ namespace RatableTracker.Model
                 Module.Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
                 throw new InvalidObjectStateException(message);
             }
-            Module.ChangeModelObjectPositionInList(this, newRank - 1);
+            Module.ChangeModelObjectPositionInList(this, newRank - 1, Settings);
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

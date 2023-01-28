@@ -25,13 +25,15 @@ namespace GameTrackerWPF
     public partial class SubWindowCompilation : Window
     {
         private GameModule rm;
+        private SettingsGame settings;
         private GameCompilation orig;
 
-        public SubWindowCompilation(GameModule rm, SubWindowMode mode, GameCompilation orig)
+        public SubWindowCompilation(GameModule rm, SettingsGame settings, SubWindowMode mode, GameCompilation orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
+            this.settings = settings;
             this.orig = orig;
             FillComboboxStatuses(ComboBoxStatus);
             FillComboboxPlatforms(ComboBoxPlatform);
@@ -72,12 +74,11 @@ namespace GameTrackerWPF
             orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatformPlayedOn.SelectedItem;
             try
             {
-                orig.Save(rm);
+                orig.Save(rm, settings);
             }
             catch (ValidationException e)
             {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = e.Message;
+                e.DisplayUIExceptionMessage();
                 return;
             }
             Close();

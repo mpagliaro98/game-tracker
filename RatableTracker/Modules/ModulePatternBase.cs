@@ -101,7 +101,7 @@ namespace RatableTracker.Modules
             }
         }
 
-        protected void ChangeTrackerObjectPositionInList<T>(T obj, ref IList<T> list, int newPosition, TrackerModule module) where T : TrackerObjectBase
+        protected void ChangeTrackerObjectPositionInList<T>(T obj, ref IList<T> list, int newPosition, TrackerModule module, Settings settings) where T : TrackerObjectBase
         {
             Logger.Log("ChangeTrackerObjectPositionInList " + obj.GetType().Name + " - " + obj.UniqueID.ToString() + " " + obj.Name + " - " + newPosition.ToString());
             obj.Validate(Logger);
@@ -119,7 +119,7 @@ namespace RatableTracker.Modules
             using var conn = LoadSave.NewConnection();
             for (int i = currentPosition; i <= newPosition; i++)
             {
-                list[i].SaveWithoutValidation(module, conn);
+                list[i].SaveWithoutValidation(module, settings, conn);
             }
         }
     }

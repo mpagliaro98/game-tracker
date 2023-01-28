@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameTracker;
 using RatableTracker.Exceptions;
+using RatableTracker.Interfaces;
 using RatableTracker.ObjAddOns;
 using RatableTracker.ScoreRanges;
 using RatableTracker.Util;
@@ -28,13 +29,15 @@ namespace GameTrackerWPF
         private GameObject orig;
         private SettingsGame settings;
         private GameCompilation comp;
-        
-        public SubWindowGame(GameModule rm, SettingsGame settings, SubWindowMode mode, GameObject orig)
+        private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
+
+        public SubWindowGame(GameModule rm, SettingsGame settings, ILoadSaveHandler<ILoadSaveMethodGame> loadSave, SubWindowMode mode, GameObject orig)
         {
             InitializeComponent();
             LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
+            this.loadSave = loadSave;
             this.settings = settings;
             this.comp = orig.IsPartOfCompilation ? new GameCompilation(orig.Compilation) : new GameCompilation(settings, rm);
 
@@ -105,22 +108,22 @@ namespace GameTrackerWPF
             {
                 if (CheckboxCompilation.IsChecked.Value && comp.Name.Length <= 0)
                     throw new ValidationException("Compilation must be given a name");
+                using var conn = loadSave.NewConnection();
                 if (!CheckboxCompilation.IsChecked.Value)
                 {
                     orig.Compilation = null;
                 }
-                orig.Save(rm);
+                orig.Save(rm, settings, conn);
                 if (CheckboxCompilation.IsChecked.Value)
                 {
                     orig.Compilation = comp;
-                    comp.Save(rm);
-                    orig.Save(rm);
+                    comp.Save(rm, settings, conn);
+                    orig.Save(rm, settings, conn);
                 }
             }
             catch (ValidationException ex)
             {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = ex.Message;
+                ex.DisplayUIExceptionMessage();
                 return;
             }
             Close();
@@ -216,7 +219,7 @@ namespace GameTrackerWPF
         private void ButtonCompilationLink_Click(object sender, RoutedEventArgs e)
         {
             Hide();
-            Window window = new SubWindowCompilation(rm, SubWindowMode.MODE_VIEW, orig.Compilation);
+            Window window = new SubWindowCompilation(rm, settings, SubWindowMode.MODE_VIEW, orig.Compilation);
             window.ShowDialog();
             Show();
         }

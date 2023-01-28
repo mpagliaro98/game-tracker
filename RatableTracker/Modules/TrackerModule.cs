@@ -85,9 +85,9 @@ namespace RatableTracker.Modules
                 (obj) => ModelObjectDeleted?.Invoke(this, new ModelObjectDeleteArgs(obj, obj.GetType(), conn)), () => ModelObjectDeleted == null ? 0 : ModelObjectDeleted.GetInvocationList().Length);
         }
 
-        internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
+        internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition, Settings settings)
         {
-            ChangeTrackerObjectPositionInList(modelObject, ref _modelObjects, newPosition, this);
+            ChangeTrackerObjectPositionInList(modelObject, ref _modelObjects, newPosition, this, settings);
         }
     }
 }

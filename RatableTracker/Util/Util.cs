@@ -33,5 +33,16 @@ namespace RatableTracker.Util
             }
             return list;
         }
+
+        public static string FormatUnhandledExceptionMessage(Exception e, string source = null)
+        {
+            string message = "\n" + new string('=', 60) + "\nUNHANDLED EXCEPTION - " + (source ?? "Unknown Source") + "\n";
+            System.Reflection.AssemblyName assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
+            message += "Assembly: " + assemblyName.Name + "\n";
+            message += e.GetType().Name + ": " + e.Message + "\n";
+            message += e.StackTrace + "\n";
+            message += new string('=', 60);
+            return message;
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RatableTracker.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Windows.Media;
 
 namespace GameTrackerWPF
 {
-    public static partial class Extensions
+    public static class Extensions
     {
         public static T FindChild<T>(this DependencyObject parent, string childName) where T : DependencyObject
         {
@@ -63,6 +64,14 @@ namespace GameTrackerWPF
         public static Color ToMediaColor(this RatableTracker.Util.Color color)
         {
             return Color.FromArgb(color.A, color.R, color.G, color.B);
+        }
+
+        public static void DisplayUIExceptionMessage(this Exception e)
+        {
+            if (e is ValidationException val)
+                MessageBox.Show(val.Message, "Invalid Fields");
+            else
+                MessageBox.Show("Unexpected error - " + e.GetType().Name + ": " + e.Message + "\n\nSee the logs for more information.", "Unexpected Error");
         }
     }
 }

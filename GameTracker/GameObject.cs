@@ -168,7 +168,7 @@ namespace GameTracker
                 if (_compilation.Equals(args.DeletedObject.UniqueID))
                 {
                     Compilation = null;
-                    SaveWithoutValidation(Module, args.Connection);
+                    SaveWithoutValidation(Module, Settings, args.Connection);
                 }
             }
             else if (args.ObjectType == typeof(GameObject))
@@ -176,7 +176,7 @@ namespace GameTracker
                 if (_originalGame.Equals(args.DeletedObject.UniqueID))
                 {
                     OriginalGame = null;
-                    SaveWithoutValidation(Module, args.Connection);
+                    SaveWithoutValidation(Module, Settings, args.Connection);
                 }
             }
         }
@@ -195,19 +195,19 @@ namespace GameTracker
                 changed = true;
             }
             if (changed)
-                SaveWithoutValidation(Module, args.Connection);
+                SaveWithoutValidation(Module, Settings, args.Connection);
         }
 
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
             base.PostSave(module, isNew, conn);
-            this.Module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
+            this.Module.DeleteEmptyCompilations(Settings, conn as ILoadSaveMethodGame);
         }
 
         protected override void PostDelete(TrackerModule module, ILoadSaveMethod conn)
         {
             base.PostDelete(module, conn);
-            this.Module.DeleteEmptyCompilations(conn as ILoadSaveMethodGame);
+            this.Module.DeleteEmptyCompilations(Settings, conn as ILoadSaveMethodGame);
         }
 
         protected override void AddEventHandlers()

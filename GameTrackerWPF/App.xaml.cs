@@ -41,25 +41,17 @@ namespace GameTrackerWPF
             };
         }
 
-        private void LogUnhandledException(Exception exception, string source)
+        private static void LogUnhandledException(Exception exception, string source)
         {
-            string message = "";
             try
             {
-                message = new string('=', 60) + "\nUNHANDLED EXCEPTION - " + source + "\n";
-                System.Reflection.AssemblyName assemblyName = System.Reflection.Assembly.GetExecutingAssembly().GetName();
-                message += "Assembly: " + assemblyName.Name + "\n";
-                message += exception.GetType().Name + ": " + exception.Message + "\n";
-                message += exception.StackTrace + "\n";
-                message += new string('=', 60);
+                string message = RatableTracker.Util.Util.FormatUnhandledExceptionMessage(exception, source);
+                Logger.Log(message);
             }
             catch (Exception ex)
             {
                 Logger.Log("EXCEPTION IN EXCEPTION HANDLER: " + ex.Message);
-            }
-            finally
-            {
-                Logger.Log(message);
+                throw;
             }
         }
     }

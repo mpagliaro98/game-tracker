@@ -38,6 +38,7 @@ namespace GameTrackerWPF
 
         private GameModule rm;
         private SettingsGame settings;
+        private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
 
         private class SavedState
         {
@@ -59,7 +60,7 @@ namespace GameTrackerWPF
             IPathController pathController = new PathControllerWindows();
             IFileHandler fileHandlerSaves = new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
             GameTrackerFactory factory = new GameTrackerFactory();
-            ILoadSaveHandler<ILoadSaveMethodGame> loadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(fileHandlerSaves, factory, App.Logger));
+            loadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(fileHandlerSaves, factory, App.Logger));
             rm = new GameModule(loadSave, App.Logger);
             try
             {
@@ -365,7 +366,15 @@ namespace GameTrackerWPF
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this game?", "Delete Game Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            lbi.Game.Delete(rm);
+            try
+            {
+                lbi.Game.Delete(rm, settings);
+            }
+            catch (Exception ex)
+            {
+                ex.DisplayUIExceptionMessage();
+                return;
+            }
             UpdateGamesUI();
         }
 
@@ -373,9 +382,9 @@ namespace GameTrackerWPF
         {
             Window window;
             if (orig != null && orig.IsCompilation)
-                window = new SubWindowCompilation(rm, mode, orig as GameCompilation);
+                window = new SubWindowCompilation(rm, settings, mode, orig as GameCompilation);
             else
-                window = new SubWindowGame(rm, settings, mode, orig);
+                window = new SubWindowGame(rm, settings, loadSave, mode, orig);
             window.Closed += GameWindow_Closed;
             window.ShowDialog();
         }
@@ -541,7 +550,15 @@ namespace GameTrackerWPF
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this platform and all data associated with it?", "Delete Platform Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            lbi.Platform.Delete(rm);
+            try
+            {
+                lbi.Platform.Delete(rm, settings);
+            }
+            catch (Exception ex)
+            {
+                ex.DisplayUIExceptionMessage();
+                return;
+            }
             UpdatePlatformsUI();
         }
 
@@ -642,7 +659,15 @@ namespace GameTrackerWPF
                 if (mbr != MessageBoxResult.Yes) return;
                 settings.MinScore = minScore;
                 settings.MaxScore = maxScore;
-                settings.Save(rm);
+                try
+                {
+                    settings.Save(rm, settings);
+                }
+                catch (Exception ex)
+                {
+                    ex.DisplayUIExceptionMessage();
+                    return;
+                }
             }
 
             UpdateSettingsUI();
@@ -752,7 +777,15 @@ namespace GameTrackerWPF
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this rating category and all data associated with it?", "Delete Rating Category Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            lbi.RatingCategory.Delete(rm);
+            try
+            {
+                lbi.RatingCategory.Delete(rm, settings);
+            }
+            catch (Exception ex)
+            {
+                ex.DisplayUIExceptionMessage();
+                return;
+            }
             UpdateRatingCategoryUI();
         }
 
@@ -812,7 +845,15 @@ namespace GameTrackerWPF
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this completion status and all data associated with it?", "Delete Completion Status Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            lbi.CompletionStatus.Delete(rm);
+            try
+            {
+                lbi.CompletionStatus.Delete(rm, settings);
+            }
+            catch (Exception ex) 
+            {
+                ex.DisplayUIExceptionMessage();
+                return;
+            }
             UpdateCompletionStatusUI();
         }
 
@@ -872,7 +913,15 @@ namespace GameTrackerWPF
             MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this score range?", "Delete Score Range Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
-            lbi.ScoreRange.Delete(rm);
+            try
+            {
+                lbi.ScoreRange.Delete(rm, settings);
+            }
+            catch (Exception ex)
+            {
+                ex.DisplayUIExceptionMessage();
+                return;
+            }
             UpdateScoreRangeUI();
         }
 

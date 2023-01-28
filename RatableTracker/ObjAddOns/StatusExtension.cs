@@ -43,7 +43,7 @@ namespace RatableTracker.ObjAddOns
             if (_status.Equals(args.DeletedObject.UniqueID))
             {
                 Status = null;
-                BaseObject.SaveWithoutValidation((TrackerModule)Module.BaseModule, args.Connection);
+                BaseObject.SaveWithoutValidation((TrackerModule)Module.BaseModule, Settings, args.Connection);
             }
         }
 

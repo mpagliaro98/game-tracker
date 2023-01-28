@@ -77,12 +77,11 @@ namespace GameTrackerWPF
             orig.SetWeight(weight);
             try
             {
-                orig.Save(rm);
+                orig.Save(rm, settings);
             }
             catch (ValidationException e)
             {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = e.Message;
+                e.DisplayUIExceptionMessage();
                 return;
             }
             Close();

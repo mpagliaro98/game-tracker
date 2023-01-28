@@ -89,11 +89,11 @@ namespace GameTracker
             return ModelObjects.OfType<GameCompilation>().Where((obj) => obj.NumGamesInCompilation() <= 0).ToList();
         }
 
-        public void DeleteEmptyCompilations(ILoadSaveMethodGame conn)
+        public void DeleteEmptyCompilations(SettingsGame settings, ILoadSaveMethodGame conn)
         {
             foreach (var comp in GetEmptyCompilations())
             {
-                comp.Delete(this, conn);
+                comp.Delete(this, settings, conn);
             }
         }
 

@@ -87,7 +87,7 @@ namespace RatableTracker.ObjAddOns
                 CategoryValuesManual.Remove(cv);
             }
             if (toDelete.Count > 0)
-                BaseObject.SaveWithoutValidation((TrackerModuleScores)Module.BaseModule, args.Connection);
+                BaseObject.SaveWithoutValidation((TrackerModuleScores)Module.BaseModule, Settings, args.Connection);
         }
 
         private void OnSettingsChanged(object sender, SettingsChangeArgs args)
@@ -99,7 +99,7 @@ namespace RatableTracker.ObjAddOns
                 {
                     cv.PointValue = settingsScore.ScaleValueToNewMinMaxRange(cv.PointValue);
                 }
-                BaseObject.SaveWithoutValidation((TrackerModuleScores)Module.BaseModule, args.Connection);
+                BaseObject.SaveWithoutValidation((TrackerModuleScores)Module.BaseModule, Settings, args.Connection);
             }
         }
 
