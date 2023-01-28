@@ -9,7 +9,7 @@ namespace RatableTracker.Events
 {
     public class StatusDeleteArgs : ObjectDeleteArgs
     {
-        public ILoadSaveMethodStatusExtension Connection { get; private set; } = null;
+        public ILoadSaveMethodStatusExtension Connection { get; init; } = null;
 
         public StatusDeleteArgs(IKeyable deleted, Type type, ILoadSaveMethodStatusExtension connection) : base(deleted, type)
         {

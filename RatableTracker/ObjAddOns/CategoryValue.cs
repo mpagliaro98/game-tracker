@@ -26,8 +26,8 @@ namespace RatableTracker.ObjAddOns
 
         public double PointValue { get; set; } = 0;
 
-        private CategoryExtensionModule Module { get; set; }
-        private SettingsScore Settings { get; set; }
+        private CategoryExtensionModule Module { get; init; }
+        private SettingsScore Settings { get; init; }
 
         internal CategoryValue(CategoryExtensionModule module, SettingsScore settings) : this(module, settings, null) { }
 

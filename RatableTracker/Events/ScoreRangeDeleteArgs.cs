@@ -9,7 +9,7 @@ namespace RatableTracker.Events
 {
     public class ScoreRangeDeleteArgs : ObjectDeleteArgs
     {
-        public ILoadSaveMethodScores Connection { get; private set; } = null;
+        public ILoadSaveMethodScores Connection { get; init; } = null;
 
         public ScoreRangeDeleteArgs(IKeyable deleted, Type type, ILoadSaveMethodScores connection) : base(deleted, type)
         {

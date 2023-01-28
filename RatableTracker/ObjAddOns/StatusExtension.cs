@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.ObjAddOns
 {
-    public class StatusExtension : IDisposable
+    public class StatusExtension : ExtensionBase
     {
         private UniqueID _status = UniqueID.BlankID();
         public Status Status
@@ -28,20 +28,15 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        protected StatusExtensionModule Module { get; private set; }
-        public RankedObject BaseObject { get; internal set; }
+        protected new StatusExtensionModule Module => (StatusExtensionModule)base.Module;
+        public new RankedObject BaseObject { get { return (RankedObject)base.BaseObject; } internal set { base.BaseObject = value; } }
 
-        public StatusExtension(StatusExtensionModule module)
-        {
-            this.Module = module;
-        }
+        public StatusExtension(StatusExtensionModule module, Settings settings) : base(module, settings) { }
 
-        public StatusExtension(StatusExtension copyFrom) : this(copyFrom.Module)
+        public StatusExtension(StatusExtension copyFrom) : base(copyFrom)
         {
             _status = UniqueID.Copy(copyFrom._status);
         }
-
-        public virtual void ValidateFields() { }
 
         private void OnStatusDeleted(object sender, Events.StatusDeleteArgs args)
         {
@@ -54,33 +49,25 @@ namespace RatableTracker.ObjAddOns
 
         public virtual void ApplySettingsChanges(Settings settings) { }
 
-        public void InitAdditionalResources()
-        {
-            AddEventHandlers();
-        }
-
-        protected virtual void AddEventHandlers()
+        protected override void AddEventHandlers()
         {
             Module.StatusDeleted += OnStatusDeleted;
         }
 
-        public void Dispose()
-        {
-            RemoveEventHandlers();
-        }
-
-        protected virtual void RemoveEventHandlers()
+        protected override void RemoveEventHandlers()
         {
             Module.StatusDeleted -= OnStatusDeleted;
         }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
+        public override void LoadIntoRepresentation(ref SavableRepresentation sr)
         {
+            base.LoadIntoRepresentation(ref sr);
             sr.SaveValue("Status", new ValueContainer(_status));
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

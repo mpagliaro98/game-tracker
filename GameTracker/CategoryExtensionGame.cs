@@ -44,7 +44,7 @@ namespace GameTracker
 
         protected new SettingsGame Settings => (SettingsGame)base.Settings;
 
-        public new GameObject BaseObject { get { return (GameObject)base.BaseObject; } }
+        public new GameObject BaseObject => (GameObject)base.BaseObject;
 
         public CategoryExtensionGame(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
 

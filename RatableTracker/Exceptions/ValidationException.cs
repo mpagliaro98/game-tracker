@@ -8,7 +8,7 @@ namespace RatableTracker.Exceptions
 {
     public class ValidationException : Exception
     {
-        public object InvalidValue { get; private set; } = new object();
+        public object InvalidValue { get; init; } = new object();
 
         public ValidationException() : base() { }
 

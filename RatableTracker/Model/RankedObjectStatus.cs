@@ -29,12 +29,12 @@ namespace RatableTracker.Model
             get { return StatusExtension.Status == null ? false : !StatusExtension.Status.HideScoreOfModelObject; }
         }
 
-        public StatusExtension StatusExtension { get; private set; }
+        public StatusExtension StatusExtension { get; init; }
 
         // Module re-declared as a different derived type
         protected new TrackerModuleStatuses Module => (TrackerModuleStatuses)base.Module;
 
-        public RankedObjectStatus(Settings settings, TrackerModuleStatuses module) : this(settings, module, new StatusExtension(module.StatusExtension)) { }
+        public RankedObjectStatus(Settings settings, TrackerModuleStatuses module) : this(settings, module, new StatusExtension(module.StatusExtension, settings)) { }
 
         public RankedObjectStatus(Settings settings, TrackerModuleStatuses module, StatusExtension statusExtension) : base(settings, module)
         {

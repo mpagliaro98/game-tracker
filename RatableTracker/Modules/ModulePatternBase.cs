@@ -15,7 +15,7 @@ namespace RatableTracker.Modules
     public abstract class ModulePatternBase
     {
         protected ILoadSaveHandler<ILoadSaveMethod> LoadSave { get; init; }
-        public Logger Logger { get; private set; }
+        public Logger Logger { get; init; }
 
         public ModulePatternBase(ILoadSaveHandler<ILoadSaveMethod> loadSave) : this(loadSave, new Logger()) { }
 

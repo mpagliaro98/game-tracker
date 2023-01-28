@@ -29,7 +29,7 @@ namespace GameTracker
 
         public override bool AreCategoryValuesEditable { get { return false; } }
 
-        public new GameCompilation BaseObject { get { return (GameCompilation)base.BaseObject; } }
+        public new GameCompilation BaseObject => (GameCompilation)base.BaseObject;
 
         public CategoryExtensionGameCompilation(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
 

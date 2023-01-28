@@ -10,7 +10,7 @@ namespace GameTracker
 {
     public class PlatformDeleteArgs : ObjectDeleteArgs
     {
-        public ILoadSaveMethodGame Connection { get; private set; } = null;
+        public ILoadSaveMethodGame Connection { get; init; } = null;
 
         public PlatformDeleteArgs(IKeyable deleted, Type type, ILoadSaveMethodGame connection) : base(deleted, type)
         {

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.ObjAddOns
 {
-    public class CategoryExtension
+    public class CategoryExtension : ExtensionBase
     {
         public IList<CategoryValue> CategoryValuesManual { get; private set; } = new List<CategoryValue>();
 
@@ -33,15 +33,12 @@ namespace RatableTracker.ObjAddOns
         public bool IgnoreCategories { get; set; } = false;
         public virtual bool AreCategoryValuesEditable { get { return !IgnoreCategories; } }
 
-        protected CategoryExtensionModule Module { get; private set; }
-        protected SettingsScore Settings { get; private set; }
-        public RatedObject BaseObject { get; internal set; }
+        protected new CategoryExtensionModule Module => (CategoryExtensionModule)base.Module;
+        protected new SettingsScore Settings => (SettingsScore)base.Settings;
+        public new RatedObject BaseObject { get { return (RatedObject)base.BaseObject; } internal set { base.BaseObject = value; } }
 
-        public CategoryExtension(CategoryExtensionModule module, SettingsScore settings)
+        public CategoryExtension(CategoryExtensionModule module, SettingsScore settings) : base(module, settings)
         {
-            this.Module = module;
-            this.Settings = settings;
-
             foreach (RatingCategory category in module.GetRatingCategoryList())
             {
                 var categoryValue = new CategoryValue(module, settings, category);
@@ -49,14 +46,15 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        public CategoryExtension(CategoryExtension copyFrom) : this(copyFrom.Module, copyFrom.Settings)
+        public CategoryExtension(CategoryExtension copyFrom) : base(copyFrom)
         {
             CategoryValuesManual = copyFrom.CategoryValuesManual;
             IgnoreCategories = copyFrom.IgnoreCategories;
         }
 
-        public virtual void ValidateFields()
+        public override void ValidateFields()
         {
+            base.ValidateFields();
             var categories = Module.GetRatingCategoryList();
             foreach (CategoryValue categoryValue in CategoryValuesManual)
             {
@@ -69,7 +67,7 @@ namespace RatableTracker.ObjAddOns
                     throw new ValidationException("Category values were illegally modified - category " + categoryValue.RatingCategory.Name + " is a duplicate or does not exist on the module", categoryValue.RatingCategory.UniqueID);
                 categories.RemoveAt(indexOfCategory);
             }
-            if (categories.Count() > 0)
+            if (categories.Count > 0)
                 throw new ValidationException("Category values were illegally modified - more categories are represented than exist", string.Join(", ", categories.Select(cat => cat.UniqueID.ToString())));
         }
 
@@ -102,22 +100,12 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        public void InitAdditionalResources()
-        {
-            AddEventHandlers();
-        }
-
-        protected virtual void AddEventHandlers()
+        protected override void AddEventHandlers()
         {
             Module.RatingCategoryDeleted += OnRatingCategoryDeleted;
         }
 
-        public void Dispose()
-        {
-            RemoveEventHandlers();
-        }
-
-        protected virtual void RemoveEventHandlers()
+        protected override void RemoveEventHandlers()
         {
             Module.RatingCategoryDeleted -= OnRatingCategoryDeleted;
         }
@@ -142,14 +130,16 @@ namespace RatableTracker.ObjAddOns
             return list;
         }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation sr)
+        public override void LoadIntoRepresentation(ref SavableRepresentation sr)
         {
+            base.LoadIntoRepresentation(ref sr);
             sr.SaveValue("IgnoreCategories", new ValueContainer(IgnoreCategories));
             sr.SaveValue("CategoryValues", new ValueContainer(CategoryValuesManual));
         }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr)
+        public override void RestoreFromRepresentation(SavableRepresentation sr)
         {
+            base.RestoreFromRepresentation(sr);
             foreach (string key in sr.GetAllSavedKeys())
             {
                 switch (key)

@@ -13,7 +13,7 @@ namespace RatableTracker.Model
 {
     public class RatedObjectCategorical : RatedObject, IModelObjectCategorical
     {
-        public CategoryExtension CategoryExtension { get; private set; }
+        public CategoryExtension CategoryExtension { get; init; }
 
         public override double Score
         {

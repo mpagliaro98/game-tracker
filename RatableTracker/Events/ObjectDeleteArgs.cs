@@ -10,8 +10,8 @@ namespace RatableTracker.Events
 {
     public abstract class ObjectDeleteArgs
     {
-        public IKeyable DeletedObject { get; private set; } = null;
-        public Type ObjectType { get; private set; } = null;
+        public IKeyable DeletedObject { get; init; } = null;
+        public Type ObjectType { get; init; } = null;
 
         public ObjectDeleteArgs(IKeyable deleted, Type type)
         {

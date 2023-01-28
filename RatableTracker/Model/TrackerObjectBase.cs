@@ -19,8 +19,8 @@ namespace RatableTracker.Model
 
         public override UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
-        protected Settings Settings { get; private set; }
-        protected TrackerModule Module { get; private set; }
+        protected Settings Settings { get; init; }
+        protected TrackerModule Module { get; init; }
 
         public TrackerObjectBase(Settings settings, TrackerModule module)
         {
