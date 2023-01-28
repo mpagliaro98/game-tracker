@@ -4,13 +4,14 @@ using System.Text;
 using RatableTracker.Framework.Interfaces;
 using GameTracker.Model;
 using System.Collections.ObjectModel;
-using Xamarin.Forms;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using GameTrackerMobile.Views;
 using RatableTracker.Framework;
 using GameTrackerMobile.Services;
 using System.Linq;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.ViewModels
 {

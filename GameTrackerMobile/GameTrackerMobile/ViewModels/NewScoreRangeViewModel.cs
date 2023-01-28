@@ -6,8 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Xamarin.Forms;
 using System.Linq;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -45,7 +46,7 @@ namespace GameTrackerMobile.ViewModels
         private ScoreRelationship rel;
         private double val1;
         private double val2;
-        private Xamarin.Forms.Color color;
+        private Color color;
 
         public string Name
         {
@@ -71,7 +72,7 @@ namespace GameTrackerMobile.ViewModels
             set => SetProperty(ref val2, value);
         }
 
-        public Xamarin.Forms.Color Color
+        public Color Color
         {
             get => color;
             set => SetProperty(ref color, value);

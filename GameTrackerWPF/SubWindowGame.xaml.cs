@@ -28,7 +28,6 @@ namespace GameTrackerWPF
         private GameObject orig;
         private SettingsGame settings;
         private GameCompilation comp;
-        private bool saveComplete = false;
         
         public SubWindowGame(GameModule rm, SettingsGame settings, SubWindowMode mode, GameObject orig)
         {
@@ -124,7 +123,6 @@ namespace GameTrackerWPF
                 LabelError.Content = ex.Message;
                 return;
             }
-            saveComplete = true;
             Close();
         }
 

@@ -6,7 +6,8 @@ using GameTracker.Model;
 using GameTrackerMobile.Services;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Exceptions;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.ViewModels
 {
@@ -44,7 +45,7 @@ namespace GameTrackerMobile.ViewModels
         private string abbreviation = "";
         private int releaseYear;
         private int acquiredYear;
-        private Xamarin.Forms.Color color;
+        private Color color;
 
         public string Name
         {
@@ -70,7 +71,7 @@ namespace GameTrackerMobile.ViewModels
             set => SetProperty(ref acquiredYear, value);
         }
 
-        public Xamarin.Forms.Color Color
+        public Color Color
         {
             get => color;
             set => SetProperty(ref color, value);

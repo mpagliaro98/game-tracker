@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using GameTrackerMobile.ViewModels;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.Views
 {

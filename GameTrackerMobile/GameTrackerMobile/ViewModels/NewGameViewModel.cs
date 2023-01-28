@@ -7,9 +7,10 @@ using GameTracker.Model;
 using GameTrackerMobile.Services;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Exceptions;
-using Xamarin.Forms;
 using System.Linq;
 using System.ComponentModel;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.ViewModels
 {

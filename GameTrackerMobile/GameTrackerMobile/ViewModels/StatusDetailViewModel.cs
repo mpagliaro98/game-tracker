@@ -4,9 +4,10 @@ using System.Diagnostics;
 using System.Text;
 using GameTracker.Model;
 using RatableTracker.Framework;
-using Xamarin.Forms;
 using GameTrackerMobile.Views;
 using Rg.Plugins.Popup.Services;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.ViewModels
 {

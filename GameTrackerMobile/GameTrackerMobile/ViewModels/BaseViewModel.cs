@@ -4,7 +4,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using GameTrackerMobile.Services;
 using RatableTracker.Framework.Interfaces;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.ViewModels
 {

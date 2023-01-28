@@ -5,7 +5,8 @@ using System.Text;
 using GameTracker.Model;
 using GameTrackerMobile.Services;
 using RatableTracker.Framework;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.Converters
 {
@@ -16,7 +17,7 @@ namespace GameTrackerMobile.Converters
             ObjectReference key = (ObjectReference)value;
             RatingModuleGame rm = ModuleService.GetActiveModule();
             Status status = rm.FindStatus(key);
-            if (status == null) return new Xamarin.Forms.Color();
+            if (status == null) return new Color();
             RatableTracker.Framework.Color color = status.Color;
             return color.ToXamarinColor();
         }

@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace RatableTracker.Util
 {

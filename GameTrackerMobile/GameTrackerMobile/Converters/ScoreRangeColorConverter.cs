@@ -8,7 +8,8 @@ using GameTrackerMobile.Services;
 using GameTrackerMobile.ViewModels;
 using RatableTracker.Framework;
 using RatableTracker.Framework.Exceptions;
-using Xamarin.Forms;
+using Microsoft.Maui;
+using Microsoft.Maui.Controls;
 
 namespace GameTrackerMobile.Converters
 {
@@ -27,7 +28,7 @@ namespace GameTrackerMobile.Converters
             {
                 game = rm.FindGameCompilation(key);
             }
-            if (game == null) return new Xamarin.Forms.Color();
+            if (game == null) return new Color();
             RatableTracker.Framework.Color color;
             switch (SavedState.GameSortMode)
             {
