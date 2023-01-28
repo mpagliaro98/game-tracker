@@ -43,11 +43,9 @@ namespace RatableTracker.ObjAddOns
             if (_status.Equals(args.DeletedObject.UniqueID))
             {
                 Status = null;
-                BaseObject.Save((TrackerModule)Module.BaseModule, args.Connection);
+                BaseObject.SaveWithoutValidation((TrackerModule)Module.BaseModule, args.Connection);
             }
         }
-
-        public virtual void ApplySettingsChanges(Settings settings) { }
 
         protected override void AddEventHandlers()
         {

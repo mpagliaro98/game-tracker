@@ -160,7 +160,7 @@ namespace GameTracker
                 if (_compilation.Equals(args.DeletedObject.UniqueID))
                 {
                     Compilation = null;
-                    Save(Module, args.Connection);
+                    SaveWithoutValidation(Module, args.Connection);
                 }
             }
             else if (args.ObjectType == typeof(GameObject))
@@ -168,7 +168,7 @@ namespace GameTracker
                 if (_originalGame.Equals(args.DeletedObject.UniqueID))
                 {
                     OriginalGame = null;
-                    Save(Module, args.Connection);
+                    SaveWithoutValidation(Module, args.Connection);
                 }
             }
         }
@@ -187,7 +187,7 @@ namespace GameTracker
                 changed = true;
             }
             if (changed)
-                Save(Module, args.Connection);
+                SaveWithoutValidation(Module, args.Connection);
         }
 
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)

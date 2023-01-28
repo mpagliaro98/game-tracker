@@ -41,7 +41,14 @@ namespace RatableTracker.Modules
         public override void LoadData(Settings settings)
         {
             base.LoadData(settings);
-            LoadTrackerObjectList(ref _scoreRanges, (conn) => ((ILoadSaveMethodScores)conn).LoadScoreRanges(this, (SettingsScore)settings));
+            try
+            {
+                LoadTrackerObjectList(ref _scoreRanges, (conn) => ((ILoadSaveMethodScores)conn).LoadScoreRanges(this, (SettingsScore)settings));
+            }
+            catch (InvalidCastException e)
+            {
+                throw new InvalidCastException("Settings for loading score ranges must be of type SettingsScore or more derived", e);
+            }
         }
 
         public void TransferToNewModule(TrackerModuleScores newModule, SettingsScore settings)
@@ -75,17 +82,7 @@ namespace RatableTracker.Modules
         internal void DeleteScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
             DeleteTrackerObject(scoreRange, ref _scoreRanges, conn.DeleteOneScoreRange,
-                (obj) => ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(obj, obj.GetType(), conn)), ScoreRangeDeleted == null ? 0 : ScoreRangeDeleted.GetInvocationList().Length);
-        }
-
-        public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
-        {
-            base.ApplySettingsChanges(settings, conn);
-            foreach (ScoreRange scoreRange in ScoreRanges)
-            {
-                scoreRange.ApplySettingsChanges(settings);
-                scoreRange.Save(this, conn);
-            }
+                (obj) => ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(obj, obj.GetType(), conn)), () => ScoreRangeDeleted == null ? 0 : ScoreRangeDeleted.GetInvocationList().Length);
         }
 
         public IList<ScoreRelationship> GetScoreRelationshipList()

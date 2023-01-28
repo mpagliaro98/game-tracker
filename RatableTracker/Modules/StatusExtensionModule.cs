@@ -52,16 +52,7 @@ namespace RatableTracker.Modules
         internal void DeleteStatus(Status status, TrackerModule module, ILoadSaveMethodStatusExtension conn)
         {
             DeleteTrackerObject(status, ref _statuses, conn.DeleteOneStatus,
-                (obj) => StatusDeleted?.Invoke(this, new StatusDeleteArgs(obj, obj.GetType(), conn)), StatusDeleted == null ? 0 : StatusDeleted.GetInvocationList().Length);
-        }
-
-        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module, ILoadSaveMethodStatusExtension conn)
-        {
-            foreach (Status status in Statuses)
-            {
-                status.ApplySettingsChanges(settings);
-                status.Save(module, conn);
-            }
+                (obj) => StatusDeleted?.Invoke(this, new StatusDeleteArgs(obj, obj.GetType(), conn)), () => StatusDeleted == null ? 0 : StatusDeleted.GetInvocationList().Length);
         }
     }
 }

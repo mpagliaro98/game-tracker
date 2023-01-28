@@ -64,9 +64,21 @@ namespace RatableTracker.ScoreRanges
             this.Module.DeleteScoreRange(this, (ILoadSaveMethodScores)conn);
         }
 
-        public override void ApplySettingsChanges(Settings settings)
+        protected override void AddEventHandlers()
         {
-            base.ApplySettingsChanges(settings);
+            base.AddEventHandlers();
+            Settings.SettingsChanged += OnSettingsChanged;
+        }
+
+        protected override void RemoveEventHandlers()
+        {
+            base.RemoveEventHandlers();
+            Settings.SettingsChanged -= OnSettingsChanged;
+        }
+
+        private void OnSettingsChanged(object sender, Events.SettingsChangeArgs args)
+        {
+            Settings settings = (Settings)sender;
             if (settings is SettingsScore settingsScore)
             {
                 IList<double> newValueList = new List<double>();
@@ -75,6 +87,7 @@ namespace RatableTracker.ScoreRanges
                     newValueList.Add(settingsScore.ScaleValueToNewMinMaxRange(value));
                 }
                 ValueList = newValueList;
+                SaveWithoutValidation(Module, args.Connection);
             }
         }
 

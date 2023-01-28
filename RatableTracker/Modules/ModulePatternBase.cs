@@ -28,9 +28,14 @@ namespace RatableTracker.Modules
         protected void LoadTrackerObjectList<T>(ref IList<T> list, Func<ILoadSaveMethod, IList<T>> loadFunc) where T : TrackerObjectBase
         {
             list.ForEach(obj => obj.Dispose());
-            using (var conn = LoadSave.NewConnection())
+            try
             {
+                using var conn = LoadSave.NewConnection();
                 list = loadFunc(conn);
+            }
+            catch (InvalidCastException e)
+            {
+                throw new InvalidCastException("A value passed in during load must be a more derived type", e);
             }
             list.ForEach(obj => obj.InitAdditionalResources());
         }
@@ -64,7 +69,7 @@ namespace RatableTracker.Modules
             return isNew;
         }
 
-        protected void DeleteTrackerObject<T>(T obj, ref IList<T> list, Action<T> deleteOneFunc, Action<T> invokeDeleteEvent, int numInvokeTargets) where T : TrackerObjectBase
+        protected void DeleteTrackerObject<T>(T obj, ref IList<T> list, Action<T> deleteOneFunc, Action<T> invokeDeleteEvent, Func<int> numInvokeTargets) where T : TrackerObjectBase
         {
             Logger.Log("Delete " + obj.GetType().Name + " - " + obj.UniqueID.ToString() + " " + obj.Name);
             if (Util.Util.FindObjectInList(list, obj.UniqueID) == null)
@@ -76,7 +81,7 @@ namespace RatableTracker.Modules
             list.Remove(obj);
             obj.Dispose();
             deleteOneFunc(obj);
-            Logger.Log(obj.GetType().Name + " deleted - invoking delete event on " + numInvokeTargets.ToString() + " delegates (" + (numInvokeTargets - 1).ToString() + " if deleted object subscribed to this event)");
+            Logger.Log(obj.GetType().Name + " deleted - invoking delete event on " + numInvokeTargets().ToString() + " delegates");
             invokeDeleteEvent(obj);
         }
 
@@ -114,7 +119,7 @@ namespace RatableTracker.Modules
             using var conn = LoadSave.NewConnection();
             for (int i = currentPosition; i <= newPosition; i++)
             {
-                list[i].Save(module, conn);
+                list[i].SaveWithoutValidation(module, conn);
             }
         }
     }

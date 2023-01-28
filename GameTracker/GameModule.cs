@@ -81,17 +81,7 @@ namespace GameTracker
         internal void DeletePlatform(Platform platform, ILoadSaveMethodGame conn)
         {
             DeleteTrackerObject(platform, ref _platforms, conn.DeleteOnePlatform,
-                (obj) => PlatformDeleted?.Invoke(this, new PlatformDeleteArgs(obj, obj.GetType(), conn)), PlatformDeleted == null ? 0 : PlatformDeleted.GetInvocationList().Length);
-        }
-
-        public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
-        {
-            base.ApplySettingsChanges(settings, conn);
-            foreach (Platform platform in Platforms)
-            {
-                platform.ApplySettingsChanges(settings);
-                platform.Save(this, conn);
-            }
+                (obj) => PlatformDeleted?.Invoke(this, new PlatformDeleteArgs(obj, obj.GetType(), conn)), () => PlatformDeleted == null ? 0 : PlatformDeleted.GetInvocationList().Length);
         }
 
         public IList<GameCompilation> GetEmptyCompilations()

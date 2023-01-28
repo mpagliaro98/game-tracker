@@ -9,6 +9,7 @@ using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -86,28 +87,32 @@ namespace RatableTracker.ObjAddOns
                 CategoryValuesManual.Remove(cv);
             }
             if (toDelete.Count > 0)
-                BaseObject.Save((TrackerModuleScores)Module.BaseModule, args.Connection);
+                BaseObject.SaveWithoutValidation((TrackerModuleScores)Module.BaseModule, args.Connection);
         }
 
-        public virtual void ApplySettingsChanges(Settings settings)
+        private void OnSettingsChanged(object sender, SettingsChangeArgs args)
         {
+            Settings settings = (Settings)sender;
             if (settings is SettingsScore settingsScore)
             {
                 foreach (CategoryValue cv in CategoryValuesManual)
                 {
                     cv.PointValue = settingsScore.ScaleValueToNewMinMaxRange(cv.PointValue);
                 }
+                BaseObject.SaveWithoutValidation((TrackerModuleScores)Module.BaseModule, args.Connection);
             }
         }
 
         protected override void AddEventHandlers()
         {
             Module.RatingCategoryDeleted += OnRatingCategoryDeleted;
+            Settings.SettingsChanged += OnSettingsChanged;
         }
 
         protected override void RemoveEventHandlers()
         {
             Module.RatingCategoryDeleted -= OnRatingCategoryDeleted;
+            Settings.SettingsChanged -= OnSettingsChanged;
         }
 
         public virtual double ScoreOfCategory(RatingCategory ratingCategory)

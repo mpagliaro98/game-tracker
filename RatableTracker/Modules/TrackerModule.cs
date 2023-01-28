@@ -82,32 +82,12 @@ namespace RatableTracker.Modules
         internal void DeleteModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
             DeleteTrackerObject(modelObject, ref _modelObjects, conn.DeleteOneModelObject,
-                (obj) => ModelObjectDeleted?.Invoke(this, new ModelObjectDeleteArgs(obj, obj.GetType(), conn)), ModelObjectDeleted == null ? 0 : ModelObjectDeleted.GetInvocationList().Length);
+                (obj) => ModelObjectDeleted?.Invoke(this, new ModelObjectDeleteArgs(obj, obj.GetType(), conn)), () => ModelObjectDeleted == null ? 0 : ModelObjectDeleted.GetInvocationList().Length);
         }
 
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
         {
             ChangeTrackerObjectPositionInList(modelObject, ref _modelObjects, newPosition, this);
-        }
-
-        internal void SaveSettings(Settings settings, ILoadSaveMethod conn)
-        {
-            Logger.Log("SaveSettings");
-            conn.SaveSettings(settings);
-        }
-
-        public virtual void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
-        {
-            foreach (RankedObject obj in ModelObjects)
-            {
-                obj.ApplySettingsChanges(settings);
-                obj.Save(this, conn);
-            }
-        }
-
-        internal ILoadSaveMethod GetNewConnection()
-        {
-            return LoadSave.NewConnection();
         }
     }
 }

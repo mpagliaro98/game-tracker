@@ -60,11 +60,5 @@ namespace RatableTracker.Modules
             base.TransferToNewModule(connCurrent, connNew, settings);
             connNew.SaveAllCategories(connCurrent.LoadCategories(this, settings));
         }
-
-        public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
-        {
-            base.ApplySettingsChanges(settings, conn);
-            CategoryExtension.ApplySettingsChanges(settings, this, conn as ILoadSaveMethodCategoryExtension);
-        }
     }
 }

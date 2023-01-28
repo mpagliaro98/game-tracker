@@ -15,5 +15,10 @@ namespace RatableTracker.Modules
         public ModuleBase(ILoadSaveHandler<ILoadSaveMethod> loadSave) : base(loadSave) { }
 
         public ModuleBase(ILoadSaveHandler<ILoadSaveMethod> loadSave, Logger logger) : base(loadSave, logger) { }
+
+        internal ILoadSaveMethod GetNewConnection()
+        {
+            return LoadSave.NewConnection();
+        }
     }
 }

@@ -54,16 +54,7 @@ namespace RatableTracker.Modules
         internal void DeleteRatingCategory(RatingCategory ratingCategory, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
         {
             DeleteTrackerObject(ratingCategory, ref _ratingCategories, conn.DeleteOneCategory,
-                (obj) => RatingCategoryDeleted?.Invoke(this, new RatingCategoryDeleteArgs(obj, obj.GetType(), conn)), RatingCategoryDeleted == null ? 0 : RatingCategoryDeleted.GetInvocationList().Length);
-        }
-
-        public virtual void ApplySettingsChanges(Settings settings, TrackerModule module, ILoadSaveMethodCategoryExtension conn)
-        {
-            foreach (RatingCategory category in RatingCategories)
-            {
-                category.ApplySettingsChanges(settings);
-                category.Save(module, conn);
-            }
+                (obj) => RatingCategoryDeleted?.Invoke(this, new RatingCategoryDeleteArgs(obj, obj.GetType(), conn)), () => RatingCategoryDeleted == null ? 0 : RatingCategoryDeleted.GetInvocationList().Length);
         }
 
         public double SumOfCategoryWeights()

@@ -57,8 +57,6 @@ namespace RatableTracker.Model
 
         protected virtual void RemoveEventHandlers() { }
 
-        public virtual void ApplySettingsChanges(Settings settings) { }
-
         public override SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = base.LoadIntoRepresentation();

@@ -53,12 +53,6 @@ namespace RatableTracker.Model
             CategoryExtension.ValidateFields();
         }
 
-        public override void ApplySettingsChanges(Settings settings)
-        {
-            base.ApplySettingsChanges(settings);
-            CategoryExtension.ApplySettingsChanges(settings);
-        }
-
         public override void InitAdditionalResources()
         {
             base.InitAdditionalResources();

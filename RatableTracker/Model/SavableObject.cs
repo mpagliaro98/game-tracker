@@ -46,6 +46,16 @@ namespace RatableTracker.Model
 
         public void Save(TrackerModule module, ILoadSaveMethod conn)
         {
+            Save(module, conn, true);
+        }
+
+        protected internal void SaveWithoutValidation(TrackerModule module, ILoadSaveMethod conn)
+        {
+            Save(module, conn, false);
+        }
+
+        private void Save(TrackerModule module, ILoadSaveMethod conn, bool validate)
+        {
             bool newConn = false;
             try
             {
@@ -54,7 +64,7 @@ namespace RatableTracker.Model
                     conn = module.GetNewConnection();
                     newConn = true;
                 }
-                Validate(module.Logger);
+                if (validate) Validate(module.Logger);
                 PreSave(module, conn);
                 bool isNew = SaveObjectToModule(module, conn);
                 PostSave(module, isNew, conn);

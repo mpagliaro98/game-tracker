@@ -54,12 +54,6 @@ namespace RatableTracker.Model
             StatusExtension.ValidateFields();
         }
 
-        public override void ApplySettingsChanges(Settings settings)
-        {
-            base.ApplySettingsChanges(settings);
-            StatusExtension.ApplySettingsChanges(settings);
-        }
-
         public override void InitAdditionalResources()
         {
             base.InitAdditionalResources();

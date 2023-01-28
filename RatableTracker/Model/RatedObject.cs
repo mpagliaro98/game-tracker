@@ -62,12 +62,25 @@ namespace RatableTracker.Model
                 throw new ValidationException("Score must be between " + Settings.MinScore.ToString() + " and " + Settings.MaxScore.ToString(), ManualScore);
         }
 
-        public override void ApplySettingsChanges(Settings settings)
+        protected override void AddEventHandlers()
         {
-            base.ApplySettingsChanges(settings);
+            base.AddEventHandlers();
+            Settings.SettingsChanged += OnSettingsChanged;
+        }
+
+        protected override void RemoveEventHandlers()
+        {
+            base.RemoveEventHandlers();
+            Settings.SettingsChanged -= OnSettingsChanged;
+        }
+
+        private void OnSettingsChanged(object sender, Events.SettingsChangeArgs args)
+        {
+            Settings settings = (Settings)sender;
             if (settings is SettingsScore settingsScore)
             {
                 ManualScore = settingsScore.ScaleValueToNewMinMaxRange(ManualScore);
+                SaveWithoutValidation(Module, args.Connection);
             }
         }
 

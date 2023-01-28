@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Model;
@@ -14,43 +15,27 @@ namespace RatableTracker.Util
 {
     public class Settings : SavableObject
     {
+        public delegate void SettingsChangeHandler(object sender, SettingsChangeArgs args);
+        public event SettingsChangeHandler SettingsChanged;
+
         public Settings() { }
 
         public static Settings Load(ILoadSaveHandler<ILoadSaveMethod> loadSaveHandler)
         {
-            using (var conn = loadSaveHandler.NewConnection())
-            {
-                return conn.LoadSettings();
-            }
+            using var conn = loadSaveHandler.NewConnection();
+            return conn.LoadSettings();
         }
 
         protected override bool SaveObjectToModule(TrackerModule module, ILoadSaveMethod conn)
         {
-            module.SaveSettings(this, conn);
+            module.Logger.Log("Save " + GetType().Name);
+            conn.SaveSettings(this);
             return false;
         }
 
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
-            module.ApplySettingsChanges(this, conn);
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            return base.LoadIntoRepresentation();
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    default:
-                        break;
-                }
-            }
+            SettingsChanged?.Invoke(this, new SettingsChangeArgs(GetType(), conn));
         }
     }
 }

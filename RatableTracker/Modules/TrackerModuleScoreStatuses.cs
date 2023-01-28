@@ -45,11 +45,5 @@ namespace RatableTracker.Modules
             base.TransferToNewModule(connCurrent, connNew, settings);
             connNew.SaveAllStatuses(connCurrent.LoadStatuses(this, settings));
         }
-
-        public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)
-        {
-            base.ApplySettingsChanges(settings, conn);
-            StatusExtension.ApplySettingsChanges(settings, this, conn as ILoadSaveMethodStatusExtension);
-        }
     }
 }
