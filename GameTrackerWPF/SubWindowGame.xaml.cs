@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -285,16 +286,11 @@ namespace GameTrackerWPF
 
         private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var textbox = (TextBox)sender;
+            TextBox textbox = (TextBox)sender;
             bool result = double.TryParse(textbox.Text, out double score);
             RatingCategory rc = textbox.Tag as RatingCategory;
-            // don't continue past this point if the character just entered was a period
-            if (e.Changes.Count > 0 && e.Changes.ElementAt(0).AddedLength > 0)
-            {
-                var change = e.Changes.ElementAt(0);
-                var addition = textbox.Text.Substring(change.Offset, change.AddedLength);
-                if (addition.Contains('.')) return;
-            }
+
+            if (TextChangeNearPeriod(textbox, e.Changes)) return;
 
             orig.CategoryExtension.CategoryValuesManual.First(cv => cv.RatingCategory.Equals(rc)).PointValue = result ? score : settings.MinScore;
             UpdateScores();
@@ -311,13 +307,8 @@ namespace GameTrackerWPF
         {
             var textbox = (TextBox)sender;
             bool result = double.TryParse(textbox.Text, out double score);
-            // don't continue past this point if the character just entered was a period
-            if (e.Changes.Count > 0 && e.Changes.ElementAt(0).AddedLength > 0)
-            {
-                var change = e.Changes.ElementAt(0);
-                var addition = textbox.Text.Substring(change.Offset, change.AddedLength);
-                if (addition.Contains('.')) return;
-            }
+
+            if (TextChangeNearPeriod(textbox, e.Changes)) return;
 
             orig.ManualScore = result ? score : settings.MinScore;
             UpdateScores();
@@ -428,6 +419,26 @@ namespace GameTrackerWPF
         {
             TextboxCompilation.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
             ButtonCompilationLink.Visibility = CheckboxCompilation.IsChecked.Value && orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Hidden;
+        }
+
+        private bool TextChangeNearPeriod(TextBox textbox, ICollection<TextChange> changes)
+        {
+            // don't continue past this point if the character just entered was a period, or you delete a character right before a period
+            if (changes.Count > 0)
+            {
+                var change = changes.ElementAt(0);
+                if (change.AddedLength > 0)
+                {
+                    var addition = textbox.Text.Substring(change.Offset, change.AddedLength);
+                    if ((addition.Contains('.') || addition.Contains('0')) && textbox.Text.Count((c) => c == '.') == 1) return true;
+                }
+                else if (change.RemovedLength > 0 && change.Offset > 0)
+                {
+                    var charBeforeRemoval = textbox.Text[change.Offset - 1];
+                    if (charBeforeRemoval == '.' || charBeforeRemoval == '0') return true;
+                }
+            }
+            return false;
         }
     }
 }
