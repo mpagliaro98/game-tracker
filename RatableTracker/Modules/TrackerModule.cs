@@ -17,45 +17,30 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Modules
 {
-    public class TrackerModule
+    public class TrackerModule : ModuleBase
     {
         public virtual int LimitModelObjects => 100000;
 
-        protected IList<RankedObject> ModelObjects { get; private set; } = new List<RankedObject>();
+        private IList<RankedObject> _modelObjects = new List<RankedObject>();
+        protected IList<RankedObject> ModelObjects { get { return _modelObjects; } private set { _modelObjects = value; } }
 
         public delegate void ModelObjectDeleteHandler(object sender, ModelObjectDeleteArgs args);
         public event ModelObjectDeleteHandler ModelObjectDeleted;
 
-        protected readonly ILoadSaveHandler<ILoadSaveMethod> _loadSave;
-        public Logger Logger { get; private set; }
+        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave) : base(loadSave) { }
 
-        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave) : this(loadSave, new Logger()) { }
-
-        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave, Logger logger)
-        {
-            _loadSave = loadSave;
-            Logger = logger;
-        }
+        public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave, Logger logger) : base(loadSave, logger) { }
 
         public virtual void LoadData(Settings settings)
         {
-            ModelObjects.ForEach(obj => obj.Dispose());
-            using (var conn = _loadSave.NewConnection())
-            {
-                ModelObjects = conn.LoadModelObjects(settings, this);
-            }
-            ModelObjects.ForEach(obj => obj.InitAdditionalResources());
+            LoadTrackerObjectList(ref _modelObjects, (conn) => conn.LoadModelObjects(settings, this));
         }
 
         public void TransferToNewModule(TrackerModule newModule, Settings settings)
         {
-            using (var connCurrent = _loadSave.NewConnection())
-            {
-                using (var connNew = newModule._loadSave.NewConnection())
-                {
-                    TransferToNewModule(connCurrent, connNew, settings);
-                }
-            }
+            using var connCurrent = LoadSave.NewConnection();
+            using var connNew = newModule.LoadSave.NewConnection();
+            TransferToNewModule(connCurrent, connNew, settings);
         }
 
         protected void TransferToNewModule(ILoadSaveMethod connCurrent, ILoadSaveMethod connNew, Settings settings)
@@ -81,18 +66,7 @@ namespace RatableTracker.Modules
 
         public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, SortRankedObjects sortOptions)
         {
-            try
-            {
-                IList<RankedObject> list = new List<RankedObject>(ModelObjects);
-                if (filterOptions != null) list = filterOptions.ApplyFilters(list);
-                if (sortOptions != null) list = sortOptions.ApplySorting(list);
-                return list;
-            }
-            catch (ListManipulationException e)
-            {
-                Logger.Log(e.GetType().Name + ": " + e.Message + " - value " + e.InvalidValue.ToString());
-                throw;
-            }
+            return GetTrackerObjectList(ModelObjects, filterOptions, sortOptions);
         }
 
         public int TotalNumModelObjects()
@@ -102,71 +76,18 @@ namespace RatableTracker.Modules
 
         internal bool SaveModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
-            Logger.Log("SaveModelObject - " + modelObject.UniqueID.ToString());
-            bool isNew = false;
-            if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
-            {
-                if (ModelObjects.Count() >= LimitModelObjects)
-                {
-                    string message = "Attempted to exceed limit of " + LimitModelObjects.ToString() + " for list of model objects";
-                    Logger.Log(typeof(ExceededLimitException).Name + ": " + message);
-                    throw new ExceededLimitException(message);
-                }
-                ModelObjects.Add(modelObject);
-                modelObject.InitAdditionalResources();
-                isNew = true;
-            }
-            else
-            {
-                var old = ModelObjects.Replace(modelObject);
-                if (old != modelObject)
-                {
-                    old.Dispose();
-                    modelObject.InitAdditionalResources();
-                }
-            }
-            conn.SaveOneModelObject(modelObject);
-            return isNew;
+            return SaveTrackerObject(modelObject, ref _modelObjects, LimitModelObjects, conn.SaveOneModelObject);
         }
 
         internal void DeleteModelObject(RankedObject modelObject, ILoadSaveMethod conn)
         {
-            Logger.Log("DeleteModelObject - " + modelObject.UniqueID.ToString());
-            if (Util.Util.FindObjectInList(ModelObjects, modelObject.UniqueID) == null)
-            {
-                string message = "Model object " + modelObject.Name.ToString() + " has not been saved yet and cannot be deleted";
-                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
-                throw new InvalidObjectStateException(message);
-            }
-            ModelObjects.Remove(modelObject);
-            modelObject.Dispose();
-            conn.DeleteOneModelObject(modelObject);
-            Logger.Log("Model object deleted - invoking event ModelObjectDeleted on " + (ModelObjectDeleted == null ? "0" : ModelObjectDeleted.GetInvocationList().Length.ToString()) + " delegates");
-            ModelObjectDeleted?.Invoke(this, new ModelObjectDeleteArgs(modelObject, modelObject.GetType(), conn));
+            DeleteTrackerObject(modelObject, ref _modelObjects, conn.DeleteOneModelObject,
+                (obj) => ModelObjectDeleted?.Invoke(this, new ModelObjectDeleteArgs(obj, obj.GetType(), conn)), ModelObjectDeleted == null ? 0 : ModelObjectDeleted.GetInvocationList().Length);
         }
 
         internal void ChangeModelObjectPositionInList(RankedObject modelObject, int newPosition)
         {
-            Logger.Log("ChangeModelObjectPositionInList - " + modelObject.UniqueID.ToString() + " - " + newPosition.ToString());
-            modelObject.Validate(Logger);
-
-            int currentPosition = ModelObjects.IndexOf(modelObject);
-            if (currentPosition == -1)
-            {
-                string message = "Object " + modelObject.UniqueID.ToString() + " has not been saved yet and cannot be modified";
-                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
-                throw new InvalidObjectStateException(message);
-            }
-
-            ModelObjects.Move(currentPosition, newPosition);
-
-            using (var conn = _loadSave.NewConnection())
-            {
-                for (int i = currentPosition; i <= newPosition; i++)
-                {
-                    ModelObjects[i].Save(this, conn);
-                }
-            }
+            ChangeTrackerObjectPositionInList(modelObject, ref _modelObjects, newPosition, this);
         }
 
         internal void SaveSettings(Settings settings, ILoadSaveMethod conn)
@@ -186,7 +107,7 @@ namespace RatableTracker.Modules
 
         internal ILoadSaveMethod GetNewConnection()
         {
-            return _loadSave.NewConnection();
+            return LoadSave.NewConnection();
         }
     }
 }

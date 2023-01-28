@@ -1,6 +1,5 @@
 ﻿using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
-using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -12,9 +11,9 @@ namespace RatableTracker.Modules
 {
     public class TrackerModuleScoreStatuses : TrackerModuleScores, IModuleStatus
     {
-        public StatusExtensionModule StatusExtension { get; private set; }
+        public StatusExtensionModule StatusExtension { get; init; }
 
-        protected new ILoadSaveHandler<ILoadSaveMethodScoreStatuses> _loadSave => (ILoadSaveHandler<ILoadSaveMethodScoreStatuses>)base._loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodScoreStatuses> LoadSave => (ILoadSaveHandler<ILoadSaveMethodScoreStatuses>)base.LoadSave;
 
         public TrackerModuleScoreStatuses(ILoadSaveHandler<ILoadSaveMethodScoreStatuses> loadSave) : this(loadSave, new Logger()) { }
 
@@ -36,13 +35,9 @@ namespace RatableTracker.Modules
 
         public void TransferToNewModule(TrackerModuleScoreStatuses newModule, SettingsScore settings)
         {
-            using (var connCurrent = _loadSave.NewConnection())
-            {
-                using (var connNew = newModule._loadSave.NewConnection())
-                {
-                    TransferToNewModule(connCurrent, connNew, settings);
-                }
-            }
+            using var connCurrent = LoadSave.NewConnection();
+            using var connNew = newModule.LoadSave.NewConnection();
+            TransferToNewModule(connCurrent, connNew, settings);
         }
 
         protected virtual void TransferToNewModule(ILoadSaveMethodScoreStatuses connCurrent, ILoadSaveMethodScoreStatuses connNew, SettingsScore settings)

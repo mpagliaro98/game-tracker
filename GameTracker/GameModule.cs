@@ -5,6 +5,7 @@ using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.Util;
 using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,12 +17,13 @@ namespace GameTracker
     {
         public virtual int LimitPlatforms => 1000;
 
-        protected IList<Platform> Platforms { get; private set; } = new List<Platform>();
+        private IList<Platform> _platforms = new List<Platform>();
+        protected IList<Platform> Platforms { get { return _platforms; } private set { _platforms = value; } }
 
         public delegate void PlatformDeleteHandler(object sender, PlatformDeleteArgs args);
         public event PlatformDeleteHandler PlatformDeleted;
 
-        protected new ILoadSaveHandler<ILoadSaveMethodGame> _loadSave => (ILoadSaveHandler<ILoadSaveMethodGame>)base._loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodGame> LoadSave => (ILoadSaveHandler<ILoadSaveMethodGame>)base.LoadSave;
 
         public GameModule(ILoadSaveHandler<ILoadSaveMethodGame> loadSave) : this(loadSave, new Logger()) { }
 
@@ -30,23 +32,14 @@ namespace GameTracker
         public override void LoadData(Settings settings)
         {
             base.LoadData(settings);
-            Platforms.ForEach(obj => obj.Dispose());
-            using (var conn = _loadSave.NewConnection())
-            {
-                Platforms = conn.LoadPlatforms(this, (SettingsGame)settings);
-            }
-            Platforms.ForEach(obj => obj.InitAdditionalResources());
+            LoadTrackerObjectList(ref _platforms, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatforms(this, (SettingsGame)settings));
         }
 
         public void TransferToNewModule(GameModule newModule, SettingsGame settings)
         {
-            using (var connCurrent = _loadSave.NewConnection())
-            {
-                using (var connNew = newModule._loadSave.NewConnection())
-                {
-                    TransferToNewModule(connCurrent, connNew, settings);
-                }
-            }
+            using var connCurrent = LoadSave.NewConnection();
+            using var connNew = newModule.LoadSave.NewConnection();
+            TransferToNewModule(connCurrent, connNew, settings);
         }
 
         protected void TransferToNewModule(ILoadSaveMethodGame connCurrent, ILoadSaveMethodGame connNew, SettingsGame settings)
@@ -72,18 +65,7 @@ namespace GameTracker
 
         public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SortPlatforms sortOptions)
         {
-            try
-            {
-                IList<Platform> list = new List<Platform>(Platforms);
-                if (filterOptions != null) list = filterOptions.ApplyFilters(list);
-                if (sortOptions != null) list = sortOptions.ApplySorting(list);
-                return list;
-            }
-            catch (ListManipulationException e)
-            {
-                Logger.Log(e.GetType().Name + ": " + e.Message + " - value " + e.InvalidValue.ToString());
-                throw;
-            }
+            return GetTrackerObjectList(Platforms, filterOptions, sortOptions);
         }
 
         public int TotalNumPlatforms()
@@ -93,47 +75,13 @@ namespace GameTracker
 
         internal bool SavePlatform(Platform platform, ILoadSaveMethodGame conn)
         {
-            Logger.Log("SavePlatform - " + platform.UniqueID.ToString());
-            bool isNew = false;
-            if (RatableTracker.Util.Util.FindObjectInList(Platforms, platform.UniqueID) == null)
-            {
-                if (Platforms.Count() >= LimitPlatforms)
-                {
-                    string message = "Attempted to exceed limit of " + LimitPlatforms.ToString() + " for list of platforms";
-                    Logger.Log(typeof(ExceededLimitException).Name + ": " + message);
-                    throw new ExceededLimitException(message);
-                }
-                Platforms.Add(platform);
-                platform.InitAdditionalResources();
-                isNew = true;
-            }
-            else
-            {
-                var old = Platforms.Replace(platform);
-                if (old != platform)
-                {
-                    old.Dispose();
-                    platform.InitAdditionalResources();
-                }
-            }
-            conn.SaveOnePlatform(platform);
-            return isNew;
+            return SaveTrackerObject(platform, ref _platforms, LimitPlatforms, conn.SaveOnePlatform);
         }
 
         internal void DeletePlatform(Platform platform, ILoadSaveMethodGame conn)
         {
-            Logger.Log("DeletePlatform - " + platform.UniqueID.ToString());
-            if (RatableTracker.Util.Util.FindObjectInList(Platforms, platform.UniqueID) == null)
-            {
-                string message = "Platform " + platform.Name.ToString() + " has not been saved yet and cannot be deleted";
-                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
-                throw new InvalidObjectStateException(message);
-            }
-            Platforms.Remove(platform);
-            platform.Dispose();
-            conn.DeleteOnePlatform(platform);
-            Logger.Log("Platform deleted - invoking event PlatformDeleted on " + (PlatformDeleted == null ? "0" : PlatformDeleted.GetInvocationList().Length.ToString()) + " delegates");
-            PlatformDeleted?.Invoke(this, new PlatformDeleteArgs(platform, platform.GetType(), conn));
+            DeleteTrackerObject(platform, ref _platforms, conn.DeleteOnePlatform,
+                (obj) => PlatformDeleted?.Invoke(this, new PlatformDeleteArgs(obj, obj.GetType(), conn)), PlatformDeleted == null ? 0 : PlatformDeleted.GetInvocationList().Length);
         }
 
         public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)

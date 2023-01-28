@@ -9,10 +9,9 @@ namespace RatableTracker.LoadSave
 {
     public sealed class LoadSaveHandler<T> : ILoadSaveHandler<T> where T : ILoadSaveMethod
     {
-        public delegate T CreateLoadSaveInstance();
-        private readonly CreateLoadSaveInstance _createMethod;
+        private readonly Func<T> _createMethod;
 
-        public LoadSaveHandler(CreateLoadSaveInstance createMethod)
+        public LoadSaveHandler(Func<T> createMethod)
         {
             _createMethod = createMethod;
         }

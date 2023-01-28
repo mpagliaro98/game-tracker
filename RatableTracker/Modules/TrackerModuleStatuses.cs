@@ -1,7 +1,6 @@
 ﻿using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Model;
-using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -13,9 +12,9 @@ namespace RatableTracker.Modules
 {
     public class TrackerModuleStatuses : TrackerModule, IModuleStatus
     {
-        public StatusExtensionModule StatusExtension { get; private set; }
+        public StatusExtensionModule StatusExtension { get; init; }
 
-        protected new ILoadSaveHandler<ILoadSaveMethodStatuses> _loadSave => (ILoadSaveHandler<ILoadSaveMethodStatuses>)base._loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodStatuses> LoadSave => (ILoadSaveHandler<ILoadSaveMethodStatuses>)base.LoadSave;
 
         public TrackerModuleStatuses(ILoadSaveHandler<ILoadSaveMethodStatuses> loadSave) : this(loadSave, new Logger()) { }
 
@@ -37,13 +36,9 @@ namespace RatableTracker.Modules
 
         public void TransferToNewModule(TrackerModuleStatuses newModule, Settings settings)
         {
-            using (var connCurrent = _loadSave.NewConnection())
-            {
-                using (var connNew = newModule._loadSave.NewConnection())
-                {
-                    TransferToNewModule(connCurrent, connNew, settings);
-                }
-            }
+            using var connCurrent = LoadSave.NewConnection();
+            using var connNew = newModule.LoadSave.NewConnection();
+            TransferToNewModule(connCurrent, connNew, settings);
         }
 
         protected virtual void TransferToNewModule(ILoadSaveMethodStatuses connCurrent, ILoadSaveMethodStatuses connNew, Settings settings)

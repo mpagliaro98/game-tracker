@@ -20,13 +20,14 @@ namespace RatableTracker.Modules
     {
         public virtual int LimitRanges => 20;
 
-        protected IList<ScoreRange> ScoreRanges { get; private set; } = new List<ScoreRange>();
-        protected IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
+        private IList<ScoreRange> _scoreRanges = new List<ScoreRange>();
+        protected IList<ScoreRange> ScoreRanges { get { return _scoreRanges; } private set { _scoreRanges = value; } }
+        protected static IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
 
         public delegate void ScoreRangeDeleteHandler(object sender, ScoreRangeDeleteArgs args);
         public event ScoreRangeDeleteHandler ScoreRangeDeleted;
 
-        protected new ILoadSaveHandler<ILoadSaveMethodScores> _loadSave => (ILoadSaveHandler<ILoadSaveMethodScores>)base._loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodScores> LoadSave => (ILoadSaveHandler<ILoadSaveMethodScores>)base.LoadSave;
 
         public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave) : this(loadSave, new Logger()) { }
 
@@ -40,23 +41,14 @@ namespace RatableTracker.Modules
         public override void LoadData(Settings settings)
         {
             base.LoadData(settings);
-            ScoreRanges.ForEach(obj => obj.Dispose());
-            using (var conn = _loadSave.NewConnection())
-            {
-                ScoreRanges = conn.LoadScoreRanges(this, (SettingsScore)settings);
-            }
-            ScoreRanges.ForEach(obj => obj.InitAdditionalResources());
+            LoadTrackerObjectList(ref _scoreRanges, (conn) => ((ILoadSaveMethodScores)conn).LoadScoreRanges(this, (SettingsScore)settings));
         }
 
         public void TransferToNewModule(TrackerModuleScores newModule, SettingsScore settings)
         {
-            using (var connCurrent = _loadSave.NewConnection())
-            {
-                using (var connNew = newModule._loadSave.NewConnection())
-                {
-                    TransferToNewModule(connCurrent, connNew, settings);
-                }
-            }
+            using var connCurrent = LoadSave.NewConnection();
+            using var connNew = newModule.LoadSave.NewConnection();
+            TransferToNewModule(connCurrent, connNew, settings);
         }
 
         protected void TransferToNewModule(ILoadSaveMethodScores connCurrent, ILoadSaveMethodScores connNew, SettingsScore settings)
@@ -67,7 +59,7 @@ namespace RatableTracker.Modules
 
         public IList<ScoreRange> GetScoreRangeList()
         {
-            return new List<ScoreRange>(ScoreRanges);
+            return GetTrackerObjectList(ScoreRanges, null, null);
         }
 
         public int TotalNumScoreRanges()
@@ -77,47 +69,13 @@ namespace RatableTracker.Modules
 
         internal bool SaveScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
-            Logger.Log("SaveScoreRange - " + scoreRange.UniqueID.ToString());
-            bool isNew = false;
-            if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
-            {
-                if (ScoreRanges.Count() >= LimitRanges)
-                {
-                    string message = "Attempted to exceed limit of " + LimitRanges.ToString() + " for list of score ranges";
-                    Logger.Log(typeof(ExceededLimitException).Name + ": " + message);
-                    throw new ExceededLimitException(message);
-                }
-                ScoreRanges.Add(scoreRange);
-                scoreRange.InitAdditionalResources();
-                isNew = true;
-            }
-            else
-            {
-                var old = ScoreRanges.Replace(scoreRange);
-                if (old != scoreRange)
-                {
-                    old.Dispose();
-                    scoreRange.InitAdditionalResources();
-                }
-            }
-            conn.SaveOneScoreRange(scoreRange);
-            return isNew;
+            return SaveTrackerObject(scoreRange, ref _scoreRanges, LimitRanges, conn.SaveOneScoreRange);
         }
 
         internal void DeleteScoreRange(ScoreRange scoreRange, ILoadSaveMethodScores conn)
         {
-            Logger.Log("DeleteScoreRange - " + scoreRange.UniqueID.ToString());
-            if (Util.Util.FindObjectInList(ScoreRanges, scoreRange.UniqueID) == null)
-            {
-                string message = "Score range " + scoreRange.Name.ToString() + " has not been saved yet and cannot be deleted";
-                Logger.Log(typeof(InvalidObjectStateException).Name + ": " + message);
-                throw new InvalidObjectStateException(message);
-            }
-            ScoreRanges.Remove(scoreRange);
-            scoreRange.Dispose();
-            conn.DeleteOneScoreRange(scoreRange);
-            Logger.Log("Score range deleted - invoking event ScoreRangeDeleted on " + (ScoreRangeDeleted == null ? "0" : ScoreRangeDeleted.GetInvocationList().Length.ToString()) + " delegates");
-            ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(scoreRange, scoreRange.GetType(), conn));
+            DeleteTrackerObject(scoreRange, ref _scoreRanges, conn.DeleteOneScoreRange,
+                (obj) => ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(obj, obj.GetType(), conn)), ScoreRangeDeleted == null ? 0 : ScoreRangeDeleted.GetInvocationList().Length);
         }
 
         public override void ApplySettingsChanges(Settings settings, ILoadSaveMethod conn)

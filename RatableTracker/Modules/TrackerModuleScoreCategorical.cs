@@ -1,6 +1,5 @@
 ﻿using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
-using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -12,9 +11,9 @@ namespace RatableTracker.Modules
 {
     public class TrackerModuleScoreCategorical : TrackerModuleScores, IModuleCategorical
     {
-        public CategoryExtensionModule CategoryExtension { get; private set; }
+        public CategoryExtensionModule CategoryExtension { get; init; }
 
-        protected new ILoadSaveHandler<ILoadSaveMethodScoreCategorical> _loadSave => (ILoadSaveHandler<ILoadSaveMethodScoreCategorical>)base._loadSave;
+        protected new ILoadSaveHandler<ILoadSaveMethodScoreCategorical> LoadSave => (ILoadSaveHandler<ILoadSaveMethodScoreCategorical>)base.LoadSave;
 
         public TrackerModuleScoreCategorical(ILoadSaveHandler<ILoadSaveMethodScoreCategorical> loadSave) : this(loadSave, new Logger()) { }
 
@@ -43,13 +42,9 @@ namespace RatableTracker.Modules
 
         public void TransferToNewModule(TrackerModuleScoreCategorical newModule, SettingsScore settings)
         {
-            using (var connCurrent = _loadSave.NewConnection())
-            {
-                using (var connNew = newModule._loadSave.NewConnection())
-                {
-                    TransferToNewModule(connCurrent, connNew, settings);
-                }
-            }
+            using var connCurrent = LoadSave.NewConnection();
+            using var connNew = newModule.LoadSave.NewConnection();
+            TransferToNewModule(connCurrent, connNew, settings);
         }
 
         protected virtual void TransferToNewModule(ILoadSaveMethodScoreCategorical connCurrent, ILoadSaveMethodScoreCategorical connNew, SettingsScore settings)

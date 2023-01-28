@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Model;
+using RatableTracker.Modules;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
