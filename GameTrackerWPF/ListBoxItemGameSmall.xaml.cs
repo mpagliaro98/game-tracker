@@ -45,7 +45,7 @@ namespace GameTrackerWPF
             if (completionStatus != null) LabelStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
             BuildCategories(rm, rg);
             LabelFinalScore.Content = rg.ShowScore ? rg.ScoreDisplay.ToString(DECIMAL_FORMAT) : "";
-            ScoreRange sr = rg.ScoreRange;
+            ScoreRange sr = rg.ScoreRangeDisplay;
             if (sr != null) LabelFinalScore.Background = new SolidColorBrush(sr.Color.ToMediaColor());
         }
 

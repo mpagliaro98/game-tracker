@@ -21,25 +21,8 @@ namespace RatableTracker.Model
 
         public double ManualScore { get; set; } = 0;
 
-        public ScoreRange ScoreRange
-        {
-            get
-            {
-                foreach (ScoreRange range in Module.GetScoreRangeList())
-                {
-                    try
-                    {
-                        if (range.ScoreRelationship.IsValueInRange(ScoreDisplay, range.ValueList)) return range;
-                    }
-                    catch (InvalidObjectStateException e)
-                    {
-                        Module.Logger.Log(e.GetType().Name + ": " + e.Message);
-                        throw;
-                    }
-                }
-                return null;
-            }
-        }
+        public ScoreRange ScoreRange { get { return GetScoreRange(Score); } }
+        public ScoreRange ScoreRangeDisplay { get { return GetScoreRange(ScoreDisplay); } }
 
         public override int Rank
         {
@@ -91,6 +74,23 @@ namespace RatableTracker.Model
                 ManualScore = settingsScore.ScaleValueToNewMinMaxRange(ManualScore);
                 SaveWithoutValidation(Module, Settings, args.Connection);
             }
+        }
+
+        private ScoreRange GetScoreRange(double score)
+        {
+            foreach (ScoreRange range in Module.GetScoreRangeList())
+            {
+                try
+                {
+                    if (range.ScoreRelationship.IsValueInRange(score, range.ValueList)) return range;
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    Module.Logger.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
+            return null;
         }
 
         public override SavableRepresentation LoadIntoRepresentation()

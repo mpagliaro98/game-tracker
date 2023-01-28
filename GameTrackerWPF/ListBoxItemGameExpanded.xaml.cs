@@ -52,7 +52,7 @@ namespace GameTrackerWPF
             TextBlockFinalScore.Text = rg.ShowScore ? rg.ScoreDisplay.ToString(DECIMAL_FORMAT) : "";
             if (rg.ShowScore)
             {
-                ScoreRange sr = rg.ScoreRange;
+                ScoreRange sr = rg.ScoreRangeDisplay;
                 if (sr != null) TextBlockFinalScore.Background = new SolidColorBrush(sr.Color.ToMediaColor());
             }
             TextBlockComment.Text = rg.Comment;
