@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Util
 {
-    public sealed class Logger
+    public sealed class Logger : IDisposable
     {
         private readonly ILogger logger = null;
 
@@ -28,6 +28,11 @@ namespace RatableTracker.Util
         public string MostRecentLogs()
         {
             return logger == null ? "No logger has been attached" : logger.MostRecentLogs();
+        }
+
+        public void Dispose()
+        {
+            logger?.Dispose();
         }
     }
 }

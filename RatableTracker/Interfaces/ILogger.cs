@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Interfaces
 {
-    public interface ILogger
+    public interface ILogger : IDisposable
     {
         void Log(string message);
         string MostRecentLogs();

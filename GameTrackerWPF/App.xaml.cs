@@ -54,5 +54,10 @@ namespace GameTrackerWPF
                 throw;
             }
         }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            Logger.Dispose();
+        }
     }
 }
