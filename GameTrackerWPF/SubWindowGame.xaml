@@ -12,16 +12,17 @@
     </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2.5*" />
-            <RowDefinition Height="1.5*" />
-            <RowDefinition Height="0.7*" />
-            <RowDefinition Height="0.8*" />
-            <RowDefinition Height="2*" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="105" />
+            <RowDefinition Height="55" />
+            <RowDefinition Height="55" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0*" /> <!--Width="0.5*"-->
+                <ColumnDefinition Width="0*" />
+                <!--Width="0.5*"-->
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
@@ -133,11 +134,11 @@
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <StackPanel VerticalAlignment="Center">
+            <StackPanel VerticalAlignment="Top">
                 <Label Content="Completion Criteria" />
                 <TextBox x:Name="TextboxCompletionCriteria" Margin="5,0" />
             </StackPanel>
-            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <StackPanel Grid.Column="1" VerticalAlignment="Top">
                 <Label Content="Completion Comment" />
                 <TextBox x:Name="TextboxCompletionComment" Margin="5,0" />
             </StackPanel>
@@ -150,34 +151,37 @@
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <StackPanel VerticalAlignment="Center">
+            <StackPanel VerticalAlignment="Top">
                 <Label Content="Time Spent" />
                 <TextBox x:Name="TextboxTimeSpent" Margin="5,0" />
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Grid.Column="1">
+            <StackPanel VerticalAlignment="Top" Grid.Column="1">
                 <Label Content="Release Date" />
                 <DatePicker x:Name="DatePickerRelease" Margin="5,0" />
             </StackPanel>
-            <StackPanel VerticalAlignment="Center" Grid.Column="2">
+            <StackPanel VerticalAlignment="Top" Grid.Column="2">
                 <Label Content="Acquired On" />
                 <DatePicker x:Name="DatePickerAcquired" Margin="5,0" />
             </StackPanel>
-            <StackPanel x:Name="StackPanelStartedOn" VerticalAlignment="Center" Grid.Column="3">
+            <StackPanel x:Name="StackPanelStartedOn" VerticalAlignment="Top" Grid.Column="3">
                 <Label x:Name="LabelStartedOn" Content="Started On" />
                 <DatePicker x:Name="DatePickerStarted" Margin="5,0" />
             </StackPanel>
-            <StackPanel x:Name="StackPanelFinishedOn" VerticalAlignment="Center" Grid.Column="4">
+            <StackPanel x:Name="StackPanelFinishedOn" VerticalAlignment="Top" Grid.Column="4">
                 <Label Content="Finished On" />
                 <DatePicker x:Name="DatePickerFinished" Margin="5,0" />
             </StackPanel>
         </Grid>
-        <StackPanel VerticalAlignment="Center" Grid.Row="4">
+        <Grid VerticalAlignment="Stretch" Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Label Content="Comments" />
-            <TextBox x:Name="TextBoxComments" Margin="5,0" TextWrapping="Wrap" AcceptsReturn="True" Height="100" VerticalScrollBarVisibility="Auto" MaxLength="10000" />
-        </StackPanel>
+            <TextBox x:Name="TextBoxComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="10000" />
+        </Grid>
         <StackPanel Grid.Row="5" HorizontalAlignment="Center">
             <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonSave_Click" />
-            <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>
 </Window>

@@ -30,7 +30,5 @@
             </StackPanel>
         </StackPanel>
         <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />
-        <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
-        <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" />
     </StackPanel>
 </Window>

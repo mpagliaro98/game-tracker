@@ -24,7 +24,7 @@ namespace RatableTracker.ObjAddOns
 
         public ExtensionBase(ExtensionBase copyFrom) : this(copyFrom.Module, copyFrom.Settings) { }
 
-        public virtual void ValidateFields() { }
+        protected internal virtual void ValidateFields() { }
 
         public void InitAdditionalResources()
         {

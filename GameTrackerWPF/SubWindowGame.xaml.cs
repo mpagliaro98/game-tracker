@@ -35,7 +35,6 @@ namespace GameTrackerWPF
         public SubWindowGame(GameModule rm, SettingsGame settings, ILoadSaveHandler<ILoadSaveMethodGame> loadSave, SubWindowMode mode, GameObject orig)
         {
             InitializeComponent();
-            LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
             this.loadSave = loadSave;

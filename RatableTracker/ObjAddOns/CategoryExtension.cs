@@ -53,7 +53,7 @@ namespace RatableTracker.ObjAddOns
             IgnoreCategories = copyFrom.IgnoreCategories;
         }
 
-        public override void ValidateFields()
+        protected internal override void ValidateFields()
         {
             base.ValidateFields();
             var categories = Module.GetRatingCategoryList();
