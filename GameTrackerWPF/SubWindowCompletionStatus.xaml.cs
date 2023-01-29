@@ -28,56 +28,60 @@ namespace GameTrackerWPF
         public SubWindowCompletionStatus(GameModule rm, SettingsGame settings, SubWindowMode mode, StatusGame orig)
         {
             InitializeComponent();
-            LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
             this.settings = settings;
-            if (this.orig == null) this.orig = new StatusGame(rm, settings);
-            switch (mode)
-            {
-                case SubWindowMode.MODE_ADD:
-                    ButtonSave.Visibility = Visibility.Visible;
-                    ButtonUpdate.Visibility = Visibility.Collapsed;
-                    break;
-                case SubWindowMode.MODE_EDIT:
-                    ButtonSave.Visibility = Visibility.Collapsed;
-                    ButtonUpdate.Visibility = Visibility.Visible;
-                    TextboxName.Text = orig.Name;
-                    CheckboxUseAsFinished.IsChecked = orig.UseAsFinished;
-                    CheckboxExcludeFromStats.IsChecked = orig.ExcludeFromStats;
-                    ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
-                    break;
-                default:
-                    throw new Exception("Unhandled mode");
-            }
+
+            // initialize UI containers
+            ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
+
+            // set fields in the UI
+            TextboxName.Text = orig.Name;
+            ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
+            CheckboxUseAsFinished.IsChecked = orig.UseAsFinished;
+            CheckboxExcludeFromStats.IsChecked = orig.ExcludeFromStats;
+
+            // set event handlers
+            TextboxName.TextChanged += TextboxName_TextChanged;
+            ColorPickerColor.SelectedColorChanged += ColorPickerColor_SelectedColorChanged;
+            CheckboxUseAsFinished.Checked += CheckboxUseAsFinished_Checked;
+            CheckboxUseAsFinished.Unchecked += CheckboxUseAsFinished_Checked;
+            CheckboxExcludeFromStats.Checked += CheckboxExcludeFromStats_Checked;
+            CheckboxExcludeFromStats.Unchecked += CheckboxExcludeFromStats_Checked;
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            SaveResult();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            SaveResult();
-        }
-
-        private void SaveResult()
-        {
-            orig.Name = TextboxName.Text;
-            orig.UseAsFinished = CheckboxUseAsFinished.IsChecked.Value;
-            orig.ExcludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
-            orig.Color = ColorPickerColor.SelectedColor.ToDrawingColor();
             try
             {
                 orig.Save(rm, settings);
             }
-            catch (ValidationException e)
+            catch (Exception ex)
             {
-                e.DisplayUIExceptionMessage();
+                ex.DisplayUIExceptionMessage();
                 return;
             }
             Close();
+        }
+
+        private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.Name = TextboxName.Text.Trim();
+        }
+
+        private void ColorPickerColor_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            orig.Color = ColorPickerColor.SelectedColor.ToDrawingColor();
+        }
+
+        private void CheckboxUseAsFinished_Checked(object sender, RoutedEventArgs e)
+        {
+            orig.UseAsFinished = CheckboxUseAsFinished.IsChecked.Value;
+        }
+
+        private void CheckboxExcludeFromStats_Checked(object sender, RoutedEventArgs e)
+        {
+            orig.ExcludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
         }
     }
 }

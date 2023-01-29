@@ -276,7 +276,7 @@ namespace GameTrackerWPF
                 else
                     GamesListbox.AddItem(item);
 
-                if (rg is GameCompilation)
+                if (rg.IsCompilation)
                     item.ContextMenu = EditDeleteContextMenu(GameEdit, null);
                 else
                     item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
@@ -377,7 +377,7 @@ namespace GameTrackerWPF
             {
                 lbi = (IListBoxItemGame)sender;
             }
-            OpenSubWindowGame(SubWindowMode.MODE_EDIT, new GameObject(lbi.Game));
+            OpenSubWindowGame(SubWindowMode.MODE_EDIT, lbi.Game.IsCompilation ? new GameCompilation(lbi.Game as GameCompilation) : new GameObject(lbi.Game));
         }
 
         private void GameDelete(object sender, RoutedEventArgs e)
@@ -402,7 +402,7 @@ namespace GameTrackerWPF
         private void OpenSubWindowGame(SubWindowMode mode, GameObject orig)
         {
             Window window;
-            if (orig != null && orig.IsCompilation)
+            if (orig.IsCompilation)
                 window = new SubWindowCompilation(rm, settings, mode, orig as GameCompilation);
             else
                 window = new SubWindowGame(rm, settings, loadSave, mode, orig);

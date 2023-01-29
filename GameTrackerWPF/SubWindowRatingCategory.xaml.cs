@@ -31,60 +31,51 @@ namespace GameTrackerWPF
         public SubWindowRatingCategory(GameModule rm, SettingsGame settings, SubWindowMode mode, RatingCategoryWeighted orig)
         {
             InitializeComponent();
-            LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
             this.settings = settings;
-            if (this.orig == null) this.orig = new RatingCategoryWeighted(rm, settings);
-            switch (mode)
-            {
-                case SubWindowMode.MODE_ADD:
-                    ButtonSave.Visibility = Visibility.Visible;
-                    ButtonUpdate.Visibility = Visibility.Collapsed;
-                    break;
-                case SubWindowMode.MODE_EDIT:
-                    ButtonSave.Visibility = Visibility.Collapsed;
-                    ButtonUpdate.Visibility = Visibility.Visible;
-                    TextboxName.Text = orig.Name;
-                    TextboxComment.Text = orig.Comment;
-                    TextboxWeight.Text = orig.Weight.ToString();
-                    break;
-                default:
-                    throw new Exception("Unhandled mode");
-            }
+
+            // initialize UI containers
+            ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
+
+            // set fields in the UI
+            TextboxName.Text = orig.Name;
+            TextboxComment.Text = orig.Comment;
+            TextboxWeight.Value = orig.Weight;
+
+            // set event handlers
+            TextboxName.TextChanged += TextboxName_TextChanged;
+            TextboxComment.TextChanged += TextboxComment_TextChanged;
+            TextboxWeight.ValueChanged += TextboxWeight_ValueChanged;
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            SaveResult();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            SaveResult();
-        }
-
-        private void SaveResult()
-        {
-            orig.Name = TextboxName.Text;
-            orig.Comment = TextboxComment.Text;
-            if (!double.TryParse(TextboxWeight.Text, out double weight))
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "The value for weight must be a number";
-                return;
-            }
-            orig.SetWeight(weight);
             try
             {
                 orig.Save(rm, settings);
             }
-            catch (ValidationException e)
+            catch (Exception ex)
             {
-                e.DisplayUIExceptionMessage();
+                ex.DisplayUIExceptionMessage();
                 return;
             }
             Close();
+        }
+
+        private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.Name = TextboxName.Text.Trim();
+        }
+
+        private void TextboxComment_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.Comment = TextboxComment.Text.Trim();
+        }
+
+        private void TextboxWeight_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            orig.Weight = TextboxWeight.Value ?? 1;
         }
     }
 }

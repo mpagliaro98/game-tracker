@@ -5,17 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
         mc:Ignorable="d"
-        Title="Compilation" Height="600" Width="900" MinHeight="600" MinWidth="900">
+        Title="Compilation" Height="550" Width="800" MinHeight="550" MinWidth="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2.5*" />
-            <RowDefinition Height="1.5*" />
-            <RowDefinition Height="4.2*" />
-            <RowDefinition Height="0.8*" />
+            <RowDefinition Height="120" />
+            <RowDefinition Height="105" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0*" />  <!-- Width="0*" -->
+                <ColumnDefinition Width="0*" />  <!-- Width="0.5*" -->
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
@@ -31,7 +31,7 @@
                 </StackPanel>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label Content="Platform" />
-                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" SelectionChanged="ComboBoxPlatform_SelectionChanged" />
+                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" />
                 </StackPanel>
             </Grid>
             <Grid Grid.Column="2">
@@ -81,7 +81,6 @@
         </DockPanel>
         <StackPanel Grid.Row="3" HorizontalAlignment="Center">
             <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
-            <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" HorizontalAlignment="Center" />
         </StackPanel>
     </Grid>
 </Window>

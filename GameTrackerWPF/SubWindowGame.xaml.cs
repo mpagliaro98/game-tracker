@@ -121,7 +121,7 @@ namespace GameTrackerWPF
                     orig.Save(rm, settings, conn);
                 }
             }
-            catch (ValidationException ex)
+            catch (Exception ex)
             {
                 ex.DisplayUIExceptionMessage();
                 return;

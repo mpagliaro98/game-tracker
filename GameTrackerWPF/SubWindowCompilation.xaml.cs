@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -31,54 +32,51 @@ namespace GameTrackerWPF
         public SubWindowCompilation(GameModule rm, SettingsGame settings, SubWindowMode mode, GameCompilation orig)
         {
             InitializeComponent();
-            LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.settings = settings;
             this.orig = orig;
+
+            // initialize UI containers
+            CreateRatingCategories();
             FillComboboxStatuses(ComboBoxStatus);
             FillComboboxPlatforms(ComboBoxPlatform);
             FillComboboxPlatforms(ComboBoxPlatformPlayedOn);
             ComboBoxStatus.SelectedIndex = 0;
             ComboBoxPlatform.SelectedIndex = 0;
             ComboBoxPlatformPlayedOn.SelectedIndex = 0;
-            CreateRatingCategories(rm, orig);
-            CreateGamesInCompilation(rm, orig);
+            CreateGamesInCompilation();
+            ButtonUpdate.Visibility = (mode == SubWindowMode.MODE_VIEW ? Visibility.Collapsed : Visibility.Visible);
+            TextboxName.IsReadOnly = (mode == SubWindowMode.MODE_VIEW);
+            ComboBoxStatus.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
+            ComboBoxPlatform.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
+            ComboBoxPlatformPlayedOn.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
 
+            // set fields in the UI
             TextboxName.Text = orig.Name;
             if (orig.StatusExtension.Status != null) ComboBoxStatus.SelectedItem = orig.StatusExtension.Status;
             if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform;
             if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
             TextBoxFinalScore.Text = orig.Score.ToString("0.##");
-            UpdateFinalScoreTextBox();
 
-            if (mode == SubWindowMode.MODE_VIEW)
-            {
-                TextboxName.IsReadOnly = true;
-                ComboBoxStatus.IsEnabled = false;
-                ComboBoxPlatform.IsEnabled = false;
-                ComboBoxPlatformPlayedOn.IsEnabled = false;
-                ButtonUpdate.Visibility = Visibility.Collapsed;
-            }
+            // set event handlers
+            TextboxName.TextChanged += TextboxName_TextChanged;
+            ComboBoxStatus.SelectionChanged += ComboBoxStatus_SelectionChanged;
+            ComboBoxPlatform.SelectionChanged += ComboBoxPlatform_SelectionChanged;
+            ComboBoxPlatformPlayedOn.SelectionChanged += ComboBoxPlatformPlayedOn_SelectionChanged;
+
+            // refresh UI logic
+            UpdateStats();
         }
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
         {
-            SaveResult();
-        }
-
-        private void SaveResult()
-        {
-            orig.Name = TextboxName.Text;
-            orig.StatusExtension.Status = ComboBoxStatus.SelectedIndex == 0 ? null : (StatusGame)ComboBoxStatus.SelectedItem;
-            orig.Platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
-            orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatformPlayedOn.SelectedItem;
             try
             {
                 orig.Save(rm, settings);
             }
-            catch (ValidationException e)
+            catch (Exception ex)
             {
-                e.DisplayUIExceptionMessage();
+                ex.DisplayUIExceptionMessage();
                 return;
             }
             Close();
@@ -108,13 +106,14 @@ namespace GameTrackerWPF
             }
         }
 
-        private void CreateRatingCategories(GameModule rm, GameCompilation gc)
+        private void CreateRatingCategories()
         {
             GridRatingCategories.Children.Clear();
             GridRatingCategories.ColumnDefinitions.Clear();
             int i = 0;
-            foreach (RatingCategoryWeighted rc in rm.CategoryExtension.GetRatingCategoryList())
+            foreach (CategoryValue categoryValue in orig.CategoryExtension.CategoryValueList)
             {
+                RatingCategory rc = categoryValue.RatingCategory;
                 GridRatingCategories.ColumnDefinitions.Add(new ColumnDefinition());
                 DockPanel dock = new DockPanel
                 {
@@ -142,8 +141,9 @@ namespace GameTrackerWPF
                     Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 }),
                     FontSize = 32,
                     IsReadOnly = true,
-                    Text = gc.CategoryExtension.ScoreOfCategory(rc).ToString("0.##")
+                    Text = categoryValue.PointValue.ToString()
                 };
+                text.Tag = rc;
                 dock.Children.Add(label);
                 dock.Children.Add(text);
                 Grid.SetColumn(dock, i);
@@ -152,33 +152,39 @@ namespace GameTrackerWPF
             }
         }
 
-        private void UpdateFinalScoreColor(double score)
+        private void CreateGamesInCompilation()
         {
-            ScoreRange sr = score.GetScoreRange(rm);
-            RatableTracker.Util.Color color = sr == null ? new RatableTracker.Util.Color() : sr.Color;
-            if (color.Equals(new RatableTracker.Util.Color()))
+            var games = orig.GamesInCompilation();
+            GamesListBoxWrap.Items.Clear();
+            foreach (var game in games)
             {
-                TextBoxFinalScore.Background = new SolidColorBrush(new System.Windows.Media.Color { A = 0xFF, R = 0xF9, G = 0xF9, B = 0xF9 });
-            }
-            else
-            {
-                TextBoxFinalScore.Background = new SolidColorBrush(color.ToMediaColor());
+                IListBoxItemGame item = new ListBoxItemGameBox(rm, game);
+                GamesListBoxWrap.Items.Add(item);
             }
         }
 
-        private void UpdateFinalScoreTextBox()
+        private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            bool result = double.TryParse(TextBoxFinalScore.Text, out double score);
-            if (result) FinalScoreUpdate(score);
+            orig.Name = TextboxName.Text.Trim();
         }
 
-        private void FinalScoreUpdate(double score)
+        private void ComboBoxStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            UpdateFinalScoreColor(score);
-            UpdateStats(score);
+            orig.StatusExtension.Status = ComboBoxStatus.SelectedIndex > 0 ? (Status)ComboBoxStatus.SelectedItem : null;
         }
 
-        private void UpdateStats(double score)
+        private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.Platform = ComboBoxPlatform.SelectedIndex > 0 ? (Platform)ComboBoxPlatform.SelectedItem : null;
+            UpdateStats();
+        }
+
+        private void ComboBoxPlatformPlayedOn_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex > 0 ? (Platform)ComboBoxPlatformPlayedOn.SelectedItem : null;
+        }
+
+        private void UpdateStats()
         {
             // TODO
             int rankOverall = orig.Rank;
@@ -190,22 +196,6 @@ namespace GameTrackerWPF
             if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
             text += "#" + rankOverall.ToString() + " overall";
             TextBlockStats.Text = text;
-        }
-
-        private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            UpdateFinalScoreTextBox();
-        }
-
-        private void CreateGamesInCompilation(GameModule rm, GameCompilation gc)
-        {
-            var games = gc.GamesInCompilation();
-            GamesListBoxWrap.Items.Clear();
-            foreach (var game in games)
-            {
-                IListBoxItemGame item = new ListBoxItemGameBox(rm, game);
-                GamesListBoxWrap.Items.Add(item);
-            }
         }
     }
 }
