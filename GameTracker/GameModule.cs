@@ -142,12 +142,6 @@ namespace GameTracker
             return GetNumGamesFinishedByPlatform(platform, settings) / numFinishable;
         }
 
-        //public IEnumerable<TListedObj> GetFinishedGamesExcludeStatsOnPlatform(Platform platform)
-        //{
-        //    return ListedObjects.Where(ro => ro.RefPlatform.HasReference() && ro.RefPlatform.IsReferencedObject(platform))
-        //        .Where(ro => ro.RefStatus.HasReference() && FindStatus(ro.RefStatus).UseAsFinished && !FindStatus(ro.RefStatus).ExcludeFromStats);
-        //}
-
         public int GetNumGamesByPlatform(Platform platform, SettingsGame settings)
         {
             return GetGamesOnPlatform(platform, settings).Count;
@@ -181,14 +175,9 @@ namespace GameTracker
             return GetFinishedGamesOnPlatform(platform, settings).OrderBy(ro => ro.ScoreDisplay).Take(numToGet).ToList();
         }
 
-        //public int GetRankOfScoreByPlatform(double score, Platform platform)
-        //{
-        //    return GetRankOfScore(score, ListedObjects, game => game.RefPlatform.IsReferencedObject(platform), null);
-        //}
-
-        //public int GetRankOfScoreByPlatform(double score, Platform platform, TListedObj obj)
-        //{
-        //    return GetRankOfScore(score, ListedObjects, game => game.RefPlatform.IsReferencedObject(platform), obj);
-        //}
+        public int GetRankOfScoreByPlatform(double score, Platform platform, SettingsGame settings)
+        {
+            return GetRankOfScore(score, settings, GetFinishedGamesOnPlatform(platform, settings).Cast<RankedObject>().ToList());
+        }
     }
 }

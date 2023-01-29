@@ -186,15 +186,13 @@ namespace GameTrackerWPF
 
         private void UpdateStats()
         {
-            // TODO
-            int rankOverall = orig.Rank;
-            int rankPlatform = -1;
-            Platform platform = ComboBoxPlatform.SelectedIndex == 0 ? null : (Platform)ComboBoxPlatform.SelectedItem;
-            if (platform != null) rankPlatform = 1; // rm.GetRankOfScoreByPlatform(score, platform, orig);
-
             string text = "";
-            if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
-            text += "#" + rankOverall.ToString() + " overall";
+            if (orig.Platform != null)
+            {
+                var platform = orig.Platform;
+                text += "#" + rm.GetRankOfScoreByPlatform(orig.Score, platform, settings).ToString() + " on " + platform.Name + "\n";
+            }
+            text += "#" + rm.GetRankOfScore(orig.Score, settings).ToString() + " overall";
             TextBlockStats.Text = text;
         }
     }

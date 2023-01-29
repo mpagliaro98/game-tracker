@@ -105,5 +105,22 @@ namespace RatableTracker.Modules
         {
             return ScoreRelationships.Count;
         }
+
+        public int GetRankOfScore(double score, SettingsScore settings)
+        {
+            return GetRankOfScore(score, settings, GetModelObjectList());
+        }
+
+        public int GetRankOfScore(double score, SettingsScore settings, IList<RankedObject> objects)
+        {
+            var list = objects.OrderByDescending(obj => obj.ScoreDisplay).ToList();
+            int rank = 0;
+            for (; rank < list.Count; rank++)
+            {
+                if (score >= list[rank].ScoreDisplay)
+                    break;
+            }
+            return rank += 1;
+        }
     }
 }
