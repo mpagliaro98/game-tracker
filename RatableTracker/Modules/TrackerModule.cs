@@ -54,7 +54,16 @@ namespace RatableTracker.Modules
         protected void TransferToNewModule(ILoadSaveMethod connCurrent, ILoadSaveMethod connNew, Settings settings)
         {
             connNew.SaveAllModelObjects(connCurrent.LoadModelObjects(settings, this));
-            connNew.SaveSettings(connCurrent.LoadSettings());
+            Settings settingsTransfer;
+            try
+            {
+                settingsTransfer = connCurrent.LoadSettings();
+            }
+            catch (NoDataFoundException)
+            {
+                settingsTransfer = null;
+            }
+            connNew.SaveSettings(settingsTransfer);
         }
 
         public IList<RankedObject> GetModelObjectList()

@@ -40,7 +40,10 @@ namespace GameTrackerWPF
         private GameModule rm;
         private SettingsGame settings;
         private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
-        private readonly Task loadData = null;
+        private GameTrackerFactory factory;
+        private IPathController pathController;
+
+        private Task loadData = null;
         private Stopwatch swLoad = new Stopwatch();
 
         private static bool LOAD_ASYNC = false;
@@ -61,10 +64,13 @@ namespace GameTrackerWPF
         {
             savedState.loaded = false;
 
-            // TODO use aws file handler if key file exists
-            IPathController pathController = new PathControllerWindows();
-            IFileHandler fileHandlerSaves = new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
-            GameTrackerFactory factory = new GameTrackerFactory();
+            pathController = new PathControllerWindows();
+            IFileHandler fileHandlerSaves;
+            if (FileHandlerAWSS3.KeyFileExists(pathController))
+                fileHandlerSaves = new FileHandlerAWSS3(pathController);
+            else
+                fileHandlerSaves = new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
+            factory = new GameTrackerFactory();
             loadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(fileHandlerSaves, factory, App.Logger));
             rm = new GameModule(loadSave, App.Logger);
             try
@@ -79,15 +85,6 @@ namespace GameTrackerWPF
             swLoad.Start();
             if (LOAD_ASYNC)
                 loadData = rm.LoadDataAsync(settings);
-
-            savedState.filterGames.Module = rm;
-            savedState.filterGames.Settings = settings;
-            savedState.sortGames.Module = rm;
-            savedState.sortGames.Settings = settings;
-            savedState.filterPlatforms.Module = rm;
-            savedState.filterPlatforms.Settings = settings;
-            savedState.sortPlatforms.Module = rm;
-            savedState.sortPlatforms.Settings = settings;
 
             InitializeComponent();
             PlatformsButtonSortMode.Tag = savedState.sortPlatforms.SortMode;
@@ -104,6 +101,8 @@ namespace GameTrackerWPF
             EnableNewButtons(false);
             mainWindow.Title = "Game Tracker (Loading...)";
 
+            InitFilterAndSort(rm, settings);
+
             if (!swLoad.IsRunning) swLoad.Restart();
             if (LOAD_ASYNC)
             {
@@ -116,11 +115,24 @@ namespace GameTrackerWPF
                 await Task.Run(() => rm.LoadData(settings));
             swLoad.Stop();
             App.Logger.Log("Initial data load finished in " + swLoad.ElapsedMilliseconds.ToString() + "ms");
+            loadData = null;
 
             savedState.loaded = true;
             UpdateCurrentTab();
             EnableNewButtons(true);
             mainWindow.Title = "Game Tracker";
+        }
+
+        private void InitFilterAndSort(GameModule rm, SettingsGame settings)
+        {
+            savedState.filterGames.Module = rm;
+            savedState.filterGames.Settings = settings;
+            savedState.sortGames.Module = rm;
+            savedState.sortGames.Settings = settings;
+            savedState.filterPlatforms.Module = rm;
+            savedState.filterPlatforms.Settings = settings;
+            savedState.sortPlatforms.Module = rm;
+            savedState.sortPlatforms.Settings = settings;
         }
 
         #region General Functionality and Utilities
@@ -653,8 +665,7 @@ namespace GameTrackerWPF
         {
             SettingsTextboxMin.Text = settings.MinScore.ToString();
             SettingsTextboxMax.Text = settings.MaxScore.ToString();
-            // TODO
-            //SettingsAWSButton.Content = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
+            SettingsAWSButton.Content = FileHandlerAWSS3.KeyFileExists(pathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
         private void ResetSettingsLabels()
@@ -699,24 +710,33 @@ namespace GameTrackerWPF
         {
             mainWindow.IsEnabled = false;
 
-            // TODO
-            if (mainWindow.IsEnabled) //(ContentLoadSaveAWSS3.KeyFileExists())
+            if (FileHandlerAWSS3.KeyFileExists(pathController))
             {
                 // Remove key file
-                var result = MessageBox.Show("Transfer AWS save files to local? This will overwrite anything currently on this device.", "Overwrite local?", MessageBoxButton.YesNo);
-                // TODO transfer save files, make new module object
-                //IContentLoadSave<string, string> cls = new ContentLoadSaveLocal();
-                //if (result == MessageBoxResult.Yes)
-                //{
-                //    IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
-                //    await rm.TransferSaveFilesAsync(from, cls);
-                //}
-                //ContentLoadSaveAWSS3.DeleteKeyFile();
-                //LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
-                //{
-                //    ContentLoadSaveInstance = cls
-                //};
-                //rm = new RatingModuleGame(engine);
+                var result = MessageBox.Show("Game Tracker will switch to using save files directly on this device.\n\nWould you also like to download your data from AWS and replace any local data with your AWS data?", "Overwrite local?", MessageBoxButton.YesNo);
+                
+                IFileHandler newFileHandler = new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
+                ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, factory, App.Logger));
+                GameModule newModule = new GameModule(newLoadSave, App.Logger);
+                if (result == MessageBoxResult.Yes)
+                {
+                    mainWindow.Title = "Game Tracker (Transferring Save Data...)";
+                    App.Logger.Log("Starting transfer from AWS to local");
+                    rm.TransferToNewModule(newModule, settings);
+                }
+                try
+                {
+                    settings = (SettingsGame)Settings.Load(newLoadSave);
+                }
+                catch (NoDataFoundException)
+                {
+                    // first load
+                    settings = new SettingsGame();
+                }
+                loadSave = newLoadSave;
+                rm = newModule;
+                FileHandlerAWSS3.DeleteKeyFile(pathController);
+
                 await LoadAllData();
             }
             else
@@ -725,27 +745,35 @@ namespace GameTrackerWPF
                 OpenFileDialog fileDialog = new OpenFileDialog();
                 if (fileDialog.ShowDialog() == true)
                 {
-                    var result = MessageBox.Show("Transfer local save files to AWS? This will overwrite anything currently on your AWS account.", "Overwrite AWS?", MessageBoxButton.YesNo);
+                    var result = MessageBox.Show("Game Tracker will switch to using remote save files with AWS.\n\nWould you also like to upload your data to AWS and replace any existing remote data?", "Overwrite AWS?", MessageBoxButton.YesNo);
                     try
                     {
-                        // TODO transfer save files, make new module object
-                        //ContentLoadSaveAWSS3.CreateKeyFile(fileDialog.FileName);
-                        //IContentLoadSave<string, string> cls = new ContentLoadSaveAWSS3();
-                        //if (result == MessageBoxResult.Yes)
-                        //{
-                        //    IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
-                        //    await rm.TransferSaveFilesAsync(from, cls);
-                        //}
-                        //LoadSaveEngineGameJson<ValueContainer> engine = new LoadSaveEngineGameJson<ValueContainer>
-                        //{
-                        //    ContentLoadSaveInstance = cls
-                        //};
-                        //rm = new RatingModuleGame(engine);
+                        IFileHandler newFileHandler = new FileHandlerAWSS3(fileDialog.FileName, pathController);
+                        ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, factory, App.Logger));
+                        GameModule newModule = new GameModule(newLoadSave, App.Logger);
+                        if (result == MessageBoxResult.Yes)
+                        {
+                            mainWindow.Title = "Game Tracker (Transferring Save Data...)";
+                            App.Logger.Log("Starting transfer from local to AWS");
+                            rm.TransferToNewModule(newModule, settings);
+                        }
+                        try
+                        {
+                            settings = (SettingsGame)Settings.Load(newLoadSave);
+                        }
+                        catch (NoDataFoundException)
+                        {
+                            // first load
+                            settings = new SettingsGame();
+                        }
+                        loadSave = newLoadSave;
+                        rm = newModule;
+
                         await LoadAllData();
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Something went wrong.\n" + ex.Message, "Error");
+                        ex.DisplayUIExceptionMessage();
                     }
                 }
             }

@@ -93,8 +93,14 @@ namespace RatableTracker.LoadSave
 
         protected void SaveFileContentIfLoaded<T>(string fileName, ref T representation, Func<T, byte[]> representationToBytes, bool changed)
         {
-            if (representation == null) return;
-            if (!changed) return;
+            if ((representation == null && !changed) || !changed) return;
+            // if representation is null, but it was changed, delete the file
+            if (representation == null)
+            {
+                logger.Log("Save file: " + fileName + " - content is null but object was changed, so deleting file");
+                fileHandler.DeleteFile(fileName);
+                return;
+            }
             byte[] fileContent = representationToBytes(representation);
             logger.Log("Save started to file: " + fileName + " (" + fileContent.Length.ToString() + " bytes)");
             Stopwatch sw = Stopwatch.StartNew();
@@ -138,6 +144,7 @@ namespace RatableTracker.LoadSave
         protected SavableRepresentation InterpretBytesToSR(byte[] bytes)
         {
             string json = Util.Util.TextEncoding.GetString(bytes);
+            if (json == "") return null;
             return JSONToSavableRepresentation(json);
         }
 
@@ -156,7 +163,7 @@ namespace RatableTracker.LoadSave
         public void SaveOne<T>(Action ensureLoaded, ref SavableRepresentation data, T toSave, ref bool changed) where T : RepresentationObject
         {
             ensureLoaded();
-            data = toSave.LoadIntoRepresentation();
+            data = toSave?.LoadIntoRepresentation();
             changed = true;
         }
 
