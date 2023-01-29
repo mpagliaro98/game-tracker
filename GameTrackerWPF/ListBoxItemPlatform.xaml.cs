@@ -29,19 +29,18 @@ namespace GameTrackerWPF
 
         public ListBoxItemPlatform(GameModule rm, SettingsGame settings, Platform platform)
         {
-            // TODO
             InitializeComponent();
             this.platform = platform;
             RectangeColor.Fill = new SolidColorBrush(platform.Color.ToMediaColor());
             LabelName.Content = platform.Name;
-            LabelNumOwned.Content = "0"; // rm.GetNumGamesByPlatform(platform).ToString();
-            LabelAverage.Content = "0"; // rm.GetAverageScoreOfGamesByPlatform(platform).ToString("0.#####");
-            LabelHighest.Content = "0"; // rm.GetHighestScoreFromGamesByPlatform(platform).ToString("0.##");
-            LabelLowest.Content = "0"; // rm.GetLowestScoreFromGamesByPlatform(platform).ToString("0.##");
-            LabelFinishPercent.Content = rm.GetProportionGamesFinishedByPlatform(platform, settings).ToString("P2") + "%";
+            LabelNumOwned.Content = rm.GetNumGamesByPlatform(platform, settings).ToString();
+            LabelAverage.Content = rm.GetAverageScoreOfGamesByPlatform(platform, settings).ToString("0.#####");
+            LabelHighest.Content = rm.GetHighestScoreFromGamesByPlatform(platform, settings).ToString("0.##");
+            LabelLowest.Content = rm.GetLowestScoreFromGamesByPlatform(platform, settings).ToString("0.##");
+            LabelFinishPercent.Content = rm.GetProportionGamesFinishedByPlatform(platform, settings).ToString("P2");
             LabelFinishRatio.Content = rm.GetNumGamesFinishedByPlatform(platform, settings).ToString() + "/" + rm.GetNumGamesFinishableByPlatform(platform, settings).ToString() + " games";
-            SetStackPanelLabels(StackPanelTop, rm.GetGamesOnPlatform(platform, settings).Take(3).ToList()); // rm.GetTopGamesByPlatform(platform, 3));
-            SetStackPanelLabels(StackPanelBottom, rm.GetGamesOnPlatform(platform, settings).Take(3).ToList()); // rm.GetBottomGamesByPlatform(platform, 3));
+            SetStackPanelLabels(StackPanelTop, rm.GetTopGamesByPlatform(platform, settings, 3));
+            SetStackPanelLabels(StackPanelBottom, rm.GetBottomGamesByPlatform(platform, settings, 3));
         }
 
         private void SetStackPanelLabels(StackPanel panel, IList<GameObject> list)

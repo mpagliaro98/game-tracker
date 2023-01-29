@@ -122,7 +122,7 @@ namespace GameTracker
 
         public IList<GameObject> GetFinishedGamesOnPlatform(Platform platform, SettingsGame settings)
         {
-            return GetGamesOnPlatform(platform, settings).Where(obj => obj.StatusExtension.Status != null && !obj.StatusExtension.Status.HideScoreOfModelObject).ToList();
+            return GetGamesOnPlatform(platform, settings).Where(obj => obj.StatusExtension.Status != null && !obj.StatusExtension.Status.HideScoreOfModelObject && !obj.StatusExtension.Status.ExcludeModelObjectFromStats).ToList();
         }
 
         public int GetNumGamesFinishableByPlatform(Platform platform, SettingsGame settings)
@@ -148,42 +148,38 @@ namespace GameTracker
         //        .Where(ro => ro.RefStatus.HasReference() && FindStatus(ro.RefStatus).UseAsFinished && !FindStatus(ro.RefStatus).ExcludeFromStats);
         //}
 
-        //public int GetNumGamesByPlatform(Platform platform)
-        //{
-        //    return GetGamesOnPlatform(platform).Count();
-        //}
+        public int GetNumGamesByPlatform(Platform platform, SettingsGame settings)
+        {
+            return GetGamesOnPlatform(platform, settings).Count;
+        }
 
-        //public double GetAverageScoreOfGamesByPlatform(Platform platform)
-        //{
-        //    var games = GetFinishedGamesOnPlatform(platform);
-        //    return games.Count() <= 0 ? Settings.MinScore : games.Average(ro => GetScoreOfObject(ro));
-        //}
+        public double GetAverageScoreOfGamesByPlatform(Platform platform, SettingsGame settings)
+        {
+            var games = GetFinishedGamesOnPlatform(platform, settings);
+            return games.Count <= 0 ? settings.MinScore : games.Average(ro => ro.ScoreDisplay);
+        }
 
-        //public double GetHighestScoreFromGamesByPlatform(Platform platform)
-        //{
-        //    var games = GetFinishedGamesOnPlatform(platform);
-        //    return games.Count() <= 0 ? Settings.MinScore : games.Max(ro => GetScoreOfObject(ro));
-        //}
+        public double GetHighestScoreFromGamesByPlatform(Platform platform, SettingsGame settings)
+        {
+            var games = GetFinishedGamesOnPlatform(platform, settings);
+            return games.Count <= 0 ? settings.MinScore : games.Max(ro => ro.ScoreDisplay);
+        }
 
-        //public double GetLowestScoreFromGamesByPlatform(Platform platform)
-        //{
-        //    var games = GetFinishedGamesOnPlatform(platform);
-        //    return games.Count() <= 0 ? Settings.MinScore : games.Min(ro => GetScoreOfObject(ro));
-        //}
+        public double GetLowestScoreFromGamesByPlatform(Platform platform, SettingsGame settings)
+        {
+            var games = GetFinishedGamesOnPlatform(platform, settings);
+            return games.Count <= 0 ? settings.MinScore : games.Min(ro => ro.ScoreDisplay);
+        }
 
-        //public IEnumerable<TListedObj> GetTopGamesByPlatform(Platform platform, int numToGet)
-        //{
-        //    return GetFinishedGamesOnPlatform(platform)
-        //        .OrderByDescending(ro => GetScoreOfObject(ro))
-        //        .Take(numToGet);
-        //}
+        public IList<GameObject> GetTopGamesByPlatform(Platform platform, SettingsGame settings, int numToGet)
+        {
+            return GetFinishedGamesOnPlatform(platform, settings).OrderByDescending(ro => ro.ScoreDisplay).Take(numToGet).ToList();
+        }
 
-        //public IEnumerable<TListedObj> GetBottomGamesByPlatform(Platform platform, int numToGet)
-        //{
-        //    return GetFinishedGamesOnPlatform(platform)
-        //        .OrderBy(ro => GetScoreOfObject(ro))
-        //        .Take(numToGet);
-        //}
+        public IList<GameObject> GetBottomGamesByPlatform(Platform platform, SettingsGame settings, int numToGet)
+        {
+            return GetFinishedGamesOnPlatform(platform, settings).OrderBy(ro => ro.ScoreDisplay).Take(numToGet).ToList();
+        }
 
         //public int GetRankOfScoreByPlatform(double score, Platform platform)
         //{

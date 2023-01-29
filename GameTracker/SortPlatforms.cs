@@ -37,7 +37,7 @@ namespace GameTracker
                     sortFunction = platform => platform.Name.CleanForSorting();
                     break;
                 case SORT_NumGames:
-                    sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Count();
+                    sortFunction = platform => Module.GetGamesOnPlatform(platform, Settings).Count;
                     break;
                 case SORT_Average:
                     sortFunction = platform => Module.GetFinishedGamesOnPlatform(platform, Settings).Select(obj => obj.ScoreDisplay).AverageIfEmpty(Settings.MinScore);
