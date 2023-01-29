@@ -192,7 +192,7 @@ namespace GameTrackerWPF
                 var platform = orig.Platform;
                 text += "#" + rm.GetRankOfScoreByPlatform(orig.Score, platform, settings).ToString() + " on " + platform.Name + "\n";
             }
-            text += "#" + rm.GetRankOfScore(orig.Score, settings).ToString() + " overall";
+            text += "#" + rm.GetRankOfScore(orig.Score).ToString() + " overall";
             TextBlockStats.Text = text;
         }
     }

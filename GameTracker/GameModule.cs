@@ -177,7 +177,7 @@ namespace GameTracker
 
         public int GetRankOfScoreByPlatform(double score, Platform platform, SettingsGame settings)
         {
-            return GetRankOfScore(score, settings, GetFinishedGamesOnPlatform(platform, settings).Cast<RankedObject>().ToList());
+            return GetRankOfScore(score, GetFinishedGamesOnPlatform(platform, settings).Cast<RankedObject>().ToList());
         }
     }
 }
