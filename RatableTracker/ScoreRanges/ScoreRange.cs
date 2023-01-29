@@ -24,7 +24,7 @@ namespace RatableTracker.ScoreRanges
             get
             {
                 if (!_scoreRelationship.HasValue()) return null;
-                return Util.Util.FindObjectInList(Module.GetScoreRelationshipList(), _scoreRelationship);
+                return Util.Util.FindObjectInList(TrackerModuleScores.GetScoreRelationshipList(), _scoreRelationship);
             }
             set
             {

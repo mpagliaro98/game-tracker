@@ -38,17 +38,24 @@ namespace RatableTracker.Modules
             ScoreRelationships.Add(new ScoreRelationshipBetween());
         }
 
-        public override void LoadData(Settings settings)
+        protected override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
         {
-            base.LoadData(settings);
+            base.LoadDataConsecutively(settings, conn);
             try
             {
-                LoadTrackerObjectList(ref _scoreRanges, (conn) => ((ILoadSaveMethodScores)conn).LoadScoreRanges(this, (SettingsScore)settings));
+                LoadTrackerObjectList(ref _scoreRanges, conn, (conn) => ((ILoadSaveMethodScores)conn).LoadScoreRanges(this, (SettingsScore)settings));
             }
             catch (InvalidCastException e)
             {
                 throw new InvalidCastException("Settings for loading score ranges must be of type SettingsScore or more derived", e);
             }
+        }
+
+        protected override IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn)
+        {
+            var list = base.LoadDataCreateTaskList(settings, conn);
+            list.Add(Task.Run(() => LoadTrackerObjectList(ref _scoreRanges, conn, (conn) => ((ILoadSaveMethodScores)conn).LoadScoreRanges(this, (SettingsScore)settings))));
+            return list;
         }
 
         public void TransferToNewModule(TrackerModuleScores newModule, SettingsScore settings)
@@ -85,12 +92,12 @@ namespace RatableTracker.Modules
                 (obj) => ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(obj, obj.GetType(), conn)), () => ScoreRangeDeleted == null ? 0 : ScoreRangeDeleted.GetInvocationList().Length);
         }
 
-        public IList<ScoreRelationship> GetScoreRelationshipList()
+        public static IList<ScoreRelationship> GetScoreRelationshipList()
         {
             return new List<ScoreRelationship>(ScoreRelationships);
         }
 
-        public int TotalNumScoreRelationships()
+        public static int TotalNumScoreRelationships()
         {
             return ScoreRelationships.Count;
         }

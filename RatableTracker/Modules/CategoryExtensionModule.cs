@@ -31,9 +31,17 @@ namespace RatableTracker.Modules
 
         public CategoryExtensionModule(ILoadSaveHandler<ILoadSaveMethodCategoryExtension> loadSave, Logger logger) : base(loadSave, logger) { }
 
-        public virtual void LoadData(SettingsScore settings)
+        protected internal override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
         {
-            LoadTrackerObjectList(ref _ratingCategories, (conn) => ((ILoadSaveMethodCategoryExtension)conn).LoadCategories(BaseModule, settings));
+            LoadTrackerObjectList(ref _ratingCategories, conn, (conn) => ((ILoadSaveMethodCategoryExtension)conn).LoadCategories(BaseModule, (SettingsScore)settings));
+        }
+
+        protected internal override IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn)
+        {
+            return new List<Task>
+            {
+                Task.Run(() => LoadTrackerObjectList(ref _ratingCategories, conn, (conn) => ((ILoadSaveMethodCategoryExtension)conn).LoadCategories(BaseModule, (SettingsScore)settings)))
+            };
         }
 
         public IList<RatingCategory> GetRatingCategoryList()

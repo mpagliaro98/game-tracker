@@ -22,6 +22,7 @@ using RatableTracker.ListManipulation;
 using RatableTracker.ObjAddOns;
 using RatableTracker.ScoreRanges;
 using RatableTracker.Exceptions;
+using System.Diagnostics;
 
 namespace GameTrackerWPF
 {
@@ -39,6 +40,10 @@ namespace GameTrackerWPF
         private GameModule rm;
         private SettingsGame settings;
         private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
+        private readonly Task loadData = null;
+        private Stopwatch swLoad = new Stopwatch();
+
+        private static bool LOAD_ASYNC = false;
 
         private class SavedState
         {
@@ -71,6 +76,9 @@ namespace GameTrackerWPF
                 // first load
                 settings = new SettingsGame();
             }
+            swLoad.Start();
+            if (LOAD_ASYNC)
+                loadData = rm.LoadDataAsync(settings);
 
             savedState.filterGames.Module = rm;
             savedState.filterGames.Settings = settings;
@@ -95,7 +103,20 @@ namespace GameTrackerWPF
         {
             EnableNewButtons(false);
             mainWindow.Title = "Game Tracker (Loading...)";
-            await Task.Run(() => rm.LoadData(settings));
+
+            if (!swLoad.IsRunning) swLoad.Restart();
+            if (LOAD_ASYNC)
+            {
+                if (loadData == null)
+                    await rm.LoadDataAsync(settings);
+                else
+                    await loadData;
+            }
+            else
+                await Task.Run(() => rm.LoadData(settings));
+            swLoad.Stop();
+            App.Logger.Log("Initial data load finished in " + swLoad.ElapsedMilliseconds.ToString() + "ms");
+
             savedState.loaded = true;
             UpdateCurrentTab();
             EnableNewButtons(true);

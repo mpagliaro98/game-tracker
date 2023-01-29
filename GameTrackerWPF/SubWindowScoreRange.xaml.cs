@@ -105,7 +105,7 @@ namespace GameTrackerWPF
         private void FillCombobox()
         {
             ComboboxRelationship.Items.Clear();
-            foreach (ScoreRelationship sr in rm.GetScoreRelationshipList())
+            foreach (ScoreRelationship sr in RatableTracker.Modules.TrackerModuleScores.GetScoreRelationshipList())
             {
                 ComboboxRelationship.Items.Add(sr);
             }
@@ -119,7 +119,7 @@ namespace GameTrackerWPF
             {
                 if (currentCount < requiredCount)
                 {
-                    TextBox tb = new TextBox
+                    TextBox tb = new()
                     {
                         Margin = new Thickness { Left = 5 },
                         Width = 100,
@@ -150,7 +150,7 @@ namespace GameTrackerWPF
             RefreshValueList();
             if (valueList == null) return;
             List<double> list = valueList.ToList();
-            for (int i = 0; i < valueList.Count(); i += 1)
+            for (int i = 0; i < valueList.Count; i += 1)
             {
                 TextBox tb = (TextBox)StackPanelValueList.Children[i];
                 tb.Text = list[i].ToString();
@@ -159,7 +159,7 @@ namespace GameTrackerWPF
 
         private IList<string> GetValueListText()
         {
-            List<string> list = new List<string>();
+            IList<string> list = new List<string>();
             foreach (TextBox tb in StackPanelValueList.Children)
             {
                 list.Add(tb.Text);

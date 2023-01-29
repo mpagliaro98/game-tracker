@@ -29,10 +29,17 @@ namespace GameTracker
 
         public GameModule(ILoadSaveHandler<ILoadSaveMethodGame> loadSave, Logger logger) : base(loadSave, logger) { }
 
-        public override void LoadData(Settings settings)
+        protected override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
         {
-            base.LoadData(settings);
-            LoadTrackerObjectList(ref _platforms, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatforms(this, (SettingsGame)settings));
+            base.LoadDataConsecutively(settings, conn);
+            LoadTrackerObjectList(ref _platforms, conn, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatforms(this, (SettingsGame)settings));
+        }
+
+        protected override IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn)
+        {
+            var list = base.LoadDataCreateTaskList(settings, conn);
+            list.Add(Task.Run(() => LoadTrackerObjectList(ref _platforms, conn, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatforms(this, (SettingsGame)settings))));
+            return list;
         }
 
         public void TransferToNewModule(GameModule newModule, SettingsGame settings)
@@ -120,12 +127,12 @@ namespace GameTracker
 
         public int GetNumGamesFinishableByPlatform(Platform platform, SettingsGame settings)
         {
-            return GetFinishableGamesOnPlatform(platform, settings).Count();
+            return GetFinishableGamesOnPlatform(platform, settings).Count;
         }
 
         public double GetNumGamesFinishedByPlatform(Platform platform, SettingsGame settings)
         {
-            return GetFinishedGamesOnPlatform(platform, settings).Count();
+            return GetFinishedGamesOnPlatform(platform, settings).Count;
         }
 
         public double GetProportionGamesFinishedByPlatform(Platform platform, SettingsGame settings)

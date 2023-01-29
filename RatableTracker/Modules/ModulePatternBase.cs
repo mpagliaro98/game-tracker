@@ -25,12 +25,11 @@ namespace RatableTracker.Modules
             Logger = logger;
         }
 
-        protected void LoadTrackerObjectList<T>(ref IList<T> list, Func<ILoadSaveMethod, IList<T>> loadFunc) where T : TrackerObjectBase
+        protected void LoadTrackerObjectList<T>(ref IList<T> list, ILoadSaveMethod conn, Func<ILoadSaveMethod, IList<T>> loadFunc) where T : TrackerObjectBase
         {
             list.ForEach(obj => obj.Dispose());
             try
             {
-                using var conn = LoadSave.NewConnection();
                 list = loadFunc(conn);
             }
             catch (InvalidCastException e)

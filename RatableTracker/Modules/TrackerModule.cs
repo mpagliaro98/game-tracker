@@ -31,9 +31,17 @@ namespace RatableTracker.Modules
 
         public TrackerModule(ILoadSaveHandler<ILoadSaveMethod> loadSave, Logger logger) : base(loadSave, logger) { }
 
-        public virtual void LoadData(Settings settings)
+        protected override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
         {
-            LoadTrackerObjectList(ref _modelObjects, (conn) => conn.LoadModelObjects(settings, this));
+            LoadTrackerObjectList(ref _modelObjects, conn, (conn) => conn.LoadModelObjects(settings, this));
+        }
+
+        protected override IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn)
+        {
+            return new List<Task>
+            {
+                Task.Run(() => LoadTrackerObjectList(ref _modelObjects, conn, (conn) => conn.LoadModelObjects(settings, this)))
+            };
         }
 
         public void TransferToNewModule(TrackerModule newModule, Settings settings)

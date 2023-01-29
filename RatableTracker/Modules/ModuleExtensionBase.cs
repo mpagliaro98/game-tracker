@@ -15,5 +15,9 @@ namespace RatableTracker.Modules
         public ModuleExtensionBase(ILoadSaveHandler<ILoadSaveMethod> loadSave) : base(loadSave) { }
 
         public ModuleExtensionBase(ILoadSaveHandler<ILoadSaveMethod> loadSave, Logger logger) : base(loadSave, logger) { }
+
+        protected internal abstract void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn);
+
+        protected internal abstract IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn);
     }
 }

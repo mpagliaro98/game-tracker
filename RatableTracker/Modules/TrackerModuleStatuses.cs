@@ -28,10 +28,16 @@ namespace RatableTracker.Modules
             StatusExtension.BaseModule = this;
         }
 
-        public override void LoadData(Settings settings)
+        protected override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
         {
-            base.LoadData(settings);
-            StatusExtension.LoadData(settings);
+            base.LoadDataConsecutively(settings, conn);
+            StatusExtension.LoadDataConsecutively(settings, conn);
+        }
+
+        protected override IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn)
+        {
+            var list = base.LoadDataCreateTaskList(settings, conn);
+            return list.Concat(StatusExtension.LoadDataCreateTaskList(settings, conn)).ToList();
         }
 
         public void TransferToNewModule(TrackerModuleStatuses newModule, Settings settings)

@@ -27,17 +27,23 @@ namespace RatableTracker.Modules
             CategoryExtension.BaseModule = this;
         }
 
-        public override void LoadData(Settings settings)
+        protected override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
         {
-            base.LoadData(settings);
+            base.LoadDataConsecutively(settings, conn);
             try
             {
-                CategoryExtension.LoadData((SettingsScore)settings);
+                CategoryExtension.LoadDataConsecutively((SettingsScore)settings, conn);
             }
             catch (InvalidCastException e)
             {
                 throw new InvalidCastException("Settings for loading categories must be of type SettingsScore or more derived", e);
             }
+        }
+
+        protected override IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn)
+        {
+            var list = base.LoadDataCreateTaskList(settings, conn);
+            return list.Concat(CategoryExtension.LoadDataCreateTaskList((SettingsScore)settings, conn)).ToList();
         }
 
         public void TransferToNewModule(TrackerModuleScoreCategorical newModule, SettingsScore settings)

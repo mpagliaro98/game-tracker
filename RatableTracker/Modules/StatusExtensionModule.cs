@@ -29,9 +29,17 @@ namespace RatableTracker.Modules
 
         public StatusExtensionModule(ILoadSaveHandler<ILoadSaveMethodStatusExtension> loadSave, Logger logger) : base(loadSave, logger) { }
 
-        public virtual void LoadData(Settings settings)
+        protected internal override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
         {
-            LoadTrackerObjectList(ref _statuses, (conn) => ((ILoadSaveMethodStatusExtension)conn).LoadStatuses(BaseModule, settings));
+            LoadTrackerObjectList(ref _statuses, conn, (conn) => ((ILoadSaveMethodStatusExtension)conn).LoadStatuses(BaseModule, settings));
+        }
+
+        protected internal override IList<Task> LoadDataCreateTaskList(Settings settings, ILoadSaveMethod conn)
+        {
+            return new List<Task>
+            {
+                Task.Run(() => LoadTrackerObjectList(ref _statuses, conn, (conn) => ((ILoadSaveMethodStatusExtension)conn).LoadStatuses(BaseModule, settings)))
+            };
         }
 
         public IList<Status> GetStatusList()
