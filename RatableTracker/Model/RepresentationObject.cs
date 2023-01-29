@@ -11,10 +11,12 @@ namespace RatableTracker.Model
 {
     public abstract class RepresentationObject
     {
+        public const string TYPENAME_KEY = "TypeName";
+
         public virtual SavableRepresentation LoadIntoRepresentation()
         {
             SavableRepresentation sr = new SavableRepresentation();
-            sr.SaveValue("TypeName", new ValueContainer(GetType().Name));
+            sr.SaveValue(TYPENAME_KEY, new ValueContainer(GetType().Name));
             return sr;
         }
 

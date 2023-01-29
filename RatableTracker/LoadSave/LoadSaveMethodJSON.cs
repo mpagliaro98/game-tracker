@@ -173,7 +173,7 @@ namespace RatableTracker.LoadSave
             changed = true;
         }
 
-        public T LoadOne<T>(Action ensureLoaded, ref SavableRepresentation data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject
+        public T LoadOne<T>(Action ensureLoaded, ref SavableRepresentation data, Func<string, T> generateObj, string keyTypeName = RepresentationObject.TYPENAME_KEY) where T : RepresentationObject
         {
             ensureLoaded();
             if (data == null)
@@ -233,12 +233,12 @@ namespace RatableTracker.LoadSave
             changed = true;
         }
 
-        protected IList<T> LoadAll<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, Func<string, T> generateObj, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
+        protected IList<T> LoadAll<T>(Action ensureLoaded, ref IList<SavableRepresentation> data, Func<string, T> generateObj, string keyTypeName = RepresentationObject.TYPENAME_KEY) where T : RepresentationObject, IKeyable
         {
             return LoadAll<T, int>(ensureLoaded, ref data, generateObj, null, keyTypeName: keyTypeName);
         }
 
-        protected IList<T> LoadAll<T, TSort>(Action ensureLoaded, ref IList<SavableRepresentation> data, Func<string, T> generateObj, Func<T, TSort> sortExpression, string keyTypeName = "TypeName") where T : RepresentationObject, IKeyable
+        protected IList<T> LoadAll<T, TSort>(Action ensureLoaded, ref IList<SavableRepresentation> data, Func<string, T> generateObj, Func<T, TSort> sortExpression, string keyTypeName = RepresentationObject.TYPENAME_KEY) where T : RepresentationObject, IKeyable
         {
             ensureLoaded();
             if (data == null) data = new List<SavableRepresentation>();
