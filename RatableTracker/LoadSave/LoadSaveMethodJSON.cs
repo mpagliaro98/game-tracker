@@ -43,6 +43,7 @@ namespace RatableTracker.LoadSave
         protected readonly IFileHandler fileHandler;
         protected readonly RatableTrackerFactory factory;
         protected readonly Logger logger;
+        protected readonly int connectionID = new Random().Next(1, 1000);
 
         public LoadSaveMethodJSON(IFileHandler fileHandler, RatableTrackerFactory factory) : this(fileHandler, factory, new Logger()) { }
 
@@ -51,18 +52,23 @@ namespace RatableTracker.LoadSave
             this.fileHandler = fileHandler;
             this.factory = factory;
             this.logger = logger;
-            this.logger.Log(GetType().Name + " connection opened");
+            Log(GetType().Name + " connection opened");
         }
 
         #region "Internal"
+        protected void Log(string message)
+        {
+            logger.Log("[Connection " + connectionID.ToString("D3") + "] - " + message);
+        }
+
         protected void EnsureFileContentIsLoaded<T>(string fileName, ref T representation, Func<byte[], T> interpretBytesFromFile)
         {
             if (representation != null) return;
-            logger.Log("Load started from file: " + fileName);
+            Log("Load started from file: " + fileName);
             Stopwatch sw = Stopwatch.StartNew();
             byte[] fileContent = fileHandler.LoadFile(fileName, logger);
             sw.Stop();
-            logger.Log("Load from " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms (" + fileContent.Length.ToString() + " bytes)");
+            Log("Load from " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms (" + fileContent.Length.ToString() + " bytes)");
             representation = interpretBytesFromFile(fileContent);
         }
 
@@ -97,17 +103,17 @@ namespace RatableTracker.LoadSave
             // if representation is null, but it was changed, delete the file
             if (representation == null)
             {
-                logger.Log("Save file: " + fileName + " - content is null but object was changed, so deleting file");
+                Log("Save file: " + fileName + " - content is null but object was changed, so deleting file");
                 fileHandler.DeleteFile(fileName);
                 return;
             }
             byte[] fileContent = representationToBytes(representation);
-            logger.Log("Save started to file: " + fileName + " (" + fileContent.Length.ToString() + " bytes)");
+            Log("Save started to file: " + fileName + " (" + fileContent.Length.ToString() + " bytes)");
             Stopwatch sw = Stopwatch.StartNew();
             fileHandler.SaveFile(fileName, fileContent, logger);
             sw.Stop();
             representation = default; // null
-            logger.Log("Save to " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms");
+            Log("Save to " + fileName + " finished in " + sw.ElapsedMilliseconds.ToString() + "ms");
         }
 
         protected void SaveModelObjectsIfLoaded()
@@ -173,7 +179,7 @@ namespace RatableTracker.LoadSave
             if (data == null)
             {
                 string message = "No data found when attempting to load " + typeof(T).Name;
-                logger.Log(typeof(NoDataFoundException).Name + ": " + message);
+                Log(typeof(NoDataFoundException).Name + ": " + message);
                 throw new NoDataFoundException(message);
             }
             string typeName = data.GetValue(keyTypeName).GetString();
@@ -247,7 +253,7 @@ namespace RatableTracker.LoadSave
                 }
                 catch (ArgumentException e)
                 {
-                    logger.Log(GetType().Name + " LoadAll - error generating new object of type " + typeof(T).Name + " - " + e.Message);
+                    Log(GetType().Name + " LoadAll - error generating new object of type " + typeof(T).Name + " - " + e.Message);
                     throw;
                 }
                 obj.RestoreFromRepresentation(sr);
@@ -267,7 +273,7 @@ namespace RatableTracker.LoadSave
                 SaveStatusesIfLoaded();
                 SaveCategoriesIfLoaded();
             }
-            logger.Log(GetType().Name + " connection closed (canceled: " + operationCanceled.ToString() + ")");
+            Log(GetType().Name + " connection closed (canceled: " + operationCanceled.ToString() + ")");
         }
         #endregion
 
