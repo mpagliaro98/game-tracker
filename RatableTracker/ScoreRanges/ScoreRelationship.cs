@@ -19,8 +19,8 @@ namespace RatableTracker.ScoreRanges
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
-            if (!(obj is ScoreRange)) return false;
-            ScoreRange other = (ScoreRange)obj;
+            if (!(obj is ScoreRelationship)) return false;
+            ScoreRelationship other = (ScoreRelationship)obj;
             return UniqueID.Equals(other.UniqueID);
         }
 

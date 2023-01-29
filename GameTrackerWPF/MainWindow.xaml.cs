@@ -946,7 +946,7 @@ namespace GameTrackerWPF
             UpdateScoreRangeUI();
         }
 
-        private void OpenSubWindowScoreRange(SubWindowMode mode, ScoreRange orig = null)
+        private void OpenSubWindowScoreRange(SubWindowMode mode, ScoreRange orig)
         {
             var window = new SubWindowScoreRange(rm, settings, mode, orig);
             window.Closed += ScoreRangeWindow_Closed;

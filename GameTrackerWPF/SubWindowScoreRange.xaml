@@ -9,14 +9,12 @@
     <StackPanel>
         <Label Content="Name" />
         <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />
+        <Label Content="Relationship" />
+        <ComboBox x:Name="ComboboxRelationship" Margin="5,0" Width="150" HorizontalAlignment="Left" />
         <Label Content="Values" />
         <StackPanel x:Name="StackPanelValueList" Orientation="Horizontal" />
-        <Label Content="Relationship" />
-        <ComboBox x:Name="ComboboxRelationship" Margin="5,0" Width="150" HorizontalAlignment="Left" SelectionChanged="ComboboxRelationship_SelectionChanged" />
         <Label Content="Color" />
         <xctk:ColorPicker x:Name="ColorPickerColor" Margin="5,0,0,0" HorizontalAlignment="Left" Width="100" />
         <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />
-        <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
-        <Label x:Name="LabelError" Content="Values are formatted incorrectly" Foreground="Red" />
     </StackPanel>
 </Window>

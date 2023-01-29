@@ -21,8 +21,8 @@ namespace RatableTracker.Model
 
         public double ManualScore { get; set; } = 0;
 
-        public ScoreRange ScoreRange { get { return GetScoreRange(Score); } }
-        public ScoreRange ScoreRangeDisplay { get { return GetScoreRange(ScoreDisplay); } }
+        public virtual ScoreRange ScoreRange { get { return GetScoreRange(Score); } }
+        public virtual ScoreRange ScoreRangeDisplay { get { return GetScoreRange(ScoreDisplay); } }
 
         public override int Rank
         {
@@ -76,7 +76,7 @@ namespace RatableTracker.Model
             }
         }
 
-        private ScoreRange GetScoreRange(double score)
+        protected ScoreRange GetScoreRange(double score)
         {
             foreach (ScoreRange range in Module.GetScoreRangeList())
             {

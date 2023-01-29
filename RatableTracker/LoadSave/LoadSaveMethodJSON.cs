@@ -116,7 +116,7 @@ namespace RatableTracker.LoadSave
 
         protected void SaveScoreRangesIfLoaded()
         {
-            SaveFileContentIfLoaded(SCORE_RANGE_FILE, ref modelObjects, SRListToBytes, scoreRangesChanged);
+            SaveFileContentIfLoaded(SCORE_RANGE_FILE, ref scoreRanges, SRListToBytes, scoreRangesChanged);
         }
 
         protected void SaveStatusesIfLoaded()

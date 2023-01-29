@@ -14,6 +14,7 @@ using System.Windows.Shapes;
 using GameTracker;
 using RatableTracker.ScoreRanges;
 using RatableTracker.Exceptions;
+using Xceed.Wpf.Toolkit;
 
 namespace GameTrackerWPF
 {
@@ -29,74 +30,37 @@ namespace GameTrackerWPF
         public SubWindowScoreRange(GameModule rm, SettingsGame settings, SubWindowMode mode, ScoreRange orig)
         {
             InitializeComponent();
-            LabelError.Visibility = Visibility.Collapsed;
             this.rm = rm;
             this.orig = orig;
             this.settings = settings;
-            if (this.orig == null) this.orig = new ScoreRange(rm, settings);
+
+            // initialize UI containers
             FillCombobox();
-            switch (mode)
-            {
-                case SubWindowMode.MODE_ADD:
-                    ButtonSave.Visibility = Visibility.Visible;
-                    ButtonUpdate.Visibility = Visibility.Collapsed;
-                    ComboboxRelationship.SelectedIndex = 0;
-                    ResetValueList();
-                    break;
-                case SubWindowMode.MODE_EDIT:
-                    ButtonSave.Visibility = Visibility.Collapsed;
-                    ButtonUpdate.Visibility = Visibility.Visible;
-                    TextboxName.Text = orig.Name;
-                    ComboboxRelationship.SelectedItem = orig.ScoreRelationship;
-                    ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
-                    SetValueList(orig.ValueList);
-                    break;
-                default:
-                    throw new Exception("Unhandled mode");
-            }
+            ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
+
+            // set fields in the UI
+            TextboxName.Text = orig.Name;
+            ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
+            if (orig.ScoreRelationship != null) ComboboxRelationship.SelectedItem = orig.ScoreRelationship;
+
+            // set event handlers
+            TextboxName.TextChanged += TextboxName_TextChanged;
+            ComboboxRelationship.SelectionChanged += ComboboxRelationship_SelectionChanged;
+            ColorPickerColor.SelectedColorChanged += ColorPickerColor_SelectedColorChanged;
+
+            // refresh UI logic
+            RefreshValueList();
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            SaveResult();
-        }
-
-        private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            SaveResult();
-        }
-
-        private void SaveResult()
-        {
-            orig.Name = TextboxName.Text;
-            IList<double> valueList = new List<double>();
-            IList<string> list = GetValueListText();
-            foreach (string str in list)
-            {
-                if (!double.TryParse(str, out _) || str == "")
-                {
-                    LabelError.Visibility = Visibility.Visible;
-                    LabelError.Content = "All values must be numbers";
-                    return;
-                }
-                valueList.Add(double.Parse(str));
-            }
-            orig.ValueList = valueList;
-            ScoreRelationship sr = (ScoreRelationship)ComboboxRelationship.SelectedItem;
-            if (sr == null)
-            {
-                LabelError.Visibility = Visibility.Visible;
-                LabelError.Content = "You must select a score relationship";
-                return;
-            }
-            orig.Color = ColorPickerColor.SelectedColor.ToDrawingColor();
             try
             {
                 orig.Save(rm, settings);
             }
-            catch (ValidationException e)
+            catch (ValidationException ex)
             {
-                e.DisplayUIExceptionMessage();
+                ex.DisplayUIExceptionMessage();
                 return;
             }
             Close();
@@ -105,71 +69,61 @@ namespace GameTrackerWPF
         private void FillCombobox()
         {
             ComboboxRelationship.Items.Clear();
-            foreach (ScoreRelationship sr in RatableTracker.Modules.TrackerModuleScores.GetScoreRelationshipList())
+            var item = new ComboBoxItem();
+            item.Content = "N/A";
+            ComboboxRelationship.Items.Add(item);
+            foreach (ScoreRelationship sr in rm.GetScoreRelationshipList().OrderBy(p => p.Name))
             {
                 ComboboxRelationship.Items.Add(sr);
             }
+            ComboboxRelationship.SelectedIndex = 0;
         }
 
         private void RefreshValueList()
         {
-            int currentCount = StackPanelValueList.Children.Count;
-            int requiredCount = ((ScoreRelationship)ComboboxRelationship.SelectedItem).NumValuesRequired;
-            while (currentCount != requiredCount)
+            StackPanelValueList.Children.Clear();
+            int count = ComboboxRelationship.SelectedIndex > 0 ? ((ScoreRelationship)ComboboxRelationship.SelectedItem).NumValuesRequired : 1;
+            for (int i = 0; i < count; i++)
             {
-                if (currentCount < requiredCount)
+                DoubleUpDown tb = new()
                 {
-                    TextBox tb = new()
-                    {
-                        Margin = new Thickness { Left = 5 },
-                        Width = 100,
-                        HorizontalAlignment = HorizontalAlignment.Left
-                    };
-                    StackPanelValueList.Children.Add(tb);
-                    currentCount += 1;
-                }
-                else
-                {
-                    StackPanelValueList.Children.RemoveAt(currentCount - 1);
-                    currentCount -= 1;
-                }
+                    Margin = new Thickness { Left = 5 },
+                    Width = 100,
+                    HorizontalAlignment = HorizontalAlignment.Left,
+                    Value = orig.ValueList[i],
+                    Tag = i
+                };
+                tb.ValueChanged += Tb_ValueChanged;
+                StackPanelValueList.Children.Add(tb);
             }
         }
 
-        private void ResetValueList()
+        private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
         {
-            RefreshValueList();
-            foreach (TextBox tb in StackPanelValueList.Children)
-            {
-                tb.Text = "";
-            }
-        }
-
-        private void SetValueList(IList<double> valueList)
-        {
-            RefreshValueList();
-            if (valueList == null) return;
-            List<double> list = valueList.ToList();
-            for (int i = 0; i < valueList.Count; i += 1)
-            {
-                TextBox tb = (TextBox)StackPanelValueList.Children[i];
-                tb.Text = list[i].ToString();
-            }
-        }
-
-        private IList<string> GetValueListText()
-        {
-            IList<string> list = new List<string>();
-            foreach (TextBox tb in StackPanelValueList.Children)
-            {
-                list.Add(tb.Text);
-            }
-            return list;
+            orig.Name = TextboxName.Text.Trim();
         }
 
         private void ComboboxRelationship_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            orig.ScoreRelationship = ComboboxRelationship.SelectedIndex > 0 ? (ScoreRelationship)ComboboxRelationship.SelectedItem : null;
+            orig.ValueList = new List<double>();
+            for (int i = 0; i < (ComboboxRelationship.SelectedIndex > 0 ? orig.ScoreRelationship.NumValuesRequired : 1); i++)
+            {
+                orig.ValueList.Add(settings.MinScore);
+            }
             RefreshValueList();
+        }
+
+        private void ColorPickerColor_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+            orig.Color = ColorPickerColor.SelectedColor.ToDrawingColor();
+        }
+
+        private void Tb_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            DoubleUpDown box = (DoubleUpDown)sender;
+            int index = (int)box.Tag;
+            orig.ValueList[index] = box.Value ?? settings.MinScore;
         }
     }
 }

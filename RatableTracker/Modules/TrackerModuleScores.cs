@@ -22,7 +22,7 @@ namespace RatableTracker.Modules
 
         private IList<ScoreRange> _scoreRanges = new List<ScoreRange>();
         protected IList<ScoreRange> ScoreRanges { get { return _scoreRanges; } private set { _scoreRanges = value; } }
-        protected static IList<ScoreRelationship> ScoreRelationships => new List<ScoreRelationship>();
+        protected IList<ScoreRelationship> ScoreRelationships { get; init; }
 
         public delegate void ScoreRangeDeleteHandler(object sender, ScoreRangeDeleteArgs args);
         public event ScoreRangeDeleteHandler ScoreRangeDeleted;
@@ -33,9 +33,13 @@ namespace RatableTracker.Modules
 
         public TrackerModuleScores(ILoadSaveHandler<ILoadSaveMethodScores> loadSave, Logger logger) : base(loadSave, logger)
         {
-            ScoreRelationships.Add(new ScoreRelationshipAbove());
-            ScoreRelationships.Add(new ScoreRelationshipBelow());
-            ScoreRelationships.Add(new ScoreRelationshipBetween());
+            IList<ScoreRelationship> list = new List<ScoreRelationship>
+            {
+                new ScoreRelationshipAbove(),
+                new ScoreRelationshipBelow(),
+                new ScoreRelationshipBetween()
+            };
+            ScoreRelationships = list;
         }
 
         protected override void LoadDataConsecutively(Settings settings, ILoadSaveMethod conn)
@@ -92,12 +96,12 @@ namespace RatableTracker.Modules
                 (obj) => ScoreRangeDeleted?.Invoke(this, new ScoreRangeDeleteArgs(obj, obj.GetType(), conn)), () => ScoreRangeDeleted == null ? 0 : ScoreRangeDeleted.GetInvocationList().Length);
         }
 
-        public static IList<ScoreRelationship> GetScoreRelationshipList()
+        public IList<ScoreRelationship> GetScoreRelationshipList()
         {
             return new List<ScoreRelationship>(ScoreRelationships);
         }
 
-        public static int TotalNumScoreRelationships()
+        public int TotalNumScoreRelationships()
         {
             return ScoreRelationships.Count;
         }

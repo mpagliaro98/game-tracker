@@ -2,6 +2,7 @@
 using RatableTracker.LoadSave;
 using RatableTracker.Modules;
 using RatableTracker.ObjAddOns;
+using RatableTracker.ScoreRanges;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,17 @@ namespace RatableTracker.Model
         public override bool ShowScore
         {
             get { return StatusExtension.Status == null ? false : !StatusExtension.Status.HideScoreOfModelObject; }
+        }
+
+        public override ScoreRange ScoreRangeDisplay
+        {
+            get
+            {
+                if (StatusExtension.Status == null || StatusExtension.Status.HideScoreOfModelObject)
+                    return null;
+                else
+                    return base.ScoreRangeDisplay;
+            }
         }
 
         public StatusExtension StatusExtension { get; init; }
