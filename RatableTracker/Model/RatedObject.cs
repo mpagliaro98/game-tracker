@@ -19,7 +19,7 @@ namespace RatableTracker.Model
             get { return ManualScore; }
         }
 
-        public double ManualScore { get; set; } = 0;
+        [Savable("ManualScore")] public double ManualScore { get; set; } = 0;
 
         public virtual ScoreRange ScoreRange { get { return GetScoreRange(Score); } }
         public virtual ScoreRange ScoreRangeDisplay { get { return GetScoreRange(ScoreDisplay); } }
@@ -91,29 +91,6 @@ namespace RatableTracker.Model
                 }
             }
             return null;
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("ManualScore", new ValueContainer(ManualScore));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "ManualScore":
-                        ManualScore = sr.GetValue(key).GetDouble();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

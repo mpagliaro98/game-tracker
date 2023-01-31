@@ -15,7 +15,7 @@ namespace RatableTracker.Model
     {
         public static int MaxLengthComment => 10000;
 
-        public string Comment { get; set; } = "";
+        [Savable("Comment")] public string Comment { get; set; } = "";
 
         public virtual int Rank
         {
@@ -26,6 +26,7 @@ namespace RatableTracker.Model
             }
         }
 
+        [Savable("SortOrder", SaveOnly = true)]
         protected internal int SortOrder
         {
             get
@@ -108,30 +109,6 @@ namespace RatableTracker.Model
                 throw new InvalidObjectStateException(message);
             }
             Module.ChangeModelObjectPositionInList(this, newRank - 1, Settings);
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("Comment", new ValueContainer(Comment));
-            sr.SaveValue("SortOrder", new ValueContainer(SortOrder));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "Comment":
-                        Comment = sr.GetValue(key).GetString();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

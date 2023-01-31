@@ -29,6 +29,7 @@ namespace RatableTracker.Model
             get { return StatusExtension.Status == null ? false : !StatusExtension.Status.HideScoreOfModelObject; }
         }
 
+        [TrackerObjectExtension]
         public StatusExtension StatusExtension { get; init; }
 
         // Module re-declared as a different derived type
@@ -46,37 +47,6 @@ namespace RatableTracker.Model
         {
             StatusExtension = statusExtension;
             StatusExtension.BaseObject = this;
-        }
-
-        protected override void ValidateFields()
-        {
-            base.ValidateFields();
-            StatusExtension.ValidateFields();
-        }
-
-        public override void InitAdditionalResources()
-        {
-            base.InitAdditionalResources();
-            StatusExtension.InitAdditionalResources();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            StatusExtension.Dispose();
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            StatusExtension.LoadIntoRepresentation(ref sr);
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            StatusExtension.RestoreFromRepresentation(sr);
         }
     }
 }

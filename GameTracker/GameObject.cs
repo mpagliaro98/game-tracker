@@ -22,18 +22,18 @@ namespace GameTracker
 
         public new CategoryExtensionGame CategoryExtension { get { return (CategoryExtensionGame)base.CategoryExtension; } }
 
-        public string CompletionCriteria { get; set; } = "";
-        public string CompletionComment { get; set; } = "";
-        public string TimeSpent { get; set; } = "";
-        public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
-        public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
-        public DateTime StartedOn { get; set; } = DateTime.MinValue;
-        public DateTime FinishedOn { get; set; } = DateTime.MinValue;
-        public virtual bool IsRemaster { get; set; } = false;
-        public virtual bool UseOriginalGameScore { get; set; } = false;
-        public virtual bool IsPartOfCompilation { get { return _compilation.HasValue(); } }
-        public virtual bool IsCompilation { get { return false; } }
-        public bool IsUnfinishable { get; set; } = false;
+        [Savable("CompletionCriteria")] public string CompletionCriteria { get; set; } = "";
+        [Savable("CompletionComment")] public string CompletionComment { get; set; } = "";
+        [Savable("TimeSpent")] public string TimeSpent { get; set; } = "";
+        [Savable("ReleaseDate")] public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
+        [Savable("AcquiredOn")] public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
+        [Savable("StartedOn")] public DateTime StartedOn { get; set; } = DateTime.MinValue;
+        [Savable("FinishedOn")] public DateTime FinishedOn { get; set; } = DateTime.MinValue;
+        [Savable("IsRemaster")] public virtual bool IsRemaster { get; set; } = false;
+        [Savable("UseOriginalGameScore")] public virtual bool UseOriginalGameScore { get; set; } = false;
+        [Savable("IsPartOfCompilation", SaveOnly = true)] public virtual bool IsPartOfCompilation { get { return _compilation.HasValue(); } }
+        [Savable("IsCompilation", SaveOnly = true)] public virtual bool IsCompilation { get { return false; } }
+        [Savable("IsUnfinishable")] public bool IsUnfinishable { get; set; } = false;
 
         public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
@@ -59,7 +59,7 @@ namespace GameTracker
             }
         }
 
-        private UniqueID _platform = UniqueID.BlankID();
+        [Savable("Platform")] private UniqueID _platform = UniqueID.BlankID();
         public Platform Platform
         {
             get
@@ -73,7 +73,7 @@ namespace GameTracker
             }
         }
 
-        private UniqueID _platformPlayedOn = UniqueID.BlankID();
+        [Savable("PlatformPlayedOn")] private UniqueID _platformPlayedOn = UniqueID.BlankID();
         public Platform PlatformPlayedOn
         {
             get
@@ -87,7 +87,7 @@ namespace GameTracker
             }
         }
 
-        private UniqueID _originalGame = UniqueID.BlankID();
+        [Savable("OriginalGame")] private UniqueID _originalGame = UniqueID.BlankID();
         public GameObject OriginalGame
         {
             get
@@ -101,7 +101,7 @@ namespace GameTracker
             }
         }
 
-        private UniqueID _compilation = UniqueID.BlankID();
+        [Savable("Compilation")] private UniqueID _compilation = UniqueID.BlankID();
         public virtual GameCompilation Compilation
         {
             get
@@ -222,83 +222,6 @@ namespace GameTracker
             base.RemoveEventHandlers();
             Module.ModelObjectDeleted -= OnModelObjectDeleted;
             Module.PlatformDeleted -= OnPlatformDeleted;
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("CompletionCriteria", new ValueContainer(CompletionCriteria));
-            sr.SaveValue("CompletionComment", new ValueContainer(CompletionComment));
-            sr.SaveValue("TimeSpent", new ValueContainer(TimeSpent));
-            sr.SaveValue("ReleaseDate", new ValueContainer(ReleaseDate));
-            sr.SaveValue("AcquiredOn", new ValueContainer(AcquiredOn));
-            sr.SaveValue("StartedOn", new ValueContainer(StartedOn));
-            sr.SaveValue("FinishedOn", new ValueContainer(FinishedOn));
-            sr.SaveValue("IsRemaster", new ValueContainer(IsRemaster));
-            sr.SaveValue("UseOriginalGameScore", new ValueContainer(UseOriginalGameScore));
-            sr.SaveValue("IsPartOfCompilation", new ValueContainer(IsPartOfCompilation));
-            sr.SaveValue("IsCompilation", new ValueContainer(IsCompilation));
-            sr.SaveValue("IsUnfinishable", new ValueContainer(IsUnfinishable));
-            sr.SaveValue("Platform", new ValueContainer(_platform));
-            sr.SaveValue("PlatformPlayedOn", new ValueContainer(_platformPlayedOn));
-            sr.SaveValue("OriginalGame", new ValueContainer(_originalGame));
-            sr.SaveValue("Compilation", new ValueContainer(_compilation));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "CompletionCriteria":
-                        CompletionCriteria = sr.GetValue(key).GetString();
-                        break;
-                    case "CompletionComment":
-                        CompletionComment = sr.GetValue(key).GetString();
-                        break;
-                    case "TimeSpent":
-                        TimeSpent = sr.GetValue(key).GetString();
-                        break;
-                    case "ReleaseDate":
-                        ReleaseDate = sr.GetValue(key).GetDateTime();
-                        break;
-                    case "AcquiredOn":
-                        AcquiredOn = sr.GetValue(key).GetDateTime();
-                        break;
-                    case "StartedOn":
-                        StartedOn = sr.GetValue(key).GetDateTime();
-                        break;
-                    case "FinishedOn":
-                        FinishedOn = sr.GetValue(key).GetDateTime();
-                        break;
-                    case "IsRemaster":
-                        IsRemaster = sr.GetValue(key).GetBool();
-                        break;
-                    case "UseOriginalGameScore":
-                        UseOriginalGameScore = sr.GetValue(key).GetBool();
-                        break;
-                    case "IsUnfinishable":
-                        IsUnfinishable = sr.GetValue(key).GetBool();
-                        break;
-                    case "Platform":
-                        _platform = sr.GetValue(key).GetUniqueID();
-                        break;
-                    case "PlatformPlayedOn":
-                        _platformPlayedOn = sr.GetValue(key).GetUniqueID();
-                        break;
-                    case "OriginalGame":
-                        _originalGame = sr.GetValue(key).GetUniqueID();
-                        break;
-                    case "Compilation":
-                        _compilation = sr.GetValue(key).GetUniqueID();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

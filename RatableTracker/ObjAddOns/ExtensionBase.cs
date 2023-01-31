@@ -40,8 +40,8 @@ namespace RatableTracker.ObjAddOns
 
         protected virtual void RemoveEventHandlers() { }
 
-        public virtual void LoadIntoRepresentation(ref SavableRepresentation sr) { }
+        protected internal virtual void LoadHandleManually(ref SavableRepresentation sr, string key) { }
 
-        public virtual void RestoreFromRepresentation(SavableRepresentation sr) { }
+        protected internal virtual void RestoreHandleManually(SavableRepresentation sr, string key) { }
     }
 }

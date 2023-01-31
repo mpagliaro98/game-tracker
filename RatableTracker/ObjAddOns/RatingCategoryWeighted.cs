@@ -1,4 +1,5 @@
 ﻿using RatableTracker.Interfaces;
+using RatableTracker.Model;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class RatingCategoryWeighted : RatingCategory
     {
-        public new double Weight { get => base.Weight; set => base.Weight = value; }
+        [Savable("Weight")] public new double Weight { get => base.Weight; set => base.Weight = value; }
 
         public RatingCategoryWeighted(IModuleCategorical module, SettingsScore settings) : base(module, settings) { }
 

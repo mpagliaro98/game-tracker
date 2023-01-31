@@ -703,6 +703,7 @@ namespace GameTrackerWPF
             }
 
             UpdateSettingsUI();
+            UpdateScoreRangeUI();
             SettingsLabelSuccess.Visibility = Visibility.Visible;
         }
 

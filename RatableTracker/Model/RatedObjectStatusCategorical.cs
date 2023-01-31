@@ -13,6 +13,7 @@ namespace RatableTracker.Model
 {
     public class RatedObjectStatusCategorical : RatedObjectStatus, IModelObjectCategorical
     {
+        [TrackerObjectExtension]
         public CategoryExtension CategoryExtension { get; init; }
 
         public override double Score
@@ -20,13 +21,9 @@ namespace RatableTracker.Model
             get
             {
                 if (CategoryExtension.IgnoreCategories)
-                {
                     return base.Score;
-                }
                 else
-                {
                     return CategoryExtension.TotalScoreFromCategoryValues;
-                }
             }
         }
 
@@ -49,37 +46,6 @@ namespace RatableTracker.Model
         {
             CategoryExtension = categoryExtension;
             CategoryExtension.BaseObject = this;
-        }
-
-        protected override void ValidateFields()
-        {
-            base.ValidateFields();
-            CategoryExtension.ValidateFields();
-        }
-
-        public override void InitAdditionalResources()
-        {
-            base.InitAdditionalResources();
-            CategoryExtension.InitAdditionalResources();
-        }
-
-        public override void Dispose()
-        {
-            base.Dispose();
-            CategoryExtension.Dispose();
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            CategoryExtension.LoadIntoRepresentation(ref sr);
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            CategoryExtension.RestoreFromRepresentation(sr);
         }
     }
 }

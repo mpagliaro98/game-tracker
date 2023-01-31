@@ -17,6 +17,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class CategoryExtension : ExtensionBase
     {
+        [Savable("CategoryValues", HandleLoadManually = true, HandleRestoreManually = true)]
         public IList<CategoryValue> CategoryValuesManual { get; private set; } = new List<CategoryValue>();
 
         public virtual double TotalScoreFromCategoryValues
@@ -31,7 +32,7 @@ namespace RatableTracker.ObjAddOns
 
         public virtual IList<CategoryValue> CategoryValuesDisplay { get { return CategoryValueList; } }
 
-        public bool IgnoreCategories { get; set; } = false;
+        [Savable("IgnoreCategories")] public bool IgnoreCategories { get; set; } = false;
         public virtual bool AreCategoryValuesEditable { get { return !IgnoreCategories; } }
 
         protected new CategoryExtensionModule Module => (CategoryExtensionModule)base.Module;
@@ -135,29 +136,20 @@ namespace RatableTracker.ObjAddOns
             return list;
         }
 
-        public override void LoadIntoRepresentation(ref SavableRepresentation sr)
+        protected internal override void LoadHandleManually(ref SavableRepresentation sr, string key)
         {
-            base.LoadIntoRepresentation(ref sr);
-            sr.SaveValue("IgnoreCategories", new ValueContainer(IgnoreCategories));
-            sr.SaveValue("CategoryValues", new ValueContainer(CategoryValuesManual));
+            base.LoadHandleManually(ref sr, key);
+            if (key == "CategoryValues") sr.SaveValue(key, new ValueContainer(CategoryValuesManual));
         }
 
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
+        protected internal override void RestoreHandleManually(SavableRepresentation sr, string key)
         {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
+            base.RestoreHandleManually(sr, key);
+            switch (key)
             {
-                switch (key)
-                {
-                    case "IgnoreCategories":
-                        IgnoreCategories = sr.GetValue(key).GetBool();
-                        break;
-                    case "CategoryValues":
-                        CategoryValuesManual = sr.GetValue(key).GetRepresentationObjectList(() => new CategoryValue(Module, Settings)).ToList();
-                        break;
-                    default:
-                        break;
-                }
+                case "CategoryValues":
+                    CategoryValuesManual = sr.GetValue(key).GetRepresentationObjectList(() => new CategoryValue(Module, Settings)).ToList();
+                    break;
             }
         }
     }

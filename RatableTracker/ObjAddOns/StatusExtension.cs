@@ -14,7 +14,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class StatusExtension : ExtensionBase
     {
-        private UniqueID _status = UniqueID.BlankID();
+        [Savable("Status")] private UniqueID _status = UniqueID.BlankID();
         public Status Status
         {
             get
@@ -55,28 +55,6 @@ namespace RatableTracker.ObjAddOns
         protected override void RemoveEventHandlers()
         {
             Module.StatusDeleted -= OnStatusDeleted;
-        }
-
-        public override void LoadIntoRepresentation(ref SavableRepresentation sr)
-        {
-            base.LoadIntoRepresentation(ref sr);
-            sr.SaveValue("Status", new ValueContainer(_status));
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "Status":
-                        _status = sr.GetValue(key).GetUniqueID();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

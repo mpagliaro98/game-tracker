@@ -14,7 +14,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class CategoryValue : RepresentationObject
     {
-        private UniqueID _category = UniqueID.BlankID();
+        [Savable("Category")] private UniqueID _category = UniqueID.BlankID();
         public RatingCategory RatingCategory
         {
             get
@@ -24,7 +24,7 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        public double PointValue { get; set; } = 0;
+        [Savable("PointValue")] public double PointValue { get; set; } = 0;
 
         private CategoryExtensionModule Module { get; init; }
         private SettingsScore Settings { get; init; }
@@ -42,33 +42,6 @@ namespace RatableTracker.ObjAddOns
         internal bool CategoryEquals(IKeyable category)
         {
             return _category.Equals(category.UniqueID);
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("Category", new ValueContainer(_category));
-            sr.SaveValue("PointValue", new ValueContainer(PointValue));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "Category":
-                        _category = sr.GetValue(key).GetUniqueID();
-                        break;
-                    case "PointValue":
-                        PointValue = sr.GetValue(key).GetDouble();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

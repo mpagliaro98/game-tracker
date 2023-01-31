@@ -15,10 +15,10 @@ namespace RatableTracker.ScoreRanges
 {
     public class ScoreRange : TrackerObjectBase
     {
-        public IList<double> ValueList { get; set; }
-        public Color Color { get; set; } = new Color();
+        [Savable("ValueList")] public IList<double> ValueList { get; set; }
+        [Savable("Color")] public Color Color { get; set; } = new Color();
 
-        private UniqueID _scoreRelationship = UniqueID.BlankID();
+        [Savable("ScoreRelationship")] private UniqueID _scoreRelationship = UniqueID.BlankID();
         public ScoreRelationship ScoreRelationship
         {
             get
@@ -96,37 +96,6 @@ namespace RatableTracker.ScoreRanges
                 }
                 ValueList = newValueList;
                 SaveWithoutValidation(Module, Settings, args.Connection);
-            }
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("ValueList", new ValueContainer(ValueList));
-            sr.SaveValue("Color", new ValueContainer(Color));
-            sr.SaveValue("ScoreRelationship", new ValueContainer(_scoreRelationship));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "ValueList":
-                        ValueList = sr.GetValue(key).GetDoubleList().ToList();
-                        break;
-                    case "Color":
-                        Color = sr.GetValue(key).GetColor();
-                        break;
-                    case "ScoreRelationship":
-                        _scoreRelationship = sr.GetValue(key).GetUniqueID();
-                        break;
-                    default:
-                        break;
-                }
             }
         }
     }

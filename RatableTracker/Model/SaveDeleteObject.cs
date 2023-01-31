@@ -10,10 +10,8 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Model
 {
-    public abstract class SaveDeleteObject : SavableObject, IKeyable
+    public abstract class SaveDeleteObject : SavableObject
     {
-        public abstract UniqueID UniqueID { get; protected set; }
-
         public void Delete(TrackerModule module, Settings settings)
         {
             Delete(module, settings, null);

@@ -11,6 +11,7 @@ namespace RatableTracker.LoadSave
 {
     public class ValueContainer
     {
+        // when supporting new types in ValueContainer, also support them in RepresentationObject
         protected string valueString = null;
         protected SavableRepresentation valueSR = null;
         protected IEnumerable<string> valueStringList = null;
@@ -233,12 +234,12 @@ namespace RatableTracker.LoadSave
 
         public IEnumerable<int> GetIntList()
         {
-            return GetStringList().Select((s) => Convert.ToInt32(s));
+            return GetStringList().Select((s) => Convert.ToInt32(s)).ToList();
         }
 
         public IEnumerable<double> GetDoubleList()
         {
-            return GetStringList().Select((s) => Convert.ToDouble(s));
+            return GetStringList().Select(Convert.ToDouble).ToList();
         }
 
         public IEnumerable<T> GetRepresentationObjectList<T>(Func<T> initSavable) where T : RepresentationObject

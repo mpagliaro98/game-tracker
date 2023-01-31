@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
+using RatableTracker.Model;
 using RatableTracker.ObjAddOns;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace GameTracker
 {
     public class StatusGame : Status
     {
-        public bool UseAsFinished { get; set; } = false;
-        public bool ExcludeFromStats { get; set; } = false;
+        [Savable("UseAsFinished")] public bool UseAsFinished { get; set; } = false;
+        [Savable("ExcludeFromStats")] public bool ExcludeFromStats { get; set; } = false;
 
         public override bool HideScoreOfModelObject
         {
@@ -32,33 +33,6 @@ namespace GameTracker
         {
             UseAsFinished = copyFrom.UseAsFinished;
             ExcludeFromStats = copyFrom.ExcludeFromStats;
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("UseAsFinished", new ValueContainer(UseAsFinished));
-            sr.SaveValue("ExcludeFromStats", new ValueContainer(ExcludeFromStats));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "UseAsFinished":
-                        UseAsFinished = sr.GetValue(key).GetBool();
-                        break;
-                    case "ExcludeFromStats":
-                        ExcludeFromStats = sr.GetValue(key).GetBool();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

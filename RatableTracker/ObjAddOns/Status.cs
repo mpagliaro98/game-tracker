@@ -15,7 +15,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class Status : TrackerObjectBase
     {
-        public Color Color { get; set; } = new Color();
+        [Savable("Color")] public Color Color { get; set; } = new Color();
 
         public virtual bool HideScoreOfModelObject { get { return false; } }
         public virtual bool ExcludeModelObjectFromStats { get { return false; } }
@@ -37,29 +37,6 @@ namespace RatableTracker.ObjAddOns
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
             this.Module.StatusExtension.DeleteStatus(this, module, (ILoadSaveMethodStatusExtension)conn);
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("Color", new ValueContainer(Color));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "Color":
-                        Color = sr.GetValue(key).GetColor();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

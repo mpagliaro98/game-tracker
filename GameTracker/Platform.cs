@@ -16,10 +16,10 @@ namespace GameTracker
     {
         public static int MaxLengthAbbreviation => 10;
 
-        public Color Color { get; set; } = new Color();
-        public string Abbreviation { get; set; } = "";
-        public int ReleaseYear { get; set; } = 0;
-        public int AcquiredYear { get; set; } = 0;
+        [Savable("Color")] public Color Color { get; set; } = new Color();
+        [Savable("Abbreviation")] public string Abbreviation { get; set; } = "";
+        [Savable("ReleaseYear")] public int ReleaseYear { get; set; } = 0;
+        [Savable("AcquiredYear")] public int AcquiredYear { get; set; } = 0;
 
         protected new GameModule Module => (GameModule)base.Module;
         protected new SettingsGame Settings => (SettingsGame)base.Settings;
@@ -49,41 +49,6 @@ namespace GameTracker
         protected override void DeleteObjectFromModule(TrackerModule module, ILoadSaveMethod conn)
         {
             this.Module.DeletePlatform(this, (ILoadSaveMethodGame)conn);
-        }
-
-        public override SavableRepresentation LoadIntoRepresentation()
-        {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("Color", new ValueContainer(Color));
-            sr.SaveValue("Abbreviation", new ValueContainer(Abbreviation));
-            sr.SaveValue("ReleaseYear", new ValueContainer(ReleaseYear));
-            sr.SaveValue("AcquiredYear", new ValueContainer(AcquiredYear));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
-            {
-                switch (key)
-                {
-                    case "Color":
-                        Color = sr.GetValue(key).GetColor();
-                        break;
-                    case "Abbreviation":
-                        Abbreviation = sr.GetValue(key).GetString();
-                        break;
-                    case "ReleaseYear":
-                        ReleaseYear = sr.GetValue(key).GetInt();
-                        break;
-                    case "AcquiredYear":
-                        AcquiredYear = sr.GetValue(key).GetInt();
-                        break;
-                    default:
-                        break;
-                }
-            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
+using RatableTracker.Model;
 using RatableTracker.Modules;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace RatableTracker.Util
         // save min/max score changes to temporary variables until Save is called
         private double _minScore = 0;
         private double _tempMinScore = 0;
-        public double MinScore
+        [Savable("MinScore", HandleRestoreManually = true)] public double MinScore
         {
             get { return _minScore; }
             set { _tempMinScore = value; }
@@ -23,7 +24,7 @@ namespace RatableTracker.Util
 
         private double _maxScore = 10;
         private double _tempMaxScore = 10;
-        public double MaxScore
+        [Savable("MaxScore", HandleRestoreManually = true)] public double MaxScore
         {
             get { return _maxScore; }
             set { _tempMaxScore = value; }
@@ -69,32 +70,19 @@ namespace RatableTracker.Util
             return newValue;
         }
 
-        public override SavableRepresentation LoadIntoRepresentation()
+        protected override void RestoreHandleManually(SavableRepresentation sr, string key)
         {
-            SavableRepresentation sr = base.LoadIntoRepresentation();
-            sr.SaveValue("MinScore", new ValueContainer(MinScore));
-            sr.SaveValue("MaxScore", new ValueContainer(MaxScore));
-            return sr;
-        }
-
-        public override void RestoreFromRepresentation(SavableRepresentation sr)
-        {
-            base.RestoreFromRepresentation(sr);
-            foreach (string key in sr.GetAllSavedKeys())
+            base.RestoreHandleManually(sr, key);
+            switch (key)
             {
-                switch (key)
-                {
-                    case "MinScore":
-                        _minScore = sr.GetValue(key).GetDouble();
-                        _tempMinScore = sr.GetValue(key).GetDouble();
-                        break;
-                    case "MaxScore":
-                        _maxScore = sr.GetValue(key).GetDouble();
-                        _tempMaxScore = sr.GetValue(key).GetDouble();
-                        break;
-                    default:
-                        break;
-                }
+                case "MinScore":
+                    _minScore = sr.GetValue(key).GetDouble();
+                    _tempMinScore = sr.GetValue(key).GetDouble();
+                    break;
+                case "MaxScore":
+                    _maxScore = sr.GetValue(key).GetDouble();
+                    _tempMaxScore = sr.GetValue(key).GetDouble();
+                    break;
             }
         }
     }
