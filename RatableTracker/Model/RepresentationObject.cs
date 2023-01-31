@@ -29,9 +29,9 @@ namespace RatableTracker.Model
 
         protected void LoadSavableFieldsIntoRepresentation(object obj, ref SavableRepresentation sr, ManualLoadHandler manual)
         {
-            var properties = obj.GetType().GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(prop => prop.IsDefined(typeof(SavableAttribute), false));
+            var properties = obj.GetType().GetAllProperties().Where(prop => prop.IsDefined(typeof(SavableAttribute), false));
             LoadMemberValuesIntoRepresentation(ref sr, properties, (prop) => prop.PropertyType, (prop) => prop.GetValue(obj), manual);
-            var fields = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public).Where(field => field.IsDefined(typeof(SavableAttribute), false));
+            var fields = obj.GetType().GetAllFields().Where(field => field.IsDefined(typeof(SavableAttribute), false));
             LoadMemberValuesIntoRepresentation(ref sr, fields, (field) => field.FieldType, (field) => field.GetValue(obj), manual);
         }
 
@@ -105,9 +105,9 @@ namespace RatableTracker.Model
 
         protected void RestoreSavableFieldsFromRepresentation(object obj, SavableRepresentation sr, ManualRestoreHandler manual)
         {
-            var properties = obj.GetType().GetProperties().Where(prop => prop.IsDefined(typeof(SavableAttribute), false));
+            var properties = obj.GetType().GetAllProperties().Where(prop => prop.IsDefined(typeof(SavableAttribute), false));
             RestoreMemberValuesFromRepresentation(sr, properties, (prop) => prop.PropertyType, (prop, val) => prop.SetValue(obj, val), manual);
-            var fields = obj.GetType().GetFields(BindingFlags.NonPublic | BindingFlags.Instance).Where(field => field.IsDefined(typeof(SavableAttribute), false));
+            var fields = obj.GetType().GetAllFields().Where(field => field.IsDefined(typeof(SavableAttribute), false));
             RestoreMemberValuesFromRepresentation(sr, fields, (field) => field.FieldType, (field, val) => field.SetValue(obj, val), manual);
         }
 
@@ -124,6 +124,9 @@ namespace RatableTracker.Model
                             continue;
 
                         string key = savable.Key;
+
+                        if (!sr.HasKey(key))
+                            continue;
 
                         if (savable.HandleRestoreManually)
                         {

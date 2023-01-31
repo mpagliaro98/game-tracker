@@ -4,6 +4,7 @@ using RatableTracker.ScoreRanges;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -119,6 +120,42 @@ namespace RatableTracker.Util
             }
             else
                 throw new InvalidObjectStateException("Object " + value.ToString() + " was not found in list");
+        }
+
+        public static PropertyInfo[] GetAllProperties(this Type type)
+        {
+            type.ThrowIfNull("type");
+
+            PropertyInfo[] props = null;
+            do
+            {
+                var newProps = type.GetProperties(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly);
+                if (props == null)
+                    props = newProps;
+                else
+                    props = props.Union(newProps).ToArray();
+                type = type.BaseType;
+            } while (type != null);
+
+            return props ?? Array.Empty<PropertyInfo>();
+        }
+
+        public static FieldInfo[] GetAllFields(this Type type)
+        {
+            type.ThrowIfNull("type");
+
+            FieldInfo[] fields = null;
+            do
+            {
+                var newFields = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.DeclaredOnly);
+                if (fields == null)
+                    fields = newFields;
+                else
+                    fields = fields.Union(newFields).ToArray();
+                type = type.BaseType;
+            } while (type != null);
+
+            return fields ?? Array.Empty<FieldInfo>();
         }
     }
 }

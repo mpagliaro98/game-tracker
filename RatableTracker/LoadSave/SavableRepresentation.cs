@@ -31,5 +31,10 @@ namespace RatableTracker.LoadSave
         {
             return values.Keys;
         }
+
+        public bool HasKey(string key)
+        {
+            return values.ContainsKey(key);
+        }
     }
 }

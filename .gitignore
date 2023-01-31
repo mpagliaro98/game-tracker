@@ -349,3 +349,5 @@ healthchecksdb
 /awskeys.dat
 /icon1_dev.pdn
 /icon2_dev.pdn
+/UpgradeReport.sarif
+/Scripts/Migration Testing
