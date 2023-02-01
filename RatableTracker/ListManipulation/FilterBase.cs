@@ -6,14 +6,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace RatableTracker.ListManipulation
 {
+    [Serializable]
     public class FilterBase<T>
     {
-        public TrackerModule Module { get; set; }
-        public Settings Settings { get; set; }
+        [XmlIgnore][JsonIgnore] public TrackerModule Module { get; set; }
+        [XmlIgnore][JsonIgnore] public Settings Settings { get; set; }
 
         public FilterBase()
         {

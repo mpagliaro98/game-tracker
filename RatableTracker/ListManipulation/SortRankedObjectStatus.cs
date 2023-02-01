@@ -5,15 +5,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace RatableTracker.ListManipulation
 {
+    [Serializable]
     public class SortRankedObjectStatus : SortRankedObjects
     {
         public const int SORT_Status = 10;
 
-        public new TrackerModuleStatuses Module { get { return (TrackerModuleStatuses)base.Module; } set { base.Module = value; } }
+        [XmlIgnore][JsonIgnore] public new TrackerModuleStatuses Module { get { return (TrackerModuleStatuses)base.Module; } set { base.Module = value; } }
 
         public SortRankedObjectStatus() : base() { }
 

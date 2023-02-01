@@ -48,21 +48,10 @@ namespace GameTrackerWPF
 
         private static bool LOAD_ASYNC = false;
 
-        private class SavedState
-        {
-            public FilterGames filterGames = new FilterGames();
-            public SortGames sortGames = new SortGames();
-            public FilterPlatforms filterPlatforms = new FilterPlatforms();
-            public SortPlatforms sortPlatforms = new SortPlatforms();
-            public bool loaded = false;
-            public GameDisplayMode displayMode = GameDisplayMode.DISPLAY_SMALL;
-        }
-
-        private SavedState savedState = new SavedState();
+        private SavedState savedState;
 
         public MainWindow()
         {
-            savedState.loaded = false;
 
             pathController = new PathControllerWindows();
             IFileHandler fileHandlerSaves;
@@ -82,13 +71,18 @@ namespace GameTrackerWPF
                 // first load
                 settings = new SettingsGame();
             }
+
+            savedState = SavedState.LoadSavedState(pathController, rm, settings, App.Logger);
+            savedState.Loaded = false;
+
             swLoad.Start();
             if (LOAD_ASYNC)
                 loadData = rm.LoadDataAsync(settings);
 
             InitializeComponent();
-            PlatformsButtonSortMode.Tag = savedState.sortPlatforms.SortMode;
-            GamesButtonSortMode.Tag = savedState.sortGames.SortMode;
+            PlatformsButtonSortMode.Tag = savedState.SortPlatforms.SortMode;
+            GamesButtonSortMode.Tag = savedState.SortGames.SortMode;
+            CheckboxShowCompilations.IsChecked = savedState.FilterGames.ShowCompilations;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -100,8 +94,6 @@ namespace GameTrackerWPF
         {
             EnableNewButtons(false);
             mainWindow.Title = "Game Tracker (Loading...)";
-
-            InitFilterAndSort(rm, settings);
 
             if (!swLoad.IsRunning) swLoad.Restart();
             if (LOAD_ASYNC)
@@ -117,22 +109,10 @@ namespace GameTrackerWPF
             App.Logger.Log("Initial data load finished in " + swLoad.ElapsedMilliseconds.ToString() + "ms");
             loadData = null;
 
-            savedState.loaded = true;
+            savedState.Loaded = true;
             UpdateCurrentTab();
             EnableNewButtons(true);
             mainWindow.Title = "Game Tracker";
-        }
-
-        private void InitFilterAndSort(GameModule rm, SettingsGame settings)
-        {
-            savedState.filterGames.Module = rm;
-            savedState.filterGames.Settings = settings;
-            savedState.sortGames.Module = rm;
-            savedState.sortGames.Settings = settings;
-            savedState.filterPlatforms.Module = rm;
-            savedState.filterPlatforms.Settings = settings;
-            savedState.sortPlatforms.Module = rm;
-            savedState.sortPlatforms.Settings = settings;
         }
 
         #region General Functionality and Utilities
@@ -148,6 +128,7 @@ namespace GameTrackerWPF
 
         private void UpdateCurrentTab()
         {
+            if (!savedState.Loaded) return;
             TabItem tab = (TabItem)TabsBase.SelectedItem;
             switch (tab.Name)
             {
@@ -242,7 +223,7 @@ namespace GameTrackerWPF
         {
             GamesListbox.ClearItems();
             GamesListBoxWrap.Items.Clear();
-            switch (savedState.displayMode)
+            switch (savedState.DisplayMode)
             {
                 case GameDisplayMode.DISPLAY_SMALL:
                     GamesTop.Visibility = Visibility.Visible;
@@ -265,10 +246,10 @@ namespace GameTrackerWPF
                 default:
                     throw new NotImplementedException();
             }
-            foreach (GameObject rg in rm.GetModelObjectList(savedState.filterGames, savedState.sortGames))
+            foreach (GameObject rg in rm.GetModelObjectList(savedState.FilterGames, savedState.SortGames))
             {
                 UserControl item;
-                switch (savedState.displayMode)
+                switch (savedState.DisplayMode)
                 {
                     case GameDisplayMode.DISPLAY_SMALL:
                         item = new ListBoxItemGameSmall(rm, rg);
@@ -283,7 +264,7 @@ namespace GameTrackerWPF
                         throw new NotImplementedException();
                 }
                 item.MouseDoubleClick += GameEdit;
-                if (savedState.displayMode == GameDisplayMode.DISPLAY_BOXES)
+                if (savedState.DisplayMode == GameDisplayMode.DISPLAY_BOXES)
                     GamesListBoxWrap.Items.Add(item);
                 else
                     GamesListbox.AddItem(item);
@@ -298,6 +279,7 @@ namespace GameTrackerWPF
 
             var vis = rm.TotalNumModelObjects() >= rm.LimitModelObjects ? Visibility.Hidden : Visibility.Visible;
             GamesButtonNew.Visibility = vis;
+            SavedState.SaveSavedState(pathController, savedState);
         }
 
         private void BuildCategoriesHeader(IList<RatingCategory> cats)
@@ -326,28 +308,29 @@ namespace GameTrackerWPF
 
         private void BuildGamesSortOptions(IList<RatingCategory> cats)
         {
-            if (!savedState.loaded || GamesButtonSort.ContextMenu.Items.Count > 0) return;
+            if (!savedState.Loaded || GamesButtonSort.ContextMenu.Items.Count > 0) return;
             GamesButtonSort.ContextMenu.Items.Clear();
             MenuItem item;
-            foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
+            foreach (Tuple<int, string> sortOption in new List<Tuple<int, string>>()
             {
-                new Tuple<string, string>(SortGames.SORT_Name.ToString(), "Name"),
-                new Tuple<string, string>(SortGames.SORT_Status.ToString(), "Completion Status"),
-                new Tuple<string, string>(SortGames.SORT_Platform.ToString(), "Platform"),
-                new Tuple<string, string>(SortGames.SORT_PlatformPlayedOn.ToString(), "Platform Played On"),
-                new Tuple<string, string>(SortGames.SORT_Score.ToString(), "Final Score"),
-                new Tuple<string, string>(SortGames.SORT_HasComment.ToString(), "Has Comment"),
-                new Tuple<string, string>(SortGames.SORT_ReleaseDate.ToString(), "Release Date"),
-                new Tuple<string, string>(SortGames.SORT_AcquiredOn.ToString(), "Acquired On"),
-                new Tuple<string, string>(SortGames.SORT_StartedOn.ToString(), "Started On"),
-                new Tuple<string, string>(SortGames.SORT_FinishedOn.ToString(), "Finished On")
+                new Tuple<int, string>(SortGames.SORT_Name, "Name"),
+                new Tuple<int, string>(SortGames.SORT_Status, "Completion Status"),
+                new Tuple<int, string>(SortGames.SORT_Platform, "Platform"),
+                new Tuple<int, string>(SortGames.SORT_PlatformPlayedOn, "Platform Played On"),
+                new Tuple<int, string>(SortGames.SORT_Score, "Final Score"),
+                new Tuple<int, string>(SortGames.SORT_HasComment, "Has Comment"),
+                new Tuple<int, string>(SortGames.SORT_ReleaseDate, "Release Date"),
+                new Tuple<int, string>(SortGames.SORT_AcquiredOn, "Acquired On"),
+                new Tuple<int, string>(SortGames.SORT_StartedOn, "Started On"),
+                new Tuple<int, string>(SortGames.SORT_FinishedOn, "Finished On")
             })
             {
                 item = new MenuItem
                 {
-                    Name = SORT_CM_PREFIX + sortOption.Item1,
+                    Name = SORT_CM_PREFIX + sortOption.Item1.ToString(),
                     Header = sortOption.Item2,
-                    IsCheckable = true
+                    IsCheckable = true,
+                    IsChecked = savedState.SortGames.SortMethod == sortOption.Item1
                 };
                 item.Checked += GamesSort_Checked;
                 item.Unchecked += GamesSort_Unchecked;
@@ -360,7 +343,8 @@ namespace GameTrackerWPF
                 {
                     Header = cat.Name,
                     Name = SORT_CM_PREFIX + (SortGames.SORT_CategoryStart + i).ToString(),
-                    IsCheckable = true
+                    IsCheckable = true,
+                    IsChecked = savedState.SortGames.SortMethod == (SortGames.SORT_CategoryStart + i)
                 };
                 item.Checked += GamesSort_Checked;
                 item.Unchecked += GamesSort_Unchecked;
@@ -449,14 +433,14 @@ namespace GameTrackerWPF
 
         private void GamesSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.sortGames.SortMethod = SortGames.SORT_None;
+            savedState.SortGames.SortMethod = SortGames.SORT_None;
             UpdateGamesUI();
         }
 
         private void GamesSort(string sortField)
         {
-            savedState.sortGames.SortMode = GetSortModeFromButton(GamesButtonSortMode);
-            savedState.sortGames.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
+            savedState.SortGames.SortMode = GetSortModeFromButton(GamesButtonSortMode);
+            savedState.SortGames.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
             UpdateGamesUI();
         }
 
@@ -495,16 +479,16 @@ namespace GameTrackerWPF
 
         private void ChangeGameDisplayMode(GameDisplayMode mode)
         {
-            if (savedState.displayMode != mode)
+            if (savedState.DisplayMode != mode)
             {
-                savedState.displayMode = mode;
+                savedState.DisplayMode = mode;
                 UpdateGamesUI();
             }
         }
 
         private void CheckboxShowCompilations_Checked(object sender, RoutedEventArgs e)
         {
-            savedState.filterGames.ShowCompilations = CheckboxShowCompilations.IsChecked.Value;
+            savedState.FilterGames.ShowCompilations = CheckboxShowCompilations.IsChecked.Value;
             UpdateGamesUI();
         }
         #endregion
@@ -513,7 +497,7 @@ namespace GameTrackerWPF
         private void UpdatePlatformsUI()
         {
             PlatformsListbox.ClearItems();
-            foreach (Platform platform in rm.GetPlatformList(savedState.filterPlatforms, savedState.sortPlatforms))
+            foreach (Platform platform in rm.GetPlatformList(savedState.FilterPlatforms, savedState.SortPlatforms))
             {
                 ListBoxItemPlatform item = new ListBoxItemPlatform(rm, settings, platform);
                 item.MouseDoubleClick += PlatformEdit;
@@ -526,30 +510,32 @@ namespace GameTrackerWPF
 
             var vis = rm.TotalNumPlatforms() >= rm.LimitPlatforms ? Visibility.Hidden : Visibility.Visible;
             PlatformsButtonNew.Visibility = vis;
+            SavedState.SaveSavedState(pathController, savedState);
         }
 
         private void BuildPlatformsSortOptions()
         {
-            if (!savedState.loaded || PlatformsButtonSort.ContextMenu.Items.Count > 0) return;
+            if (!savedState.Loaded || PlatformsButtonSort.ContextMenu.Items.Count > 0) return;
             PlatformsButtonSort.ContextMenu.Items.Clear();
             MenuItem item;
-            foreach (Tuple<string, string> sortOption in new List<Tuple<string, string>>()
+            foreach (Tuple<int, string> sortOption in new List<Tuple<int, string>>()
             {
-                new Tuple<string, string>(SortPlatforms.SORT_Name.ToString(), "Name"),
-                new Tuple<string, string>(SortPlatforms.SORT_NumGames.ToString(), "# Games"),
-                new Tuple<string, string>(SortPlatforms.SORT_Average.ToString(), "Average Score"),
-                new Tuple<string, string>(SortPlatforms.SORT_Highest.ToString(), "Highest Score"),
-                new Tuple<string, string>(SortPlatforms.SORT_Lowest.ToString(), "Lowest Score"),
-                new Tuple<string, string>(SortPlatforms.SORT_PercentFinished.ToString(), "% Finished"),
-                new Tuple<string, string>(SortPlatforms.SORT_Release.ToString(), "Release Year"),
-                new Tuple<string, string>(SortPlatforms.SORT_Acquired.ToString(), "Acquired Year")
+                new Tuple<int, string>(SortPlatforms.SORT_Name, "Name"),
+                new Tuple<int, string>(SortPlatforms.SORT_NumGames, "# Games"),
+                new Tuple<int, string>(SortPlatforms.SORT_Average, "Average Score"),
+                new Tuple<int, string>(SortPlatforms.SORT_Highest, "Highest Score"),
+                new Tuple<int, string>(SortPlatforms.SORT_Lowest, "Lowest Score"),
+                new Tuple<int, string>(SortPlatforms.SORT_PercentFinished, "% Finished"),
+                new Tuple<int, string>(SortPlatforms.SORT_Release, "Release Year"),
+                new Tuple<int, string>(SortPlatforms.SORT_Acquired, "Acquired Year")
             })
             {
                 item = new MenuItem
                 {
-                    Name = SORT_CM_PREFIX + sortOption.Item1,
+                    Name = SORT_CM_PREFIX + sortOption.Item1.ToString(),
                     Header = sortOption.Item2,
-                    IsCheckable = true
+                    IsCheckable = true,
+                    IsChecked = savedState.SortPlatforms.SortMethod == sortOption.Item1
                 };
                 item.Checked += PlatformsSort_Checked;
                 item.Unchecked += PlatformsSort_Unchecked;
@@ -629,14 +615,14 @@ namespace GameTrackerWPF
 
         private void PlatformsSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.sortPlatforms.SortMethod = SortPlatforms.SORT_None;
+            savedState.SortPlatforms.SortMethod = SortPlatforms.SORT_None;
             UpdatePlatformsUI();
         }
 
         private void PlatformSort(string sortField)
         {
-            savedState.sortPlatforms.SortMode = GetSortModeFromButton(PlatformsButtonSortMode);
-            savedState.sortPlatforms.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
+            savedState.SortPlatforms.SortMode = GetSortModeFromButton(PlatformsButtonSortMode);
+            savedState.SortPlatforms.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
             UpdatePlatformsUI();
         }
 
@@ -798,7 +784,7 @@ namespace GameTrackerWPF
             var vis = rm.CategoryExtension.TotalNumRatingCategories() >= rm.CategoryExtension.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewRatingCategory.Visibility = vis;
             GamesButtonSort.ContextMenu.Items.Clear();
-            savedState.sortGames.SortMethod = SortGames.SORT_None;
+            savedState.SortGames.SortMethod = SortGames.SORT_None;
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)

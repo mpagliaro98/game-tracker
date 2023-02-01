@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.Util
 {
+    [Serializable]
     public struct UniqueID
     {
         private Guid uniqueKey;
@@ -82,7 +83,7 @@ namespace RatableTracker.Util
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
-            if (!(obj is UniqueID)) return false;
+            if (obj is not UniqueID) return false;
             UniqueID other = (UniqueID)obj;
             return HasValue() && uniqueKey.Equals(other.uniqueKey);
         }
@@ -95,6 +96,16 @@ namespace RatableTracker.Util
         public override string ToString()
         {
             return uniqueKey.ToString();
+        }
+
+        public static bool operator ==(UniqueID left, UniqueID right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(UniqueID left, UniqueID right)
+        {
+            return !(left == right);
         }
     }
 }

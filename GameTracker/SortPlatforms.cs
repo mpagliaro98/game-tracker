@@ -6,10 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace GameTracker
 {
+    [Serializable]
     public class SortPlatforms : SortBase<Platform>
     {
         public const int SORT_Name = 1;
@@ -21,8 +24,8 @@ namespace GameTracker
         public const int SORT_Release = 7;
         public const int SORT_Acquired = 8;
 
-        public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
-        public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
+        [XmlIgnore][JsonIgnore] public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
+        [XmlIgnore][JsonIgnore] public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
 
         public SortPlatforms() : base() { }
 

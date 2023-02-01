@@ -6,10 +6,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace RatableTracker.ListManipulation
 {
+    [Serializable]
     public class SortBase<T>
     {
         public const int SORT_None = 0;
@@ -17,8 +20,8 @@ namespace RatableTracker.ListManipulation
         public int SortMethod { get; set; } = SORT_None;
         public SortMode SortMode { get; set; } = SortMode.Ascending;
 
-        public TrackerModule Module { get; set; }
-        public Settings Settings { get; set; }
+        [XmlIgnore][JsonIgnore] public TrackerModule Module { get; set; }
+        [XmlIgnore][JsonIgnore] public Settings Settings { get; set; }
 
         public SortBase()
         {

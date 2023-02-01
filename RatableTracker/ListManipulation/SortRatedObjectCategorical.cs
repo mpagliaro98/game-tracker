@@ -6,15 +6,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace RatableTracker.ListManipulation
 {
+    [Serializable]
     public class SortRatedObjectCategorical : SortRatedObjects
     {
         public const int SORT_CategoryStart = 5100;
 
-        public new TrackerModuleScoreCategorical Module { get { return (TrackerModuleScoreCategorical)base.Module; } set { base.Module = value; } }
+        [XmlIgnore][JsonIgnore] public new TrackerModuleScoreCategorical Module { get { return (TrackerModuleScoreCategorical)base.Module; } set { base.Module = value; } }
 
         public SortRatedObjectCategorical() : base() { }
 

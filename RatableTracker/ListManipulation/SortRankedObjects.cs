@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.ListManipulation
 {
+    [Serializable]
     public class SortRankedObjects : SortBase<RankedObject>
     {
         public const int SORT_Name = 1;

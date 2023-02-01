@@ -1,21 +1,40 @@
-﻿using RatableTracker.ListManipulation;
+﻿using Newtonsoft.Json;
+using RatableTracker.ListManipulation;
 using RatableTracker.Model;
 using RatableTracker.Modules;
+using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace GameTracker
 {
+    [Serializable]
     public class FilterGames : FilterRatedObjectStatusCategorical
     {
         public bool ShowCompilations { get; set; } = false;
-        public Platform Platform { get; set; } = null;
 
-        public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
-        public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
+        private UniqueID _platform = UniqueID.BlankID();
+        [XmlIgnore]
+        [JsonIgnore]
+        public Platform Platform
+        {
+            get
+            {
+                if (!_platform.HasValue()) return null;
+                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(), _platform);
+            }
+            set
+            {
+                _platform = value == null ? UniqueID.BlankID() : value.UniqueID;
+            }
+        }
+
+        [XmlIgnore][JsonIgnore] public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
+        [XmlIgnore][JsonIgnore] public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
 
         public FilterGames() : base() { }
 

@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace RatableTracker.ListManipulation
 {
+    [Serializable]
     public class FilterRankedObjects : FilterBase<RankedObject>
     {
         public FilterRankedObjects() : base() { }
