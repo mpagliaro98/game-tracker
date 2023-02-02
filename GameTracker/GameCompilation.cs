@@ -27,7 +27,7 @@ namespace GameTracker
                 double total = 0;
                 for (int i = 0; i < ratingCategories.Count(); i++)
                 {
-                    total += (ratingCategories[i].Weight / sumOfWeights) * categoryAverages[i];
+                    total += ratingCategories[i].Weight * categoryAverages[i] / sumOfWeights;
                 }
                 return total;
             }

@@ -112,17 +112,28 @@ namespace GameTracker
         public IList<GameObject> GetGamesOnPlatform(Platform platform, FilterGames filterOptions)
         {
             filterOptions.Platform = platform;
+            filterOptions.ShowCompilations = false;
             return GetModelObjectList(filterOptions).OfType<GameObject>().ToList();
+        }
+
+        public IList<GameObject> GetGamesIncludeInStats()
+        {
+            return GetModelObjectList().OfType<GameObject>().Where(obj => !obj.IsCompilation && obj.IncludeInStats).ToList();
+        }
+
+        public IList<GameObject> GetGamesOnPlatformIncludeInStats(Platform platform, SettingsGame settings)
+        {
+            return GetGamesOnPlatform(platform, settings).Where(obj => obj.IncludeInStats).ToList();
         }
 
         public IList<GameObject> GetFinishableGamesOnPlatform(Platform platform, SettingsGame settings)
         {
-            return GetGamesOnPlatform(platform, settings).Where(obj => obj.StatusExtension.Status == null || !obj.StatusExtension.Status.ExcludeModelObjectFromStats).ToList();
+            return GetGamesOnPlatform(platform, settings).Where(obj => obj.IsFinishable).ToList();
         }
 
         public IList<GameObject> GetFinishedGamesOnPlatform(Platform platform, SettingsGame settings)
         {
-            return GetGamesOnPlatform(platform, settings).Where(obj => obj.StatusExtension.Status != null && !obj.StatusExtension.Status.HideScoreOfModelObject && !obj.StatusExtension.Status.ExcludeModelObjectFromStats).ToList();
+            return GetGamesOnPlatform(platform, settings).Where(obj => obj.IsFinished).ToList();
         }
 
         public int GetNumGamesFinishableByPlatform(Platform platform, SettingsGame settings)
@@ -149,35 +160,40 @@ namespace GameTracker
 
         public double GetAverageScoreOfGamesByPlatform(Platform platform, SettingsGame settings)
         {
-            var games = GetFinishedGamesOnPlatform(platform, settings);
+            var games = GetGamesOnPlatformIncludeInStats(platform, settings);
             return games.Count <= 0 ? settings.MinScore : games.Average(ro => ro.ScoreDisplay);
         }
 
         public double GetHighestScoreFromGamesByPlatform(Platform platform, SettingsGame settings)
         {
-            var games = GetFinishedGamesOnPlatform(platform, settings);
+            var games = GetGamesOnPlatformIncludeInStats(platform, settings);
             return games.Count <= 0 ? settings.MinScore : games.Max(ro => ro.ScoreDisplay);
         }
 
         public double GetLowestScoreFromGamesByPlatform(Platform platform, SettingsGame settings)
         {
-            var games = GetFinishedGamesOnPlatform(platform, settings);
+            var games = GetGamesOnPlatformIncludeInStats(platform, settings);
             return games.Count <= 0 ? settings.MinScore : games.Min(ro => ro.ScoreDisplay);
         }
 
         public IList<GameObject> GetTopGamesByPlatform(Platform platform, SettingsGame settings, int numToGet)
         {
-            return GetFinishedGamesOnPlatform(platform, settings).OrderByDescending(ro => ro.ScoreDisplay).Take(numToGet).ToList();
+            return GetGamesOnPlatformIncludeInStats(platform, settings).OrderByDescending(ro => ro.ScoreDisplay).Take(numToGet).ToList();
         }
 
         public IList<GameObject> GetBottomGamesByPlatform(Platform platform, SettingsGame settings, int numToGet)
         {
-            return GetFinishedGamesOnPlatform(platform, settings).OrderBy(ro => ro.ScoreDisplay).Take(numToGet).ToList();
+            return GetGamesOnPlatformIncludeInStats(platform, settings).OrderBy(ro => ro.ScoreDisplay).Take(numToGet).ToList();
+        }
+
+        public override int GetRankOfScore(double score)
+        {
+            return GetRankOfScore(score, GetGamesIncludeInStats().Cast<RankedObject>().ToList());
         }
 
         public int GetRankOfScoreByPlatform(double score, Platform platform, SettingsGame settings)
         {
-            return GetRankOfScore(score, GetFinishedGamesOnPlatform(platform, settings).Cast<RankedObject>().ToList());
+            return GetRankOfScore(score, GetGamesOnPlatformIncludeInStats(platform, settings).Cast<RankedObject>().ToList());
         }
     }
 }

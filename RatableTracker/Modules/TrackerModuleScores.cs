@@ -106,7 +106,7 @@ namespace RatableTracker.Modules
             return ScoreRelationships.Count;
         }
 
-        public int GetRankOfScore(double score)
+        public virtual int GetRankOfScore(double score)
         {
             return GetRankOfScore(score, GetModelObjectList());
         }

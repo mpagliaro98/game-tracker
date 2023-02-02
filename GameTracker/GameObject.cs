@@ -149,6 +149,33 @@ namespace GameTracker
             }
         }
 
+        public bool IncludeInStats
+        {
+            get
+            {
+                // has a status with MarkAsFinished = true
+                return StatusExtension.Status != null && !StatusExtension.Status.HideScoreOfModelObject;
+            }
+        }
+
+        public bool IsFinishable
+        {
+            get
+            {
+                // has no status or has a status with ExcludeFromStats = false
+                return StatusExtension.Status == null || !StatusExtension.Status.ExcludeModelObjectFromStats;
+            }
+        }
+
+        public bool IsFinished
+        {
+            get
+            {
+                // has a status with MarkAsFinished = true and ExcludeFromStats = false
+                return IsFinishable && IncludeInStats;
+            }
+        }
+
         protected new SettingsGame Settings => (SettingsGame)base.Settings;
         protected new GameModule Module => (GameModule)base.Module;
 

@@ -85,7 +85,7 @@ namespace RatableTracker.Modules
         public double GetTotalScoreFromCategoryValues(IList<CategoryValue> categoryValues)
         {
             double sumOfWeights = SumOfCategoryWeights();
-            double total = categoryValues.Select(cv => cv.RatingCategory.Weight / sumOfWeights * cv.PointValue).Sum();
+            double total = categoryValues.Select(cv => cv.RatingCategory.Weight * cv.PointValue).Sum() / sumOfWeights;
             return total;
         }
     }

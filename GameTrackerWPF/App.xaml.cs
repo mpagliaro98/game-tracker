@@ -57,6 +57,7 @@ namespace GameTrackerWPF
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
+            Logger.Log("Application exiting cleanly");
             Logger.Dispose();
         }
     }
