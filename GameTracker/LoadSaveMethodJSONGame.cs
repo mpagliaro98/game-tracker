@@ -52,6 +52,14 @@ namespace GameTracker
             return LoadAll(EnsurePlatformsAreLoaded, ref platforms, (s) => factory.GetPlatform(s, module, settings));
         }
 
+        public IList<Platform> LoadPlatformsAndFilter(GameModule module, SettingsGame settings, FilterPlatforms filterOptions, SortPlatforms sortOptions)
+        {
+            var list = LoadPlatforms(module, settings);
+            list = filterOptions.ApplyFilters(list);
+            list = sortOptions.ApplySorting(list);
+            return list;
+        }
+
         public void SaveAllPlatforms(IList<Platform> platform)
         {
             SaveAll(EnsurePlatformsAreLoaded, ref platforms, platform, ref platformsChanged);

@@ -83,7 +83,7 @@ namespace RatableTracker.Modules
 
         public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, SortRankedObjects sortOptions)
         {
-            return GetTrackerObjectList(ModelObjects, filterOptions, sortOptions);
+            return GetTrackerObjectList(ModelObjects, filterOptions, sortOptions, (conn) => conn.LoadModelObjectsAndFilter(filterOptions.Settings, this, filterOptions, sortOptions));
         }
 
         public int TotalNumModelObjects()

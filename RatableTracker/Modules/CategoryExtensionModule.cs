@@ -46,7 +46,7 @@ namespace RatableTracker.Modules
 
         public IList<RatingCategory> GetRatingCategoryList()
         {
-            return GetTrackerObjectList(RatingCategories, null, null);
+            return GetTrackerObjectList(RatingCategories);
         }
 
         public int TotalNumRatingCategories()

@@ -44,7 +44,7 @@ namespace RatableTracker.Modules
 
         public IList<Status> GetStatusList()
         {
-            return GetTrackerObjectList(Statuses, null, null);
+            return GetTrackerObjectList(Statuses);
         }
 
         public int TotalNumStatuses()

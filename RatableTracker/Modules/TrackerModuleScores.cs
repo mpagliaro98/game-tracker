@@ -77,7 +77,7 @@ namespace RatableTracker.Modules
 
         public IList<ScoreRange> GetScoreRangeList()
         {
-            return GetTrackerObjectList(ScoreRanges, null, null);
+            return GetTrackerObjectList(ScoreRanges);
         }
 
         public int TotalNumScoreRanges()

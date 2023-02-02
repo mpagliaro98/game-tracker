@@ -72,7 +72,7 @@ namespace GameTracker
 
         public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SortPlatforms sortOptions)
         {
-            return GetTrackerObjectList(Platforms, filterOptions, sortOptions);
+            return GetTrackerObjectList(Platforms, filterOptions, sortOptions, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatformsAndFilter(this, filterOptions.Settings, filterOptions, sortOptions));
         }
 
         public int TotalNumPlatforms()

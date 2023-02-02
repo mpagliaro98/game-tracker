@@ -9,6 +9,7 @@ namespace RatableTracker.Interfaces
     // covariant generic interface needed to the module constructors can use derived ILoadSaveMethod types
     public interface ILoadSaveHandler<out T> where T : ILoadSaveMethod
     {
+        bool FilterFromLoadSave { get; set; }
         T NewConnection();
     }
 }

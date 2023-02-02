@@ -84,14 +84,32 @@ namespace RatableTracker.Modules
             invokeDeleteEvent(obj);
         }
 
-        protected IList<T> GetTrackerObjectList<T>(IList<T> originalList, FilterBase<T> filterOptions, SortBase<T> sortOptions) where T : TrackerObjectBase
+        protected IList<T> GetTrackerObjectList<T>(IList<T> originalList) where T : TrackerObjectBase
+        {
+            return GetTrackerObjectList(originalList, null, null, false, null);
+        }
+
+        protected IList<T> GetTrackerObjectList<T>(IList<T> originalList, FilterBase<T> filterOptions, SortBase<T> sortOptions, Func<ILoadSaveMethod, IList<T>> loadAndFilter) where T : TrackerObjectBase
+        {
+            return GetTrackerObjectList(originalList, filterOptions, sortOptions, true, loadAndFilter);
+        }
+
+        private IList<T> GetTrackerObjectList<T>(IList<T> originalList, FilterBase<T> filterOptions, SortBase<T> sortOptions, bool supportsLoadAndFilter, Func<ILoadSaveMethod, IList<T>> loadAndFilter) where T : TrackerObjectBase
         {
             try
             {
-                IList<T> list = new List<T>(originalList);
-                if (filterOptions != null) list = filterOptions.ApplyFilters(list);
-                if (sortOptions != null) list = sortOptions.ApplySorting(list);
-                return list;
+                if (supportsLoadAndFilter && LoadSave.FilterFromLoadSave && filterOptions != null && sortOptions != null)
+                {
+                    using var conn = LoadSave.NewConnection();
+                    return loadAndFilter(conn);
+                }
+                else
+                {
+                    IList<T> list = new List<T>(originalList);
+                    if (filterOptions != null) list = filterOptions.ApplyFilters(list);
+                    if (sortOptions != null) list = sortOptions.ApplySorting(list);
+                    return list;
+                }
             }
             catch (ListManipulationException e)
             {
