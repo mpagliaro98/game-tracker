@@ -37,6 +37,7 @@ namespace RatableTracker.Model
 
         private void LoadMemberValuesIntoRepresentation<T>(ref SavableRepresentation sr, IEnumerable<T> members, Func<T, Type> getType, Func<T, object> getVal, ManualLoadHandler manual) where T : MemberInfo
         {
+            var usedKeys = new HashSet<string>();
             foreach (var member in members)
             {
                 Attribute[] attrs = Attribute.GetCustomAttributes(member);
@@ -45,6 +46,10 @@ namespace RatableTracker.Model
                     if (attr is SavableAttribute savable)
                     {
                         string key = savable.Key;
+
+                        if (usedKeys.Contains(key))
+                            continue;
+                        usedKeys.Add(key);
 
                         if (savable.HandleLoadManually)
                         {
@@ -113,6 +118,7 @@ namespace RatableTracker.Model
 
         private void RestoreMemberValuesFromRepresentation<T>(SavableRepresentation sr, IEnumerable<T> members, Func<T, Type> getType, Action<T, object> setVal, ManualRestoreHandler manual) where T : MemberInfo
         {
+            var usedKeys = new HashSet<string>();
             foreach (var member in members)
             {
                 Attribute[] attrs = Attribute.GetCustomAttributes(member);
@@ -124,6 +130,10 @@ namespace RatableTracker.Model
                             continue;
 
                         string key = savable.Key;
+
+                        if (usedKeys.Contains(key))
+                            continue;
+                        usedKeys.Add(key);
 
                         if (!sr.HasKey(key))
                             continue;
