@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Exceptions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,6 +75,16 @@ namespace GameTrackerWPF
                 MessageBox.Show(val.Message, "Invalid Fields");
             else
                 MessageBox.Show("Unexpected error - " + e.GetType().Name + ": " + e.Message + "\n\nSee the logs for more information.", "Unexpected Error");
+        }
+
+        public static void GoToURL(string url)
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            };
+            Process.Start(psi);
         }
     }
 }

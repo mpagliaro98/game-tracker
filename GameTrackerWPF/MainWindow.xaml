@@ -7,15 +7,26 @@
         mc:Ignorable="d"
         Title="Game Tracker" Height="600" Width="1100" MinHeight="600" MinWidth="1100" Loaded="Window_Loaded">
     <Window.Resources>
-        <BitmapImage x:Key="ButtonSearch" UriSource="../Images/button_search.png" />
-        <BitmapImage x:Key="ButtonSort" UriSource="../Images/button_sort.png" />
-        <BitmapImage x:Key="ButtonUp" UriSource="../Images/button_up.png" />
-        <BitmapImage x:Key="ButtonDown" UriSource="../Images/button_down.png" />
-        <BitmapImage x:Key="ButtonList" UriSource="../Images/button_list.png" />
-        <BitmapImage x:Key="ButtonExpanded" UriSource="../Images/button_larger.png" />
-        <BitmapImage x:Key="ButtonBoxes" UriSource="../Images/button_squares.png" />
+        <BitmapImage x:Key="ButtonSearch" UriSource="/Images/button_search.png" />
+        <BitmapImage x:Key="ButtonSort" UriSource="/Images/button_sort.png" />
+        <BitmapImage x:Key="ButtonUp" UriSource="/Images/button_up.png" />
+        <BitmapImage x:Key="ButtonDown" UriSource="/Images/button_down.png" />
+        <BitmapImage x:Key="ButtonList" UriSource="/Images/button_list.png" />
+        <BitmapImage x:Key="ButtonExpanded" UriSource="/Images/button_larger.png" />
+        <BitmapImage x:Key="ButtonBoxes" UriSource="/Images/button_squares.png" />
     </Window.Resources>
     <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem x:Name="MenuLogFiles" Header="View _Log Files" Click="MenuLogFiles_Click" />
+                <MenuItem x:Name="MenuExit" Header="_Exit" Click="MenuExit_Click" />
+            </MenuItem>
+            <MenuItem Header="_About">
+                <MenuItem x:Name="MenuGitHub" Header="_GitHub Repository" Click="MenuGitHub_Click" />
+                <MenuItem x:Name="MenuUpdate" Header="Check For _Updates" Click="MenuUpdate_Click" />
+                <MenuItem x:Name="MenuAbout" Header="About This _Version" Click="MenuAbout_Click" />
+            </MenuItem>
+        </Menu>
         <TabControl x:Name="TabsBase" SelectionChanged="TabsBase_SelectionChanged">
             <TabItem x:Name="TabGames" Header="Games">
                 <DockPanel>

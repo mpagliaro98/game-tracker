@@ -975,5 +975,37 @@ namespace GameTrackerWPF
         #endregion
 
         #endregion
+
+        #region "Menu Bar"
+        private void MenuExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void MenuLogFiles_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("explorer.exe", pathController.Combine(pathController.ApplicationDirectory(), LoggerThreaded.LOG_DIRECTORY));
+        }
+
+        private void MenuGitHub_Click(object sender, RoutedEventArgs e)
+        {
+            UtilWPF.GoToURL("https://github.com/mpagliaro98/game-tracker");
+        }
+
+        private void MenuUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            UtilWPF.GoToURL("https://github.com/mpagliaro98/game-tracker/releases");
+        }
+
+        private void MenuAbout_Click(object sender, RoutedEventArgs e)
+        {
+            string message = "Game Tracker: " + GameTracker.Util.GameTrackerVersion.ToString() +
+                "\nFramework: " + RatableTracker.Util.Util.FrameworkVersion.ToString() +
+                "\nAuthor: Michael Pagliaro" +
+                "\nGitHub: github.com/mpagliaro98" +
+                "\nThis open-source software is covered under the MIT license, see the license in the GitHub repository for more information.";
+            MessageBox.Show(message, "About", MessageBoxButton.OK);
+        }
+        #endregion
     }
 }
