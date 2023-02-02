@@ -1,5 +1,7 @@
-﻿using RatableTracker.Modules;
+﻿using RatableTracker.Exceptions;
+using RatableTracker.Modules;
 using RatableTracker.ObjAddOns;
+using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,20 +16,38 @@ namespace GameTracker
         {
             get
             {
-                if (BaseObject.IsUsingOriginalGameScore)
+                return CalculateCategoryValuesRecursive(new List<UniqueID>());
+            }
+        }
+
+        public IList<CategoryValue> CategoryValueListMinIfCyclical
+        {
+            get
+            {
+                try
                 {
-                    try
-                    {
-                        return BaseObject.OriginalGame == null ? CreateListOfEmptyCategoryValues() : BaseObject.OriginalGame.CategoryExtension.CategoryValueList;
-                    }
-                    catch (StackOverflowException e)
-                    {
-                        Module.Logger.Log("CategoryExtensionGame CategoryValuesDisplay " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
-                        return CreateListOfEmptyCategoryValues();
-                    }
+                    return CategoryValueList;
                 }
-                else
-                    return base.CategoryValueList;
+                catch (CyclicalReferenceException)
+                {
+                    return CreateListOfEmptyCategoryValues();
+                }
+            }
+        }
+
+        public override IList<CategoryValue> CategoryValuesDisplay
+        {
+            get
+            {
+                try
+                {
+                    return base.CategoryValuesDisplay;
+                }
+                catch (CyclicalReferenceException ex)
+                {
+                    Module.Logger.Log(ex.GetType().Name + " in CategoryValuesDisplay: " + ex.Message);
+                    return CreateListOfEmptyCategoryValues();
+                }
             }
         }
 
@@ -49,5 +69,30 @@ namespace GameTracker
         public CategoryExtensionGame(CategoryExtensionModule module, SettingsGame settings) : base(module, settings) { }
 
         public CategoryExtensionGame(CategoryExtensionGame copyFrom) : base(copyFrom) { }
+
+        public override double ScoreOfCategory(RatingCategory ratingCategory)
+        {
+            try
+            {
+                return base.ScoreOfCategory(ratingCategory);
+            }
+            catch (CyclicalReferenceException)
+            {
+                return Settings.MinScore;
+            }
+        }
+
+        private IList<CategoryValue> CalculateCategoryValuesRecursive(IList<UniqueID> path)
+        {
+            if (path.Contains(BaseObject.UniqueID))
+                throw new CyclicalReferenceException("Cyclical reference in OriginalGame field: " + string.Join(" -> ", path));
+            if (BaseObject.IsUsingOriginalGameScore)
+            {
+                path.Add(BaseObject.UniqueID);
+                return BaseObject.OriginalGame == null ? CreateListOfEmptyCategoryValues() : BaseObject.OriginalGame.CategoryExtension.CalculateCategoryValuesRecursive(path);
+            }
+            else
+                return base.CategoryValueList;
+        }
     }
 }

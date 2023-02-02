@@ -5,6 +5,7 @@ using RatableTracker.LoadSave;
 using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.ObjAddOns;
+using RatableTracker.ScoreRanges;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -42,20 +43,53 @@ namespace GameTracker
         {
             get
             {
-                if (IsUsingOriginalGameScore)
+                return CalculateScoreRecursive(new List<UniqueID>());
+            }
+        }
+
+        public double ScoreMinIfCyclical
+        {
+            get
+            {
+                try
                 {
-                    try
-                    {
-                        return OriginalGame.Score;
-                    }
-                    catch (StackOverflowException e)
-                    {
-                        Module.Logger.Log("GameObject Score " + e.GetType().Name + ": OriginalGame is set to a game that references this one");
-                        return Settings.MinScore;
-                    }
+                    return Score;
                 }
-                else
-                    return base.Score;
+                catch (CyclicalReferenceException)
+                {
+                    return Settings.MinScore;
+                }
+            }
+        }
+
+        public override double ScoreDisplay
+        {
+            get
+            {
+                try
+                {
+                    return base.ScoreDisplay;
+                }
+                catch (CyclicalReferenceException ex)
+                {
+                    Module.Logger.Log(ex.GetType().Name + " in ScoreDisplay: " + ex.Message);
+                    return Settings.MinScore;
+                }
+            }
+        }
+
+        public override ScoreRange ScoreRange
+        {
+            get
+            {
+                try
+                {
+                    return base.ScoreRange;
+                }
+                catch (CyclicalReferenceException)
+                {
+                    return null;
+                }
             }
         }
 
@@ -155,9 +189,9 @@ namespace GameTracker
             {
                 var temp = Score;
             }
-            catch (StackOverflowException e)
+            catch (CyclicalReferenceException e)
             {
-                throw new ValidationException("A game referenced by the Original Game references this one", e);
+                throw new ValidationException("A game referenced by the Original Game references this one, creating a cyclical loop when trying to calculate score", e.Message, e);
             }
         }
 
@@ -222,6 +256,19 @@ namespace GameTracker
             base.RemoveEventHandlers();
             Module.ModelObjectDeleted -= OnModelObjectDeleted;
             Module.PlatformDeleted -= OnPlatformDeleted;
+        }
+
+        private double CalculateScoreRecursive(IList<UniqueID> path)
+        {
+            if (path.Contains(UniqueID))
+                throw new CyclicalReferenceException("Cyclical reference in OriginalGame field: " + string.Join(" -> ", path));
+            if (IsUsingOriginalGameScore)
+            {
+                path.Add(UniqueID);
+                return OriginalGame.CalculateScoreRecursive(path);
+            }
+            else
+                return base.Score;
         }
     }
 }

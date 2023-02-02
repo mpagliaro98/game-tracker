@@ -66,7 +66,7 @@ namespace GameTrackerWPF
             if (!orig.StartedOn.Equals(DateTime.MinValue)) DatePickerStarted.SelectedDate = orig.StartedOn;
             if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
             TextBoxComments.Text = orig.Comment;
-            TextBoxFinalScore.Text = orig.Score.ToString("0.##");
+            TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString("0.##");
             CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
             TextboxCompilation.Text = comp.Name;
 
@@ -174,7 +174,7 @@ namespace GameTrackerWPF
             GridRatingCategories.Children.Clear();
             GridRatingCategories.ColumnDefinitions.Clear();
             int i = 0;
-            foreach (CategoryValue categoryValue in orig.CategoryExtension.CategoryValueList)
+            foreach (CategoryValue categoryValue in orig.CategoryExtension.CategoryValueListMinIfCyclical)
             {
                 RatingCategory rc = categoryValue.RatingCategory;
                 GridRatingCategories.ColumnDefinitions.Add(new ColumnDefinition());
@@ -285,6 +285,8 @@ namespace GameTrackerWPF
 
         private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (orig.IsUsingOriginalGameScore || !orig.CategoryExtension.AreCategoryValuesEditable) return;
+
             TextBox textbox = (TextBox)sender;
             bool result = double.TryParse(textbox.Text, out double score);
             RatingCategory rc = textbox.Tag as RatingCategory;
@@ -297,13 +299,15 @@ namespace GameTrackerWPF
 
         private void ButtonEditScore_Click(object sender, RoutedEventArgs e)
         {
-            orig.ManualScore = orig.Score;
+            orig.ManualScore = orig.ScoreMinIfCyclical;
             orig.CategoryExtension.IgnoreCategories = !orig.CategoryExtension.IgnoreCategories;
             UpdateScores();
         }
 
         private void TextBoxFinalScore_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (orig.IsUsingOriginalGameScore || !orig.CategoryExtension.IgnoreCategories) return;
+
             var textbox = (TextBox)sender;
             bool result = double.TryParse(textbox.Text, out double score);
 
@@ -371,7 +375,7 @@ namespace GameTrackerWPF
             ButtonEditScore.ToolTip = !orig.CategoryExtension.IgnoreCategories ? "Edit the final score manually" : "Use categories to automatically calculate the final score";
             TextBoxFinalScore.IsEnabled = orig.CategoryExtension.IgnoreCategories;
 
-            TextBoxFinalScore.Text = orig.Score.ToString("0.##");
+            TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString("0.##");
             ScoreRange sr = orig.ScoreRange;
             RatableTracker.Util.Color color = sr == null ? new RatableTracker.Util.Color() : sr.Color;
             if (color.Equals(new RatableTracker.Util.Color()))
@@ -406,9 +410,9 @@ namespace GameTrackerWPF
             if (orig.Platform != null)
             {
                 var platform = orig.Platform;
-                text += "#" + rm.GetRankOfScoreByPlatform(orig.Score, platform, settings).ToString() + " on " + platform.Name + "\n";
+                text += "#" + rm.GetRankOfScoreByPlatform(orig.ScoreMinIfCyclical, platform, settings).ToString() + " on " + platform.Name + "\n";
             }
-            text += "#" + rm.GetRankOfScore(orig.Score).ToString() + " overall";
+            text += "#" + rm.GetRankOfScore(orig.ScoreMinIfCyclical).ToString() + " overall";
             TextBlockStats.Text = text;
         }
 
