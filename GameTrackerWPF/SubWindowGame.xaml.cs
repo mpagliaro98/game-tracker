@@ -66,7 +66,7 @@ namespace GameTrackerWPF
             if (!orig.StartedOn.Equals(DateTime.MinValue)) DatePickerStarted.SelectedDate = orig.StartedOn;
             if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
             TextBoxComments.Text = orig.Comment;
-            TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString("0.##");
+            TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
             CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
             TextboxCompilation.Text = comp.Name;
 
@@ -366,7 +366,7 @@ namespace GameTrackerWPF
                 TextBox text = dock.FindChild<TextBox>("TextBoxValue");
                 text.IsEnabled = orig.CategoryExtension.AreCategoryValuesEditable;
                 RatingCategory rc = (RatingCategory)text.Tag;
-                text.Text = orig.CategoryExtension.ScoreOfCategory(rc).ToString("0.##");
+                text.Text = orig.CategoryExtension.ScoreOfCategory(rc).ToString(UtilWPF.SCORE_FORMAT);
             }
 
             Image image = new Image();
@@ -375,7 +375,7 @@ namespace GameTrackerWPF
             ButtonEditScore.ToolTip = !orig.CategoryExtension.IgnoreCategories ? "Edit the final score manually" : "Use categories to automatically calculate the final score";
             TextBoxFinalScore.IsEnabled = orig.CategoryExtension.IgnoreCategories;
 
-            TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString("0.##");
+            TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
             ScoreRange sr = orig.ScoreRange;
             RatableTracker.Util.Color color = sr == null ? new RatableTracker.Util.Color() : sr.Color;
             if (color.Equals(new RatableTracker.Util.Color()))

@@ -56,7 +56,7 @@ namespace GameTrackerWPF
             if (orig.StatusExtension.Status != null) ComboBoxStatus.SelectedItem = orig.StatusExtension.Status;
             if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform;
             if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
-            TextBoxFinalScore.Text = orig.Score.ToString("0.##");
+            TextBoxFinalScore.Text = orig.Score.ToString(UtilWPF.SCORE_FORMAT);
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;

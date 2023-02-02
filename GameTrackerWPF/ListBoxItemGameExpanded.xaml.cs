@@ -23,8 +23,6 @@ namespace GameTrackerWPF
     /// </summary>
     public partial class ListBoxItemGameExpanded : UserControl, IListBoxItemGame
     {
-        private const string DECIMAL_FORMAT = "0.##";
-
         private GameObject rg;
         public GameObject Game
         {
@@ -49,7 +47,7 @@ namespace GameTrackerWPF
             if (completionStatus != null)
                 TextBlockStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
             BuildCategories(rm, rg);
-            TextBlockFinalScore.Text = rg.ShowScore ? rg.ScoreDisplay.ToString(DECIMAL_FORMAT) : "";
+            TextBlockFinalScore.Text = rg.ShowScore ? rg.ScoreDisplay.ToString(UtilWPF.SCORE_FORMAT) : "";
             if (rg.ShowScore)
             {
                 ScoreRange sr = rg.ScoreRangeDisplay;
@@ -101,7 +99,7 @@ namespace GameTrackerWPF
                 };
                 Label label = new Label
                 {
-                    Content = score.ToString(DECIMAL_FORMAT),
+                    Content = score.ToString(UtilWPF.SCORE_FORMAT),
                     HorizontalAlignment = HorizontalAlignment.Center,
                     FontSize = 16
                 };

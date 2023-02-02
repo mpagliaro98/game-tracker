@@ -35,8 +35,8 @@ namespace GameTrackerWPF
             LabelName.Content = platform.Name;
             LabelNumOwned.Content = rm.GetNumGamesByPlatform(platform, settings).ToString();
             LabelAverage.Content = rm.GetAverageScoreOfGamesByPlatform(platform, settings).ToString("0.#####");
-            LabelHighest.Content = rm.GetHighestScoreFromGamesByPlatform(platform, settings).ToString("0.##");
-            LabelLowest.Content = rm.GetLowestScoreFromGamesByPlatform(platform, settings).ToString("0.##");
+            LabelHighest.Content = rm.GetHighestScoreFromGamesByPlatform(platform, settings).ToString(UtilWPF.SCORE_FORMAT);
+            LabelLowest.Content = rm.GetLowestScoreFromGamesByPlatform(platform, settings).ToString(UtilWPF.SCORE_FORMAT);
             LabelFinishPercent.Content = rm.GetProportionGamesFinishedByPlatform(platform, settings).ToString("P2");
             LabelFinishRatio.Content = rm.GetNumGamesFinishedByPlatform(platform, settings).ToString() + "/" + rm.GetNumGamesFinishableByPlatform(platform, settings).ToString() + " games";
             SetStackPanelLabels(StackPanelTop, rm.GetTopGamesByPlatform(platform, settings, 3));

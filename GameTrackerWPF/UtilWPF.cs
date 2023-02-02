@@ -9,8 +9,10 @@ using System.Windows.Media;
 
 namespace GameTrackerWPF
 {
-    public static class Extensions
+    public static class UtilWPF
     {
+        public const string SCORE_FORMAT = "0.##";
+
         public static T FindChild<T>(this DependencyObject parent, string childName) where T : DependencyObject
         {
             if (parent == null) return null;
