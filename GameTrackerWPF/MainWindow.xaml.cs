@@ -46,7 +46,7 @@ namespace GameTrackerWPF
         private Task loadData = null;
         private Stopwatch swLoad = new Stopwatch();
 
-        private static bool LOAD_ASYNC = false;
+        private static bool LOAD_ASYNC = true;
 
         private SavedState savedState;
 
