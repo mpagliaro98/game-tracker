@@ -82,7 +82,7 @@ namespace RatableTracker.Util
         public override bool Equals(object obj)
         {
             if (obj == null) return false;
-            if (!(obj is VersionNumber)) return false;
+            if (obj is not VersionNumber) return false;
             VersionNumber other = (VersionNumber)obj;
             return majorVersion.Equals(other.majorVersion) && minorVersion.Equals(other.minorVersion) &&
                 buildVersion.Equals(other.buildVersion) && revisionVersion.Equals(other.revisionVersion);
@@ -96,7 +96,7 @@ namespace RatableTracker.Util
 
         public override string ToString()
         {
-            return "v. " + majorVersion.ToString() + "." + minorVersion.ToString() + "." + buildVersion.ToString("00") + "." + revisionVersion.ToString("00");
+            return "v" + majorVersion.ToString() + "." + minorVersion.ToString() + "." + buildVersion.ToString() + "." + revisionVersion.ToString();
         }
     }
 }
