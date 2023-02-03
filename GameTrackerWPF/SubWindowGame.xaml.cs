@@ -148,7 +148,7 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (Platform platform in rm.GetPlatformList().OrderBy(p => p.Name))
+            foreach (Platform platform in rm.GetPlatformList(settings).OrderBy(p => p.Name))
             {
                 cb.Items.Add(platform);
             }
@@ -161,7 +161,7 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "--Select the game this is a remaster of--";
             cb.Items.Add(item);
-            foreach (GameObject game in rm.GetModelObjectList().OfType<GameObject>().OrderBy(ro => ro.Name))
+            foreach (GameObject game in rm.GetModelObjectList(settings).OfType<GameObject>().OrderBy(ro => ro.Name))
             {
                 if (game.Equals(orig) || game.Equals(comp)) continue;
                 cb.Items.Add(game);
@@ -412,7 +412,7 @@ namespace GameTrackerWPF
                 var platform = orig.Platform;
                 text += "#" + rm.GetRankOfScoreByPlatform(orig.ScoreMinIfCyclical, platform, settings).ToString() + " on " + platform.Name + "\n";
             }
-            text += "#" + rm.GetRankOfScore(orig.ScoreMinIfCyclical).ToString() + " overall";
+            text += "#" + rm.GetRankOfScore(orig.ScoreMinIfCyclical, settings).ToString() + " overall";
             TextBlockStats.Text = text;
         }
 

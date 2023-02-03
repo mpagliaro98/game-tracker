@@ -100,7 +100,7 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (Platform platform in rm.GetPlatformList().OrderBy(p => p.Name))
+            foreach (Platform platform in rm.GetPlatformList(settings).OrderBy(p => p.Name))
             {
                 cb.Items.Add(platform);
             }
@@ -192,7 +192,7 @@ namespace GameTrackerWPF
                 var platform = orig.Platform;
                 text += "#" + rm.GetRankOfScoreByPlatform(orig.Score, platform, settings).ToString() + " on " + platform.Name + "\n";
             }
-            text += "#" + rm.GetRankOfScore(orig.Score).ToString() + " overall";
+            text += "#" + rm.GetRankOfScore(orig.Score, settings).ToString() + " overall";
             TextBlockStats.Text = text;
         }
     }

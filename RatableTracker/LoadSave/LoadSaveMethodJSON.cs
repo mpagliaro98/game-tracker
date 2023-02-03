@@ -483,8 +483,8 @@ namespace RatableTracker.LoadSave
         public IList<RankedObject> LoadModelObjectsAndFilter(Settings settings, TrackerModule module, FilterRankedObjects filterOptions, SortRankedObjects sortOptions)
         {
             var list = LoadModelObjects(settings, module);
-            list = filterOptions.ApplyFilters(list);
-            list = sortOptions.ApplySorting(list);
+            if (filterOptions != null) list = filterOptions.ApplyFilters(list);
+            if (sortOptions != null) list = sortOptions.ApplySorting(list);
             return list;
         }
 

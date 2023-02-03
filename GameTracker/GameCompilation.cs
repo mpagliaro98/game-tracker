@@ -44,7 +44,7 @@ namespace GameTracker
 
         public IList<GameObject> GamesInCompilation()
         {
-            return Module.GetModelObjectList().OfType<GameObject>().Where((obj) => obj.Compilation != null && obj.Compilation.Equals(this)).ToList() ?? new List<GameObject>();
+            return Module.GetModelObjectList(Settings).OfType<GameObject>().Where((obj) => obj.Compilation != null && obj.Compilation.Equals(this)).ToList() ?? new List<GameObject>();
         }
 
         public int NumGamesInCompilation()

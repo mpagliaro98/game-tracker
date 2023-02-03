@@ -98,7 +98,7 @@ namespace RatableTracker.Modules
         {
             try
             {
-                if (supportsLoadAndFilter && LoadSave.FilterFromLoadSave && filterOptions != null && sortOptions != null)
+                if (supportsLoadAndFilter && LoadSave.FilterFromLoadSave)
                 {
                     using var conn = LoadSave.NewConnection();
                     return loadAndFilter(conn);

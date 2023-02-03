@@ -99,7 +99,7 @@ namespace GameTracker
             get
             {
                 if (!_platform.HasValue()) return null;
-                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(), _platform);
+                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(Settings), _platform);
             }
             set
             {
@@ -113,7 +113,7 @@ namespace GameTracker
             get
             {
                 if (!_platformPlayedOn.HasValue()) return null;
-                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(), _platformPlayedOn);
+                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(Settings), _platformPlayedOn);
             }
             set
             {
@@ -127,7 +127,7 @@ namespace GameTracker
             get
             {
                 if (!_originalGame.HasValue()) return null;
-                return (GameObject)RatableTracker.Util.Util.FindObjectInList(Module.GetModelObjectList(), _originalGame);
+                return (GameObject)RatableTracker.Util.Util.FindObjectInList(Module.GetModelObjectList(Settings), _originalGame);
             }
             set
             {
@@ -141,7 +141,7 @@ namespace GameTracker
             get
             {
                 if (!_compilation.HasValue()) return null;
-                return (GameCompilation)RatableTracker.Util.Util.FindObjectInList(Module.GetModelObjectList(), _compilation);
+                return (GameCompilation)RatableTracker.Util.Util.FindObjectInList(Module.GetModelObjectList(Settings), _compilation);
             }
             set
             {

@@ -72,7 +72,7 @@ namespace RatableTracker.Modules
 
         internal void AddCategoryValueToAllModelObjects(TrackerModule module, SettingsScore settings, RatingCategory category, ILoadSaveMethodCategoryExtension conn)
         {
-            foreach (RankedObject obj in module.GetModelObjectList())
+            foreach (RankedObject obj in module.GetModelObjectList(settings))
             {
                 if (obj is IModelObjectCategorical objCat)
                 {

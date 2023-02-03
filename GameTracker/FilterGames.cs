@@ -25,7 +25,7 @@ namespace GameTracker
             get
             {
                 if (!_platform.HasValue()) return null;
-                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(), _platform);
+                return RatableTracker.Util.Util.FindObjectInList(Module.GetPlatformList(Settings), _platform);
             }
             set
             {

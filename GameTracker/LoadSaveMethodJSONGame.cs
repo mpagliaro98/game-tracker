@@ -55,8 +55,8 @@ namespace GameTracker
         public IList<Platform> LoadPlatformsAndFilter(GameModule module, SettingsGame settings, FilterPlatforms filterOptions, SortPlatforms sortOptions)
         {
             var list = LoadPlatforms(module, settings);
-            list = filterOptions.ApplyFilters(list);
-            list = sortOptions.ApplySorting(list);
+            if (filterOptions != null) list = filterOptions.ApplyFilters(list);
+            if (sortOptions != null) list = sortOptions.ApplySorting(list);
             return list;
         }
 

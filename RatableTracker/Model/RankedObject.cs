@@ -21,7 +21,7 @@ namespace RatableTracker.Model
         {
             get
             {
-                IList<RankedObject> rankedObjects = Module.GetModelObjectList();
+                IList<RankedObject> rankedObjects = Module.GetModelObjectList(Settings);
                 return rankedObjects.IndexOf(this) + 1;
             }
         }
@@ -31,7 +31,7 @@ namespace RatableTracker.Model
         {
             get
             {
-                IList<RankedObject> rankedObjects = Module.GetModelObjectList();
+                IList<RankedObject> rankedObjects = Module.GetModelObjectList(Settings);
                 return rankedObjects.IndexOf(this) + 1;
             }
         }

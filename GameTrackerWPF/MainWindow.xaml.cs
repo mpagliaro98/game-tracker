@@ -246,7 +246,7 @@ namespace GameTrackerWPF
                 default:
                     throw new NotImplementedException();
             }
-            foreach (GameObject rg in rm.GetModelObjectList(savedState.FilterGames, savedState.SortGames))
+            foreach (GameObject rg in rm.GetModelObjectList(savedState.FilterGames, savedState.SortGames, settings))
             {
                 UserControl item;
                 switch (savedState.DisplayMode)
@@ -497,7 +497,7 @@ namespace GameTrackerWPF
         private void UpdatePlatformsUI()
         {
             PlatformsListbox.ClearItems();
-            foreach (Platform platform in rm.GetPlatformList(savedState.FilterPlatforms, savedState.SortPlatforms))
+            foreach (Platform platform in rm.GetPlatformList(savedState.FilterPlatforms, savedState.SortPlatforms, settings))
             {
                 ListBoxItemPlatform item = new ListBoxItemPlatform(rm, settings, platform);
                 item.MouseDoubleClick += PlatformEdit;

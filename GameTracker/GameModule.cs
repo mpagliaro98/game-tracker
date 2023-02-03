@@ -55,24 +55,24 @@ namespace GameTracker
             connNew.SaveAllPlatforms(connCurrent.LoadPlatforms(this, settings));
         }
 
-        public IList<Platform> GetPlatformList()
+        public IList<Platform> GetPlatformList(SettingsGame settings)
         {
-            return GetPlatformList(null, null);
+            return GetPlatformList(null, null, settings);
         }
 
-        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions)
+        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SettingsGame settings)
         {
-            return GetPlatformList(filterOptions, null);
+            return GetPlatformList(filterOptions, null, settings);
         }
 
-        public IList<Platform> GetPlatformList(SortPlatforms sortOptions)
+        public IList<Platform> GetPlatformList(SortPlatforms sortOptions, SettingsGame settings)
         {
-            return GetPlatformList(null, sortOptions);
+            return GetPlatformList(null, sortOptions, settings);
         }
 
-        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SortPlatforms sortOptions)
+        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SortPlatforms sortOptions, SettingsGame settings)
         {
-            return GetTrackerObjectList(Platforms, filterOptions, sortOptions, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatformsAndFilter(this, filterOptions.Settings, filterOptions, sortOptions));
+            return GetTrackerObjectList(Platforms, filterOptions, sortOptions, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatformsAndFilter(this, settings, filterOptions, sortOptions));
         }
 
         public int TotalNumPlatforms()
@@ -106,19 +106,19 @@ namespace GameTracker
 
         public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings)
         {
-            return GetGamesOnPlatform(platform, new FilterGames(this, settings));
+            return GetGamesOnPlatform(platform, settings, new FilterGames(this, settings));
         }
 
-        public IList<GameObject> GetGamesOnPlatform(Platform platform, FilterGames filterOptions)
+        public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings, FilterGames filterOptions)
         {
             filterOptions.Platform = platform;
             filterOptions.ShowCompilations = false;
-            return GetModelObjectList(filterOptions).OfType<GameObject>().ToList();
+            return GetModelObjectList(filterOptions, settings).OfType<GameObject>().ToList();
         }
 
-        public IList<GameObject> GetGamesIncludeInStats()
+        public IList<GameObject> GetGamesIncludeInStats(SettingsGame settings)
         {
-            return GetModelObjectList().OfType<GameObject>().Where(obj => !obj.IsCompilation && obj.IncludeInStats).ToList();
+            return GetModelObjectList(settings).OfType<GameObject>().Where(obj => !obj.IsCompilation && obj.IncludeInStats).ToList();
         }
 
         public IList<GameObject> GetGamesOnPlatformIncludeInStats(Platform platform, SettingsGame settings)
@@ -186,9 +186,9 @@ namespace GameTracker
             return GetGamesOnPlatformIncludeInStats(platform, settings).OrderBy(ro => ro.ScoreDisplay).Take(numToGet).ToList();
         }
 
-        public override int GetRankOfScore(double score)
+        public override int GetRankOfScore(double score, SettingsScore settings)
         {
-            return GetRankOfScore(score, GetGamesIncludeInStats().Cast<RankedObject>().ToList());
+            return GetRankOfScore(score, GetGamesIncludeInStats((SettingsGame)settings).Cast<RankedObject>().ToList());
         }
 
         public int GetRankOfScoreByPlatform(double score, Platform platform, SettingsGame settings)

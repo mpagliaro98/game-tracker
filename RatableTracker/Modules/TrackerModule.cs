@@ -66,24 +66,24 @@ namespace RatableTracker.Modules
             connNew.SaveSettings(settingsTransfer);
         }
 
-        public IList<RankedObject> GetModelObjectList()
+        public IList<RankedObject> GetModelObjectList(Settings settings)
         {
-            return GetModelObjectList(null, null);
+            return GetModelObjectList(null, null, settings);
         }
 
-        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions)
+        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, Settings settings)
         {
-            return GetModelObjectList(filterOptions, null);
+            return GetModelObjectList(filterOptions, null, settings);
         }
 
-        public IList<RankedObject> GetModelObjectList(SortRankedObjects sortOptions)
+        public IList<RankedObject> GetModelObjectList(SortRankedObjects sortOptions, Settings settings)
         {
-            return GetModelObjectList(null, sortOptions);
+            return GetModelObjectList(null, sortOptions, settings);
         }
 
-        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, SortRankedObjects sortOptions)
+        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, SortRankedObjects sortOptions, Settings settings)
         {
-            return GetTrackerObjectList(ModelObjects, filterOptions, sortOptions, (conn) => conn.LoadModelObjectsAndFilter(filterOptions.Settings, this, filterOptions, sortOptions));
+            return GetTrackerObjectList(ModelObjects, filterOptions, sortOptions, (conn) => conn.LoadModelObjectsAndFilter(settings, this, filterOptions, sortOptions));
         }
 
         public int TotalNumModelObjects()
