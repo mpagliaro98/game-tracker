@@ -124,7 +124,11 @@ namespace GameTrackerMAUI.ViewModels
             string msg = SharedDataService.SavedState.FilterGames.ShowCompilations ?
                 "Compilations are now being shown in the list, and games in compilations are hidden." :
                 "Games in compilations are visible, and compilations are being hidden.";
-            await ShowPopupAsync(new PopupMain("Compilations", msg, PopupMain.EnumInputType.Ok));
+            var popup = new PopupMain("Compilations", msg, PopupMain.EnumInputType.Ok)
+            {
+                Size = new Size(300, 200)
+            };
+            await ShowPopupAsync(popup);
         }
 
         private async void OnSort()

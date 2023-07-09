@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Views;
+using System.Runtime.CompilerServices;
 
 namespace GameTrackerMAUI.Views;
 
@@ -11,6 +12,8 @@ public partial class PopupMain : Popup
     public PopupMain(string title, string message, EnumInputType inputType)
 	{
 		InitializeComponent();
+
+        Size = new Size(300, 150); // default size
 
         LabelTitle.Text = title;
         LabelMessage.Text = message;
