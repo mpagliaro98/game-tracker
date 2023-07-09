@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.ScoreRanges
 {
-    public class ScoreRange : TrackerObjectBase
+    public class ScoreRange : TrackerObjectBase, IColorContainer
     {
         [Savable("ValueList")] public IList<double> ValueList { get; set; }
         [Savable("Color")] public Color Color { get; set; } = new Color();

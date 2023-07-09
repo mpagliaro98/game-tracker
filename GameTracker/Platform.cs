@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace GameTracker
 {
-    public class Platform : TrackerObjectBase
+    public class Platform : TrackerObjectBase, IColorContainer
     {
         public static int MaxLengthAbbreviation => 10;
 

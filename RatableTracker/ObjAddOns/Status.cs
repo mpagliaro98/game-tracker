@@ -13,7 +13,7 @@ using System.Xml.Linq;
 
 namespace RatableTracker.ObjAddOns
 {
-    public class Status : TrackerObjectBase
+    public class Status : TrackerObjectBase, IColorContainer
     {
         [Savable("Color")] public Color Color { get; set; } = new Color();
 

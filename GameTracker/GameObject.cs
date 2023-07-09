@@ -154,7 +154,7 @@ namespace GameTracker
             get
             {
                 // has a status with MarkAsFinished = true
-                return StatusExtension.Status != null && !StatusExtension.Status.HideScoreOfModelObject;
+                return ShowScore;
             }
         }
 

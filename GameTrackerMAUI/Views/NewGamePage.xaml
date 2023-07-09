@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.NewGamePage"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:base="clr-namespace:GameTrackerMAUI"
+             xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             x:DataType="local:NewGameViewModel"
+             Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
+            <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
+            <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Content>
+        <ContentView>
+            <ScrollView>
+                <StackLayout Spacing="3" Padding="15">
+                    <Label Text="Name:" FontSize="Small" />
+                    <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
+
+                    <Label Text="Completion Status:" FontSize="Small" />
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <Picker ItemsSource="{Binding CompletionStatuses}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Status}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                        <ImageButton Source="cancel" Command="{Binding ClearStatusCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
+
+                    <Label Text="Platform:" FontSize="Small" />
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding Platform}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                        <ImageButton Source="cancel" Command="{Binding ClearPlatformCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
+
+                    <Label Text="Platform Played On:" FontSize="Small" />
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding PlatformPlayedOn}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                        <ImageButton Source="cancel" Command="{Binding ClearPlatformPlayedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
+
+                    <Label Text="Doesn't Have a Start/End:" FontSize="Small" />
+                    <Switch IsToggled="{Binding IsUnfinishable}" Margin="0,0,0,10" />
+
+                    <Label Text="Remaster/Re-release:" FontSize="Small" />
+                    <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" />
+
+                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsRemaster}">
+                        <Label Text="Original Game:" FontSize="Small" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="32" />
+                            </Grid.ColumnDefinitions>
+                            <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                            <ImageButton Source="cancel" Command="{Binding ClearOriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                        </Grid>
+                    </StackLayout>
+
+                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}">
+                        <Label Text="Use Score of Original Game:" FontSize="Small" />
+                        <Switch IsToggled="{Binding UseOriginalGameScore}" />
+                    </StackLayout>
+
+                    <Label Text="Part of a Compilation:" FontSize="Small" />
+                    <Switch IsToggled="{Binding IsPartOfCompilation}" Margin="0,0,0,10" />
+
+                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsPartOfCompilation}">
+                        <Label Text="Name of Compilation:" FontSize="Small" />
+                        <Entry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="200" />
+                    </StackLayout>
+
+                    <StackLayout Margin="0,0,0,10">
+                        <Label Text="Category Scores:" FontSize="Small" />
+                        <StackLayout BindableLayout.ItemsSource="{Binding CategoryValues, Mode=TwoWay}" BindableLayout.EmptyView="No categories specified" IsEnabled="{Binding IsUsingOriginalGameScore, Converter={StaticResource booleanInvertConverter}}" Margin="0,0,0,10">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="base:CategoryValueContainer">
+                                    <StackLayout>
+                                        <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                        <StackLayout Orientation="Horizontal">
+                                            <Slider HorizontalOptions="FillAndExpand" Minimum="0" Maximum="1" Value="{Binding CategoryValue, Mode=TwoWay, Converter={StaticResource minMaxSliderConverter}}" x:Name="slider" />
+                                            <Entry Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.#}'}" FontSize="Medium" MaxLength="10" WidthRequest="50" HorizontalOptions="Start" Keyboard="Numeric" />
+                                        </StackLayout>
+                                    </StackLayout>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+
+                        <Label Text="Final Score:" FontSize="Small" />
+                        <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" FontSize="Large" FontAttributes="Bold" Padding="5" IsVisible="{Binding ManualFinalScore, Converter={StaticResource booleanInvertConverter}}" />
+                        <Entry Text="{Binding FinalScore, Mode=TwoWay}" FontSize="Medium" IsVisible="{Binding ManualFinalScore}" Keyboard="Numeric" />
+                    </StackLayout>
+
+                    <Label Text="Manually Edit Final Score:" FontSize="Small" />
+                    <Switch IsToggled="{Binding ManualFinalScore, Mode=TwoWay}" Margin="0,0,0,10" />
+
+                    <Label Text="Completion Criteria:" FontSize="Small" />
+                    <Editor Text="{Binding CompletionCriteria, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
+
+                    <Label Text="Completion Comment:" FontSize="Small" />
+                    <Editor Text="{Binding CompletionComment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
+
+                    <Label Text="Time Spent:" FontSize="Small" />
+                    <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
+
+                    <Label Text="Release Date:" FontSize="Small" />
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker Date="{Binding ReleaseDate}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                        <ImageButton Source="cancel" Command="{Binding ClearReleaseDateCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
+
+                    <Label Text="Acquired On:" FontSize="Small" />
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                        <ImageButton Source="cancel" Command="{Binding ClearAcquiredOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
+
+                    <Label Text="{Binding StartedOnName}" FontSize="Small" />
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="32" />
+                        </Grid.ColumnDefinitions>
+                        <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                        <ImageButton Source="cancel" Command="{Binding ClearStartedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    </Grid>
+
+                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsUnfinishable, Converter={StaticResource booleanInvertConverter}}">
+                        <Label Text="Finished On:" FontSize="Small" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="32" />
+                            </Grid.ColumnDefinitions>
+                            <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                            <ImageButton Source="cancel" Command="{Binding ClearFinishedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                        </Grid>
+                    </StackLayout>
+
+                    <Label Text="Comment:" FontSize="Small" />
+                    <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="10000" AutoSize="TextChanges" />
+                </StackLayout>
+            </ScrollView>
+        </ContentView>
+    </ContentPage.Content>
+</ContentPage>
