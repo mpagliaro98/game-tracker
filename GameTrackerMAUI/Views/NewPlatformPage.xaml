@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.NewPlatformPage"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:base="clr-namespace:GameTrackerMAUI"
+             xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:cp="https://trungnt2910.github.io/schemas/maui/2022/colorpicker"
+             x:DataType="local:NewPlatformViewModel"
+             Title="{Binding Title}">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <ContentView>
+            <ScrollView>
+                <StackLayout Spacing="3" Padding="15">
+                    <Label Text="Name:" FontSize="Small" />
+                    <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
+                    <Label Text="Abbreviation:" FontSize="Small" />
+                    <Entry Text="{Binding Abbreviation, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="10" />
+                    <Label Text="Release Year:" FontSize="Small" />
+                    <Entry Text="{Binding ReleaseYear, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
+                    <Label Text="Acquired Year:" FontSize="Small" />
+                    <Entry Text="{Binding AcquiredYear, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
+                    <Label Text="Color:" FontSize="Small" />
+                    <cp:ColorPicker x:Name="colors" PickedColor="{Binding Color, Mode=TwoWay}" Margin="0,0,0,10" ColorSpectrumStyle="ShadeToHueToTintStyle" WidthRequest="300" HeightRequest="300" />
+                </StackLayout>
+            </ScrollView>
+        </ContentView>
+    </ContentPage.Content>
+</ContentPage>

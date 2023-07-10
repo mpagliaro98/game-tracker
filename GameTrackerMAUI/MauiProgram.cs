@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
+using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace GameTrackerMAUI
 {
@@ -16,6 +17,7 @@ namespace GameTrackerMAUI
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             builder.UseMauiCommunityToolkit();
+            builder.UseSkiaSharp();
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif

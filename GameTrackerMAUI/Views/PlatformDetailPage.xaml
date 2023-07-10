@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.PlatformDetailPage"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:base="clr-namespace:GameTrackerMAUI"
+             x:DataType="local:PlatformDetailViewModel"
+             Title="Platform">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ColorContainerConverter x:Key="colorContainerConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Delete" Command="{Binding DeleteCommand}" IconImageSource="delete" />
+        <ToolbarItem Text="Edit" Command="{Binding EditCommand}" IconImageSource="edit" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Name:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Large" Margin="0,0,0,10" />
+            <Label Text="Number of Games:" FontSize="Small" />
+            <Label Text="{Binding NumGames}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Average Score:" FontSize="Small" />
+            <Label Text="{Binding AverageScore, StringFormat='{0:0.####}'}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Highest Score:" FontSize="Small" />
+            <Label Text="{Binding HighestScore, StringFormat='{0:0.####}'}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Lowest Score:" FontSize="Small" />
+            <Label Text="{Binding LowestScore, StringFormat='{0:0.####}'}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Finished Games:" FontSize="Small" />
+            <Label Text="{Binding PercentageFinished, StringFormat='\{0:P2\} finished'}" FontSize="Medium" />
+            <Label Text="{Binding RatioFinished}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Top Games:" FontSize="Small" />
+            <Label Text="{Binding TopGames}" FontSize="Medium" LineBreakMode="WordWrap" Margin="0,0,0,10" />
+            <Label Text="Bottom Games:" FontSize="Small" />
+            <Label Text="{Binding BottomGames}" FontSize="Medium" LineBreakMode="WordWrap" Margin="0,0,0,10" />
+            <Label Text="Abbreviation:" FontSize="Small" />
+            <Label Text="{Binding Abbreviation}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Release Year:" FontSize="Small" />
+            <Label Text="{Binding ReleaseYear}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Acquired Year:" FontSize="Small" />
+            <Label Text="{Binding AcquiredYear}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Color:" FontSize="Small" />
+            <Rectangle BackgroundColor="{Binding Item, Converter={StaticResource colorContainerConverter}}" HeightRequest="50" WidthRequest="50" HorizontalOptions="Start" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

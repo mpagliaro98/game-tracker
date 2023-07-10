@@ -21,6 +21,9 @@ namespace GameTracker
         [Savable("ReleaseYear")] public int ReleaseYear { get; set; } = 0;
         [Savable("AcquiredYear")] public int AcquiredYear { get; set; } = 0;
 
+        public int NumGames { get { return Module.GetNumGamesByPlatform(this, Settings); } }
+        public double FinishPercent { get { return Module.GetProportionGamesFinishedByPlatform(this, Settings); } }
+
         protected new GameModule Module => (GameModule)base.Module;
         protected new SettingsGame Settings => (SettingsGame)base.Settings;
 
