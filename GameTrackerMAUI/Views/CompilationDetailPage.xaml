@@ -13,6 +13,7 @@
             <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
             <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
             <converters:ColorContainerConverter x:Key="colorContainerConverter" />
+            <converters:ColorConverter x:Key="colorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -35,7 +36,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Completion Status:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding CompletionStatus.Color}" Grid.Row="1" />
+                <Rectangle BackgroundColor="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
             </Grid>
 
@@ -49,7 +50,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding Platform.Color}" Grid.Row="1" />
+                <Rectangle BackgroundColor="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
             </Grid>
 
@@ -63,7 +64,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding PlatformPlayedOn.Color}" Grid.Row="1" />
+                <Rectangle BackgroundColor="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
             </Grid>
 
