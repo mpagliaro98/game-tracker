@@ -11,7 +11,7 @@ namespace RatableTracker.Util
         public string Name { get; protected set; }
         public DateTime CreatedOnUTC { get; protected set; }
 
-        public FileInfo(System.IO.FileInfo fileInfo) : this(fileInfo.Name + (fileInfo.Extension == "" ? "" : "." + fileInfo.Extension), fileInfo.CreationTimeUtc) { }
+        public FileInfo(System.IO.FileInfo fileInfo) : this(fileInfo.Name, fileInfo.CreationTimeUtc) { }
 
         protected FileInfo(string name, DateTime createdOnUTC)
         {

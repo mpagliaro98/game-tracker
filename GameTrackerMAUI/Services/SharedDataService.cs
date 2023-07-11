@@ -64,10 +64,10 @@ namespace GameTrackerMAUI.Services
         {
             get
             {
-                //if (FileHandlerAWSS3.KeyFileExists(pathController))
-                //    fileHandlerSaves = new FileHandlerAWSS3(pathController);
-                //else
-                _fileHandlerSaves ??= new FileHandlerLocalAppData(PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
+                if (FileHandlerAWSS3.KeyFileExists(PathController))
+                    _fileHandlerSaves ??= new FileHandlerAWSS3(PathController);
+                else
+                    _fileHandlerSaves ??= new FileHandlerLocalAppData(PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
                 return _fileHandlerSaves;
             }
         }
@@ -90,6 +90,15 @@ namespace GameTrackerMAUI.Services
                 _savedState ??= SavedState.LoadSavedState(PathController, Module, Settings, App.Logger);
                 return _savedState;
             }
+        }
+
+        public static void ResetSharedObjects()
+        {
+            _fileHandlerSaves = null;
+            _loadSave = null;
+            _settings = null;
+            _module = null;
+            App.Logger.Log("Shared objects reset");
         }
     }
 }

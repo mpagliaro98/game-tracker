@@ -1,5 +1,10 @@
-﻿using GameTrackerMAUI.Services;
+﻿using GameTracker;
+using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
+using RatableTracker.Exceptions;
+using RatableTracker.Interfaces;
+using RatableTracker.LoadSave;
+using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -49,7 +54,7 @@ namespace GameTrackerMAUI.ViewModels
         {
             MinScore = SharedDataService.Settings.MinScore.ToString();
             MaxScore = SharedDataService.Settings.MaxScore.ToString();
-            //AWSButtonText = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
+            UpdateAWSButtonText();
         }
 
         private bool ValidateSave()
@@ -95,50 +100,67 @@ namespace GameTrackerMAUI.ViewModels
             await Shell.Current.GoToAsync("..");
         }
 
+        private void UpdateAWSButtonText()
+        {
+            AWSButtonText = FileHandlerAWSS3.KeyFileExists(SharedDataService.PathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
+        }
+
         private async void OnAWS()
         {
-            //if (ContentLoadSaveAWSS3.KeyFileExists())
-            //{
-            //    // Remove key file
-            //    var result = await Util.ShowPopupAsync("Overwrite local?", "Switch back to local has started. Transfer AWS save files to local? This will overwrite anything currently on this device.", PopupViewModel.EnumInputType.YesNo);
+            if (FileHandlerAWSS3.KeyFileExists(SharedDataService.PathController))
+            {
+                // Remove key file
+                await Task.Delay(500); // without delay, popup won't open
+                var popup = new PopupMain("Overwrite local?", "Switch back to local has started. Transfer AWS save files to local? This will overwrite anything currently on this device.", PopupMain.EnumInputType.YesNo)
+                {
+                    Size = new Size(300, 200)
+                };
+                Tuple<PopupMain.EnumOutputType, string> ret = (Tuple<PopupMain.EnumOutputType, string>)await ShowPopupAsync(popup);
+                
+                IFileHandler newFileHandler = new FileHandlerLocalAppData(SharedDataService.PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
+                if (ret is not null && ret.Item1 == PopupMain.EnumOutputType.Yes)
+                {
+                    ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, SharedDataService.Factory, App.Logger));
+                    GameModule newModule = new GameModule(newLoadSave, App.Logger);
+                    App.Logger.Log("Starting transfer from AWS to local");
+                    SharedDataService.Module.TransferToNewModule(newModule, SharedDataService.Settings);
+                }
+                FileHandlerAWSS3.DeleteKeyFile(SharedDataService.PathController);
+                SharedDataService.ResetSharedObjects();
+            }
+            else
+            {
+                // Add a key file
+                var fileSelected = await FilePicker.PickAsync();
+                if (fileSelected != null)
+                {
+                    await Task.Delay(500); // without delay, popup won't open
+                    var popup = new PopupMain("Overwrite AWS?", "Switch to AWS has started. Transfer local save files to AWS? This will overwrite anything currently on your AWS account.", PopupMain.EnumInputType.YesNo)
+                    {
+                        Size = new Size(300, 200)
+                    };
+                    Tuple<PopupMain.EnumOutputType, string> ret = (Tuple<PopupMain.EnumOutputType, string>)await ShowPopupAsync(popup);
 
-            //    if (result.Item1.ToString().ToUpper() == "YES")
-            //    {
-            //        IContentLoadSave<string, string> cls = new ContentLoadSaveLocal();
-            //        IContentLoadSave<string, string> from = new ContentLoadSaveAWSS3();
-            //        await ModuleService.GetActiveModule().TransferSaveFilesAsync(from, cls);
-            //    }
-            //    ContentLoadSaveAWSS3.DeleteKeyFile();
-            //    ModuleService.ResetActiveModule();
-            //    ModuleService.GetActiveModule();
-            //}
-            //else
-            //{
-            //    // Add a key file
-            //    var fileSelected = await FilePicker.PickAsync();
-            //    if (fileSelected != null)
-            //    {
-            //        var result = await Util.ShowPopupAsync("Overwrite AWS?", "Switch to AWS has started. Transfer local save files to AWS? This will overwrite anything currently on your AWS account.", PopupViewModel.EnumInputType.YesNo);
-            //        try
-            //        {
-            //            ContentLoadSaveAWSS3.CreateKeyFile(fileSelected.FullPath);
-            //            if (result.Item1.ToString().ToUpper() == "YES")
-            //            {
-            //                IContentLoadSave<string, string> cls = new ContentLoadSaveAWSS3();
-            //                IContentLoadSave<string, string> from = new ContentLoadSaveLocal();
-            //                await ModuleService.GetActiveModule().TransferSaveFilesAsync(from, cls);
-            //            }
-            //            ModuleService.ResetActiveModule();
-            //            ModuleService.GetActiveModule();
-            //        }
-            //        catch (Exception ex)
-            //        {
-            //            await Util.ShowPopupAsync("Error", "Something went wrong.\n" + ex.Message, PopupViewModel.EnumInputType.Ok);
-            //            ContentLoadSaveAWSS3.DeleteKeyFile();
-            //        }
-            //    }
-            //}
-            //AWSButtonText = ContentLoadSaveAWSS3.KeyFileExists() ? "Switch back to local save files" : "Switch to remote save files with AWS";
+                    try
+                    {
+                        IFileHandler newFileHandler = new FileHandlerAWSS3(fileSelected.FullPath, SharedDataService.PathController);
+                        if (ret is not null && ret.Item1 == PopupMain.EnumOutputType.Yes)
+                        {
+                            ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, SharedDataService.Factory, App.Logger));
+                            GameModule newModule = new GameModule(newLoadSave, App.Logger);
+                            App.Logger.Log("Starting transfer from local to AWS");
+                            SharedDataService.Module.TransferToNewModule(newModule, SharedDataService.Settings);
+                        }
+                        SharedDataService.ResetSharedObjects();
+                    }
+                    catch (Exception ex)
+                    {
+                        await ShowPopupAsync(new PopupMain("Error", "Something went wrong.\n" + ex.Message, PopupMain.EnumInputType.Ok));
+                        FileHandlerAWSS3.DeleteKeyFile(SharedDataService.PathController);
+                    }
+                }
+            }
+            UpdateAWSButtonText();
         }
     }
 }

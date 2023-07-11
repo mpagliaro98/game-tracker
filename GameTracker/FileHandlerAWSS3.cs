@@ -10,10 +10,9 @@ using System.IO;
 using Amazon;
 using RatableTracker.Util;
 using RatableTracker.Interfaces;
-using System.Windows.Navigation;
 using System.Diagnostics;
 
-namespace GameTrackerWPF
+namespace GameTracker
 {
     public class FileHandlerAWSS3 : IFileHandler
     {
@@ -175,7 +174,7 @@ namespace GameTrackerWPF
         public byte[] LoadFile(string keyName, Logger logger)
         {
             CreateBucketIfDoesNotExist(bucketName, logger);
-            return Util.TextEncoding.GetBytes(ReadFromS3Bucket(bucketName, keyName, logger));
+            return RatableTracker.Util.Util.TextEncoding.GetBytes(ReadFromS3Bucket(bucketName, keyName, logger));
         }
 
         public void SaveFile(string keyName, byte[] data)
@@ -186,7 +185,7 @@ namespace GameTrackerWPF
         public void SaveFile(string keyName, byte[] data, Logger logger)
         {
             CreateBucketIfDoesNotExist(bucketName, logger);
-            WriteToS3Bucket(bucketName, keyName, Util.TextEncoding.GetString(data), logger);
+            WriteToS3Bucket(bucketName, keyName, RatableTracker.Util.Util.TextEncoding.GetString(data), logger);
         }
 
         private string ReadFromS3Bucket(string bucketName, string keyName, Logger logger)
