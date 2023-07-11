@@ -14,7 +14,7 @@ public partial class SettingsPage : ContentPage
 
     private async void categoryButton_Clicked(object sender, EventArgs e)
     {
-        //await Shell.Current.GoToAsync(nameof(CategoryPage));
+        await Shell.Current.GoToAsync(nameof(CategoryPage));
     }
 
     private async void rangesButton_Clicked(object sender, EventArgs e)

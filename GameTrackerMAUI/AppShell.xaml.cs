@@ -16,6 +16,9 @@ namespace GameTrackerMAUI
             Routing.RegisterRoute(nameof(EditCompilationPage), typeof(EditCompilationPage));
             Routing.RegisterRoute(nameof(AboutPage), typeof(AboutPage));
             Routing.RegisterRoute(nameof(SettingsEditPage), typeof(SettingsEditPage));
+            Routing.RegisterRoute(nameof(CategoryPage), typeof(CategoryPage));
+            Routing.RegisterRoute(nameof(CategoryDetailPage), typeof(CategoryDetailPage));
+            Routing.RegisterRoute(nameof(NewCategoryPage), typeof(NewCategoryPage));
         }
     }
 }
