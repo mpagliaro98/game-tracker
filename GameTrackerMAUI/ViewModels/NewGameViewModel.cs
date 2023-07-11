@@ -78,7 +78,6 @@ namespace GameTrackerMAUI.ViewModels
         private bool showScoreFlag;
         private BindingList<CategoryValueContainer> vals = new BindingList<CategoryValueContainer>();
         private bool showFinishedOn;
-        private string startedOnName;
 
         public string Name
         {

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.CompilationDetailPage"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:base="clr-namespace:GameTrackerMAUI"
+             xmlns:gametracker="clr-namespace:GameTracker;assembly=GameTracker"
+             x:DataType="local:CompilationDetailViewModel"
+             Title="Compilation">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
+            <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
+            <converters:ColorContainerConverter x:Key="colorContainerConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Edit" Command="{Binding EditCommand}" IconImageSource="edit" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Name:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Large" Margin="0,0,0,10" />
+
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasCompletionStatus}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Completion Status:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding CompletionStatus.Color}" Grid.Row="1" />
+                <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatform}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding Platform.Color}" Grid.Row="1" />
+                <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatformPlayedOn}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Rectangle BackgroundColor="{Binding PlatformPlayedOn.Color}" Grid.Row="1" />
+                <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+            </Grid>
+
+            <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">
+                <StackLayout IsVisible="{Binding ShowCategoryValues}">
+                    <Label Text="Category Scores:" FontSize="Small" />
+                    <StackLayout BindableLayout.ItemsSource="{Binding CategoryValues}" BindableLayout.EmptyView="No categories specified">
+                        <BindableLayout.ItemTemplate>
+                            <DataTemplate x:DataType="base:CategoryValueContainer">
+                                <StackLayout>
+                                    <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                    <StackLayout Orientation="Horizontal">
+                                        <Slider Minimum="0" Maximum="1" Value="{Binding CategoryValue, Converter={StaticResource minMaxSliderConverter}}" IsEnabled="False" HorizontalOptions="FillAndExpand" x:Name="slider" />
+                                        <Label Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.##}'}" FontSize="Medium" WidthRequest="50" HorizontalOptions="Start" />
+                                    </StackLayout>
+                                </StackLayout>
+                            </DataTemplate>
+                        </BindableLayout.ItemTemplate>
+                    </StackLayout>
+                </StackLayout>
+
+                <Label Text="Final Score:" FontSize="Small" />
+                <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
+
+                <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
+            </StackLayout>
+
+            <Label Text="Games in this Compilation:" FontSize="Small" />
+            <CollectionView ItemsSource="{Binding GamesInCompilation}" SelectionMode="None" HeightRequest="150">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5" x:DataType="gametracker:GameObject">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <Rectangle BackgroundColor="{Binding Platform, Converter={StaticResource colorContainerConverter}}" />
+                            <Label Text="{Binding Name}" Grid.Column="1"
+                            LineBreakMode="TailTruncation" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                            <Rectangle Grid.Column="2" BackgroundColor="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
+                            <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
+                            <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}"
+                               BackgroundColor="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}"
+                               FontAttributes="Bold" HorizontalTextAlignment="Center"
+                               IsVisible="{Binding ShowScore}"/>
+                            <Grid.GestureRecognizers>
+                                <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:CompilationDetailViewModel}}, Path=ItemTapped}"		
+                                CommandParameter="{Binding .}">
+                                </TapGestureRecognizer>
+                            </Grid.GestureRecognizers>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

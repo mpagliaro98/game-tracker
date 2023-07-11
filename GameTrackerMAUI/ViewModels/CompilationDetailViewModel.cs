@@ -1,7 +1,6 @@
 ﻿using GameTracker;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
-using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -14,16 +13,14 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class GameDetailViewModel : BaseViewModel
+    public class CompilationDetailViewModel : BaseViewModel
     {
-        private GameObject _item = new GameObject(SharedDataService.Settings, SharedDataService.Module);
+        private GameCompilation _item = new GameCompilation(SharedDataService.Settings, SharedDataService.Module);
 
         public Command EditCommand { get; }
-        public Command DeleteCommand { get; }
-        public Command CompilationCommand { get; }
-        public Command OriginalGameCommand { get; }
+        public Command<GameObject> ItemTapped { get; }
 
-        public GameObject Item
+        public GameCompilation Item
         {
             get => _item;
             set
@@ -36,19 +33,12 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(HasPlatform));
                 OnPropertyChanged(nameof(PlatformPlayedOn));
                 OnPropertyChanged(nameof(HasPlatformPlayedOn));
-                OnPropertyChanged(nameof(IsRemaster));
-                OnPropertyChanged(nameof(ShowStaticRemasterText));
-                OnPropertyChanged(nameof(OriginalGameName));
-                OnPropertyChanged(nameof(HasOriginalGame));
-                OnPropertyChanged(nameof(Compilation));
-                OnPropertyChanged(nameof(HasCompilation));
                 OnPropertyChanged(nameof(CategoryValues));
                 OnPropertyChanged(nameof(FinalScore));
                 OnPropertyChanged(nameof(FinalScoreColor));
                 OnPropertyChanged(nameof(Stats));
                 OnPropertyChanged(nameof(ShowCategoryValues));
-                OnPropertyChanged(nameof(FinishedOn));
-                OnPropertyChanged(nameof(StartedOnName));
+                OnPropertyChanged(nameof(GamesInCompilation));
             }
         }
 
@@ -95,42 +85,6 @@ namespace GameTrackerMAUI.ViewModels
         public bool HasPlatformPlayedOn
         {
             get => Item.PlatformPlayedOn != null;
-        }
-
-        public bool IsRemaster
-        {
-            get => Item.IsRemaster;
-        }
-
-        public bool ShowStaticRemasterText
-        {
-            get => IsRemaster && !HasOriginalGame;
-        }
-
-        public string OriginalGameName
-        {
-            get
-            {
-                if (Item.OriginalGame != null)
-                    return Item.OriginalGame.Name + (Item.OriginalGame.Platform != null ? " (" + (Item.OriginalGame.Platform.Abbreviation != "" ? Item.OriginalGame.Platform.Abbreviation : Item.OriginalGame.Platform.Name) + ")" : "");
-                else
-                    return "";
-            }
-        }
-
-        public bool HasOriginalGame
-        {
-            get => Item.OriginalGame != null;
-        }
-
-        public GameCompilation Compilation
-        {
-            get => Item.Compilation ?? new GameCompilation(SharedDataService.Settings, SharedDataService.Module);
-        }
-
-        public bool HasCompilation
-        {
-            get => Item.Compilation != null;
         }
 
         public IEnumerable<CategoryValueContainer> CategoryValues
@@ -180,29 +134,27 @@ namespace GameTrackerMAUI.ViewModels
             get => !Item.CategoryExtension.IgnoreCategories && !Item.UseOriginalGameScore;
         }
 
-        public DateTime FinishedOn
+        public IEnumerable<GameObject> GamesInCompilation
         {
-            get => Item.IsUnfinishable ? DateTime.MinValue : Item.FinishedOn;
+            get
+            {
+                if (Item.Name == "")
+                    return new List<GameObject>();
+                return Item.GamesInCompilation().OrderBy(game => game.Name.CleanForSorting()).ToList();
+            }
         }
 
-        public string StartedOnName
-        {
-            get => Item.IsUnfinishable ? "Played On:" : "Started On:";
-        }
-
-        public GameDetailViewModel()
+        public CompilationDetailViewModel()
         {
             EditCommand = new Command(OnEdit);
-            DeleteCommand = new Command(OnDelete);
-            CompilationCommand = new Command(OnCompilation);
-            OriginalGameCommand = new Command(OnOriginalGame);
+            ItemTapped = new Command<GameObject>(OnItemSelected);
         }
 
         public void LoadItemId(UniqueID itemId)
         {
             try
             {
-                Item = (GameObject)SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).First((obj) => obj.UniqueID.Equals(itemId));
+                Item = (GameCompilation)SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).First((obj) => obj.UniqueID.Equals(itemId));
             }
             catch (Exception)
             {
@@ -213,29 +165,16 @@ namespace GameTrackerMAUI.ViewModels
         async void OnEdit()
         {
             await Shell.Current.GoToAsync("..");
-            await Shell.Current.GoToAsync($"{nameof(NewGamePage)}?{nameof(NewGameViewModel.ItemId)}={Item.UniqueID}");
+            await Shell.Current.GoToAsync($"{nameof(EditCompilationPage)}?{nameof(EditCompilationViewModel.ItemId)}={Item.UniqueID}");
         }
 
-        async void OnDelete()
+        async void OnItemSelected(GameObject item)
         {
-            Tuple<PopupMain.EnumOutputType, string> ret = (Tuple<PopupMain.EnumOutputType, string>)await ShowPopupAsync(new PopupMain("Attention", "Are you sure you would like to delete this game?", PopupMain.EnumInputType.YesNo));
-            if (ret.Item1 == PopupMain.EnumOutputType.Yes)
-            {
-                Item.Delete(SharedDataService.Module, SharedDataService.Settings);
-                await Shell.Current.GoToAsync("..");
-            }
-        }
+            if (item == null)
+                return;
 
-        async void OnCompilation()
-        {
             await Shell.Current.GoToAsync("..");
-            await Shell.Current.GoToAsync($"{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={Item.Compilation.UniqueID}");
-        }
-
-        async void OnOriginalGame()
-        {
-            await Shell.Current.GoToAsync("..");
-            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(ItemId)}={Item.OriginalGame.UniqueID}");
+            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={item.UniqueID}");
         }
     }
 }

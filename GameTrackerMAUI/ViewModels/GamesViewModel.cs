@@ -112,10 +112,10 @@ namespace GameTrackerMAUI.ViewModels
             if (item == null)
                 return;
 
-            //if (item is GameCompilation)
-            //    await Shell.Current.GoToAsync($"{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={new ObjectReference(item)}");
-            //else
-            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={item.UniqueID}");
+            if (item is GameCompilation)
+                await Shell.Current.GoToAsync($"{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={item.UniqueID}");
+            else
+                await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={item.UniqueID}");
         }
 
         async void OnShowCompilations()
