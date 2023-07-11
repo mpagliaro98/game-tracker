@@ -7,6 +7,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using GameTracker;
+using GameTrackerMAUI.Model;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
 using RatableTracker.ListManipulation;
@@ -113,39 +114,41 @@ namespace GameTrackerMAUI.ViewModels
 
         private async void OnSort()
         {
-            //List<PopupListOption> options = new List<PopupListOption>()
-            //{
-            //    new PopupListOption(SortOptionsPlatform.SORT_Name, "Name"),
-            //    new PopupListOption(SortOptionsPlatform.SORT_NumGames, "# Games"),
-            //    new PopupListOption(SortOptionsPlatform.SORT_Average, "Average Score"),
-            //    new PopupListOption(SortOptionsPlatform.SORT_Highest, "Highest Score"),
-            //    new PopupListOption(SortOptionsPlatform.SORT_Lowest, "Lowest Score"),
-            //    new PopupListOption(SortOptionsPlatform.SORT_PercentFinished, "% Finished"),
-            //    new PopupListOption(SortOptionsPlatform.SORT_Release, "Release Year"),
-            //    new PopupListOption(SortOptionsPlatform.SORT_Acquired, "Acquired Year")
-            //};
+            List<PopupListOption> options = new List<PopupListOption>()
+            {
+                new PopupListOption(SortPlatforms.SORT_Name, "Name"),
+                new PopupListOption(SortPlatforms.SORT_NumGames, "# Games"),
+                new PopupListOption(SortPlatforms.SORT_Average, "Average Score"),
+                new PopupListOption(SortPlatforms.SORT_Highest, "Highest Score"),
+                new PopupListOption(SortPlatforms.SORT_Lowest, "Lowest Score"),
+                new PopupListOption(SortPlatforms.SORT_PercentFinished, "% Finished"),
+                new PopupListOption(SortPlatforms.SORT_Release, "Release Year"),
+                new PopupListOption(SortPlatforms.SORT_Acquired, "Acquired Year")
+            };
 
-            //int? selectedValue = SavedState.PlatformSortMode;
-            //if (selectedValue.Value == SortOptionsPlatform.SORT_None)
-            //    selectedValue = null;
-            //var ret = await Util.ShowPopupListAsync("Sort by", options, selectedValue);
-            //if (ret != null)
-            //{
-            //    if (ret.Item1 == PopupListViewModel.EnumOutputType.Cancel)
-            //        return;
-            //    else if (ret.Item2 == SavedState.PlatformSortMode)
-            //        SavedState.PlatformSortMode = SortOptionsPlatform.SORT_None;
-            //    else
-            //        SavedState.PlatformSortMode = ret.Item2.Value;
+            int? selectedValue = SharedDataService.SavedState.SortPlatforms.SortMethod;
+            if (selectedValue.Value == SortPlatforms.SORT_None)
+                selectedValue = null;
+            Tuple<PopupList.EnumOutputType, int?> ret = (Tuple<PopupList.EnumOutputType, int?>)await ShowPopupAsync(new PopupList("Sort by", options, selectedValue));
+            if (ret.Item1 == PopupList.EnumOutputType.Selection)
+            {
+                if (ret.Item2 is null)
+                    return;
+                else if (ret.Item2 == SharedDataService.SavedState.SortPlatforms.SortMethod)
+                    SharedDataService.SavedState.SortPlatforms.SortMethod = SortPlatforms.SORT_None;
+                else
+                    SharedDataService.SavedState.SortPlatforms.SortMethod = ret.Item2.Value;
+                SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
 
-            //    ExecuteLoadItemsCommand();
-            //}
+                ExecuteLoadItemsCommand();
+            }
         }
 
         private void OnSortDirection()
         {
             SharedDataService.SavedState.SortPlatforms.SortMode = SharedDataService.SavedState.SortPlatforms.SortMode == SortMode.Ascending ? SortMode.Descending : SortMode.Ascending;
             SetSortDirectionButton();
+            SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
             ExecuteLoadItemsCommand();
         }
 

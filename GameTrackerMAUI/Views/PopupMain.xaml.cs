@@ -7,7 +7,6 @@ public partial class PopupMain : Popup
 {
     public enum EnumInputType { Ok, YesNo, OkCancel, OkCancelWithInput }
     public enum EnumOutputType { Ok, Yes, No, Cancel }
-    public Tuple<EnumOutputType, string> ReturnValue;
 
     public PopupMain(string title, string message, EnumInputType inputType)
 	{

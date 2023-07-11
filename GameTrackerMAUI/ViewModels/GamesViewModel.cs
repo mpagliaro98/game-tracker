@@ -1,4 +1,5 @@
 ﻿using GameTracker;
+using GameTrackerMAUI.Model;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
 using RatableTracker.ListManipulation;
@@ -120,6 +121,7 @@ namespace GameTrackerMAUI.ViewModels
         async void OnShowCompilations()
         {
             SharedDataService.SavedState.FilterGames.ShowCompilations = !SharedDataService.SavedState.FilterGames.ShowCompilations;
+            SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
             ExecuteLoadItemsCommand();
             string msg = SharedDataService.SavedState.FilterGames.ShowCompilations ?
                 "Compilations are now being shown in the list, and games in compilations are hidden." :
@@ -133,48 +135,50 @@ namespace GameTrackerMAUI.ViewModels
 
         private async void OnSort()
         {
-            //List<PopupListOption> options = new List<PopupListOption>()
-            //{
-            //    new PopupListOption(SortOptionsGame.SORT_Name, "Name"),
-            //    new PopupListOption(SortOptionsGame.SORT_Status, "Completion Status"),
-            //    new PopupListOption(SortOptionsGame.SORT_Platform, "Platform"),
-            //    new PopupListOption(SortOptionsGame.SORT_PlatformPlayedOn, "Platform Played On"),
-            //    new PopupListOption(SortOptionsGame.SORT_Score, "Final Score"),
-            //    new PopupListOption(SortOptionsGame.SORT_HasComment, "Has Comment"),
-            //    new PopupListOption(SortOptionsGame.SORT_ReleaseDate, "Release Date"),
-            //    new PopupListOption(SortOptionsGame.SORT_AcquiredOn, "Acquired On"),
-            //    new PopupListOption(SortOptionsGame.SORT_StartedOn, "Started On"),
-            //    new PopupListOption(SortOptionsGame.SORT_FinishedOn, "Finished On")
-            //};
+            List<PopupListOption> options = new List<PopupListOption>()
+            {
+                new PopupListOption(SortGames.SORT_Name, "Name"),
+                new PopupListOption(SortGames.SORT_Status, "Completion Status"),
+                new PopupListOption(SortGames.SORT_Platform, "Platform"),
+                new PopupListOption(SortGames.SORT_PlatformPlayedOn, "Platform Played On"),
+                new PopupListOption(SortGames.SORT_Score, "Final Score"),
+                new PopupListOption(SortGames.SORT_HasComment, "Has Comment"),
+                new PopupListOption(SortGames.SORT_ReleaseDate, "Release Date"),
+                new PopupListOption(SortGames.SORT_AcquiredOn, "Acquired On"),
+                new PopupListOption(SortGames.SORT_StartedOn, "Started On"),
+                new PopupListOption(SortGames.SORT_FinishedOn, "Finished On")
+            };
 
-            //var module = ModuleService.GetActiveModule();
-            //int i = SortOptionsGame.SORT_CategoryStart;
-            //foreach (var cat in module.RatingCategories)
-            //{
-            //    options.Add(new PopupListOption(i++, cat.Name));
-            //}
+            var module = SharedDataService.Module;
+            int i = SortGames.SORT_CategoryStart;
+            foreach (var cat in module.CategoryExtension.GetRatingCategoryList())
+            {
+                options.Add(new PopupListOption(i++, cat.Name));
+            }
 
-            //int? selectedValue = SavedState.GameSortMode;
-            //if (selectedValue.Value == SortOptionsGame.SORT_None)
-            //    selectedValue = null;
-            //var ret = await Util.ShowPopupListAsync("Sort by", options, selectedValue);
-            //if (ret != null)
-            //{
-            //    if (ret.Item1 == PopupListViewModel.EnumOutputType.Cancel)
-            //        return;
-            //    else if (ret.Item2 == SavedState.GameSortMode)
-            //        SavedState.GameSortMode = SortOptionsGame.SORT_None;
-            //    else
-            //        SavedState.GameSortMode = ret.Item2.Value;
+            int? selectedValue = SharedDataService.SavedState.SortGames.SortMethod;
+            if (selectedValue.Value == SortGames.SORT_None)
+                selectedValue = null;
+            Tuple<PopupList.EnumOutputType, int?> ret = (Tuple<PopupList.EnumOutputType, int?>)await ShowPopupAsync(new PopupList("Sort by", options, selectedValue));
+            if (ret.Item1 == PopupList.EnumOutputType.Selection)
+            {
+                if (ret.Item2 is null)
+                    return;
+                else if (ret.Item2 == SharedDataService.SavedState.SortGames.SortMethod)
+                    SharedDataService.SavedState.SortGames.SortMethod = SortGames.SORT_None;
+                else
+                    SharedDataService.SavedState.SortGames.SortMethod = ret.Item2.Value;
+                SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
 
-            //    ExecuteLoadItemsCommand();
-            //}
+                ExecuteLoadItemsCommand();
+            }
         }
 
         private void OnSortDirection()
         {
             SharedDataService.SavedState.SortGames.SortMode = SharedDataService.SavedState.SortGames.SortMode == SortMode.Ascending ? SortMode.Descending : SortMode.Ascending;
             SetSortDirectionButton();
+            SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
             ExecuteLoadItemsCommand();
         }
 
