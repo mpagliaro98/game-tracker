@@ -24,7 +24,7 @@ public partial class SettingsPage : ContentPage
 
     private async void generalSettingsButton_Clicked(object sender, EventArgs e)
     {
-        //await Shell.Current.GoToAsync(nameof(SettingsEditPage));
+        await Shell.Current.GoToAsync(nameof(SettingsEditPage));
     }
 
     private async void aboutButton_Clicked(object sender, EventArgs e)
