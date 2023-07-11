@@ -27,7 +27,7 @@
     <TabBar>
         <ShellContent Title="Games" Icon="icon_games.png" Route="GamesPage" ContentTemplate="{DataTemplate local:GamesPage}" />
         <ShellContent Title="Platforms" Icon="icon_platforms.png" ContentTemplate="{DataTemplate local:PlatformsPage}" />
-        <!--<ShellContent Title="Settings" Icon="icon_settings.png" ContentTemplate="{DataTemplate local:SettingsPage}" />-->
+        <ShellContent Title="Settings" Icon="icon_settings.png" ContentTemplate="{DataTemplate local:SettingsPage}" />
     </TabBar>
 
 </Shell>
