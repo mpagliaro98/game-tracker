@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.ScoreRangePage"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:model="clr-namespace:RatableTracker.ScoreRanges;assembly=RatableTracker"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             x:DataType="local:ScoreRangeViewModel"
+             Title="Score Ranges">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ColorContainerConverter x:Key="colorContainerConverter" />
+            <converters:ScoreRelationshipConverter x:Key="scoreRelationshipConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
+    </ContentPage.ToolbarItems>
+    
+    <RefreshView x:DataType="local:ScoreRangeViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+        <CollectionView x:Name="ItemsListView"
+                ItemsSource="{Binding Items}"
+                SelectionMode="None">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="5" x:DataType="model:ScoreRange">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="35" />
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{Binding Name}"
+                            LineBreakMode="TailTruncation" 
+                            Style="{DynamicResource ListItemTextStyle}" 
+                            FontSize="16" />
+                        <Label Grid.Column="1" Text="{Binding ., Converter={StaticResource scoreRelationshipConverter}}"
+                            LineBreakMode="TailTruncation" />
+                        <Rectangle Grid.Column="2" BackgroundColor="{Binding ., Converter={StaticResource colorContainerConverter}}" />
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                NumberOfTapsRequired="1"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:ScoreRangeViewModel}}, Path=ItemTapped}"		
+                                CommandParameter="{Binding .}">
+                            </TapGestureRecognizer>
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </RefreshView>
+</ContentPage>

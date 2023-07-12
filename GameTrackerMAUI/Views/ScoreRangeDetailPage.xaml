@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.ScoreRangeDetailPage"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:base="clr-namespace:GameTrackerMAUI"
+             x:DataType="local:ScoreRangeDetailViewModel"
+             Title="Score Range">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ColorContainerConverter x:Key="colorContainerConverter" />
+            <converters:ScoreRelationshipConverter x:Key="scoreRelationshipConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Delete" Command="{Binding DeleteCommand}" IconImageSource="delete" />
+        <ToolbarItem Text="Edit" Command="{Binding EditCommand}" IconImageSource="edit" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Name:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Large" Margin="0,0,0,10" />
+            <Label Text="Range:" FontSize="Small" />
+            <Label Text="{Binding Item, Converter={StaticResource scoreRelationshipConverter}}" FontSize="Medium" Margin="0,0,0,10" />
+            <Label Text="Color:" FontSize="Small" />
+            <Rectangle BackgroundColor="{Binding Item, Converter={StaticResource colorContainerConverter}}" HorizontalOptions="Start" HeightRequest="50" WidthRequest="50" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

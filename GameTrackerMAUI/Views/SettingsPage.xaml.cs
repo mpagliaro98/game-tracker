@@ -19,7 +19,7 @@ public partial class SettingsPage : ContentPage
 
     private async void rangesButton_Clicked(object sender, EventArgs e)
     {
-        //await Shell.Current.GoToAsync(nameof(ScoreRangePage));
+        await Shell.Current.GoToAsync(nameof(ScoreRangePage));
     }
 
     private async void generalSettingsButton_Clicked(object sender, EventArgs e)
