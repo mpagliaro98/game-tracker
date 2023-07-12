@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.StatusDetailPage"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             x:DataType="local:StatusDetailViewModel"
+             Title="Status">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:ColorContainerConverter x:Key="colorContainerConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Delete" Command="{Binding DeleteCommand}" IconImageSource="delete" />
+        <ToolbarItem Text="Edit" Command="{Binding EditCommand}" IconImageSource="edit" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <Label Text="Name:" FontSize="Small" />
+            <Label Text="{Binding Item.Name}" FontSize="Large" Padding="0,0,0,10" />
+            <Label Text="Mark as finished:" FontSize="Small" />
+            <CheckBox IsEnabled="False" IsChecked="{Binding Item.UseAsFinished}" Margin="0,0,0,10" HorizontalOptions="Start" />
+            <Label Text="Exclude from stats:" FontSize="Small" />
+            <CheckBox IsEnabled="False" IsChecked="{Binding Item.ExcludeFromStats}" Margin="0,0,0,10" HorizontalOptions="Start" />
+            <Label Text="Color:" FontSize="Small" />
+            <Rectangle BackgroundColor="{Binding Item, Converter={StaticResource colorContainerConverter}}" HorizontalOptions="Start" HeightRequest="50" WidthRequest="50" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

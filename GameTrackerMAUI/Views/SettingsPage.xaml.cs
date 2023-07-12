@@ -9,7 +9,7 @@ public partial class SettingsPage : ContentPage
 
     private async void statusButton_Clicked(object sender, EventArgs e)
     {
-        //await Shell.Current.GoToAsync(nameof(StatusPage));
+        await Shell.Current.GoToAsync(nameof(StatusPage));
     }
 
     private async void categoryButton_Clicked(object sender, EventArgs e)
