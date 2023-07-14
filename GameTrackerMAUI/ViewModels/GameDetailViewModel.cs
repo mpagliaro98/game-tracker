@@ -177,7 +177,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public bool ShowCategoryValues
         {
-            get => !Item.CategoryExtension.IgnoreCategories && !Item.UseOriginalGameScore;
+            get => !Item.CategoryExtension.IgnoreCategories;
         }
 
         public DateTime FinishedOn
