@@ -29,7 +29,8 @@ namespace GameTrackerWPF
         private GameModule rm;
         private GameObject orig;
         private SettingsGame settings;
-        private GameCompilation comp;
+        private string compNameOriginal;
+        private string compName;
         private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
 
         public SubWindowGame(GameModule rm, SettingsGame settings, ILoadSaveHandler<ILoadSaveMethodGame> loadSave, SubWindowMode mode, GameObject orig)
@@ -39,7 +40,8 @@ namespace GameTrackerWPF
             this.orig = orig;
             this.loadSave = loadSave;
             this.settings = settings;
-            this.comp = orig.IsPartOfCompilation ? new GameCompilation(orig.Compilation) : new GameCompilation(settings, rm);
+            this.compNameOriginal = orig.IsPartOfCompilation ? orig.Compilation.Name : "";
+            this.compName = this.compNameOriginal;
 
             // initialize UI containers
             CreateRatingCategories();
@@ -68,7 +70,7 @@ namespace GameTrackerWPF
             TextBoxComments.Text = orig.Comment;
             TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
             CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
-            TextboxCompilation.Text = comp.Name;
+            TextboxCompilation.Text = this.compNameOriginal;
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;
@@ -106,7 +108,7 @@ namespace GameTrackerWPF
         {
             try
             {
-                if (CheckboxCompilation.IsChecked.Value && comp.Name.Length <= 0)
+                if (CheckboxCompilation.IsChecked.Value && this.compName.Length <= 0)
                     throw new ValidationException("Compilation must be given a name");
                 using var conn = loadSave.NewConnection();
                 if (!CheckboxCompilation.IsChecked.Value)
@@ -114,8 +116,19 @@ namespace GameTrackerWPF
                     orig.Compilation = null;
                 }
                 orig.Save(rm, settings, conn);
-                if (CheckboxCompilation.IsChecked.Value)
+                if (CheckboxCompilation.IsChecked.Value && !compName.Equals(compNameOriginal))
                 {
+                    var matches = rm.GetModelObjectList(settings).OfType<GameCompilation>().Where(c => c.Name.ToLower().Equals(compName.ToLower())).ToList();
+                    GameCompilation comp;
+                    if (matches.Count > 0)
+                        comp = matches[0];
+                    else
+                    {
+                        comp = new GameCompilation(settings, rm)
+                        {
+                            Name = compName
+                        };
+                    }
                     orig.Compilation = comp;
                     comp.Save(rm, settings, conn);
                     orig.Save(rm, settings, conn);
@@ -163,7 +176,7 @@ namespace GameTrackerWPF
             cb.Items.Add(item);
             foreach (GameObject game in rm.GetModelObjectList(settings).OfType<GameObject>().OrderBy(ro => ro.Name))
             {
-                if (game.Equals(orig) || game.Equals(comp)) continue;
+                if (game.Equals(orig) || (game.IsPartOfCompilation && game.Equals(game.Compilation))) continue;
                 cb.Items.Add(game);
             }
             cb.SelectedIndex = 0;
@@ -280,7 +293,7 @@ namespace GameTrackerWPF
 
         private void TextboxCompilation_TextChanged(object sender, TextChangedEventArgs e)
         {
-            comp.Name = TextboxCompilation.Text.Trim();
+            this.compName = TextboxCompilation.Text.Trim();
         }
 
         private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)

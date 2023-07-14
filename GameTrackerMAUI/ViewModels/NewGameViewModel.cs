@@ -21,6 +21,8 @@ namespace GameTrackerMAUI.ViewModels
     {
         private GameObject _item = new GameObject(SharedDataService.Settings, SharedDataService.Module);
         private GameCompilation _comp = new GameCompilation(SharedDataService.Settings, SharedDataService.Module);
+        private string _compNameOriginal = "";
+        private string _compName = "";
 
         public string ItemId
         {
@@ -53,7 +55,7 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(FinishedOn));
                 OnPropertyChanged(nameof(Comment));
                 OnPropertyChanged(nameof(IsRemaster));
-                OnPropertyChanged(nameof(IsPartOfCompilation));
+                IsPartOfCompilation = _item.IsPartOfCompilation;
                 OnPropertyChanged(nameof(CompName));
                 OnPropertyChanged(nameof(ManualFinalScore));
                 OnPropertyChanged(nameof(CategoryValues));
@@ -62,15 +64,6 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(OriginalGame));
                 OnPropertyChanged(nameof(UseOriginalGameScore));
                 OnPropertyChanged(nameof(IsUnfinishable));
-            }
-        }
-
-        public GameCompilation Comp
-        {
-            get => _comp;
-            set
-            {
-                SetProperty(ref _comp, value);
             }
         }
 
@@ -214,8 +207,8 @@ namespace GameTrackerMAUI.ViewModels
 
         public string CompName
         {
-            get => Comp.Name;
-            set => SetProperty(Comp.Name, value, () => Comp.Name = value);
+            get => _compName;
+            set => SetProperty(_compName, value, () => _compName = value);
         }
 
         public BindingList<CategoryValueContainer> CategoryValues
@@ -379,7 +372,7 @@ namespace GameTrackerMAUI.ViewModels
                         cv.PointValue = valUI.PointValue;
                 }
                 
-                if (IsPartOfCompilation && Comp.Name.Length <= 0)
+                if (IsPartOfCompilation && CompName.Length <= 0)
                     throw new ValidationException("Compilation must be given a name");
                 using var conn = SharedDataService.LoadSave.NewConnection();
                 if (!IsPartOfCompilation)
@@ -389,8 +382,19 @@ namespace GameTrackerMAUI.ViewModels
                 Item.Save(SharedDataService.Module, SharedDataService.Settings, conn);
                 if (IsPartOfCompilation)
                 {
-                    Item.Compilation = Comp;
-                    Comp.Save(SharedDataService.Module, SharedDataService.Settings, conn);
+                    var matches = SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).OfType<GameCompilation>().Where(c => c.Name.ToLower().Equals(CompName.ToLower())).ToList();
+                    GameCompilation comp;
+                    if (matches.Count > 0)
+                        comp = matches[0];
+                    else
+                    {
+                        comp = new GameCompilation(SharedDataService.Settings, SharedDataService.Module)
+                        {
+                            Name = CompName
+                        };
+                    }
+                    Item.Compilation = comp;
+                    comp.Save(SharedDataService.Module, SharedDataService.Settings, conn);
                     Item.Save(SharedDataService.Module, SharedDataService.Settings, conn);
                 }
             }
@@ -410,7 +414,8 @@ namespace GameTrackerMAUI.ViewModels
             {
                 var game = RatableTracker.Util.Util.FindObjectInList(SharedDataService.Module.GetModelObjectList(SharedDataService.Settings), itemId) as GameObject;
                 Item = new GameObject(game);
-                Comp = game.IsPartOfCompilation ? new GameCompilation(game.Compilation) : new GameCompilation(SharedDataService.Settings, SharedDataService.Module);
+                _compNameOriginal = game.IsPartOfCompilation ? game.Compilation.Name : "";
+                CompName = _compNameOriginal;
             }
             catch (Exception)
             {

@@ -1,6 +1,7 @@
 ﻿using GameTracker;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
+using RatableTracker.Exceptions;
 using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
@@ -17,6 +18,7 @@ namespace GameTrackerMAUI.ViewModels
     public class EditCompilationViewModel : BaseViewModel
     {
         private GameCompilation _item = new GameCompilation(SharedDataService.Settings, SharedDataService.Module);
+        private string _originalName = "";
 
         public string ItemId
         {
@@ -100,6 +102,12 @@ namespace GameTrackerMAUI.ViewModels
         {
             try
             {
+                if (Name.Length > 0 && !Name.Equals(_originalName))
+                {
+                    var matches = SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).OfType<GameCompilation>().Where(c => c.Name.ToLower().Equals(Name.ToLower())).ToList();
+                    if (matches.Count > 0)
+                        throw new ValidationException("A compilation with that name already exists");
+                }
                 Item.Save(SharedDataService.Module, SharedDataService.Settings);
             }
             catch (Exception ex)
@@ -117,6 +125,7 @@ namespace GameTrackerMAUI.ViewModels
             try
             {
                 Item = (GameCompilation)SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).First((obj) => obj.UniqueID.Equals(itemId));
+                _originalName = Item.Name;
             }
             catch (Exception)
             {

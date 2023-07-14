@@ -28,6 +28,7 @@ namespace GameTrackerWPF
         private GameModule rm;
         private SettingsGame settings;
         private GameCompilation orig;
+        private string originalName;
 
         public SubWindowCompilation(GameModule rm, SettingsGame settings, SubWindowMode mode, GameCompilation orig)
         {
@@ -35,6 +36,7 @@ namespace GameTrackerWPF
             this.rm = rm;
             this.settings = settings;
             this.orig = orig;
+            this.originalName = orig.Name;
 
             // initialize UI containers
             CreateRatingCategories();
@@ -72,6 +74,12 @@ namespace GameTrackerWPF
         {
             try
             {
+                if (orig.Name.Length > 0 && !Name.Equals(originalName))
+                {
+                    var matches = rm.GetModelObjectList(settings).OfType<GameCompilation>().Where(c => c.Name.ToLower().Equals(orig.Name.ToLower())).ToList();
+                    if (matches.Count > 0)
+                        throw new ValidationException("A compilation with that name already exists");
+                }
                 orig.Save(rm, settings);
             }
             catch (Exception ex)
