@@ -1,4 +1,7 @@
-﻿using System;
+﻿using CommunityToolkit.Maui.Views;
+using GameTrackerMAUI.Model;
+using GameTrackerMAUI.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,5 +30,22 @@ namespace GameTrackerMAUI
         {
             return Color.FromRgba(color.R, color.G, color.B, color.A);
         }
+
+#nullable enable
+        public static async Task<object?> ShowPopupAsync<T>(T popup) where T : Popup
+        {
+            return await Shell.Current.CurrentPage.ShowPopupAsync(popup);
+        }
+
+        public static async Task<Tuple<PopupMain.EnumOutputType, string>?> ShowPopupMainAsync(string title, string message, PopupMain.EnumInputType inputType)
+        {
+            return (Tuple<PopupMain.EnumOutputType, string>?)await ShowPopupAsync(new PopupMain(title, message, inputType));
+        }
+
+        public static async Task<Tuple<PopupList.EnumOutputType, int?>?> ShowPopupListAsync(string title, IEnumerable<PopupListOption> options, int? selectedValue)
+        {
+            return (Tuple<PopupList.EnumOutputType, int?>?)await ShowPopupAsync(new PopupList(title, options, selectedValue));
+        }
+#nullable disable
     }
 }

@@ -1,4 +1,6 @@
 ﻿using CommunityToolkit.Maui.Views;
+using GameTrackerMAUI.Model;
+using GameTrackerMAUI.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -61,12 +63,5 @@ namespace GameTrackerMAUI.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
-#nullable enable
-        protected static async Task<object?> ShowPopupAsync<T>(T popup) where T : Popup
-        {
-            return await Shell.Current.CurrentPage.ShowPopupAsync(popup);
-        }
-#nullable disable
     }
 }

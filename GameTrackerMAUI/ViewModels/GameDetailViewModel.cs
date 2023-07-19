@@ -218,7 +218,7 @@ namespace GameTrackerMAUI.ViewModels
 
         async void OnDelete()
         {
-            Tuple<PopupMain.EnumOutputType, string> ret = (Tuple<PopupMain.EnumOutputType, string>)await ShowPopupAsync(new PopupMain("Attention", "Are you sure you would like to delete this game?", PopupMain.EnumInputType.YesNo));
+            var ret = await UtilMAUI.ShowPopupMainAsync("Attention", "Are you sure you would like to delete this game?", PopupMain.EnumInputType.YesNo);
             if (ret.Item1 == PopupMain.EnumOutputType.Yes)
             {
                 Item.Delete(SharedDataService.Module, SharedDataService.Settings);

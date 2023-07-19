@@ -130,7 +130,7 @@ namespace GameTrackerMAUI.ViewModels
             {
                 Size = new Size(300, 200)
             };
-            await ShowPopupAsync(popup);
+            await UtilMAUI.ShowPopupAsync(popup);
         }
 
         private async void OnSort()
@@ -159,7 +159,7 @@ namespace GameTrackerMAUI.ViewModels
             int? selectedValue = SharedDataService.SavedState.SortGames.SortMethod;
             if (selectedValue.Value == SortGames.SORT_None)
                 selectedValue = null;
-            Tuple<PopupList.EnumOutputType, int?> ret = (Tuple<PopupList.EnumOutputType, int?>)await ShowPopupAsync(new PopupList("Sort by", options, selectedValue));
+            var ret = await UtilMAUI.ShowPopupListAsync("Sort by", options, selectedValue);
             if (ret.Item1 == PopupList.EnumOutputType.Selection)
             {
                 if (ret.Item2 is null)

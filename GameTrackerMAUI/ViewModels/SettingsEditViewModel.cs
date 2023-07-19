@@ -76,7 +76,7 @@ namespace GameTrackerMAUI.ViewModels
                 {
                     Size = new Size(300, 200)
                 };
-                Tuple<PopupMain.EnumOutputType, string> ret = (Tuple<PopupMain.EnumOutputType, string>)await ShowPopupAsync(popup);
+                var ret = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
 
                 if (ret is null || ret.Item1 != PopupMain.EnumOutputType.Yes)
                 {
@@ -92,8 +92,7 @@ namespace GameTrackerMAUI.ViewModels
             }
             catch (Exception ex)
             {
-                var popup = new PopupMain("Unable to Save", ex.Message, PopupMain.EnumInputType.Ok);
-                await ShowPopupAsync(popup);
+                await UtilMAUI.ShowPopupMainAsync("Unable to Save", ex.Message, PopupMain.EnumInputType.Ok);
                 return;
             }
 
@@ -115,7 +114,7 @@ namespace GameTrackerMAUI.ViewModels
                 {
                     Size = new Size(300, 200)
                 };
-                Tuple<PopupMain.EnumOutputType, string> ret = (Tuple<PopupMain.EnumOutputType, string>)await ShowPopupAsync(popup);
+                var ret = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
                 
                 IFileHandler newFileHandler = new FileHandlerLocalAppData(SharedDataService.PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
                 if (ret is not null && ret.Item1 == PopupMain.EnumOutputType.Yes)
@@ -139,7 +138,7 @@ namespace GameTrackerMAUI.ViewModels
                     {
                         Size = new Size(300, 200)
                     };
-                    Tuple<PopupMain.EnumOutputType, string> ret = (Tuple<PopupMain.EnumOutputType, string>)await ShowPopupAsync(popup);
+                    var ret = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
 
                     try
                     {
@@ -155,7 +154,7 @@ namespace GameTrackerMAUI.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        await ShowPopupAsync(new PopupMain("Error", "Something went wrong.\n" + ex.Message, PopupMain.EnumInputType.Ok));
+                        await UtilMAUI.ShowPopupMainAsync("Error", "Something went wrong.\n" + ex.Message, PopupMain.EnumInputType.Ok);
                         FileHandlerAWSS3.DeleteKeyFile(SharedDataService.PathController);
                     }
                 }
