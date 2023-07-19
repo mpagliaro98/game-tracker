@@ -9,6 +9,10 @@ MIN_SCORE = 0
 CATEGORIES = []
 
 
+def fix_newlines(text):
+    return text.replace("\n", "\\r")
+
+
 def migrate_games(path):
     result_path = os.path.join(path, MIGRATED_FOLDER)
     if not os.path.exists(result_path):
@@ -19,7 +23,7 @@ def migrate_games(path):
     result_json = []
     if os.path.exists(file_path):
         f = open(file_path, "r")
-        json_array = json.loads(f.read())
+        json_array = json.loads(fix_newlines(f.read()))
         f.close()
         for game in json_array:
             new_game = {}
@@ -90,7 +94,7 @@ def migrate_games(path):
     file_path = os.path.join(path, "compilations.json")
     if os.path.exists(file_path):
         f = open(file_path, "r")
-        json_array = json.loads(f.read())
+        json_array = json.loads(fix_newlines(f.read()))
         f.close()
         for game in json_array:
             new_game = {}
@@ -161,7 +165,7 @@ def migrate_statuses(path):
     result_json = []
     if os.path.exists(file_path):
         f = open(file_path, "r")
-        json_array = json.loads(f.read())
+        json_array = json.loads(fix_newlines(f.read()))
         f.close()
         for game in json_array:
             new_game = {}
@@ -195,7 +199,7 @@ def migrate_platforms(path):
     result_json = []
     if os.path.exists(file_path):
         f = open(file_path, "r")
-        json_array = json.loads(f.read())
+        json_array = json.loads(fix_newlines(f.read()))
         f.close()
         for game in json_array:
             new_game = {}
@@ -232,7 +236,7 @@ def migrate_categories(path):
     result_json = []
     if os.path.exists(file_path):
         f = open(file_path, "r")
-        json_array = json.loads(f.read())
+        json_array = json.loads(fix_newlines(f.read()))
         f.close()
         for game in json_array:
             new_cat = {}
@@ -265,7 +269,7 @@ def migrate_ranges(path):
     result_json = []
     if os.path.exists(file_path):
         f = open(file_path, "r")
-        json_array = json.loads(f.read())
+        json_array = json.loads(fix_newlines(f.read()))
         f.close()
         for game in json_array:
             new_game = {}
@@ -306,14 +310,16 @@ def migrate_settings(path):
     result_json["TypeName"] = "SettingsGame"
     if os.path.exists(file_path):
         f = open(file_path, "r")
-        json_object = json.loads(f.read())
+        file_text = fix_newlines(f.read())
         f.close()
-        for key in json_object:
-            if key == "minScore":
-                result_json["MinScore"] = json_object[key]
-                MIN_SCORE = json_object[key]
-            elif key == "maxScore":
-                result_json["MaxScore"] = json_object[key]
+        if len(file_text) > 0:
+            json_object = json.loads(file_text)
+            for key in json_object:
+                if key == "minScore":
+                    result_json["MinScore"] = json_object[key]
+                    MIN_SCORE = json_object[key]
+                elif key == "maxScore":
+                    result_json["MaxScore"] = json_object[key]
     
     file_content = json.dumps(result_json)
     f = open(result_file_path, "w")
@@ -336,6 +342,7 @@ def main():
     migrate_statuses(args.path)
     migrate_platforms(args.path)
     migrate_ranges(args.path)
+    print("Recommendation: transfer new saves to AWS and back")
 
 
 if __name__ == '__main__':
