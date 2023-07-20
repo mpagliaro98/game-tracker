@@ -10,5 +10,16 @@ namespace GameTracker
     public static class Util
     {
         public static VersionNumber GameTrackerVersion => new VersionNumber(2, 0, 0, 0);
+
+        public static string StatusUsageToString(this StatusUsage statusUsage)
+        {
+            return statusUsage switch
+            {
+                StatusUsage.AllGames => "All games",
+                StatusUsage.FinishableGamesOnly => "Games with a start/end only",
+                StatusUsage.UnfinishableGamesOnly => "Games with no start/end only",
+                _ => "",
+            };
+        }
     }
 }

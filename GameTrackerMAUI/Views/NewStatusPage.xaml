@@ -8,6 +8,12 @@
              x:DataType="local:NewStatusViewModel"
              xmlns:cp="https://trungnt2910.github.io/schemas/maui/2022/colorpicker"
              Title="{Binding Title}">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:StatusUsageNameConverter x:Key="statusUsageNameConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />
     </ContentPage.ToolbarItems>
@@ -22,6 +28,8 @@
                     <CheckBox IsChecked="{Binding UseAsFinished, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
                     <Label Text="Exclude from stats:" FontSize="Small" />
                     <CheckBox IsChecked="{Binding ExcludeFromStats, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                    <Label Text="What games this status can apply to:" FontSize="Small" />
+                    <Picker ItemsSource="{Binding StatusUsageValues}" ItemDisplayBinding="{Binding ., Converter={StaticResource statusUsageNameConverter}}" SelectedItem="{Binding StatusUsage}" Title="Select One" Margin="0,0,0,10" />
                     <Label Text="Color:" FontSize="Small" />
                     <cp:ColorPicker x:Name="colors" PickedColor="{Binding Color, Mode=TwoWay}" Margin="0,0,0,10" ColorSpectrumStyle="ShadeToHueToTintStyle" WidthRequest="300" HeightRequest="300" />
                 </StackLayout>

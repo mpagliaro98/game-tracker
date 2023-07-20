@@ -26,6 +26,8 @@
             <CheckBox IsEnabled="False" IsChecked="{Binding Item.UseAsFinished}" Margin="0,0,0,10" HorizontalOptions="Start" />
             <Label Text="Exclude from stats:" FontSize="Small" />
             <CheckBox IsEnabled="False" IsChecked="{Binding Item.ExcludeFromStats}" Margin="0,0,0,10" HorizontalOptions="Start" />
+            <Label Text="What games this status can apply to:" FontSize="Small" />
+            <Label Text="{Binding StatusUsageName}" FontSize="Medium" Padding="0,0,0,10" />
             <Label Text="Color:" FontSize="Small" />
             <Rectangle BackgroundColor="{Binding Item, Converter={StaticResource colorContainerConverter}}" HorizontalOptions="Start" HeightRequest="50" WidthRequest="50" />
         </StackLayout>

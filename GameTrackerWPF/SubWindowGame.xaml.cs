@@ -144,15 +144,26 @@ namespace GameTrackerWPF
 
         private void FillComboboxStatuses(ComboBox cb)
         {
+            Status previousSelection = cb.SelectedIndex > 0 ? (Status)cb.SelectedItem : null;
             cb.Items.Clear();
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (Status cs in rm.StatusExtension.GetStatusList().OrderBy(s => s.Name))
+            foreach (StatusGame cs in rm.StatusExtension.GetStatusList().OfType<StatusGame>().OrderBy(s => s.Name))
             {
-                cb.Items.Add(cs);
+                if ((orig.IsUnfinishable && cs.StatusUsage == StatusUsage.UnfinishableGamesOnly) ||
+                    (!orig.IsUnfinishable && cs.StatusUsage == StatusUsage.FinishableGamesOnly) ||
+                    cs.StatusUsage == StatusUsage.AllGames)
+                {
+                    cb.Items.Add(cs);
+                }
             }
-            cb.SelectedIndex = 0;
+            if (previousSelection != null)
+                cb.SelectedItem = previousSelection;
+            else
+                cb.SelectedIndex = 0;
+            if (cb.SelectedItem == null)
+                cb.SelectedIndex = 0;
         }
 
         private void FillComboboxPlatforms(ComboBox cb)
@@ -252,6 +263,7 @@ namespace GameTrackerWPF
         {
             orig.IsUnfinishable = CheckboxUnfinishable.IsChecked.Value;
             UpdateDateFieldVisibility();
+            FillComboboxStatuses(ComboBoxStatus);
         }
 
         private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)

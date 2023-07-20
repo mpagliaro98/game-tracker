@@ -22,7 +22,11 @@ namespace GameTrackerMAUI.ViewModels
         public StatusGame Item
         {
             get => _item;
-            set => SetProperty(ref _item, value);
+            set
+            {
+                SetProperty(ref _item, value);
+                OnPropertyChanged(nameof(StatusUsageName));
+            }
         }
 
         public string ItemId
@@ -33,6 +37,11 @@ namespace GameTrackerMAUI.ViewModels
                 var key = UniqueID.Parse(value);
                 LoadItemId(key);
             }
+        }
+
+        public string StatusUsageName
+        {
+            get => Item.StatusUsage.StatusUsageToString();
         }
 
         public StatusDetailViewModel()

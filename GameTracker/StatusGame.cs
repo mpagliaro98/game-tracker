@@ -10,10 +10,18 @@ using System.Threading.Tasks;
 
 namespace GameTracker
 {
+    public enum StatusUsage : int
+    {
+        UnfinishableGamesOnly = 1,
+        FinishableGamesOnly = 2,
+        AllGames = 3
+    }
+
     public class StatusGame : Status
     {
-        [Savable()] public bool UseAsFinished { get; set; } = false;
-        [Savable()] public bool ExcludeFromStats { get; set; } = false;
+        [Savable] public bool UseAsFinished { get; set; } = false;
+        [Savable] public bool ExcludeFromStats { get; set; } = false;
+        [Savable(HandleLoadManually = true, HandleRestoreManually = true)] public StatusUsage StatusUsage { get; set; } = StatusUsage.AllGames;
 
         public override bool HideScoreOfModelObject
         {
@@ -33,6 +41,24 @@ namespace GameTracker
         {
             UseAsFinished = copyFrom.UseAsFinished;
             ExcludeFromStats = copyFrom.ExcludeFromStats;
+            StatusUsage = copyFrom.StatusUsage;
+        }
+
+        protected override void LoadHandleManually(ref SavableRepresentation sr, string key)
+        {
+            base.LoadHandleManually(ref sr, key);
+            if (key == "StatusUsage") sr.SaveValue(key, new ValueContainer(StatusUsage.ToString()));
+        }
+
+        protected override void RestoreHandleManually(SavableRepresentation sr, string key)
+        {
+            base.RestoreHandleManually(sr, key);
+            switch (key)
+            {
+                case "StatusUsage":
+                    StatusUsage = Enum.Parse<StatusUsage>(sr.GetValue(key).GetString());
+                    break;
+            }
         }
     }
 }

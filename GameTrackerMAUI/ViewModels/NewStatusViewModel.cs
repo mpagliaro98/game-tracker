@@ -37,6 +37,7 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(UseAsFinished));
                 OnPropertyChanged(nameof(ExcludeFromStats));
                 OnPropertyChanged(nameof(Color));
+                OnPropertyChanged(nameof(StatusUsage));
             }
         }
 
@@ -62,6 +63,17 @@ namespace GameTrackerMAUI.ViewModels
         {
             get => Item.Color.ToMAUIColor();
             set => SetProperty(Item.Color, value.ToFrameworkColor(), () => Item.Color = value.ToFrameworkColor());
+        }
+
+        public StatusUsage StatusUsage
+        {
+            get => Item.StatusUsage;
+            set => SetProperty(Item.StatusUsage, value, () => Item.StatusUsage = value);
+        }
+
+        public IEnumerable<StatusUsage> StatusUsageValues
+        {
+            get => Enum.GetValues<StatusUsage>().AsEnumerable();
         }
 
         public Command SaveCommand { get; }

@@ -43,7 +43,6 @@ namespace GameTrackerMAUI.ViewModels
                 Title = "Edit Game";
                 CategoryValues = InitCategoryValues();
                 OnPropertyChanged(nameof(Name));
-                OnPropertyChanged(nameof(Status));
                 OnPropertyChanged(nameof(Platform));
                 OnPropertyChanged(nameof(PlatformPlayedOn));
                 OnPropertyChanged(nameof(CompletionCriteria));
@@ -64,6 +63,8 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(OriginalGame));
                 OnPropertyChanged(nameof(UseOriginalGameScore));
                 OnPropertyChanged(nameof(IsUnfinishable));
+                OnPropertyChanged(nameof(CompletionStatuses));
+                OnPropertyChanged(nameof(Status));
             }
         }
 
@@ -86,7 +87,13 @@ namespace GameTrackerMAUI.ViewModels
 
         public IEnumerable<Status> CompletionStatuses
         {
-            get => SharedDataService.Module.StatusExtension.GetStatusList().OrderBy(s => s.Name).ToList();
+            get => SharedDataService.Module.StatusExtension.GetStatusList()
+                .OfType<StatusGame>()
+                .Where(s => (IsUnfinishable && s.StatusUsage == StatusUsage.UnfinishableGamesOnly) ||
+                            (!IsUnfinishable && s.StatusUsage == StatusUsage.FinishableGamesOnly) ||
+                            s.StatusUsage == StatusUsage.AllGames)
+                .OrderBy(s => s.Name)
+                .ToList();
         }
 
         public GameTracker.Platform Platform
@@ -247,6 +254,9 @@ namespace GameTrackerMAUI.ViewModels
                 SetProperty(Item.IsUnfinishable, value, () => Item.IsUnfinishable = value);
                 ShowFinishedOn = !value;
                 OnPropertyChanged(nameof(StartedOnName));
+                var previousStatus = Status;
+                OnPropertyChanged(nameof(CompletionStatuses));
+                Status = CompletionStatuses.Contains(previousStatus) ? previousStatus : null;
             }
         }
 

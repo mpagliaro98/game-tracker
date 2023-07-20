@@ -33,6 +33,7 @@ namespace GameTrackerWPF
             this.settings = settings;
 
             // initialize UI containers
+            FillCombobox();
             ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
 
             // set fields in the UI
@@ -40,6 +41,7 @@ namespace GameTrackerWPF
             ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
             CheckboxUseAsFinished.IsChecked = orig.UseAsFinished;
             CheckboxExcludeFromStats.IsChecked = orig.ExcludeFromStats;
+            ComboboxUsage.SelectedValue = orig.StatusUsage;
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;
@@ -48,6 +50,7 @@ namespace GameTrackerWPF
             CheckboxUseAsFinished.Unchecked += CheckboxUseAsFinished_Checked;
             CheckboxExcludeFromStats.Checked += CheckboxExcludeFromStats_Checked;
             CheckboxExcludeFromStats.Unchecked += CheckboxExcludeFromStats_Checked;
+            ComboboxUsage.SelectionChanged += ComboboxUsage_SelectionChanged;
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -62,6 +65,18 @@ namespace GameTrackerWPF
                 return;
             }
             Close();
+        }
+
+        private void FillCombobox()
+        {
+            ComboboxUsage.Items.Clear();
+            ComboboxUsage.SelectedValuePath = "Key";
+            ComboboxUsage.DisplayMemberPath = "Value";
+            foreach (var usage in Enum.GetValues<StatusUsage>())
+            {
+                ComboboxUsage.Items.Add(new KeyValuePair<StatusUsage, string>(usage, usage.StatusUsageToString()));
+            }
+            ComboboxUsage.SelectedValue = StatusUsage.AllGames;
         }
 
         private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
@@ -82,6 +97,11 @@ namespace GameTrackerWPF
         private void CheckboxExcludeFromStats_Checked(object sender, RoutedEventArgs e)
         {
             orig.ExcludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
+        }
+
+        private void ComboboxUsage_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            orig.StatusUsage = (StatusUsage)ComboboxUsage.SelectedValue;
         }
     }
 }
