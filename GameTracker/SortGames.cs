@@ -49,7 +49,7 @@ namespace GameTracker
                     sortFunction = obj => ((GameObject)obj).StartedOn;
                     break;
                 case SORT_FinishedOn:
-                    sortFunction = obj => ((GameObject)obj).FinishedOn;
+                    sortFunction = obj => ((GameObject)obj).IsUnfinishable ? ((GameObject)obj).StartedOn : ((GameObject)obj).FinishedOn;
                     break;
             }
             return sortFunction;
