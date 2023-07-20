@@ -15,7 +15,7 @@ namespace RatableTracker.Model
     {
         public static int MaxLengthComment => 10000;
 
-        [Savable("Comment")] public string Comment { get; set; } = "";
+        [Savable()] public string Comment { get; set; } = "";
 
         public virtual int Rank
         {
@@ -26,7 +26,7 @@ namespace RatableTracker.Model
             }
         }
 
-        [Savable("SortOrder", SaveOnly = true)]
+        [Savable(SaveOnly = true)]
         protected internal int SortOrder
         {
             get

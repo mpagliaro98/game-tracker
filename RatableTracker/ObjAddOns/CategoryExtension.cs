@@ -32,7 +32,7 @@ namespace RatableTracker.ObjAddOns
 
         public virtual IList<CategoryValue> CategoryValuesDisplay { get { return CategoryValueList; } }
 
-        [Savable("IgnoreCategories")] public bool IgnoreCategories { get; set; } = false;
+        [Savable()] public bool IgnoreCategories { get; set; } = false;
         public virtual bool AreCategoryValuesEditable { get { return !IgnoreCategories; } }
 
         protected new CategoryExtensionModule Module => (CategoryExtensionModule)base.Module;

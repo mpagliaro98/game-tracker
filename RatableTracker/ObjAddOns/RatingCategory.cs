@@ -16,7 +16,7 @@ namespace RatableTracker.ObjAddOns
     {
         public static int MaxLengthComment => 4000;
 
-        [Savable("Comment")] public string Comment { get; set; } = "";
+        [Savable()] public string Comment { get; set; } = "";
         public double Weight { get; protected set; } = 1.0;
 
         protected new IModuleCategorical Module => (IModuleCategorical)base.Module;

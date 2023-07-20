@@ -12,8 +12,8 @@ namespace GameTracker
 {
     public class StatusGame : Status
     {
-        [Savable("UseAsFinished")] public bool UseAsFinished { get; set; } = false;
-        [Savable("ExcludeFromStats")] public bool ExcludeFromStats { get; set; } = false;
+        [Savable()] public bool UseAsFinished { get; set; } = false;
+        [Savable()] public bool ExcludeFromStats { get; set; } = false;
 
         public override bool HideScoreOfModelObject
         {

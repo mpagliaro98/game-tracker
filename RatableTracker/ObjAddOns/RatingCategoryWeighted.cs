@@ -11,7 +11,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class RatingCategoryWeighted : RatingCategory
     {
-        [Savable("Weight")] public new double Weight { get => base.Weight; set => base.Weight = value; }
+        [Savable()] public new double Weight { get => base.Weight; set => base.Weight = value; }
 
         public RatingCategoryWeighted(IModuleCategorical module, SettingsScore settings) : base(module, settings) { }
 

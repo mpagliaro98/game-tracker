@@ -16,7 +16,7 @@ namespace RatableTracker.Util
         // save min/max score changes to temporary variables until Save is called
         private double _minScore = 0;
         private double _tempMinScore = 0;
-        [Savable("MinScore", HandleRestoreManually = true)] public double MinScore
+        [Savable(HandleRestoreManually = true)] public double MinScore
         {
             get { return _minScore; }
             set { _tempMinScore = value; }
@@ -24,7 +24,7 @@ namespace RatableTracker.Util
 
         private double _maxScore = 10;
         private double _tempMaxScore = 10;
-        [Savable("MaxScore", HandleRestoreManually = true)] public double MaxScore
+        [Savable(HandleRestoreManually = true)] public double MaxScore
         {
             get { return _maxScore; }
             set { _tempMaxScore = value; }

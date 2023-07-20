@@ -17,9 +17,9 @@ namespace RatableTracker.Model
     {
         public static int MaxLengthName => 200;
 
-        [Savable("Name")] public string Name { get; set; } = "";
+        [Savable()] public string Name { get; set; } = "";
 
-        [Savable("UniqueID")] public UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
+        [Savable()] public UniqueID UniqueID { get; protected set; } = UniqueID.NewID();
 
         protected Settings Settings { get; init; }
         protected TrackerModule Module { get; init; }

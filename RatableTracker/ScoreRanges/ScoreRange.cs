@@ -15,8 +15,8 @@ namespace RatableTracker.ScoreRanges
 {
     public class ScoreRange : TrackerObjectBase, IColorContainer
     {
-        [Savable("ValueList")] public IList<double> ValueList { get; set; }
-        [Savable("Color")] public Color Color { get; set; } = new Color();
+        [Savable()] public IList<double> ValueList { get; set; }
+        [Savable()] public Color Color { get; set; } = new Color();
 
         [Savable("ScoreRelationship")] private UniqueID _scoreRelationship = UniqueID.BlankID();
         public ScoreRelationship ScoreRelationship

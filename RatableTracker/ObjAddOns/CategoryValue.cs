@@ -24,7 +24,7 @@ namespace RatableTracker.ObjAddOns
             }
         }
 
-        [Savable("PointValue")] public double PointValue { get; set; } = 0;
+        [Savable()] public double PointValue { get; set; } = 0;
 
         private CategoryExtensionModule Module { get; init; }
         private SettingsScore Settings { get; init; }

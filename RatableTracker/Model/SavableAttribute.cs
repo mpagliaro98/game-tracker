@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +15,7 @@ namespace RatableTracker.Model
         public bool HandleRestoreManually { get; set; } = false;
         public bool SaveOnly { get; set; } = false;
 
-        public SavableAttribute(string key)
+        public SavableAttribute([CallerMemberName] string key = "")
         {
             Key = key;
         }

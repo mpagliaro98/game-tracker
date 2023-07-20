@@ -23,18 +23,18 @@ namespace GameTracker
 
         public new CategoryExtensionGame CategoryExtension { get { return (CategoryExtensionGame)base.CategoryExtension; } }
 
-        [Savable("CompletionCriteria")] public string CompletionCriteria { get; set; } = "";
-        [Savable("CompletionComment")] public string CompletionComment { get; set; } = "";
-        [Savable("TimeSpent")] public string TimeSpent { get; set; } = "";
-        [Savable("ReleaseDate")] public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
-        [Savable("AcquiredOn")] public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
-        [Savable("StartedOn")] public DateTime StartedOn { get; set; } = DateTime.MinValue;
-        [Savable("FinishedOn")] public DateTime FinishedOn { get; set; } = DateTime.MinValue;
-        [Savable("IsRemaster")] public virtual bool IsRemaster { get; set; } = false;
-        [Savable("UseOriginalGameScore")] public virtual bool UseOriginalGameScore { get; set; } = false;
-        [Savable("IsPartOfCompilation", SaveOnly = true)] public virtual bool IsPartOfCompilation { get { return _compilation.HasValue(); } }
-        [Savable("IsCompilation", SaveOnly = true)] public virtual bool IsCompilation { get { return false; } }
-        [Savable("IsUnfinishable")] public bool IsUnfinishable { get; set; } = false;
+        [Savable()] public string CompletionCriteria { get; set; } = "";
+        [Savable()] public string CompletionComment { get; set; } = "";
+        [Savable()] public string TimeSpent { get; set; } = "";
+        [Savable()] public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
+        [Savable()] public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
+        [Savable()] public DateTime StartedOn { get; set; } = DateTime.MinValue;
+        [Savable()] public DateTime FinishedOn { get; set; } = DateTime.MinValue;
+        [Savable()] public virtual bool IsRemaster { get; set; } = false;
+        [Savable()] public virtual bool UseOriginalGameScore { get; set; } = false;
+        [Savable(SaveOnly = true)] public virtual bool IsPartOfCompilation { get { return _compilation.HasValue(); } }
+        [Savable(SaveOnly = true)] public virtual bool IsCompilation { get { return false; } }
+        [Savable()] public bool IsUnfinishable { get; set; } = false;
 
         public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }

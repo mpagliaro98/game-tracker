@@ -19,7 +19,7 @@ namespace RatableTracker.Model
             get { return ManualScore; }
         }
 
-        [Savable("ManualScore")] public double ManualScore { get; set; } = 0;
+        [Savable()] public double ManualScore { get; set; } = 0;
 
         public virtual ScoreRange ScoreRange { get { return GetScoreRange(Score); } }
         public virtual ScoreRange ScoreRangeDisplay { get { return GetScoreRange(ScoreDisplay); } }

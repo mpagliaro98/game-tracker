@@ -15,7 +15,7 @@ namespace RatableTracker.ObjAddOns
 {
     public class Status : TrackerObjectBase, IColorContainer
     {
-        [Savable("Color")] public Color Color { get; set; } = new Color();
+        [Savable()] public Color Color { get; set; } = new Color();
 
         public virtual bool HideScoreOfModelObject { get { return false; } }
         public virtual bool ExcludeModelObjectFromStats { get { return false; } }
