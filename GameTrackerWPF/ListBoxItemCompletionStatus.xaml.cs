@@ -33,7 +33,6 @@ namespace GameTrackerWPF
             this.cs = cs;
             LabelName.Content = cs.Name;
             CheckboxUseAsFinished.IsChecked = cs.UseAsFinished;
-            CheckboxExcludeFromStats.IsChecked = cs.ExcludeFromStats;
             RectangeColor.Fill = new SolidColorBrush(cs.Color.ToMediaColor());
         }
     }

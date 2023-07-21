@@ -40,7 +40,6 @@ namespace GameTrackerWPF
             TextboxName.Text = orig.Name;
             ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
             CheckboxUseAsFinished.IsChecked = orig.UseAsFinished;
-            CheckboxExcludeFromStats.IsChecked = orig.ExcludeFromStats;
             ComboboxUsage.SelectedValue = orig.StatusUsage;
 
             // set event handlers
@@ -48,8 +47,6 @@ namespace GameTrackerWPF
             ColorPickerColor.SelectedColorChanged += ColorPickerColor_SelectedColorChanged;
             CheckboxUseAsFinished.Checked += CheckboxUseAsFinished_Checked;
             CheckboxUseAsFinished.Unchecked += CheckboxUseAsFinished_Checked;
-            CheckboxExcludeFromStats.Checked += CheckboxExcludeFromStats_Checked;
-            CheckboxExcludeFromStats.Unchecked += CheckboxExcludeFromStats_Checked;
             ComboboxUsage.SelectionChanged += ComboboxUsage_SelectionChanged;
         }
 
@@ -92,11 +89,6 @@ namespace GameTrackerWPF
         private void CheckboxUseAsFinished_Checked(object sender, RoutedEventArgs e)
         {
             orig.UseAsFinished = CheckboxUseAsFinished.IsChecked.Value;
-        }
-
-        private void CheckboxExcludeFromStats_Checked(object sender, RoutedEventArgs e)
-        {
-            orig.ExcludeFromStats = CheckboxExcludeFromStats.IsChecked.Value;
         }
 
         private void ComboboxUsage_SelectionChanged(object sender, SelectionChangedEventArgs e)

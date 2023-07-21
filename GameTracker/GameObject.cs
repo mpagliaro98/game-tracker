@@ -162,8 +162,7 @@ namespace GameTracker
         {
             get
             {
-                // has no status or has a status with ExcludeFromStats = false
-                return StatusExtension.Status == null || !StatusExtension.Status.ExcludeModelObjectFromStats;
+                return !IsUnfinishable;
             }
         }
 
@@ -171,7 +170,7 @@ namespace GameTracker
         {
             get
             {
-                // has a status with MarkAsFinished = true and ExcludeFromStats = false
+                // has a status with MarkAsFinished = true and is finishable
                 return IsFinishable && IncludeInStats;
             }
         }

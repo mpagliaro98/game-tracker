@@ -20,17 +20,11 @@ namespace GameTracker
     public class StatusGame : Status
     {
         [Savable] public bool UseAsFinished { get; set; } = false;
-        [Savable] public bool ExcludeFromStats { get; set; } = false;
         [Savable(HandleLoadManually = true, HandleRestoreManually = true)] public StatusUsage StatusUsage { get; set; } = StatusUsage.AllGames;
 
         public override bool HideScoreOfModelObject
         {
             get { return !UseAsFinished; }
-        }
-
-        public override bool ExcludeModelObjectFromStats
-        {
-            get { return ExcludeFromStats; }
         }
 
         protected new SettingsGame Settings => (SettingsGame)base.Settings;
@@ -40,7 +34,6 @@ namespace GameTracker
         public StatusGame(StatusGame copyFrom) : base(copyFrom)
         {
             UseAsFinished = copyFrom.UseAsFinished;
-            ExcludeFromStats = copyFrom.ExcludeFromStats;
             StatusUsage = copyFrom.StatusUsage;
         }
 

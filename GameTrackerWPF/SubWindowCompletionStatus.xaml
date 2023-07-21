@@ -11,8 +11,7 @@
         <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />
         <Label Content="Color" />
         <xctk:ColorPicker x:Name="ColorPickerColor" Margin="5,0,0,0" HorizontalAlignment="Left" Width="100" />
-        <CheckBox x:Name="CheckboxUseAsFinished" Content="Mark as finished" Margin="5,10,0,0" />
-        <CheckBox x:Name="CheckboxExcludeFromStats" Content="Exclude from stats" Margin="5,10,0,0" />
+        <CheckBox x:Name="CheckboxUseAsFinished" Content="Mark as finished" Margin="5,10,0,5" />
         <Label Content="What games this status can apply to" />
         <ComboBox x:Name="ComboboxUsage" Margin="5,0" Width="250" HorizontalAlignment="Left" />
         <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />

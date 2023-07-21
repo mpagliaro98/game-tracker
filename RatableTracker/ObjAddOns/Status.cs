@@ -18,7 +18,6 @@ namespace RatableTracker.ObjAddOns
         [Savable()] public Color Color { get; set; } = new Color();
 
         public virtual bool HideScoreOfModelObject { get { return false; } }
-        public virtual bool ExcludeModelObjectFromStats { get { return false; } }
 
         protected new IModuleStatus Module => (IModuleStatus)base.Module;
 

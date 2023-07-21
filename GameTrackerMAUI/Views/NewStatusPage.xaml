@@ -26,8 +26,6 @@
                     <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
                     <Label Text="Mark as finished:" FontSize="Small" />
                     <CheckBox IsChecked="{Binding UseAsFinished, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
-                    <Label Text="Exclude from stats:" FontSize="Small" />
-                    <CheckBox IsChecked="{Binding ExcludeFromStats, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
                     <Label Text="What games this status can apply to:" FontSize="Small" />
                     <Picker ItemsSource="{Binding StatusUsageValues}" ItemDisplayBinding="{Binding ., Converter={StaticResource statusUsageNameConverter}}" SelectedItem="{Binding StatusUsage}" Title="Select One" Margin="0,0,0,10" />
                     <Label Text="Color:" FontSize="Small" />

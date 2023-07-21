@@ -35,7 +35,6 @@ namespace GameTrackerMAUI.ViewModels
                 Title = "Edit Status";
                 OnPropertyChanged(nameof(Name));
                 OnPropertyChanged(nameof(UseAsFinished));
-                OnPropertyChanged(nameof(ExcludeFromStats));
                 OnPropertyChanged(nameof(Color));
                 OnPropertyChanged(nameof(StatusUsage));
             }
@@ -51,12 +50,6 @@ namespace GameTrackerMAUI.ViewModels
         {
             get => Item.UseAsFinished;
             set => SetProperty(Item.UseAsFinished, value, () => Item.UseAsFinished = value);
-        }
-
-        public bool ExcludeFromStats
-        {
-            get => Item.ExcludeFromStats;
-            set => SetProperty(Item.ExcludeFromStats, value, () => Item.ExcludeFromStats = value);
         }
 
         public Microsoft.Maui.Graphics.Color Color

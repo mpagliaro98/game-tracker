@@ -27,7 +27,6 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="35" />
                         </Grid.ColumnDefinitions>
                         <Label Text="{Binding Name}"
@@ -35,8 +34,7 @@
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
                         <Label Text="F" Grid.Column="1" IsVisible="{Binding UseAsFinished}" />
-                        <Label Text="E" Grid.Column="2" IsVisible="{Binding ExcludeFromStats}" />
-                        <Rectangle Grid.Column="3" BackgroundColor="{Binding ., Converter={StaticResource colorContainerConverter}}" />
+                        <Rectangle Grid.Column="2" BackgroundColor="{Binding ., Converter={StaticResource colorContainerConverter}}" />
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
