@@ -59,6 +59,7 @@ namespace GameTrackerWPF
             if (orig.OriginalGame != null) ComboboxOriginalGame.SelectedItem = orig.OriginalGame;
             CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
             CheckboxNotOwned.IsChecked = orig.IsNotOwned;
+            CheckboxNotOwned.Visibility = settings.TreatAllGamesAsOwned ? Visibility.Hidden : Visibility.Visible;
             CheckboxRemaster.IsChecked = orig.IsRemaster;
             CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
             TextboxCompletionCriteria.Text = orig.CompletionCriteria;

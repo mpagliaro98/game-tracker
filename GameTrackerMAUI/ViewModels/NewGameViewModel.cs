@@ -267,6 +267,11 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(Item.IsNotOwned, value, () => Item.IsNotOwned = value);
         }
 
+        public bool TreatAllGamesAsOwned
+        {
+            get => SharedDataService.Settings.TreatAllGamesAsOwned;
+        }
+
         public bool ShowFinishedOn
         {
             get => showFinishedOn;

@@ -20,6 +20,7 @@ namespace GameTrackerMAUI.ViewModels
         private string minScore;
         private string maxScore;
         private bool showScoreNullStatus;
+        private bool treatAllGamesAsOwned;
         private string awsButtonText = "Switch to remote save files with AWS";
 
         public string MinScore
@@ -38,6 +39,12 @@ namespace GameTrackerMAUI.ViewModels
         {
             get => showScoreNullStatus;
             set => SetProperty(ref showScoreNullStatus, value);
+        }
+
+        public bool TreatAllGamesAsOwned
+        {
+            get => treatAllGamesAsOwned;
+            set => SetProperty(ref treatAllGamesAsOwned, value);
         }
 
         public string AWSButtonText
@@ -62,6 +69,7 @@ namespace GameTrackerMAUI.ViewModels
             MinScore = SharedDataService.Settings.MinScore.ToString();
             MaxScore = SharedDataService.Settings.MaxScore.ToString();
             ShowScoreNullStatus = SharedDataService.Settings.ShowScoreWhenNullStatus;
+            TreatAllGamesAsOwned = SharedDataService.Settings.TreatAllGamesAsOwned;
             UpdateAWSButtonText();
         }
 
@@ -95,6 +103,7 @@ namespace GameTrackerMAUI.ViewModels
             SharedDataService.Settings.MinScore = min;
             SharedDataService.Settings.MaxScore = max;
             SharedDataService.Settings.ShowScoreWhenNullStatus = ShowScoreNullStatus;
+            SharedDataService.Settings.TreatAllGamesAsOwned = TreatAllGamesAsOwned;
             try
             {
                 SharedDataService.Settings.Save(SharedDataService.Module, SharedDataService.Settings);

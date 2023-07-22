@@ -60,8 +60,8 @@
                     <Label Text="Doesn't Have a Start/End:" FontSize="Small" />
                     <Switch IsToggled="{Binding IsUnfinishable}" Margin="0,0,0,10" />
 
-                    <Label Text="I Don't Own This Game:" FontSize="Small" />
-                    <Switch IsToggled="{Binding IsNotOwned}" Margin="0,0,0,10" />
+                    <Label Text="I Don't Own This Game:" FontSize="Small" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" />
+                    <Switch IsToggled="{Binding IsNotOwned}" Margin="0,0,0,10" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" />
 
                     <Label Text="Remaster/Re-release:" FontSize="Small" />
                     <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" />

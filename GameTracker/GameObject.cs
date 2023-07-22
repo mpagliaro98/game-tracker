@@ -223,7 +223,7 @@ namespace GameTracker
             }
         }
 
-        private void OnModelObjectDeleted(object sender, ModelObjectDeleteArgs args)
+        protected virtual void OnModelObjectDeleted(object sender, ModelObjectDeleteArgs args)
         {
             if (args.ObjectType == typeof(GameCompilation))
             {
@@ -243,7 +243,7 @@ namespace GameTracker
             }
         }
 
-        private void OnPlatformDeleted(object sender, PlatformDeleteArgs args)
+        protected virtual void OnPlatformDeleted(object sender, PlatformDeleteArgs args)
         {
             bool changed = false;
             if (_platform.Equals(args.DeletedObject.UniqueID))
@@ -258,6 +258,17 @@ namespace GameTracker
             }
             if (changed)
                 SaveWithoutValidation(Module, Settings, args.Connection);
+        }
+
+        protected override void OnSettingsChanged(object sender, SettingsChangeArgs args)
+        {
+            base.OnSettingsChanged(sender, args);
+            Settings settings = (Settings)sender;
+            if (settings is SettingsGame settingsGame && settingsGame.TreatAllGamesAsOwned && IsNotOwned)
+            {
+                IsNotOwned = false;
+                SaveWithoutValidation(Module, Settings, args.Connection);
+            }
         }
 
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)

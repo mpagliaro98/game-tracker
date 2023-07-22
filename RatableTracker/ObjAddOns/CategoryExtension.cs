@@ -73,7 +73,7 @@ namespace RatableTracker.ObjAddOns
                 throw new ValidationException("Category values were illegally modified - more categories are represented than exist", string.Join(", ", categories.Select(cat => cat.UniqueID.ToString())));
         }
 
-        private void OnRatingCategoryDeleted(object sender, RatingCategoryDeleteArgs args)
+        protected virtual void OnRatingCategoryDeleted(object sender, RatingCategoryDeleteArgs args)
         {
             ICollection<CategoryValue> toDelete = new List<CategoryValue>();
             foreach (CategoryValue cv in CategoryValuesManual)
@@ -91,7 +91,7 @@ namespace RatableTracker.ObjAddOns
                 BaseObject.SaveWithoutValidation((TrackerModuleScores)Module.BaseModule, Settings, args.Connection);
         }
 
-        private void OnSettingsChanged(object sender, SettingsChangeArgs args)
+        protected virtual void OnSettingsChanged(object sender, SettingsChangeArgs args)
         {
             Settings settings = (Settings)sender;
             if (settings is SettingsScore settingsScore)

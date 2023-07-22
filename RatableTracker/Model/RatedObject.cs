@@ -66,7 +66,7 @@ namespace RatableTracker.Model
             Settings.SettingsChanged -= OnSettingsChanged;
         }
 
-        private void OnSettingsChanged(object sender, Events.SettingsChangeArgs args)
+        protected virtual void OnSettingsChanged(object sender, Events.SettingsChangeArgs args)
         {
             Settings settings = (Settings)sender;
             if (settings is SettingsScore settingsScore)

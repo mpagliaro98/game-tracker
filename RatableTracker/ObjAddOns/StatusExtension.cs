@@ -38,7 +38,7 @@ namespace RatableTracker.ObjAddOns
             _status = UniqueID.Copy(copyFrom._status);
         }
 
-        private void OnStatusDeleted(object sender, Events.StatusDeleteArgs args)
+        protected virtual void OnStatusDeleted(object sender, Events.StatusDeleteArgs args)
         {
             if (_status.Equals(args.DeletedObject.UniqueID))
             {
