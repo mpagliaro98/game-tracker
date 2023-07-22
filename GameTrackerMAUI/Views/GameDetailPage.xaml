@@ -97,7 +97,7 @@
                 </Grid>
             </StackLayout>
 
-            <StackLayout IsVisible="{Binding StatusMarkedAsFinished}" Margin="0,0,0,10">
+            <StackLayout IsVisible="{Binding Item.ShowScore}" Margin="0,0,0,10">
                 <StackLayout IsVisible="{Binding ShowCategoryValues}">
                     <Label Text="Category Scores:" FontSize="Small" />
                     <StackLayout BindableLayout.ItemsSource="{Binding CategoryValues}" BindableLayout.EmptyView="No categories specified">

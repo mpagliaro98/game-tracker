@@ -16,7 +16,7 @@ namespace RatableTracker.ObjAddOns
         {
             get
             {
-                if (BaseObject.StatusExtension.Status == null || BaseObject.StatusExtension.Status.HideScoreOfModelObject)
+                if (!BaseObject.ShowScore)
                     return CreateListOfEmptyCategoryValues();
                 else
                     return base.CategoryValuesDisplay;

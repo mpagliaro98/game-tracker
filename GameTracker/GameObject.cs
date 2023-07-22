@@ -171,7 +171,7 @@ namespace GameTracker
             get
             {
                 // has a status with MarkAsFinished = true and is finishable
-                return IsFinishable && IncludeInStats;
+                return IsFinishable && StatusExtension.Status != null && StatusExtension.Status is StatusGame stat && stat.UseAsFinished;
             }
         }
 

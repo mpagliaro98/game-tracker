@@ -26,6 +26,7 @@ namespace GameTrackerMAUI.ViewModels
             {
                 SetProperty(ref _item, value);
                 OnPropertyChanged(nameof(StatusUsageName));
+                OnPropertyChanged(nameof(ShowMarkAsFinishedOption));
             }
         }
 
@@ -42,6 +43,11 @@ namespace GameTrackerMAUI.ViewModels
         public string StatusUsageName
         {
             get => Item.StatusUsage.StatusUsageToString();
+        }
+
+        public bool ShowMarkAsFinishedOption
+        {
+            get => Item.StatusUsage != StatusUsage.UnfinishableGamesOnly;
         }
 
         public StatusDetailViewModel()

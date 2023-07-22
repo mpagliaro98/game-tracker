@@ -40,6 +40,8 @@ namespace GameTrackerWPF
             TextboxName.Text = orig.Name;
             ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();
             CheckboxUseAsFinished.IsChecked = orig.UseAsFinished;
+            CheckboxUseAsFinished.Visibility = orig.StatusUsage == StatusUsage.UnfinishableGamesOnly ? Visibility.Collapsed : Visibility.Visible;
+            CheckboxHideScore.IsChecked = orig.HideScoreFromList;
             ComboboxUsage.SelectedValue = orig.StatusUsage;
 
             // set event handlers
@@ -47,6 +49,8 @@ namespace GameTrackerWPF
             ColorPickerColor.SelectedColorChanged += ColorPickerColor_SelectedColorChanged;
             CheckboxUseAsFinished.Checked += CheckboxUseAsFinished_Checked;
             CheckboxUseAsFinished.Unchecked += CheckboxUseAsFinished_Checked;
+            CheckboxHideScore.Checked += CheckboxHideScore_Checked;
+            CheckboxHideScore.Unchecked += CheckboxHideScore_Checked;
             ComboboxUsage.SelectionChanged += ComboboxUsage_SelectionChanged;
         }
 
@@ -91,9 +95,15 @@ namespace GameTrackerWPF
             orig.UseAsFinished = CheckboxUseAsFinished.IsChecked.Value;
         }
 
+        private void CheckboxHideScore_Checked(object sender, RoutedEventArgs e)
+        {
+            orig.HideScoreFromList = CheckboxHideScore.IsChecked.Value;
+        }
+
         private void ComboboxUsage_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.StatusUsage = (StatusUsage)ComboboxUsage.SelectedValue;
+            CheckboxUseAsFinished.Visibility = orig.StatusUsage == StatusUsage.UnfinishableGamesOnly ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

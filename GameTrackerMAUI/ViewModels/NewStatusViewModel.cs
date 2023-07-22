@@ -35,8 +35,10 @@ namespace GameTrackerMAUI.ViewModels
                 Title = "Edit Status";
                 OnPropertyChanged(nameof(Name));
                 OnPropertyChanged(nameof(UseAsFinished));
+                OnPropertyChanged(nameof(HideScoreFromList));
                 OnPropertyChanged(nameof(Color));
                 OnPropertyChanged(nameof(StatusUsage));
+                OnPropertyChanged(nameof(ShowMarkAsFinishedOption));
             }
         }
 
@@ -52,6 +54,12 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(Item.UseAsFinished, value, () => Item.UseAsFinished = value);
         }
 
+        public bool HideScoreFromList
+        {
+            get => Item.HideScoreFromList;
+            set => SetProperty(Item.HideScoreFromList, value, () => Item.HideScoreFromList = value);
+        }
+
         public Microsoft.Maui.Graphics.Color Color
         {
             get => Item.Color.ToMAUIColor();
@@ -61,12 +69,21 @@ namespace GameTrackerMAUI.ViewModels
         public StatusUsage StatusUsage
         {
             get => Item.StatusUsage;
-            set => SetProperty(Item.StatusUsage, value, () => Item.StatusUsage = value);
+            set
+            {
+                SetProperty(Item.StatusUsage, value, () => Item.StatusUsage = value);
+                OnPropertyChanged(nameof(ShowMarkAsFinishedOption));
+            }
         }
 
         public IEnumerable<StatusUsage> StatusUsageValues
         {
             get => Enum.GetValues<StatusUsage>().AsEnumerable();
+        }
+
+        public bool ShowMarkAsFinishedOption
+        {
+            get => StatusUsage != StatusUsage.UnfinishableGamesOnly;
         }
 
         public Command SaveCommand { get; }

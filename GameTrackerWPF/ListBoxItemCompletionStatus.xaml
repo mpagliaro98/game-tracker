@@ -15,6 +15,7 @@
         <Label x:Name="LabelName" />
         <StackPanel Grid.Column="1" VerticalAlignment="Center">
             <CheckBox x:Name="CheckboxUseAsFinished" IsEnabled="False" Content="Mark as finished" FontSize="10" />
+            <CheckBox x:Name="CheckboxHideScore" IsEnabled="False" Content="Hide score" FontSize="10" />
         </StackPanel>
         <Rectangle x:Name="RectangeColor" Grid.Column="2" Stroke="Black" />
     </Grid>

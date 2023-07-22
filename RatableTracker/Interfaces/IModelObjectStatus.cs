@@ -10,5 +10,6 @@ namespace RatableTracker.Interfaces
     public interface IModelObjectStatus
     {
         StatusExtension StatusExtension { get; }
+        bool ShowScore { get; }
     }
 }

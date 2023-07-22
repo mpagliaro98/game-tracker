@@ -28,7 +28,6 @@ namespace GameTrackerMAUI.ViewModels
                 SetProperty(ref _item, value);
                 OnPropertyChanged(nameof(CompletionStatus));
                 OnPropertyChanged(nameof(HasCompletionStatus));
-                OnPropertyChanged(nameof(StatusMarkedAsFinished));
                 OnPropertyChanged(nameof(Platform));
                 OnPropertyChanged(nameof(HasPlatform));
                 OnPropertyChanged(nameof(PlatformPlayedOn));
@@ -60,11 +59,6 @@ namespace GameTrackerMAUI.ViewModels
         public bool HasCompletionStatus
         {
             get => Item.StatusExtension.Status != null;
-        }
-
-        public bool StatusMarkedAsFinished
-        {
-            get => HasCompletionStatus ? CompletionStatus.UseAsFinished : false;
         }
 
         public GameTracker.Platform Platform
