@@ -183,6 +183,7 @@
                                 <TextBox x:Name="SettingsTextboxMin" Margin="5,0" Width="150" HorizontalAlignment="Left" />
                                 <Label x:Name="SettingsLabelMax" Content="Maximum Score" />
                                 <TextBox x:Name="SettingsTextboxMax" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                                <CheckBox x:Name="CheckboxShowScoreNullStatus" Content="Show score for games with no status" Margin="5,10,0,0" />
                                 <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" IsEnabled="False" />
                                 <Label x:Name="SettingsLabelError" Content="Values are formatted incorrectly" Foreground="Red" />
                                 <Label x:Name="SettingsLabelSuccess" Content="Settings successfully saved" Foreground="Lime" />

@@ -27,7 +27,7 @@ namespace RatableTracker.Model
 
         public override bool ShowScore
         {
-            get { return StatusExtension.Status == null ? false : !StatusExtension.Status.HideScoreOfModelObject; }
+            get { return StatusExtension.Status == null ? Settings.ShowScoreWhenNullStatus : !StatusExtension.Status.HideScoreOfModelObject; }
         }
 
         public override ScoreRange ScoreRangeDisplay

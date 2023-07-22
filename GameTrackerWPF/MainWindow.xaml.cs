@@ -651,6 +651,7 @@ namespace GameTrackerWPF
         {
             SettingsTextboxMin.Text = settings.MinScore.ToString();
             SettingsTextboxMax.Text = settings.MaxScore.ToString();
+            CheckboxShowScoreNullStatus.IsChecked = settings.ShowScoreWhenNullStatus;
             SettingsAWSButton.Content = FileHandlerAWSS3.KeyFileExists(pathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
@@ -675,17 +676,19 @@ namespace GameTrackerWPF
             {
                 MessageBoxResult mbr = MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
                 if (mbr != MessageBoxResult.Yes) return;
-                settings.MinScore = minScore;
-                settings.MaxScore = maxScore;
-                try
-                {
-                    settings.Save(rm, settings);
-                }
-                catch (Exception ex)
-                {
-                    ex.DisplayUIExceptionMessage();
-                    return;
-                }
+            }
+
+            settings.MinScore = minScore;
+            settings.MaxScore = maxScore;
+            settings.ShowScoreWhenNullStatus = CheckboxShowScoreNullStatus.IsChecked.Value;
+            try
+            {
+                settings.Save(rm, settings);
+            }
+            catch (Exception ex)
+            {
+                ex.DisplayUIExceptionMessage();
+                return;
             }
 
             UpdateSettingsUI();

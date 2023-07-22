@@ -30,6 +30,8 @@ namespace RatableTracker.Util
             set { _tempMaxScore = value; }
         }
 
+        [Savable] public bool ShowScoreWhenNullStatus { get; set; } = false;
+
         public SettingsScore() : base() { }
 
         protected override void ValidateFields()
