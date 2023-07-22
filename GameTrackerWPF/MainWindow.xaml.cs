@@ -319,6 +319,7 @@ namespace GameTrackerWPF
                 new Tuple<int, string>(SortGames.SORT_PlatformPlayedOn, "Platform Played On"),
                 new Tuple<int, string>(SortGames.SORT_Score, "Final Score"),
                 new Tuple<int, string>(SortGames.SORT_HasComment, "Has Comment"),
+                new Tuple<int, string>(SortGames.SORT_Ownership, "Ownership"),
                 new Tuple<int, string>(SortGames.SORT_ReleaseDate, "Release Date"),
                 new Tuple<int, string>(SortGames.SORT_AcquiredOn, "Acquired On"),
                 new Tuple<int, string>(SortGames.SORT_StartedOn, "Started On"),

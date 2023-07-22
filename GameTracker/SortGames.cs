@@ -20,6 +20,7 @@ namespace GameTracker
         public const int SORT_AcquiredOn = 103;
         public const int SORT_StartedOn = 104;
         public const int SORT_FinishedOn = 105;
+        public const int SORT_Ownership = 106;
 
         [XmlIgnore][JsonIgnore] public new GameModule Module { get { return (GameModule)base.Module; } set { base.Module = value; } }
         [XmlIgnore][JsonIgnore] public new SettingsGame Settings { get { return (SettingsGame)base.Settings; } set { base.Settings = value; } }
@@ -50,6 +51,9 @@ namespace GameTracker
                     break;
                 case SORT_FinishedOn:
                     sortFunction = obj => ((GameObject)obj).IsUnfinishable ? ((GameObject)obj).StartedOn : ((GameObject)obj).FinishedOn;
+                    break;
+                case SORT_Ownership:
+                    sortFunction = obj => ((GameObject)obj).IsNotOwned;
                     break;
             }
             return sortFunction;

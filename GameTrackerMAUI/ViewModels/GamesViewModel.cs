@@ -143,6 +143,7 @@ namespace GameTrackerMAUI.ViewModels
                 new PopupListOption(SortGames.SORT_PlatformPlayedOn, "Platform Played On"),
                 new PopupListOption(SortGames.SORT_Score, "Final Score"),
                 new PopupListOption(SortGames.SORT_HasComment, "Has Comment"),
+                new PopupListOption(SortGames.SORT_Ownership, "Ownership"),
                 new PopupListOption(SortGames.SORT_ReleaseDate, "Release Date"),
                 new PopupListOption(SortGames.SORT_AcquiredOn, "Acquired On"),
                 new PopupListOption(SortGames.SORT_StartedOn, "Started On"),
