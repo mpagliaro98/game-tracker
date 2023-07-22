@@ -23,18 +23,19 @@ namespace GameTracker
 
         public new CategoryExtensionGame CategoryExtension { get { return (CategoryExtensionGame)base.CategoryExtension; } }
 
-        [Savable()] public string CompletionCriteria { get; set; } = "";
-        [Savable()] public string CompletionComment { get; set; } = "";
-        [Savable()] public string TimeSpent { get; set; } = "";
-        [Savable()] public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
-        [Savable()] public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
-        [Savable()] public DateTime StartedOn { get; set; } = DateTime.MinValue;
-        [Savable()] public DateTime FinishedOn { get; set; } = DateTime.MinValue;
-        [Savable()] public virtual bool IsRemaster { get; set; } = false;
-        [Savable()] public virtual bool UseOriginalGameScore { get; set; } = false;
+        [Savable] public string CompletionCriteria { get; set; } = "";
+        [Savable] public string CompletionComment { get; set; } = "";
+        [Savable] public string TimeSpent { get; set; } = "";
+        [Savable] public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
+        [Savable] public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
+        [Savable] public DateTime StartedOn { get; set; } = DateTime.MinValue;
+        [Savable] public DateTime FinishedOn { get; set; } = DateTime.MinValue;
+        [Savable] public virtual bool IsRemaster { get; set; } = false;
+        [Savable] public virtual bool UseOriginalGameScore { get; set; } = false;
         [Savable(SaveOnly = true)] public virtual bool IsPartOfCompilation { get { return _compilation.HasValue(); } }
         [Savable(SaveOnly = true)] public virtual bool IsCompilation { get { return false; } }
-        [Savable()] public bool IsUnfinishable { get; set; } = false;
+        [Savable] public bool IsUnfinishable { get; set; } = false;
+        [Savable] public bool IsNotOwned { get; set; } = false;
 
         public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
@@ -162,7 +163,7 @@ namespace GameTracker
         {
             get
             {
-                return !IsUnfinishable;
+                return !IsUnfinishable && !IsNotOwned;
             }
         }
 
@@ -196,6 +197,7 @@ namespace GameTracker
             IsRemaster = copyFrom.IsRemaster;
             UseOriginalGameScore = copyFrom.UseOriginalGameScore;
             IsUnfinishable = copyFrom.IsUnfinishable;
+            IsNotOwned = copyFrom.IsNotOwned;
             _platform = UniqueID.Copy(copyFrom._platform);
             _platformPlayedOn = UniqueID.Copy(copyFrom._platformPlayedOn);
             _originalGame = UniqueID.Copy(copyFrom._originalGame);

@@ -58,6 +58,7 @@ namespace GameTrackerWPF
             if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
             if (orig.OriginalGame != null) ComboboxOriginalGame.SelectedItem = orig.OriginalGame;
             CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
+            CheckboxNotOwned.IsChecked = orig.IsNotOwned;
             CheckboxRemaster.IsChecked = orig.IsRemaster;
             CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
             TextboxCompletionCriteria.Text = orig.CompletionCriteria;
@@ -83,6 +84,8 @@ namespace GameTrackerWPF
             ComboBoxStatus.SelectionChanged += ComboBoxStatus_SelectionChanged;
             CheckboxUnfinishable.Checked += CheckboxUnfinishable_Checked;
             CheckboxUnfinishable.Unchecked += CheckboxUnfinishable_Checked;
+            CheckboxNotOwned.Checked += CheckboxNotOwned_Checked;
+            CheckboxNotOwned.Unchecked += CheckboxNotOwned_Checked;
             ComboBoxPlatformPlayedOn.SelectionChanged += ComboBoxPlatformPlayedOn_SelectionChanged;
             CheckboxCompilation.Checked += CheckboxCompilation_Checked;
             CheckboxCompilation.Unchecked += CheckboxCompilation_Checked;
@@ -264,6 +267,11 @@ namespace GameTrackerWPF
             orig.IsUnfinishable = CheckboxUnfinishable.IsChecked.Value;
             UpdateDateFieldVisibility();
             FillComboboxStatuses(ComboBoxStatus);
+        }
+
+        private void CheckboxNotOwned_Checked(object sender, RoutedEventArgs e)
+        {
+            orig.IsNotOwned = CheckboxNotOwned.IsChecked.Value;
         }
 
         private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)

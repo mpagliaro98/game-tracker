@@ -48,6 +48,7 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(ShowCategoryValues));
                 OnPropertyChanged(nameof(FinishedOn));
                 OnPropertyChanged(nameof(StartedOnName));
+                OnPropertyChanged(nameof(ShowStaticNotOwnedText));
             }
         }
 
@@ -89,6 +90,11 @@ namespace GameTrackerMAUI.ViewModels
         public bool HasPlatformPlayedOn
         {
             get => Item.PlatformPlayedOn != null;
+        }
+
+        public bool ShowStaticNotOwnedText
+        {
+            get => Item.IsNotOwned;
         }
 
         public bool IsRemaster

@@ -86,6 +86,7 @@
                         <ComboBox x:Name="ComboBoxStatus" Margin="5,0" />
                     </StackPanel>
                     <CheckBox x:Name="CheckboxUnfinishable" Grid.Row="1" Content="Doesn't have a start/end" Margin="5,0" />
+                    <CheckBox x:Name="CheckboxNotOwned" Grid.Row="1" Grid.Column="1" Content="I don't own this game" Margin="5,0" />
                 </Grid>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">
                     <Label Content="Platform Played On" />

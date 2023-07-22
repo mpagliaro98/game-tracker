@@ -65,6 +65,7 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(IsUnfinishable));
                 OnPropertyChanged(nameof(CompletionStatuses));
                 OnPropertyChanged(nameof(Status));
+                OnPropertyChanged(nameof(IsNotOwned));
             }
         }
 
@@ -258,6 +259,12 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(CompletionStatuses));
                 Status = CompletionStatuses.Contains(previousStatus) ? previousStatus : null;
             }
+        }
+
+        public bool IsNotOwned
+        {
+            get => Item.IsNotOwned;
+            set => SetProperty(Item.IsNotOwned, value, () => Item.IsNotOwned = value);
         }
 
         public bool ShowFinishedOn
