@@ -654,6 +654,7 @@ namespace GameTrackerWPF
             SettingsTextboxMax.Text = settings.MaxScore.ToString();
             CheckboxShowScoreNullStatus.IsChecked = settings.ShowScoreWhenNullStatus;
             CheckboxTreatGamesAsOwned.IsChecked = settings.TreatAllGamesAsOwned;
+            CheckboxUnownedFinishCount.IsChecked = settings.IncludeUnownedGamesInFinishCount;
             SettingsAWSButton.Content = FileHandlerAWSS3.KeyFileExists(pathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
@@ -684,6 +685,7 @@ namespace GameTrackerWPF
             settings.MaxScore = maxScore;
             settings.ShowScoreWhenNullStatus = CheckboxShowScoreNullStatus.IsChecked.Value;
             settings.TreatAllGamesAsOwned = CheckboxTreatGamesAsOwned.IsChecked.Value;
+            settings.IncludeUnownedGamesInFinishCount = CheckboxUnownedFinishCount.IsChecked.Value;
             try
             {
                 settings.Save(rm, settings);

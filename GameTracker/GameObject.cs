@@ -163,7 +163,7 @@ namespace GameTracker
         {
             get
             {
-                return !IsUnfinishable && !IsNotOwned;
+                return !IsUnfinishable && (!IsNotOwned || Settings.IncludeUnownedGamesInFinishCount);
             }
         }
 

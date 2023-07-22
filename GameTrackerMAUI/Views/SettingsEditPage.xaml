@@ -19,6 +19,8 @@
                 <CheckBox IsChecked="{Binding ShowScoreNullStatus, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
                 <Label Text="Treat all games as owned:" FontSize="Small" />
                 <CheckBox IsChecked="{Binding TreatAllGamesAsOwned, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                <Label Text="Include un-owned games in the count of finished games:" FontSize="Small" />
+                <CheckBox IsChecked="{Binding UnownedFinishCount, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
                 <Label Text="Click the button below to transfer your saved data to AWS. Doing so will allow you to access your data on any platform Game Tracker supports. You will need an AWS account, then you must generate your unique key and secret key on AWS. Once you download that key file, click the button below and select that file." LineBreakMode="WordWrap" FontSize="Small" />
                 <Button Text="{Binding AWSButtonText}" Margin="0,0,0,20" Command="{Binding AWSCommand}" />
             </StackLayout>
