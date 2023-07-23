@@ -70,14 +70,17 @@ namespace GameTrackerWPF
 
         private void ButtonNew_Click(object sender, RoutedEventArgs e)
         {
+            if (ListBoxFilters.Items.Count >= 100) return;
             var newRow = new FilterRow(module, settings, filterOptions, ListBoxFilters.Items.Count);
             newRow.Remove += FilterRow_Remove;
             ListBoxFilters.Items.Add(newRow);
+            if (ListBoxFilters.Items.Count >= 100) ButtonNew.IsEnabled = false;
         }
 
         private void FilterRow_Remove(object sender, FilterRowRemoveEventArgs e)
         {
             ListBoxFilters.Items.RemoveAt(e.Index);
+            ButtonNew.IsEnabled = true;
         }
 
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
