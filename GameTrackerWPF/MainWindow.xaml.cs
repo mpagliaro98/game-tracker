@@ -246,6 +246,7 @@ namespace GameTrackerWPF
                 default:
                     throw new NotImplementedException();
             }
+            int count = 0;
             foreach (GameObject rg in rm.GetModelObjectList<GameObject>(savedState.FilterGames, savedState.SortGames, settings))
             {
                 if ((savedState.ShowCompilations && !rg.IsCompilation && rg.IsPartOfCompilation) || (!savedState.ShowCompilations && rg.IsCompilation))
@@ -268,6 +269,7 @@ namespace GameTrackerWPF
                     item.ContextMenu = EditDeleteContextMenu(GameEdit, null);
                 else
                     item.ContextMenu = EditDeleteContextMenu(GameEdit, GameDelete);
+                count++;
             }
             BuildCategoriesHeader(rm.CategoryExtension.GetRatingCategoryList());
             BuildGamesSortOptions(rm.CategoryExtension.GetRatingCategoryList());
@@ -275,6 +277,8 @@ namespace GameTrackerWPF
             var vis = rm.TotalNumModelObjects() >= rm.LimitModelObjects ? Visibility.Hidden : Visibility.Visible;
             GamesButtonNew.Visibility = vis;
             SavedState.SaveSavedState(pathController, savedState);
+            LabelGamesCount1.Content = count.ToString();
+            LabelGamesCount2.Content = count.ToString();
         }
 
         private void BuildCategoriesHeader(IList<RatingCategory> cats)
@@ -284,7 +288,7 @@ namespace GameTrackerWPF
             int i = 0;
             foreach (RatingCategory cat in cats)
             {
-                GridCategories.ColumnDefinitions.Add(new ColumnDefinition());
+                GridCategories.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
                 var label = new TextBlock();
                 label.Text = cat.Name;
                 label.TextWrapping = TextWrapping.Wrap;
@@ -506,6 +510,7 @@ namespace GameTrackerWPF
         private void UpdatePlatformsUI()
         {
             PlatformsListbox.ClearItems();
+            int count = 0;
             foreach (Platform platform in rm.GetPlatformList(savedState.FilterPlatforms, savedState.SortPlatforms, settings))
             {
                 ListBoxItemPlatform item = new ListBoxItemPlatform(rm, settings, platform);
@@ -513,6 +518,7 @@ namespace GameTrackerWPF
                 PlatformsListbox.AddItem(item);
 
                 item.ContextMenu = EditDeleteContextMenu(PlatformEdit, PlatformDelete);
+                count++;
             }
 
             BuildPlatformsSortOptions();
@@ -520,6 +526,7 @@ namespace GameTrackerWPF
             var vis = rm.TotalNumPlatforms() >= rm.LimitPlatforms ? Visibility.Hidden : Visibility.Visible;
             PlatformsButtonNew.Visibility = vis;
             SavedState.SaveSavedState(pathController, savedState);
+            LabelPlatformsCount.Content = count.ToString();
         }
 
         private void BuildPlatformsSortOptions()

@@ -13,7 +13,6 @@
             <ColumnDefinition Width="0.7*" />
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="0.5*" />
-            <ColumnDefinition Width="20" />
         </Grid.ColumnDefinitions>
         <Label x:Name="LabelName" />
         <Label x:Name="LabelPlatform" Grid.Column="1" />

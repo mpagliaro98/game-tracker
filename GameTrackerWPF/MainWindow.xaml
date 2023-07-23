@@ -65,7 +65,7 @@
                                 </Button>
                             </StackPanel>
                         </Grid>
-                        <Grid x:Name="GamesTop" Margin="5,0" >
+                        <Grid x:Name="GamesTop" Margin="7,0,5,0" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="0.7*" />
@@ -79,8 +79,9 @@
                             <Label Content="Completion Status" Grid.Column="2" VerticalAlignment="Center" />
                             <Grid x:Name="GridCategories" Grid.Column="3" />
                             <Label Content="Final Score" Grid.Column="4" VerticalAlignment="Center" />
+                            <Label x:Name="LabelGamesCount1" Grid.Column="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="8" Margin="0" Padding="0" />
                         </Grid>
-                        <Grid x:Name="GamesTopExpanded" Margin="5,0" Visibility="Collapsed">
+                        <Grid x:Name="GamesTopExpanded" Margin="7,0,5,0" Visibility="Collapsed">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0*" />  <!--<ColumnDefinition Width="0.6*" />-->
                                 <ColumnDefinition Width="1*" />
@@ -89,6 +90,7 @@
                                 <ColumnDefinition Width="2*" />
                                 <ColumnDefinition Width="0.8*" />
                                 <ColumnDefinition Width="1.4*" />
+                                <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
                             <Label Content="Name" Grid.Column="1" VerticalAlignment="Center" />
                             <Label Content="Platform" Grid.Column="2" VerticalAlignment="Center" />
@@ -96,6 +98,7 @@
                             <Label Content="Categories" Grid.Column="4" VerticalAlignment="Center" />
                             <Label Content="Final Score" Grid.Column="5" VerticalAlignment="Center" />
                             <Label Content="Comments" Grid.Column="6" VerticalAlignment="Center" />
+                            <Label x:Name="LabelGamesCount2" Grid.Column="7" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="8" Margin="0" Padding="0" />
                         </Grid>
                     </StackPanel>
                     <Grid DockPanel.Dock="Bottom">
@@ -137,7 +140,7 @@
                                 </Button>
                             </StackPanel>
                         </Grid>
-                        <Grid x:Name="PlatformsTop" Margin="5,0" >
+                        <Grid x:Name="PlatformsTop" Margin="7,0,5,0" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20" />
                                 <ColumnDefinition Width="1*" />
@@ -148,6 +151,7 @@
                                 <ColumnDefinition Width="0.6*" />
                                 <ColumnDefinition Width="0.8*" />
                                 <ColumnDefinition Width="0.8*" />
+                                <ColumnDefinition Width="20" />
                             </Grid.ColumnDefinitions>
                             <Label Content="Name" Grid.Column="1" />
                             <Label Content="# Games" Grid.Column="2" />
@@ -157,6 +161,7 @@
                             <Label Content="% Finished" Grid.Column="6" />
                             <Label Content="Top Games" Grid.Column="7" />
                             <Label Content="Bottom Games" Grid.Column="8" />
+                            <Label x:Name="LabelPlatformsCount" Grid.Column="9" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="8" Margin="0" Padding="0" />
                         </Grid>
                     </StackPanel>
                     <local:ScalableListBox x:Name="PlatformsListbox" DockPanel.Dock="Bottom" Margin="5" SmoothScrolling="True" />

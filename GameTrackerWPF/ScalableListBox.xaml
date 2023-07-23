@@ -13,6 +13,7 @@
         <ListBox x:Name="LB"
                  DataContext="{Binding RelativeSource={RelativeSource AncestorType=UserControl}}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                  Height="{Binding Path=ActualHeight, ElementName=HeightHelper}"
                  VerticalContentAlignment="Stretch"
                  HorizontalContentAlignment="Stretch"
