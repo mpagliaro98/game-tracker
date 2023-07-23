@@ -1,6 +1,8 @@
 ﻿using RatableTracker.Events;
 using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
+using RatableTracker.ListManipulation;
+using RatableTracker.ListManipulation.Filtering;
 using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.Util;
@@ -60,9 +62,9 @@ namespace GameTracker
             return GetPlatformList(null, null, settings);
         }
 
-        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SettingsGame settings)
+        public IList<Platform> GetPlatformList(FilterEngine filterEngine, SettingsGame settings)
         {
-            return GetPlatformList(filterOptions, null, settings);
+            return GetPlatformList(filterEngine, null, settings);
         }
 
         public IList<Platform> GetPlatformList(SortPlatforms sortOptions, SettingsGame settings)
@@ -70,9 +72,9 @@ namespace GameTracker
             return GetPlatformList(null, sortOptions, settings);
         }
 
-        public IList<Platform> GetPlatformList(FilterPlatforms filterOptions, SortPlatforms sortOptions, SettingsGame settings)
+        public IList<Platform> GetPlatformList(FilterEngine filterEngine, SortPlatforms sortOptions, SettingsGame settings)
         {
-            return GetTrackerObjectList(Platforms, filterOptions, sortOptions, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatformsAndFilter(this, settings, filterOptions, sortOptions));
+            return GetTrackerObjectList(Platforms, filterEngine, sortOptions, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatformsAndFilter(this, settings, filterEngine, sortOptions));
         }
 
         public int TotalNumPlatforms()
@@ -106,14 +108,15 @@ namespace GameTracker
 
         public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings)
         {
-            return GetGamesOnPlatform(platform, settings, new FilterGames(this, settings));
+            return GetGamesOnPlatform(platform, settings, new FilterEngine());
         }
 
-        public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings, FilterGames filterOptions)
+        public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings, FilterEngine filterEngine)
         {
-            filterOptions.Platform = platform;
-            filterOptions.ShowCompilations = false;
-            return GetModelObjectList(filterOptions, settings).OfType<GameObject>().ToList();
+            filterEngine.Filters.Add(new FilterSegment() { FilterOption = new FilterOptionGameOnlyNonCompilations() });
+            filterEngine.Filters.Add(new FilterSegment() { FilterOption = new FilterOptionGamePlatform(), FilterValues = platform.UniqueID.ToString() });
+            filterEngine.Operator = FilterOperator.And;
+            return GetModelObjectList<GameObject>(filterEngine, settings);
         }
 
         public IList<GameObject> GetGamesIncludeInStats(SettingsGame settings)

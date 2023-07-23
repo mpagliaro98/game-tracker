@@ -60,7 +60,7 @@
                                         <ContextMenu />
                                     </Button.ContextMenu>
                                 </Button>
-                                <Button x:Name="GamesButtonSearch" ToolTip="Search">
+                                <Button x:Name="GamesButtonSearch" ToolTip="Search" Click="GamesButtonSearch_Click">
                                     <Image Source="{StaticResource ButtonSearch}" />
                                 </Button>
                             </StackPanel>
@@ -132,7 +132,7 @@
                                         <ContextMenu />
                                     </Button.ContextMenu>
                                 </Button>
-                                <Button x:Name="PlatformsButtonSearch" ToolTip="Search">
+                                <Button x:Name="PlatformsButtonSearch" ToolTip="Search" Click="PlatformsButtonSearch_Click">
                                     <Image Source="{StaticResource ButtonSearch}" />
                                 </Button>
                             </StackPanel>

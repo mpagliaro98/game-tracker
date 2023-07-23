@@ -1,4 +1,5 @@
 ﻿using RatableTracker.ListManipulation;
+using RatableTracker.ListManipulation.Filtering;
 using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.Util;
@@ -16,7 +17,7 @@ namespace RatableTracker.Interfaces
         void SaveAllModelObjects(IList<RankedObject> rankedObjects);
         void DeleteOneModelObject(RankedObject rankedObject);
         IList<RankedObject> LoadModelObjects(Settings settings, TrackerModule module);
-        IList<RankedObject> LoadModelObjectsAndFilter(Settings settings, TrackerModule module, FilterRankedObjects filterOptions, SortRankedObjects sortOptions);
+        IList<T> LoadModelObjectsAndFilter<T>(Settings settings, TrackerModule module, FilterEngine filterEngine, SortRankedObjects sortOptions) where T : RankedObject;
         void SaveSettings(Settings settings);
         Settings LoadSettings();
         void SetCancel(bool cancel);

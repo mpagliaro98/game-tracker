@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using System.Diagnostics;
 using RatableTracker.Exceptions;
 using RatableTracker.ListManipulation;
+using RatableTracker.ListManipulation.Filtering;
 
 namespace RatableTracker.LoadSave
 {
@@ -480,11 +481,11 @@ namespace RatableTracker.LoadSave
             return LoadAll(EnsureModelObjectsAreLoaded, ref modelObjects, (s) => factory.GetModelObject(s, settings, module), (obj) => obj.SortOrder);
         }
 
-        public IList<RankedObject> LoadModelObjectsAndFilter(Settings settings, TrackerModule module, FilterRankedObjects filterOptions, SortRankedObjects sortOptions)
+        public IList<T> LoadModelObjectsAndFilter<T>(Settings settings, TrackerModule module, FilterEngine filterEngine, SortRankedObjects sortOptions) where T : RankedObject
         {
-            var list = LoadModelObjects(settings, module);
-            if (filterOptions != null) list = filterOptions.ApplyFilters(list);
-            if (sortOptions != null) list = sortOptions.ApplySorting(list);
+            var list = (IList<T>)LoadModelObjects(settings, module);
+            if (filterEngine != null) list = filterEngine.ApplyFilters(list);
+            if (sortOptions != null) list = (IList<T>)sortOptions.ApplySorting((IList<RankedObject>)list);
             return list;
         }
 

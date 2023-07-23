@@ -1,6 +1,7 @@
 ﻿using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation;
+using RatableTracker.ListManipulation.Filtering;
 using RatableTracker.Model;
 using RatableTracker.Util;
 using System;
@@ -89,12 +90,12 @@ namespace RatableTracker.Modules
             return GetTrackerObjectList(originalList, null, null, false, null);
         }
 
-        protected IList<T> GetTrackerObjectList<T>(IList<T> originalList, FilterBase<T> filterOptions, SortBase<T> sortOptions, Func<ILoadSaveMethod, IList<T>> loadAndFilter) where T : TrackerObjectBase
+        protected IList<T> GetTrackerObjectList<T>(IList<T> originalList, FilterEngine filterEngine, SortBase<T> sortOptions, Func<ILoadSaveMethod, IList<T>> loadAndFilter) where T : TrackerObjectBase
         {
-            return GetTrackerObjectList(originalList, filterOptions, sortOptions, true, loadAndFilter);
+            return GetTrackerObjectList(originalList, filterEngine, sortOptions, true, loadAndFilter);
         }
 
-        private IList<T> GetTrackerObjectList<T>(IList<T> originalList, FilterBase<T> filterOptions, SortBase<T> sortOptions, bool supportsLoadAndFilter, Func<ILoadSaveMethod, IList<T>> loadAndFilter) where T : TrackerObjectBase
+        private IList<T> GetTrackerObjectList<T>(IList<T> originalList, FilterEngine filterEngine, SortBase<T> sortOptions, bool supportsLoadAndFilter, Func<ILoadSaveMethod, IList<T>> loadAndFilter) where T : TrackerObjectBase
         {
             try
             {
@@ -106,7 +107,7 @@ namespace RatableTracker.Modules
                 else
                 {
                     IList<T> list = new List<T>(originalList);
-                    if (filterOptions != null) list = filterOptions.ApplyFilters(list);
+                    if (filterEngine != null) list = filterEngine.ApplyFilters(list);
                     if (sortOptions != null) list = sortOptions.ApplySorting(list);
                     return list;
                 }

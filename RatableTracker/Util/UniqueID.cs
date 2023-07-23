@@ -39,6 +39,20 @@ namespace RatableTracker.Util
             };
         }
 
+        public static bool TryParse(ulong value, out UniqueID result)
+        {
+            try
+            {
+                result = Parse(value);
+                return true;
+            }
+            catch
+            {
+                result = BlankID();
+                return false;
+            }
+        }
+
         public static UniqueID Parse(string value)
         {
             try
@@ -56,6 +70,20 @@ namespace RatableTracker.Util
                 {
                     uniqueKey = new Guid(padding.Concat(inputBytes).ToArray())
                 };
+            }
+        }
+
+        public static bool TryParse(string value, out UniqueID result)
+        {
+            try
+            {
+                result = Parse(value);
+                return true;
+            }
+            catch
+            {
+                result = BlankID();
+                return false;
             }
         }
 

@@ -157,5 +157,12 @@ namespace RatableTracker.Util
 
             return fields ?? Array.Empty<FieldInfo>();
         }
+
+        public static string ToDisplayString(this Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            EnumDisplayAttribute attr = (EnumDisplayAttribute)Attribute.GetCustomAttribute(field, typeof(EnumDisplayAttribute));
+            return attr == null ? value.ToString() : attr.Name;
+        }
     }
 }

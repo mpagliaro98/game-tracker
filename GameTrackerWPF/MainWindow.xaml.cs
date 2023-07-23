@@ -82,7 +82,7 @@ namespace GameTrackerWPF
             InitializeComponent();
             PlatformsButtonSortMode.Tag = savedState.SortPlatforms.SortMode;
             GamesButtonSortMode.Tag = savedState.SortGames.SortMode;
-            CheckboxShowCompilations.IsChecked = savedState.FilterGames.ShowCompilations;
+            CheckboxShowCompilations.IsChecked = savedState.ShowCompilations;
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -246,23 +246,18 @@ namespace GameTrackerWPF
                 default:
                     throw new NotImplementedException();
             }
-            foreach (GameObject rg in rm.GetModelObjectList(savedState.FilterGames, savedState.SortGames, settings))
+            foreach (GameObject rg in rm.GetModelObjectList<GameObject>(savedState.FilterGames, savedState.SortGames, settings))
             {
-                UserControl item;
-                switch (savedState.DisplayMode)
+                if ((savedState.ShowCompilations && !rg.IsCompilation && rg.IsPartOfCompilation) || (!savedState.ShowCompilations && rg.IsCompilation))
+                    continue;
+
+                UserControl item = savedState.DisplayMode switch
                 {
-                    case GameDisplayMode.DISPLAY_SMALL:
-                        item = new ListBoxItemGameSmall(rm, rg);
-                        break;
-                    case GameDisplayMode.DISPLAY_EXPANDED:
-                        item = new ListBoxItemGameExpanded(rm, rg);
-                        break;
-                    case GameDisplayMode.DISPLAY_BOXES:
-                        item = new ListBoxItemGameBox(rm, rg);
-                        break;
-                    default:
-                        throw new NotImplementedException();
-                }
+                    GameDisplayMode.DISPLAY_SMALL => new ListBoxItemGameSmall(rm, rg),
+                    GameDisplayMode.DISPLAY_EXPANDED => new ListBoxItemGameExpanded(rm, rg),
+                    GameDisplayMode.DISPLAY_BOXES => new ListBoxItemGameBox(rm, rg),
+                    _ => throw new NotImplementedException(),
+                };
                 item.MouseDoubleClick += GameEdit;
                 if (savedState.DisplayMode == GameDisplayMode.DISPLAY_BOXES)
                     GamesListBoxWrap.Items.Add(item);
@@ -489,7 +484,20 @@ namespace GameTrackerWPF
 
         private void CheckboxShowCompilations_Checked(object sender, RoutedEventArgs e)
         {
-            savedState.FilterGames.ShowCompilations = CheckboxShowCompilations.IsChecked.Value;
+            savedState.ShowCompilations = CheckboxShowCompilations.IsChecked.Value;
+            UpdateGamesUI();
+        }
+
+        private void GamesButtonSearch_Click(object sender, RoutedEventArgs e)
+        {
+            FilterWindow window = new FilterWindow(savedState.FilterGames, rm, settings, FilterMode.Game);
+            window.Search += GameFilterWindow_Search;
+            window.ShowDialog();
+        }
+
+        private void GameFilterWindow_Search(object sender, FilterWindowSearchEventArgs e)
+        {
+            savedState.FilterGames = e.FilterEngine;
             UpdateGamesUI();
         }
         #endregion
@@ -643,6 +651,19 @@ namespace GameTrackerWPF
             Button button = (Button)sender;
             ToggleSortModeButton(button);
             PlatformSortRefresh();
+        }
+
+        private void PlatformsButtonSearch_Click(object sender, RoutedEventArgs e)
+        {
+            FilterWindow window = new FilterWindow(savedState.FilterPlatforms, rm, settings, FilterMode.Platform);
+            window.Search += PlatformFilterWindow_Search;
+            window.ShowDialog();
+        }
+
+        private void PlatformFilterWindow_Search(object sender, FilterWindowSearchEventArgs e)
+        {
+            savedState.FilterPlatforms = e.FilterEngine;
+            UpdatePlatformsUI();
         }
         #endregion
 

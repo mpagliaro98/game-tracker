@@ -2,6 +2,7 @@
 using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation;
+using RatableTracker.ListManipulation.Filtering;
 using RatableTracker.LoadSave;
 using RatableTracker.Model;
 using RatableTracker.ScoreRanges;
@@ -68,22 +69,23 @@ namespace RatableTracker.Modules
 
         public IList<RankedObject> GetModelObjectList(Settings settings)
         {
-            return GetModelObjectList(null, null, settings);
+            return GetModelObjectList<RankedObject>(null, null, settings);
         }
 
-        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, Settings settings)
+        public IList<T> GetModelObjectList<T>(FilterEngine filterEngine, Settings settings) where T : RankedObject
         {
-            return GetModelObjectList(filterOptions, null, settings);
+            return GetModelObjectList<T>(filterEngine, null, settings);
         }
 
         public IList<RankedObject> GetModelObjectList(SortRankedObjects sortOptions, Settings settings)
         {
-            return GetModelObjectList(null, sortOptions, settings);
+            return GetModelObjectList<RankedObject>(null, sortOptions, settings);
         }
 
-        public IList<RankedObject> GetModelObjectList(FilterRankedObjects filterOptions, SortRankedObjects sortOptions, Settings settings)
+        public IList<T> GetModelObjectList<T>(FilterEngine filterEngine, SortRankedObjects sortOptions, Settings settings) where T : RankedObject
         {
-            return GetTrackerObjectList(ModelObjects, filterOptions, sortOptions, (conn) => conn.LoadModelObjectsAndFilter(settings, this, filterOptions, sortOptions));
+            // TODO fix sorting here
+            return GetTrackerObjectList(ModelObjects.OfType<T>().ToList(), filterEngine, null, (conn) => conn.LoadModelObjectsAndFilter<T>(settings, this, filterEngine, sortOptions));
         }
 
         public int TotalNumModelObjects()
