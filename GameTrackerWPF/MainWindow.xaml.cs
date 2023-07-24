@@ -23,6 +23,7 @@ using RatableTracker.ObjAddOns;
 using RatableTracker.ScoreRanges;
 using RatableTracker.Exceptions;
 using System.Diagnostics;
+using RatableTracker.ListManipulation.Sorting;
 
 namespace GameTrackerWPF
 {
@@ -34,8 +35,6 @@ namespace GameTrackerWPF
         private const string TAB_GAMES = "TabGames";
         private const string TAB_PLATFORMS = "TabPlatforms";
         private const string TAB_SETTINGS = "TabSettings";
-
-        private const string SORT_CM_PREFIX = "sort";
 
         private GameModule rm;
         private SettingsGame settings;
@@ -272,7 +271,7 @@ namespace GameTrackerWPF
                 count++;
             }
             BuildCategoriesHeader(rm.CategoryExtension.GetRatingCategoryList());
-            BuildGamesSortOptions(rm.CategoryExtension.GetRatingCategoryList());
+            BuildGamesSortOptions();
 
             var vis = rm.TotalNumModelObjects() >= rm.LimitModelObjects ? Visibility.Hidden : Visibility.Visible;
             GamesButtonNew.Visibility = vis;
@@ -305,47 +304,21 @@ namespace GameTrackerWPF
             }
         }
 
-        private void BuildGamesSortOptions(IList<RatingCategory> cats)
+        private void BuildGamesSortOptions()
         {
             if (!savedState.Loaded || GamesButtonSort.ContextMenu.Items.Count > 0) return;
             GamesButtonSort.ContextMenu.Items.Clear();
-            MenuItem item;
-            foreach (Tuple<int, string> sortOption in new List<Tuple<int, string>>()
+            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<GameObject>(rm, settings);
+            foreach (var option in sortOptions)
             {
-                new Tuple<int, string>(SortGames.SORT_Name, "Name"),
-                new Tuple<int, string>(SortGames.SORT_Status, "Completion Status"),
-                new Tuple<int, string>(SortGames.SORT_Platform, "Platform"),
-                new Tuple<int, string>(SortGames.SORT_PlatformPlayedOn, "Platform Played On"),
-                new Tuple<int, string>(SortGames.SORT_Score, "Final Score"),
-                new Tuple<int, string>(SortGames.SORT_HasComment, "Has Comment"),
-                new Tuple<int, string>(SortGames.SORT_Ownership, "Ownership"),
-                new Tuple<int, string>(SortGames.SORT_ReleaseDate, "Release Date"),
-                new Tuple<int, string>(SortGames.SORT_AcquiredOn, "Acquired On"),
-                new Tuple<int, string>(SortGames.SORT_StartedOn, "Started On"),
-                new Tuple<int, string>(SortGames.SORT_FinishedOn, "Finished On")
-            })
-            {
-                item = new MenuItem
+                var item = new MenuItem
                 {
-                    Name = SORT_CM_PREFIX + sortOption.Item1.ToString(),
-                    Header = sortOption.Item2,
                     IsCheckable = true,
-                    IsChecked = savedState.SortGames.SortMethod == sortOption.Item1
+                    IsChecked = option.Equals(savedState.SortGames.SortOption),
+                    DisplayMemberPath = "Name",
+                    Header = option.Name
                 };
-                item.Checked += GamesSort_Checked;
-                item.Unchecked += GamesSort_Unchecked;
-                GamesButtonSort.ContextMenu.Items.Add(item);
-            }
-            for (int i = 0; i < cats.Count(); i++)
-            {
-                var cat = cats.ElementAt(i);
-                item = new MenuItem
-                {
-                    Header = cat.Name,
-                    Name = SORT_CM_PREFIX + (SortGames.SORT_CategoryStart + i).ToString(),
-                    IsCheckable = true,
-                    IsChecked = savedState.SortGames.SortMethod == (SortGames.SORT_CategoryStart + i)
-                };
+                item.Items.Add(option);
                 item.Checked += GamesSort_Checked;
                 item.Unchecked += GamesSort_Unchecked;
                 GamesButtonSort.ContextMenu.Items.Add(item);
@@ -428,19 +401,19 @@ namespace GameTrackerWPF
                     sortItem.IsChecked = false;
                 }
             }
-            GamesSort(item.Name);
+            GamesSort((ISortOption)item.Items[0]);
         }
 
         private void GamesSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.SortGames.SortMethod = SortGames.SORT_None;
+            savedState.SortGames.SortOption = null;
             UpdateGamesUI();
         }
 
-        private void GamesSort(string sortField)
+        private void GamesSort(ISortOption sortOption)
         {
             savedState.SortGames.SortMode = GetSortModeFromButton(GamesButtonSortMode);
-            savedState.SortGames.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
+            savedState.SortGames.SortOption = (SortOptionBase)sortOption;
             UpdateGamesUI();
         }
 
@@ -450,7 +423,7 @@ namespace GameTrackerWPF
             {
                 if (sortItem.IsChecked)
                 {
-                    GamesSort(sortItem.Name);
+                    GamesSort((ISortOption)sortItem.Items[0]);
                 }
             }
         }
@@ -533,26 +506,17 @@ namespace GameTrackerWPF
         {
             if (!savedState.Loaded || PlatformsButtonSort.ContextMenu.Items.Count > 0) return;
             PlatformsButtonSort.ContextMenu.Items.Clear();
-            MenuItem item;
-            foreach (Tuple<int, string> sortOption in new List<Tuple<int, string>>()
+            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<Platform>(rm, settings);
+            foreach (var option in sortOptions)
             {
-                new Tuple<int, string>(SortPlatforms.SORT_Name, "Name"),
-                new Tuple<int, string>(SortPlatforms.SORT_NumGames, "# Games"),
-                new Tuple<int, string>(SortPlatforms.SORT_Average, "Average Score"),
-                new Tuple<int, string>(SortPlatforms.SORT_Highest, "Highest Score"),
-                new Tuple<int, string>(SortPlatforms.SORT_Lowest, "Lowest Score"),
-                new Tuple<int, string>(SortPlatforms.SORT_PercentFinished, "% Finished"),
-                new Tuple<int, string>(SortPlatforms.SORT_Release, "Release Year"),
-                new Tuple<int, string>(SortPlatforms.SORT_Acquired, "Acquired Year")
-            })
-            {
-                item = new MenuItem
+                var item = new MenuItem
                 {
-                    Name = SORT_CM_PREFIX + sortOption.Item1.ToString(),
-                    Header = sortOption.Item2,
                     IsCheckable = true,
-                    IsChecked = savedState.SortPlatforms.SortMethod == sortOption.Item1
+                    IsChecked = option.Equals(savedState.SortPlatforms.SortOption),
+                    DisplayMemberPath = "Name",
+                    Header = option.Name
                 };
+                item.Items.Add(option);
                 item.Checked += PlatformsSort_Checked;
                 item.Unchecked += PlatformsSort_Unchecked;
                 PlatformsButtonSort.ContextMenu.Items.Add(item);
@@ -626,19 +590,19 @@ namespace GameTrackerWPF
                     sortItem.IsChecked = false;
                 }
             }
-            PlatformSort(item.Name);
+            PlatformSort((ISortOption)item.Items[0]);
         }
 
         private void PlatformsSort_Unchecked(object sender, RoutedEventArgs e)
         {
-            savedState.SortPlatforms.SortMethod = SortPlatforms.SORT_None;
+            savedState.SortPlatforms.SortOption = null;
             UpdatePlatformsUI();
         }
 
-        private void PlatformSort(string sortField)
+        private void PlatformSort(ISortOption sortOption)
         {
             savedState.SortPlatforms.SortMode = GetSortModeFromButton(PlatformsButtonSortMode);
-            savedState.SortPlatforms.SortMethod = Convert.ToInt32(sortField.Substring(SORT_CM_PREFIX.Length));
+            savedState.SortPlatforms.SortOption = (SortOptionBase)sortOption;
             UpdatePlatformsUI();
         }
 
@@ -648,7 +612,7 @@ namespace GameTrackerWPF
             {
                 if (sortItem.IsChecked)
                 {
-                    PlatformSort(sortItem.Name);
+                    PlatformSort((ISortOption)sortItem.Items[0]);
                 }
             }
         }
@@ -820,7 +784,7 @@ namespace GameTrackerWPF
             var vis = rm.CategoryExtension.TotalNumRatingCategories() >= rm.CategoryExtension.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewRatingCategory.Visibility = vis;
             GamesButtonSort.ContextMenu.Items.Clear();
-            savedState.SortGames.SortMethod = SortGames.SORT_None;
+            savedState.SortGames.SortOption = null;
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
@@ -1043,5 +1007,13 @@ namespace GameTrackerWPF
             MessageBox.Show(message, "About", MessageBoxButton.OK);
         }
         #endregion
+
+        public sealed class SortMenuItem
+        {
+            public SortMenuItem()
+            {
+
+            }
+        }
     }
 }

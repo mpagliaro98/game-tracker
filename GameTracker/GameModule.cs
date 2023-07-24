@@ -3,6 +3,7 @@ using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation;
 using RatableTracker.ListManipulation.Filtering;
+using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.Model;
 using RatableTracker.Modules;
 using RatableTracker.Util;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameTracker.Filtering;
 
 namespace GameTracker
 {
@@ -67,14 +69,14 @@ namespace GameTracker
             return GetPlatformList(filterEngine, null, settings);
         }
 
-        public IList<Platform> GetPlatformList(SortPlatforms sortOptions, SettingsGame settings)
+        public IList<Platform> GetPlatformList(SortEngine sortEngine, SettingsGame settings)
         {
-            return GetPlatformList(null, sortOptions, settings);
+            return GetPlatformList(null, sortEngine, settings);
         }
 
-        public IList<Platform> GetPlatformList(FilterEngine filterEngine, SortPlatforms sortOptions, SettingsGame settings)
+        public IList<Platform> GetPlatformList(FilterEngine filterEngine, SortEngine sortEngine, SettingsGame settings)
         {
-            return GetTrackerObjectList(Platforms, filterEngine, sortOptions, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatformsAndFilter(this, settings, filterEngine, sortOptions));
+            return GetTrackerObjectList(Platforms, filterEngine, sortEngine, (conn) => ((ILoadSaveMethodGame)conn).LoadPlatformsAndFilter(this, settings, filterEngine, sortEngine));
         }
 
         public int TotalNumPlatforms()

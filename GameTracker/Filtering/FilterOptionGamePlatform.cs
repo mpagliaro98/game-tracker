@@ -6,20 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameTracker
+namespace GameTracker.Filtering
 {
     [FilterOption(typeof(GameObject))]
     public class FilterOptionGamePlatform : FilterOptionListBase<GameObject>
     {
         public override string Name => "Platform";
         public override List<KeyValuePair<UniqueID, string>> ListValues => new List<KeyValuePair<UniqueID, string>>()
-        { 
+        {
             new KeyValuePair<UniqueID, string>(UniqueID.BlankID(), "No Platform")
         }.Concat(((GameModule)Module).GetPlatformList((SettingsGame)Settings).OrderBy(p => p.Name.CleanForSorting()).Select(p => new KeyValuePair<UniqueID, string>(p.UniqueID, p.Name))).ToList();
 
         public override Func<GameObject, bool> GenerateFilterExpression()
         {
-            return (obj) => FilterID.HasValue() ? (obj.Platform != null && obj.Platform.UniqueID.Equals(FilterID)) : obj.Platform == null;
+            return (obj) => FilterID.HasValue() ? obj.Platform != null && obj.Platform.UniqueID.Equals(FilterID) : obj.Platform == null;
         }
     }
 }

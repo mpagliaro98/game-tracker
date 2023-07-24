@@ -1,5 +1,6 @@
 ﻿using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation.Filtering;
+using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.LoadSave;
 using RatableTracker.Util;
 using System;
@@ -53,11 +54,11 @@ namespace GameTracker
             return LoadAll(EnsurePlatformsAreLoaded, ref platforms, (s) => factory.GetPlatform(s, module, settings));
         }
 
-        public IList<Platform> LoadPlatformsAndFilter(GameModule module, SettingsGame settings, FilterEngine filterEngine, SortPlatforms sortOptions)
+        public IList<Platform> LoadPlatformsAndFilter(GameModule module, SettingsGame settings, FilterEngine filterEngine, SortEngine sortEngine)
         {
             var list = LoadPlatforms(module, settings);
             if (filterEngine != null) list = filterEngine.ApplyFilters(list);
-            if (sortOptions != null) list = sortOptions.ApplySorting(list);
+            if (sortEngine != null) list = sortEngine.ApplySorting(list);
             return list;
         }
 

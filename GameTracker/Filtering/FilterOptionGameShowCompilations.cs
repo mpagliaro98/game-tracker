@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameTracker
+namespace GameTracker.Filtering
 {
     [FilterOption(typeof(GameObject), InAutoList = false)]
     public class FilterOptionGameShowCompilations : FilterOptionBooleanBase<GameObject>
@@ -17,7 +17,7 @@ namespace GameTracker
 
         public override Func<GameObject, bool> GenerateFilterExpression()
         {
-            return (obj) => obj.IsCompilation || (!obj.IsCompilation && !obj.IsPartOfCompilation);
+            return (obj) => obj.IsCompilation || !obj.IsCompilation && !obj.IsPartOfCompilation;
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameTracker
+namespace GameTracker.Filtering
 {
     [FilterOption(typeof(GameObject))]
     public class FilterOptionGameRank : FilterOptionNumericBase<GameObject>

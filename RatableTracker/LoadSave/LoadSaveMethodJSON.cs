@@ -15,6 +15,7 @@ using System.Diagnostics;
 using RatableTracker.Exceptions;
 using RatableTracker.ListManipulation;
 using RatableTracker.ListManipulation.Filtering;
+using RatableTracker.ListManipulation.Sorting;
 
 namespace RatableTracker.LoadSave
 {
@@ -481,11 +482,11 @@ namespace RatableTracker.LoadSave
             return LoadAll(EnsureModelObjectsAreLoaded, ref modelObjects, (s) => factory.GetModelObject(s, settings, module), (obj) => obj.SortOrder);
         }
 
-        public IList<T> LoadModelObjectsAndFilter<T>(Settings settings, TrackerModule module, FilterEngine filterEngine, SortRankedObjects sortOptions) where T : RankedObject
+        public IList<T> LoadModelObjectsAndFilter<T>(Settings settings, TrackerModule module, FilterEngine filterEngine, SortEngine sortEngine) where T : RankedObject
         {
             var list = (IList<T>)LoadModelObjects(settings, module);
             if (filterEngine != null) list = filterEngine.ApplyFilters(list);
-            if (sortOptions != null) list = (IList<T>)sortOptions.ApplySorting((IList<RankedObject>)list);
+            if (sortEngine != null) list = sortEngine.ApplySorting(list);
             return list;
         }
 

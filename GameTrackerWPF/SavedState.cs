@@ -1,6 +1,8 @@
 ﻿using GameTracker;
+using GameTracker.Sorting;
 using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation.Filtering;
+using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -18,9 +20,9 @@ namespace GameTrackerWPF
         public const string SAVEDSTATE_FILENAME = "savedstate.dat";
 
         public FilterEngine FilterGames { get; set; } = new FilterEngine();
-        public SortGames SortGames { get; set; } = new SortGames();
+        public SortEngine SortGames { get; set; } = new SortEngine();
         public FilterEngine FilterPlatforms { get; set; } = new FilterEngine();
-        public SortPlatforms SortPlatforms { get; set; } = new SortPlatforms();
+        public SortEngine SortPlatforms { get; set; } = new SortEngine();
         public bool ShowCompilations { get; set; } = false;
         [XmlIgnore] public bool Loaded { get; set; } = false;
         public GameDisplayMode DisplayMode { get; set; } = GameDisplayMode.DISPLAY_SMALL;
@@ -52,11 +54,9 @@ namespace GameTrackerWPF
                 reader?.Close();
 
                 savedState.FilterGames.SetNonSerializableFields(module, settings);
+                savedState.SortGames.SetNonSerializableFields(module, settings, new SortOptionModelName());
                 savedState.FilterPlatforms.SetNonSerializableFields(module, settings);
-                savedState.SortGames.Module = module;
-                savedState.SortGames.Settings = settings;
-                savedState.SortPlatforms.Module = module;
-                savedState.SortPlatforms.Settings = settings;
+                savedState.SortPlatforms.SetNonSerializableFields(module, settings, new SortOptionPlatformName());
             }
             return savedState;
         }
