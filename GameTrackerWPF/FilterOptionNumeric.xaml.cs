@@ -49,8 +49,8 @@ namespace GameTrackerWPF
         private void SetInitialValues(List<string> values)
         {
             ComboBoxType.SelectedValue = (FilterNumericType)Enum.Parse(typeof(FilterNumericType), values[0]);
-            EntryValue1.Value = double.Parse(values[1]);
-            EntryValue2.Value = double.Parse(values[2]);
+            EntryValue1.Value = option.NumberFormat == FilterNumberFormat.Percentage ? double.Parse(values[1]) * 100 : double.Parse(values[1]);
+            EntryValue2.Value = option.NumberFormat == FilterNumberFormat.Percentage ? double.Parse(values[2]) * 100 : double.Parse(values[2]);
         }
 
         private void ComboBoxType_SelectionChanged(object sender, SelectionChangedEventArgs e)
