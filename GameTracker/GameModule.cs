@@ -146,7 +146,7 @@ namespace GameTracker
             return GetFinishableGamesOnPlatform(platform, settings).Count;
         }
 
-        public double GetNumGamesFinishedByPlatform(Platform platform, SettingsGame settings)
+        public int GetNumGamesFinishedByPlatform(Platform platform, SettingsGame settings)
         {
             return GetFinishedGamesOnPlatform(platform, settings).Count;
         }
@@ -155,7 +155,7 @@ namespace GameTracker
         {
             int numFinishable = GetNumGamesFinishableByPlatform(platform, settings);
             if (numFinishable <= 0) numFinishable = 1;
-            return GetNumGamesFinishedByPlatform(platform, settings) / numFinishable;
+            return (double)GetNumGamesFinishedByPlatform(platform, settings) / numFinishable;
         }
 
         public int GetNumGamesByPlatform(Platform platform, SettingsGame settings)

@@ -64,7 +64,7 @@ namespace GameTrackerWPF
             {
                 FilterNumberFormat.Decimal => input,
                 FilterNumberFormat.Integer => Math.Floor(input),
-                FilterNumberFormat.Percentage => input / 100,
+                FilterNumberFormat.Percentage => (double)input / 100,
                 _ => throw new NotImplementedException("Invalid number format: " + option.NumberFormat.ToDisplayString())
             };
         }

@@ -22,6 +22,8 @@ namespace GameTracker
         [Savable()] public int AcquiredYear { get; set; } = 0;
 
         public int NumGames => Module.GetNumGamesByPlatform(this, Settings);
+        public int NumGamesFinished => Module.GetNumGamesFinishedByPlatform(this, Settings);
+        public int NumGamesFinishable => Module.GetNumGamesFinishableByPlatform(this, Settings);
         public double AverageScore => Module.GetAverageScoreOfGamesByPlatform(this, Settings);
         public double HighestScore => Module.GetHighestScoreFromGamesByPlatform(this, Settings);
         public double LowestScore => Module.GetLowestScoreFromGamesByPlatform(this, Settings);
