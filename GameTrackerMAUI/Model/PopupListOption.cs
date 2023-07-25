@@ -8,10 +8,10 @@ namespace GameTrackerMAUI.Model
 {
     public class PopupListOption
     {
-        public int? Value { get; set; }
+        public object Value { get; set; }
         public string Text { get; set; }
 
-        public PopupListOption(int? value, string text)
+        public PopupListOption(object value, string text)
         {
             Value = value;
             Text = text;

@@ -1,7 +1,9 @@
 ﻿using GameTracker;
+using GameTracker.Sorting;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
 using RatableTracker.Exceptions;
+using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
@@ -75,7 +77,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public IEnumerable<GameTracker.Platform> Platforms
         {
-            get => SharedDataService.Module.GetPlatformList(new SortPlatforms() { SortMethod = SortPlatforms.SORT_Name }, SharedDataService.Settings);
+            get => SharedDataService.Module.GetPlatformList(new SortEngine() { SortOption = new SortOptionPlatformName() }, SharedDataService.Settings);
         }
 
         public Command SaveCommand { get; }

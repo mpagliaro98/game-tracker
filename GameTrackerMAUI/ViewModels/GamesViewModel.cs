@@ -3,6 +3,7 @@ using GameTrackerMAUI.Model;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
 using RatableTracker.ListManipulation;
+using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -79,10 +80,13 @@ namespace GameTrackerMAUI.ViewModels
             try
             {
                 Items.Clear();
-                var items = SharedDataService.Module.GetModelObjectList(SharedDataService.SavedState.FilterGames,
+                var items = SharedDataService.Module.GetModelObjectList<GameObject>(SharedDataService.SavedState.FilterGames,
                     SharedDataService.SavedState.SortGames, SharedDataService.Settings).OfType<GameObject>().ToList();
                 foreach (var item in items)
                 {
+                    if ((SharedDataService.SavedState.ShowCompilations && !item.IsCompilation && item.IsPartOfCompilation) || (!SharedDataService.SavedState.ShowCompilations && item.IsCompilation))
+                        continue;
+
                     Items.Add(item);
                 }
             }
@@ -120,10 +124,10 @@ namespace GameTrackerMAUI.ViewModels
 
         async void OnShowCompilations()
         {
-            SharedDataService.SavedState.FilterGames.ShowCompilations = !SharedDataService.SavedState.FilterGames.ShowCompilations;
+            SharedDataService.SavedState.ShowCompilations = !SharedDataService.SavedState.ShowCompilations;
             SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
             ExecuteLoadItemsCommand();
-            string msg = SharedDataService.SavedState.FilterGames.ShowCompilations ?
+            string msg = SharedDataService.SavedState.ShowCompilations ?
                 "Compilations are now being shown in the list, and games in compilations are hidden." :
                 "Games in compilations are visible, and compilations are being hidden.";
             var popup = new PopupMain("Compilations", msg, PopupMain.EnumInputType.Ok)
@@ -135,40 +139,19 @@ namespace GameTrackerMAUI.ViewModels
 
         private async void OnSort()
         {
-            List<PopupListOption> options = new List<PopupListOption>()
-            {
-                new PopupListOption(SortGames.SORT_Name, "Name"),
-                new PopupListOption(SortGames.SORT_Status, "Completion Status"),
-                new PopupListOption(SortGames.SORT_Platform, "Platform"),
-                new PopupListOption(SortGames.SORT_PlatformPlayedOn, "Platform Played On"),
-                new PopupListOption(SortGames.SORT_Score, "Final Score"),
-                new PopupListOption(SortGames.SORT_HasComment, "Has Comment"),
-                new PopupListOption(SortGames.SORT_Ownership, "Ownership"),
-                new PopupListOption(SortGames.SORT_ReleaseDate, "Release Date"),
-                new PopupListOption(SortGames.SORT_AcquiredOn, "Acquired On"),
-                new PopupListOption(SortGames.SORT_StartedOn, "Started On"),
-                new PopupListOption(SortGames.SORT_FinishedOn, "Finished On")
-            };
+            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<GameObject>(SharedDataService.Module, SharedDataService.Settings);
+            List<PopupListOption> options = sortOptions.Select(so => new PopupListOption(so, so.Name)).ToList();
 
-            var module = SharedDataService.Module;
-            int i = SortGames.SORT_CategoryStart;
-            foreach (var cat in module.CategoryExtension.GetRatingCategoryList())
-            {
-                options.Add(new PopupListOption(i++, cat.Name));
-            }
-
-            int? selectedValue = SharedDataService.SavedState.SortGames.SortMethod;
-            if (selectedValue.Value == SortGames.SORT_None)
-                selectedValue = null;
+            ISortOption selectedValue = SharedDataService.SavedState.SortGames.SortOption;
             var ret = await UtilMAUI.ShowPopupListAsync("Sort by", options, selectedValue);
             if (ret.Item1 == PopupList.EnumOutputType.Selection)
             {
                 if (ret.Item2 is null)
                     return;
-                else if (ret.Item2 == SharedDataService.SavedState.SortGames.SortMethod)
-                    SharedDataService.SavedState.SortGames.SortMethod = SortGames.SORT_None;
+                else if (ret.Item2.Equals(SharedDataService.SavedState.SortGames.SortOption))
+                    SharedDataService.SavedState.SortGames.SortOption = null;
                 else
-                    SharedDataService.SavedState.SortGames.SortMethod = ret.Item2.Value;
+                    SharedDataService.SavedState.SortGames.SortOption = (SortOptionBase)ret.Item2;
                 SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
 
                 ExecuteLoadItemsCommand();

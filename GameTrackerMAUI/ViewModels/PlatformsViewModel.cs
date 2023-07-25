@@ -11,6 +11,7 @@ using GameTrackerMAUI.Model;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
 using RatableTracker.ListManipulation;
+using RatableTracker.ListManipulation.Sorting;
 
 namespace GameTrackerMAUI.ViewModels
 {
@@ -114,30 +115,19 @@ namespace GameTrackerMAUI.ViewModels
 
         private async void OnSort()
         {
-            List<PopupListOption> options = new List<PopupListOption>()
-            {
-                new PopupListOption(SortPlatforms.SORT_Name, "Name"),
-                new PopupListOption(SortPlatforms.SORT_NumGames, "# Games"),
-                new PopupListOption(SortPlatforms.SORT_Average, "Average Score"),
-                new PopupListOption(SortPlatforms.SORT_Highest, "Highest Score"),
-                new PopupListOption(SortPlatforms.SORT_Lowest, "Lowest Score"),
-                new PopupListOption(SortPlatforms.SORT_PercentFinished, "% Finished"),
-                new PopupListOption(SortPlatforms.SORT_Release, "Release Year"),
-                new PopupListOption(SortPlatforms.SORT_Acquired, "Acquired Year")
-            };
+            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<GameTracker.Platform>(SharedDataService.Module, SharedDataService.Settings);
+            List<PopupListOption> options = sortOptions.Select(so => new PopupListOption(so, so.Name)).ToList();
 
-            int? selectedValue = SharedDataService.SavedState.SortPlatforms.SortMethod;
-            if (selectedValue.Value == SortPlatforms.SORT_None)
-                selectedValue = null;
+            ISortOption selectedValue = SharedDataService.SavedState.SortPlatforms.SortOption;
             var ret = await UtilMAUI.ShowPopupListAsync("Sort by", options, selectedValue);
             if (ret.Item1 == PopupList.EnumOutputType.Selection)
             {
                 if (ret.Item2 is null)
                     return;
-                else if (ret.Item2 == SharedDataService.SavedState.SortPlatforms.SortMethod)
-                    SharedDataService.SavedState.SortPlatforms.SortMethod = SortPlatforms.SORT_None;
+                else if (ret.Item2.Equals(SharedDataService.SavedState.SortPlatforms.SortOption))
+                    SharedDataService.SavedState.SortPlatforms.SortOption = null;
                 else
-                    SharedDataService.SavedState.SortPlatforms.SortMethod = ret.Item2.Value;
+                    SharedDataService.SavedState.SortPlatforms.SortOption = (SortOptionBase)ret.Item2;
                 SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
 
                 ExecuteLoadItemsCommand();

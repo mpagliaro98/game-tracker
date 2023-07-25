@@ -8,9 +8,9 @@ public partial class PopupList : Popup
     public enum EnumOutputType { Cancel, Selection }
 
     public Command<PopupListOption> ItemTapped { get; }
-    public int? SelectedValue { get; set; }
+    public object SelectedValue { get; set; }
 
-    public PopupList(string title, IEnumerable<PopupListOption> options, int? selectedValue)
+    public PopupList(string title, IEnumerable<PopupListOption> options, object selectedValue)
     {
         InitializeComponent();
 
@@ -34,8 +34,8 @@ public partial class PopupList : Popup
         ClosePopup(EnumOutputType.Selection, item.Value);
     }
 
-    private void ClosePopup(EnumOutputType outputType, int? selectedValue)
+    private void ClosePopup(EnumOutputType outputType, object selectedValue)
     {
-        Close(new Tuple<EnumOutputType, int?>(outputType, selectedValue));
+        Close(new Tuple<EnumOutputType, object>(outputType, selectedValue));
     }
 }

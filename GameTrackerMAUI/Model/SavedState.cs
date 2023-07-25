@@ -1,5 +1,8 @@
 ﻿using GameTracker;
+using GameTracker.Sorting;
 using RatableTracker.Interfaces;
+using RatableTracker.ListManipulation.Filtering;
+using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
@@ -15,10 +18,11 @@ namespace GameTrackerMAUI
     {
         public const string SAVEDSTATE_FILENAME = "savedstate.dat";
 
-        public FilterGames FilterGames { get; set; } = new FilterGames();
-        public SortGames SortGames { get; set; } = new SortGames();
-        public FilterPlatforms FilterPlatforms { get; set; } = new FilterPlatforms();
-        public SortPlatforms SortPlatforms { get; set; } = new SortPlatforms();
+        public FilterEngine FilterGames { get; set; } = new FilterEngine();
+        public SortEngine SortGames { get; set; } = new SortEngine();
+        public FilterEngine FilterPlatforms { get; set; } = new FilterEngine();
+        public SortEngine SortPlatforms { get; set; } = new SortEngine();
+        public bool ShowCompilations { get; set; } = false;
 
         private SavedState() { }
 
@@ -46,14 +50,10 @@ namespace GameTrackerMAUI
             {
                 reader?.Close();
 
-                savedState.FilterGames.Module = module;
-                savedState.FilterGames.Settings = settings;
-                savedState.SortGames.Module = module;
-                savedState.SortGames.Settings = settings;
-                savedState.FilterPlatforms.Module = module;
-                savedState.FilterPlatforms.Settings = settings;
-                savedState.SortPlatforms.Module = module;
-                savedState.SortPlatforms.Settings = settings;
+                savedState.FilterGames.SetNonSerializableFields(module, settings);
+                savedState.SortGames.SetNonSerializableFields(module, settings, new SortOptionModelName());
+                savedState.FilterPlatforms.SetNonSerializableFields(module, settings);
+                savedState.SortPlatforms.SetNonSerializableFields(module, settings, new SortOptionPlatformName());
             }
             return savedState;
         }
