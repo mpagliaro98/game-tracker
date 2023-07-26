@@ -29,6 +29,19 @@ namespace RatableTracker.ListManipulation.Sorting
             return obj.CategoryExtension.ScoreOfCategoryDisplay(Category);
         }
 
+        public override bool Equals(object obj)
+        {
+            bool result = base.Equals(obj);
+            if (!result) return false;
+            if (obj is not SortOptionModelCategory category) return false;
+            return _uniqueID.Equals(category._uniqueID);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override IList<ISortOption> InstantiateManually()
         {
             var listOptions = new List<ISortOption>();

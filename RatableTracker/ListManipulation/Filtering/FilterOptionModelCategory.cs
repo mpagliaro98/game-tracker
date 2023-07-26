@@ -29,6 +29,19 @@ namespace RatableTracker.ListManipulation.Filtering
             return obj.CategoryExtension.ScoreOfCategoryDisplay(Category);
         }
 
+        public override bool Equals(object obj)
+        {
+            bool result = base.Equals(obj);
+            if (!result) return false;
+            if (obj is not FilterOptionModelCategory category) return false;
+            return _uniqueID.Equals(category._uniqueID);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override IList<IFilterOption> InstantiateManually()
         {
             var listOptions = new List<IFilterOption>();
