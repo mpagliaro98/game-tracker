@@ -46,7 +46,7 @@ namespace GameTrackerWPF
             TextBlockStatus.Text = completionStatus != null ? completionStatus.Name : "";
             if (completionStatus != null)
                 TextBlockStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());
-            BuildCategories(rm, rg);
+            if (!rg.CategoryExtension.IgnoreCategories) BuildCategories(rm, rg);
             TextBlockFinalScore.Text = rg.ShowScore ? rg.ScoreDisplay.ToString(UtilWPF.SCORE_FORMAT) : "";
             if (rg.ShowScore)
             {
