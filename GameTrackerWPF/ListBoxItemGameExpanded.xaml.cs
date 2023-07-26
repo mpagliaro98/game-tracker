@@ -34,8 +34,8 @@ namespace GameTrackerWPF
             InitializeComponent();
             this.rg = rg;
 
-            var platform = rg.Platform;
-            var playedOn = rg.PlatformPlayedOn;
+            var platform = rg.PlatformEffective;
+            var playedOn = rg.Platform != null ? rg.PlatformPlayedOn : null;
             var completionStatus = rg.StatusExtension.Status;
 
             TextBlockName.Text = rg.Name;

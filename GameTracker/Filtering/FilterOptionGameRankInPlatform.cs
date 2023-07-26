@@ -18,7 +18,7 @@ namespace GameTracker.Filtering
 
         protected override double GetComparisonValue(GameObject obj)
         {
-            return obj.Platform == null ? 0 : ((GameModule)Module).GetRankOfScoreByPlatform(obj.ScoreDisplay, obj.Platform, (SettingsGame)Settings);
+            return obj.PlatformEffective == null ? 0 : ((GameModule)Module).GetRankOfScoreByPlatform(obj.ScoreDisplay, obj.PlatformEffective, (SettingsGame)Settings);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace GameTracker.Sorting
 
         protected override object GetSortValue(GameObject obj)
         {
-            return obj.PlatformPlayedOn == null ? "" : obj.PlatformPlayedOn.Name.CleanForSorting();
+            return obj.PlatformPlayedOnEffective == null ? "" : obj.PlatformPlayedOnEffective.Name.CleanForSorting();
         }
     }
 }

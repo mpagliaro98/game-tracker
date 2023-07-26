@@ -35,7 +35,7 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="40" />
                         </Grid.ColumnDefinitions>
-                        <Rectangle BackgroundColor="{Binding Platform, Converter={StaticResource colorContainerConverter}}" />
+                        <Rectangle BackgroundColor="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
                         <Label Text="{Binding Name}" Grid.Column="1"
                             LineBreakMode="TailTruncation" 
                             Style="{DynamicResource ListItemTextStyle}" 

@@ -282,6 +282,7 @@ namespace GameTrackerWPF
         private void ComboBoxPlatformPlayedOn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex > 0 ? (Platform)ComboBoxPlatformPlayedOn.SelectedItem : null;
+            UpdateStats();
         }
 
         private void CheckboxRemaster_Checked(object sender, RoutedEventArgs e)
@@ -439,9 +440,9 @@ namespace GameTrackerWPF
         private void UpdateStats()
         {
             string text = "";
-            if (orig.Platform != null)
+            if (orig.PlatformEffective != null)
             {
-                var platform = orig.Platform;
+                var platform = orig.PlatformEffective;
                 text += "#" + rm.GetRankOfScoreByPlatform(orig.ScoreMinIfCyclical, platform, settings).ToString() + " on " + platform.Name + "\n";
             }
             text += "#" + rm.GetRankOfScore(orig.ScoreMinIfCyclical, settings).ToString() + " overall";

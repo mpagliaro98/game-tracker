@@ -40,7 +40,7 @@ namespace GameTracker
 
         public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
-        public string NameAndPlatform => Name + (Platform == null ? "" : " (" + (string.IsNullOrWhiteSpace(Platform.Abbreviation) ? Platform.Name : Platform.Abbreviation) + ")");
+        public string NameAndPlatform => Name + (PlatformEffective == null ? "" : " (" + (string.IsNullOrWhiteSpace(PlatformEffective.Abbreviation) ? PlatformEffective.Name : PlatformEffective.Abbreviation) + ")");
 
         public override double Score
         {
@@ -123,6 +123,9 @@ namespace GameTracker
                 _platformPlayedOn = value == null ? UniqueID.BlankID() : value.UniqueID;
             }
         }
+
+        public Platform PlatformEffective => Platform ?? PlatformPlayedOn;
+        public Platform PlatformPlayedOnEffective => PlatformPlayedOn ?? Platform;
 
         [Savable("OriginalGame")] private UniqueID _originalGame = UniqueID.BlankID();
         public GameObject OriginalGame

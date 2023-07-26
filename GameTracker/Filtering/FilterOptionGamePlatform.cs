@@ -19,7 +19,7 @@ namespace GameTracker.Filtering
 
         public override Func<GameObject, bool> GenerateFilterExpression()
         {
-            return (obj) => FilterID.HasValue() ? obj.Platform != null && obj.Platform.UniqueID.Equals(FilterID) : obj.Platform == null;
+            return (obj) => FilterID.HasValue() ? obj.PlatformEffective != null && obj.PlatformEffective.UniqueID.Equals(FilterID) : obj.PlatformEffective == null;
         }
     }
 }
