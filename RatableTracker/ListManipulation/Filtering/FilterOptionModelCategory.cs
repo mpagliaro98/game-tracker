@@ -26,7 +26,7 @@ namespace RatableTracker.ListManipulation.Filtering
 
         protected override double GetComparisonValue(IModelObjectCategorical obj)
         {
-            return obj.CategoryExtension.ScoreOfCategoryDisplay(Category);
+            return obj.CategoryExtension.IgnoreCategories ? ((SettingsScore)Settings).MinScore : obj.CategoryExtension.ScoreOfCategoryDisplay(Category);
         }
 
         public override bool Equals(object obj)
