@@ -164,5 +164,35 @@ namespace RatableTracker.Util
             EnumDisplayAttribute attr = (EnumDisplayAttribute)Attribute.GetCustomAttribute(field, typeof(EnumDisplayAttribute));
             return attr == null ? value.ToString() : attr.Name;
         }
+
+        public static DateTime StartOfWeek(this DateTime value)
+        {
+            return value.Date.AddDays(-(int)(value.DayOfWeek));
+        }
+
+        public static DateTime EndOfWeek(this DateTime value)
+        {
+            return value.StartOfWeek().AddDays(7).AddTicks(-1);
+        }
+
+        public static DateTime StartOfMonth(this DateTime value)
+        {
+            return new DateTime(value.Year, value.Month, 1);
+        }
+
+        public static DateTime EndOfMonth(this DateTime value)
+        {
+            return value.StartOfMonth().AddMonths(1).AddTicks(-1);
+        }
+
+        public static DateTime StartOfYear(this DateTime value)
+        {
+            return new DateTime(value.Year, 1, 1);
+        }
+
+        public static DateTime EndOfYear(this DateTime value)
+        {
+            return value.StartOfYear().AddYears(1).AddTicks(-1);
+        }
     }
 }

@@ -22,7 +22,14 @@ namespace RatableTracker.ListManipulation.Filtering
         [EnumDisplay(Name = "Past Day")] PastDay = 1,
         [EnumDisplay(Name = "Past Week")] PastWeek = 2,
         [EnumDisplay(Name = "Past Month")] PastMonth = 3,
-        [EnumDisplay(Name = "Past Year")] PastYear = 4
+        [EnumDisplay(Name = "Past Year")] PastYear = 4,
+        [EnumDisplay(Name = "Today")] Today = 5,
+        [EnumDisplay(Name = "This Week")] ThisWeek = 6,
+        [EnumDisplay(Name = "This Month")] ThisMonth = 7,
+        [EnumDisplay(Name = "This Year")] ThisYear = 8,
+        [EnumDisplay(Name = "Next Week")] NextWeek = 9,
+        [EnumDisplay(Name = "Next Month")] NextMonth = 10,
+        [EnumDisplay(Name = "Next Year")] NextYear = 11
     }
 
     public abstract class FilterOptionDateBase<T> : FilterOptionBase, IFilterOptionDate, IFilterOptionAction<T>
@@ -67,6 +74,13 @@ namespace RatableTracker.ListManipulation.Filtering
                     FilterDatePreset.PastWeek => (obj) => GetComparisonValue(obj) >= DateTime.Now.AddDays(-7) && GetComparisonValue(obj) < DateTime.Now,
                     FilterDatePreset.PastMonth => (obj) => GetComparisonValue(obj) >= DateTime.Now.AddMonths(-1) && GetComparisonValue(obj) < DateTime.Now,
                     FilterDatePreset.PastYear => (obj) => GetComparisonValue(obj) >= DateTime.Now.AddYears(-1) && GetComparisonValue(obj) < DateTime.Now,
+                    FilterDatePreset.Today => (obj) => GetComparisonValue(obj).Date.Equals(DateTime.Today),
+                    FilterDatePreset.ThisWeek => (obj) => GetComparisonValue(obj) >= DateTime.Today.StartOfWeek() && GetComparisonValue(obj) < DateTime.Today.EndOfWeek(),
+                    FilterDatePreset.ThisMonth => (obj) => GetComparisonValue(obj) >= DateTime.Today.StartOfMonth() && GetComparisonValue(obj) < DateTime.Today.EndOfMonth(),
+                    FilterDatePreset.ThisYear => (obj) => GetComparisonValue(obj) >= DateTime.Today.StartOfYear() && GetComparisonValue(obj) < DateTime.Today.EndOfYear(),
+                    FilterDatePreset.NextWeek => (obj) => GetComparisonValue(obj) >= DateTime.Now && GetComparisonValue(obj) < DateTime.Now.AddDays(7),
+                    FilterDatePreset.NextMonth => (obj) => GetComparisonValue(obj) >= DateTime.Now && GetComparisonValue(obj) < DateTime.Now.AddMonths(1),
+                    FilterDatePreset.NextYear => (obj) => GetComparisonValue(obj) >= DateTime.Now && GetComparisonValue(obj) < DateTime.Now.AddYears(1),
                     _ => throw new ListManipulationException("Invalid date preset: " + DatePreset.ToDisplayString(), DatePreset)
                 };
             }
