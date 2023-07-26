@@ -1,9 +1,12 @@
-﻿using RatableTracker.Interfaces;
+﻿using RatableTracker.Exceptions;
+using RatableTracker.Interfaces;
 using RatableTracker.Model;
 using RatableTracker.Modules;
+using RatableTracker.ScoreRanges;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,6 +46,23 @@ namespace RatableTracker.Util
             message += e.StackTrace + "\n";
             message += new string('=', 60);
             return message;
+        }
+
+        public static ScoreRange GetScoreRange(double score, TrackerModuleScores module)
+        {
+            foreach (ScoreRange range in module.GetScoreRangeList())
+            {
+                try
+                {
+                    if (range.ScoreRelationship.IsValueInRange(score, range.ValueList)) return range;
+                }
+                catch (InvalidObjectStateException e)
+                {
+                    module.Logger.Log(e.GetType().Name + ": " + e.Message);
+                    throw;
+                }
+            }
+            return null;
         }
     }
 }

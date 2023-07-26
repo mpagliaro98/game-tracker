@@ -61,6 +61,7 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(ManualFinalScore));
                 OnPropertyChanged(nameof(CategoryValues));
                 OnPropertyChanged(nameof(FinalScore));
+                OnPropertyChanged(nameof(FinalScoreColor));
                 OnPropertyChanged(nameof(Games));
                 OnPropertyChanged(nameof(OriginalGame));
                 OnPropertyChanged(nameof(UseOriginalGameScore));
@@ -290,6 +291,15 @@ namespace GameTrackerMAUI.ViewModels
             get => IsRemaster && OriginalGame != null && UseOriginalGameScore;
         }
 
+        public Microsoft.Maui.Graphics.Color FinalScoreColor
+        {
+            get
+            {
+                var range = RatableTracker.Util.Util.GetScoreRange(FinalScore, SharedDataService.Module);
+                return range == null ? new Microsoft.Maui.Graphics.Color(255, 255, 255, 0) : range.Color.ToMAUIColor();
+            }
+        }
+
         public IEnumerable<GameTracker.Platform> Platforms
         {
             get => SharedDataService.Module.GetPlatformList(new SortEngine() { SortOption = new SortOptionPlatformName() }, SharedDataService.Settings);
@@ -490,6 +500,7 @@ namespace GameTrackerMAUI.ViewModels
         void CategoryValues_ListChanged(object sender, ListChangedEventArgs e)
         {
             OnPropertyChanged(nameof(FinalScore));
+            OnPropertyChanged(nameof(FinalScoreColor));
         }
     }
 }

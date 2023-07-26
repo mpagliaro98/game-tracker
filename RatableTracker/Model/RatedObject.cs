@@ -21,8 +21,8 @@ namespace RatableTracker.Model
 
         [Savable()] public double ManualScore { get; set; } = 0;
 
-        public virtual ScoreRange ScoreRange { get { return GetScoreRange(Score); } }
-        public virtual ScoreRange ScoreRangeDisplay { get { return GetScoreRange(ScoreDisplay); } }
+        public virtual ScoreRange ScoreRange { get { return Util.Util.GetScoreRange(Score, Module); } }
+        public virtual ScoreRange ScoreRangeDisplay { get { return Util.Util.GetScoreRange(ScoreDisplay, Module); } }
 
         public override int Rank
         {
@@ -74,23 +74,6 @@ namespace RatableTracker.Model
                 ManualScore = settingsScore.ScaleValueToNewMinMaxRange(ManualScore);
                 SaveWithoutValidation(Module, Settings, args.Connection);
             }
-        }
-
-        protected ScoreRange GetScoreRange(double score)
-        {
-            foreach (ScoreRange range in Module.GetScoreRangeList())
-            {
-                try
-                {
-                    if (range.ScoreRelationship.IsValueInRange(score, range.ValueList)) return range;
-                }
-                catch (InvalidObjectStateException e)
-                {
-                    Module.Logger.Log(e.GetType().Name + ": " + e.Message);
-                    throw;
-                }
-            }
-            return null;
         }
     }
 }

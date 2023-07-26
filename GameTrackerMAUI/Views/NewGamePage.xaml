@@ -108,7 +108,7 @@
                         </StackLayout>
 
                         <Label Text="Final Score:" FontSize="Small" />
-                        <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" FontSize="Large" FontAttributes="Bold" Padding="5" IsVisible="{Binding ManualFinalScore, Converter={StaticResource booleanInvertConverter}}" />
+                        <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" IsVisible="{Binding ManualFinalScore, Converter={StaticResource booleanInvertConverter}}" />
                         <Entry Text="{Binding FinalScore, Mode=TwoWay}" FontSize="Medium" IsVisible="{Binding ManualFinalScore}" Keyboard="Numeric" />
                     </StackLayout>
 
