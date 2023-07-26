@@ -33,7 +33,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public StatusViewModel()
         {
-            Title = "Completion Statuses";
+            Title = "Statuses";
             Items = new ObservableCollection<StatusGame>();
             LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
 

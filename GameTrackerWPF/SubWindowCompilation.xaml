@@ -40,7 +40,7 @@
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <StackPanel VerticalAlignment="Center">
-                    <Label Content="Completion Status" />
+                    <Label Content="Status" />
                     <ComboBox x:Name="ComboBoxStatus" Margin="5,0" />
                 </StackPanel>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center">

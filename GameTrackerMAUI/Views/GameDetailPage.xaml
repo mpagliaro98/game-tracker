@@ -38,7 +38,7 @@
                     <RowDefinition />
                     <RowDefinition />
                 </Grid.RowDefinitions>
-                <Label Text="Completion Status:" FontSize="Small" Grid.ColumnSpan="2" />
+                <Label Text="Status:" FontSize="Small" Grid.ColumnSpan="2" />
                 <Rectangle BackgroundColor="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
             </Grid>

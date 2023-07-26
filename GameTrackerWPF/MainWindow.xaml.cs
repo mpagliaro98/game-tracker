@@ -838,7 +838,7 @@ namespace GameTrackerWPF
         }
         #endregion
 
-        #region Completion Statuses
+        #region Statuses
         private void UpdateCompletionStatusUI()
         {
             SettingsListboxCompletionStatuses.ClearItems();
@@ -878,7 +878,7 @@ namespace GameTrackerWPF
         {
             ListBoxItemCompletionStatus lbi = GetControlFromMenuItem<ListBoxItemCompletionStatus>((MenuItem)sender);
 
-            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this completion status and all data associated with it?", "Delete Completion Status Confirmation", MessageBoxButton.YesNo);
+            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this status and all data associated with it?", "Delete Status Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
             try

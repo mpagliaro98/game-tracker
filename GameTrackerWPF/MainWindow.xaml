@@ -76,7 +76,7 @@
                             </Grid.ColumnDefinitions>
                             <Label Content="Name" VerticalAlignment="Center" />
                             <Label Content="Platform" Grid.Column="1" VerticalAlignment="Center" />
-                            <Label Content="Completion Status" Grid.Column="2" VerticalAlignment="Center" />
+                            <Label Content="Status" Grid.Column="2" VerticalAlignment="Center" />
                             <Grid x:Name="GridCategories" Grid.Column="3" />
                             <Label Content="Final Score" Grid.Column="4" VerticalAlignment="Center" />
                             <Label x:Name="LabelGamesCount1" Grid.Column="5" HorizontalAlignment="Right" VerticalAlignment="Center" FontSize="8" Margin="0" Padding="0" />
@@ -202,7 +202,7 @@
                         </Grid>
                         <DockPanel x:Name="SettingsCompletionStatusesLayout" Grid.Column="1">
                             <DockPanel DockPanel.Dock="Top">
-                                <Label x:Name="SettingsLabelCompletionStatuses" Content="Completion Statuses" />
+                                <Label x:Name="SettingsLabelCompletionStatuses" Content="Statuses" />
                                 <Button x:Name="SettingsButtonNewCompletionStatus" Content="New" Width="40" Height="20" HorizontalAlignment="Right" Margin="0,0,5,0" Click="SettingsButtonNewCompletionStatus_Click" IsEnabled="False" />
                             </DockPanel>
                             <local:ScalableListBox x:Name="SettingsListboxCompletionStatuses" DockPanel.Dock="Bottom" Margin="5,2,5,5" SmoothScrolling="True" />

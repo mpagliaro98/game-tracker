@@ -27,7 +27,7 @@
                     <Label Text="Name:" FontSize="Small" />
                     <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
 
-                    <Label Text="Completion Status:" FontSize="Small" />
+                    <Label Text="Status:" FontSize="Small" />
                     <Grid Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
