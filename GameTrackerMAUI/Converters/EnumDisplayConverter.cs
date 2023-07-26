@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RatableTracker.Util;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -7,20 +8,17 @@ using System.Threading.Tasks;
 
 namespace GameTrackerMAUI.Converters
 {
-    public class BooleanInvertConverter : IValueConverter
+    public class EnumDisplayConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not bool) return false;
-            bool boolean = (bool)value;
-            return !boolean;
+            if (value == null || value is not Enum enumValue) return "";
+            return enumValue.ToDisplayString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not bool) return false;
-            bool boolean = (bool)value;
-            return !boolean;
+            throw new NotImplementedException();
         }
     }
 }

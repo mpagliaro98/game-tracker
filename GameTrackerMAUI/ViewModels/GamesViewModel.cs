@@ -1,4 +1,5 @@
-﻿using GameTracker;
+﻿using CommunityToolkit.Maui.Alerts;
+using GameTracker;
 using GameTrackerMAUI.Model;
 using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
@@ -27,6 +28,7 @@ namespace GameTrackerMAUI.ViewModels
         public Command AddItemCommand { get; }
         public Command<GameObject> ItemTapped { get; }
         public Command ShowCompilations { get; }
+        public Command SearchCommand { get; }
 
         public GameObject SelectedItem
         {
@@ -63,6 +65,7 @@ namespace GameTrackerMAUI.ViewModels
 
             AddItemCommand = new Command(OnAddItem, ShowAddButton);
             SortCommand = new Command(OnSort);
+            SearchCommand = new Command(OnSearch);
             SortDirectionCommand = new Command(OnSortDirection);
             SetSortDirectionButton();
             this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
@@ -170,6 +173,11 @@ namespace GameTrackerMAUI.ViewModels
         {
             SortDirectionButtonText = SharedDataService.SavedState.SortGames.SortMode == SortMode.Ascending ? "Asc" : "Desc";
             SortDirectionImageName = SharedDataService.SavedState.SortGames.SortMode == SortMode.Ascending ? "sort_ascending" : "sort_descending";
+        }
+
+        private async void OnSearch()
+        {
+            await Shell.Current.GoToAsync($"{nameof(FilterPage)}?{nameof(FilterViewModel.FilterTypeParam)}={FilterType.Game}");
         }
     }
 }

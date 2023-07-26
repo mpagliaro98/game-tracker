@@ -24,6 +24,7 @@ namespace GameTrackerMAUI.ViewModels
         public Command AddItemCommand { get; }
         public Command SortCommand { get; }
         public Command SortDirectionCommand { get; }
+        public Command SearchCommand { get; }
         public Command<GameTracker.Platform> ItemTapped { get; }
 
         public GameTracker.Platform SelectedItem
@@ -61,6 +62,7 @@ namespace GameTrackerMAUI.ViewModels
             AddItemCommand = new Command(OnAddItem, ShowAddButton);
             SortCommand = new Command(OnSort);
             SortDirectionCommand = new Command(OnSortDirection);
+            SearchCommand = new Command(OnSearch);
             SetSortDirectionButton();
             this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
         }
@@ -146,6 +148,11 @@ namespace GameTrackerMAUI.ViewModels
         {
             SortDirectionButtonText = SharedDataService.SavedState.SortPlatforms.SortMode == SortMode.Ascending ? "Asc" : "Desc";
             SortDirectionImageName = SharedDataService.SavedState.SortPlatforms.SortMode == SortMode.Ascending ? "sort_ascending" : "sort_descending";
+        }
+
+        private async void OnSearch()
+        {
+            await Shell.Current.GoToAsync($"{nameof(FilterPage)}?{nameof(FilterViewModel.FilterTypeParam)}={FilterType.Platform}");
         }
     }
 }

@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace GameTrackerMAUI.Converters
 {
-    public class BooleanInvertConverter : IValueConverter
+    public class IntGreaterThanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not bool) return false;
-            bool boolean = (bool)value;
-            return !boolean;
+            if (value == null || parameter == null) return false;
+            int val1 = (int)value;
+            int val2 = int.Parse(parameter.ToString());
+            return val1 > val2;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is not bool) return false;
-            bool boolean = (bool)value;
-            return !boolean;
+            throw new NotImplementedException();
         }
     }
 }

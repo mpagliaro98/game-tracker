@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameTrackerMAUI.Views.FilterPage"
+             xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
+             xmlns:base="clr-namespace:GameTrackerMAUI"
+             xmlns:filtering="clr-namespace:RatableTracker.ListManipulation.Filtering;assembly=RatableTracker"
+             x:DataType="local:FilterViewModel"
+             Title="Search">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:FilterTypeVisibleConverter x:Key="filterTypeVisibleConverter" />
+            <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
+            <converters:EnumDisplayConverter x:Key="enumDisplayConverter" />
+            <converters:FilterDateCustomConverter x:Key="filterDateCustomConverter" />
+            <converters:FilterDateBetweenConverter x:Key="filterDateBetweenConverter" />
+            <converters:FilterNumericBetweenConverter x:Key="filterNumericBetweenConverter" />
+            <converters:IntGreaterThanConverter x:Key="intGreaterThanConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
+        <ToolbarItem Text="Search" Command="{Binding SearchCommand}" IconImageSource="search" />
+    </ContentPage.ToolbarItems>
+
+    <ScrollView>
+        <StackLayout Spacing="10" Padding="15">
+            <HorizontalStackLayout Spacing="10">
+                <RadioButton Content="All are true" IsChecked="{Binding OperatorAnd, Mode=TwoWay}" />
+                <RadioButton Content="Any are true" IsChecked="{Binding OperatorAnd, Mode=TwoWay, Converter={StaticResource booleanInvertConverter}}" />
+            </HorizontalStackLayout>
+            <StackLayout BindableLayout.ItemsSource="{Binding FilterSegments}" BindableLayout.EmptyView="No filtering. Use the add button above to choose fields to search on." Spacing="10">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="base:FilterContainer">
+                        <StackLayout>
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Picker ItemsSource="{Binding FilterOptions, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterOption, Mode=TwoWay}" Title="Filters" HorizontalOptions="FillAndExpand" FontSize="Medium" />
+                                <ImageButton Source="cancel" Command="{Binding RemoveSegmentCommand, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" CommandParameter="{Binding Index}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                            </Grid>
+                            <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=1}">
+                                <Picker ItemsSource="{Binding FilterTextTypes, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterTextType, Mode=TwoWay}" ItemDisplayBinding="{Binding ., Converter={StaticResource enumDisplayConverter}}" Title="Comparison" HorizontalOptions="FillAndExpand" />
+                                <Entry Text="{Binding TextValue, Mode=TwoWay}" MaxLength="100" />
+                            </StackLayout>
+                            <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=2}">
+                                <Picker ItemsSource="{Binding ListValues}" SelectedItem="{Binding ListSelectedValue}" ItemDisplayBinding="{Binding Value}" Title="Filter Value" HorizontalOptions="FillAndExpand" />
+                            </StackLayout>
+                            <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=3}">
+                                <Picker ItemsSource="{Binding FilterDatePresets, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterDatePreset, Mode=TwoWay}" ItemDisplayBinding="{Binding ., Converter={StaticResource enumDisplayConverter}}" Title="Date Preset" HorizontalOptions="FillAndExpand" />
+                                <VerticalStackLayout IsVisible="{Binding FilterDatePreset, Converter={StaticResource filterDateCustomConverter}}">
+                                    <Picker ItemsSource="{Binding FilterDateTypes, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterDateType, Mode=TwoWay}" ItemDisplayBinding="{Binding ., Converter={StaticResource enumDisplayConverter}}" Title="Comparison" HorizontalOptions="FillAndExpand" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="0.3*" />
+                                            <ColumnDefinition Width="1*" />
+                                        </Grid.ColumnDefinitions>
+                                        <DatePicker Date="{Binding DateValue1}" />
+                                        <Label Text="And" Grid.Column="1" HorizontalTextAlignment="Center" VerticalOptions="End" Margin="0,10" IsVisible="{Binding FilterDateType, Converter={StaticResource filterDateBetweenConverter}}" />
+                                        <DatePicker Date="{Binding DateValue2}" Grid.Column="2" IsVisible="{Binding FilterDateType, Converter={StaticResource filterDateBetweenConverter}}" />
+                                    </Grid>
+                                </VerticalStackLayout>
+                            </StackLayout>
+                            <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=4}">
+                                <Label Text="{Binding BooleanDisplayText}" />
+                            </StackLayout>
+                            <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=5}">
+                                <Picker ItemsSource="{Binding FilterNumericTypes, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterNumericType, Mode=TwoWay}" ItemDisplayBinding="{Binding ., Converter={StaticResource enumDisplayConverter}}" Title="Comparison" HorizontalOptions="FillAndExpand" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="0.3*" />
+                                        <ColumnDefinition Width="1*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Entry Keyboard="Numeric" Text="{Binding NumberValue1}" />
+                                    <Label Text="And" Grid.Column="1" HorizontalTextAlignment="Center" VerticalOptions="End" Margin="0,10" IsVisible="{Binding FilterNumericType, Converter={StaticResource filterNumericBetweenConverter}}" />
+                                    <Entry Keyboard="Numeric" Text="{Binding NumberValue2}" Grid.Column="2" IsVisible="{Binding FilterNumericType, Converter={StaticResource filterNumericBetweenConverter}}" />
+                                </Grid>
+                            </StackLayout>
+                            <HorizontalStackLayout>
+                                <CheckBox IsChecked="{Binding Negate, Mode=TwoWay}" />
+                                <Label Text="Negate" Margin="0,10" />
+                            </HorizontalStackLayout>
+                        </StackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+            <Button Text="Clear All Filters" Margin="0,20,0,0" HorizontalOptions="Center" Command="{Binding ClearCommand}" IsVisible="{Binding FilterSegments.Count, Converter={StaticResource intGreaterThanConverter}, ConverterParameter=0}" />
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
