@@ -73,7 +73,7 @@
                                 <ColumnDefinition Width="1*" />
                                 <ColumnDefinition Width="32" />
                             </Grid.ColumnDefinitions>
-                            <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                            <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding NameAndPlatform}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
                             <ImageButton Source="cancel" Command="{Binding ClearOriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
                         </Grid>
                     </StackLayout>

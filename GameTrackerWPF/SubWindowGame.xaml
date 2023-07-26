@@ -63,7 +63,7 @@
                     </Grid.RowDefinitions>
                     <CheckBox x:Name="CheckboxRemaster" Content="Remaster/Re-release" />
                     <CheckBox x:Name="CheckboxUseOriginalGameScore" Content="Use score of original game" Grid.Column="1" />
-                    <ComboBox x:Name="ComboboxOriginalGame" Grid.Row="1" Grid.ColumnSpan="2" />
+                    <ComboBox x:Name="ComboboxOriginalGame" Grid.Row="1" Grid.ColumnSpan="2" DisplayMemberPath="NameAndPlatform" />
                 </Grid>
             </Grid>
             <Grid Grid.Column="2">

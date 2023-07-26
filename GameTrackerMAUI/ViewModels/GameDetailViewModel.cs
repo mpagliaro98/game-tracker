@@ -112,7 +112,7 @@ namespace GameTrackerMAUI.ViewModels
             get
             {
                 if (Item.OriginalGame != null)
-                    return Item.OriginalGame.Name + (Item.OriginalGame.Platform != null ? " (" + (Item.OriginalGame.Platform.Abbreviation != "" ? Item.OriginalGame.Platform.Abbreviation : Item.OriginalGame.Platform.Name) + ")" : "");
+                    return Item.OriginalGame.NameAndPlatform;
                 else
                     return "";
             }

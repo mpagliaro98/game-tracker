@@ -10,6 +10,7 @@ using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,6 +40,7 @@ namespace GameTracker
 
         public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
+        public string NameAndPlatform => Name + (Platform == null ? "" : " (" + (string.IsNullOrWhiteSpace(Platform.Abbreviation) ? Platform.Name : Platform.Abbreviation) + ")");
 
         public override double Score
         {

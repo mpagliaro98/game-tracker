@@ -186,9 +186,7 @@ namespace GameTrackerWPF
         private void FillComboboxGames(ComboBox cb)
         {
             cb.Items.Clear();
-            var item = new ComboBoxItem();
-            item.Content = "--Select the game this is a remaster of--";
-            cb.Items.Add(item);
+            cb.Items.Add(new { NameAndPlatform = "--Select the game this is a remaster of--" });
             foreach (GameObject game in rm.GetModelObjectList(settings).OfType<GameObject>().OrderBy(ro => ro.Name))
             {
                 if (game.Equals(orig) || (game.IsPartOfCompilation && game.Equals(game.Compilation))) continue;
