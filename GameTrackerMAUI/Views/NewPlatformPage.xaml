@@ -8,6 +8,7 @@
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              xmlns:cp="https://trungnt2910.github.io/schemas/maui/2022/colorpicker"
              x:DataType="local:NewPlatformViewModel"
+             Shell.TabBarIsVisible="False"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />

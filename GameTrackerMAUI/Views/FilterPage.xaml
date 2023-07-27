@@ -7,6 +7,7 @@
              xmlns:base="clr-namespace:GameTrackerMAUI"
              xmlns:filtering="clr-namespace:RatableTracker.ListManipulation.Filtering;assembly=RatableTracker"
              x:DataType="local:FilterViewModel"
+             Shell.TabBarIsVisible="False"
              Title="Search">
     <ContentPage.Resources>
         <ResourceDictionary>

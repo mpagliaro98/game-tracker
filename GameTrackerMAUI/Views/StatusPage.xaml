@@ -6,6 +6,7 @@
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              x:DataType="local:StatusViewModel"
+             Shell.TabBarIsVisible="False"
              Title="Statuses">
     <ContentPage.Resources>
         <ResourceDictionary>

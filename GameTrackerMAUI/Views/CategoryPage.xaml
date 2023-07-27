@@ -6,6 +6,7 @@
              xmlns:model="clr-namespace:RatableTracker.ObjAddOns;assembly=RatableTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              x:DataType="local:CategoryViewModel"
+             Shell.TabBarIsVisible="False"
              Title="Rating Categories">
     <ContentPage.Resources>
         <ResourceDictionary>

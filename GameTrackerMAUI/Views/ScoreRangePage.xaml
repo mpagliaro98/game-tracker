@@ -6,6 +6,7 @@
              xmlns:model="clr-namespace:RatableTracker.ScoreRanges;assembly=RatableTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              x:DataType="local:ScoreRangeViewModel"
+             Shell.TabBarIsVisible="False"
              Title="Score Ranges">
     <ContentPage.Resources>
         <ResourceDictionary>

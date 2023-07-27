@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:base="clr-namespace:GameTrackerMAUI"
              x:DataType="local:NewCategoryViewModel"
+             Shell.TabBarIsVisible="False"
              Title="{Binding Title}">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />

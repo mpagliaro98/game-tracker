@@ -4,6 +4,7 @@
              x:Class="GameTrackerMAUI.Views.SettingsEditPage"
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              x:DataType="local:SettingsEditViewModel"
+             Shell.TabBarIsVisible="False"
              Title="General Settings">
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Save" Command="{Binding SaveCommand}" IconImageSource="save" />

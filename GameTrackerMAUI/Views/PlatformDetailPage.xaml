@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:base="clr-namespace:GameTrackerMAUI"
              x:DataType="local:PlatformDetailViewModel"
+             Shell.TabBarIsVisible="False"
              Title="Platform">
     <ContentPage.Resources>
         <ResourceDictionary>
