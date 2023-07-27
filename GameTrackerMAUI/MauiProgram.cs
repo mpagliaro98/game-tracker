@@ -21,6 +21,7 @@ namespace GameTrackerMAUI
 #if DEBUG
 		builder.Logging.AddDebug();
 #endif
+            MauiExceptions.Init();
 
             return builder.Build();
         }
