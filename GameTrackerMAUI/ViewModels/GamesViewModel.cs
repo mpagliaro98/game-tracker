@@ -173,7 +173,7 @@ namespace GameTrackerMAUI.ViewModels
 
             ISortOption selectedValue = SharedDataService.SavedState.SortGames.SortOption;
             var ret = await UtilMAUI.ShowPopupListAsync("Sort by", options, selectedValue);
-            if (ret.Item1 == PopupList.EnumOutputType.Selection)
+            if (ret != null && ret.Item1 == PopupList.EnumOutputType.Selection)
             {
                 if (ret.Item2 is null)
                     return;
