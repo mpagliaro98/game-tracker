@@ -79,9 +79,18 @@ namespace GameTrackerWPF
                 loadData = rm.LoadDataAsync(settings);
 
             InitializeComponent();
-            PlatformsButtonSortMode.Tag = savedState.SortPlatforms.SortMode;
-            GamesButtonSortMode.Tag = savedState.SortGames.SortMode;
+
+            // set sort mode buttons to their opposite, then toggle them to their real value to set the correct graphic
+            PlatformsButtonSortMode.Tag = savedState.SortPlatforms.SortMode == SortMode.Ascending ? SortMode.Descending : SortMode.Ascending;
+            ToggleSortModeButton(PlatformsButtonSortMode);
+            GamesButtonSortMode.Tag = savedState.SortGames.SortMode == SortMode.Ascending ? SortMode.Descending : SortMode.Ascending;
+            ToggleSortModeButton(GamesButtonSortMode);
+
             CheckboxShowCompilations.IsChecked = savedState.ShowCompilations;
+            SetButtonInUse(GamesButtonSearch, savedState.FilterGames.Filters.Count > 0);
+            SetButtonInUse(PlatformsButtonSearch, savedState.FilterPlatforms.Filters.Count > 0);
+            SetButtonInUse(GamesButtonSort, savedState.SortGames.SortOption != null);
+            SetButtonInUse(PlatformsButtonSort, savedState.SortPlatforms.SortOption != null);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -214,6 +223,11 @@ namespace GameTrackerWPF
             SettingsButtonNewCompletionStatus.IsEnabled = state;
             SettingsButtonNewRatingCategory.IsEnabled = state;
             SettingsButtonNewScoreRange.IsEnabled = state;
+        }
+
+        private void SetButtonInUse(Button button, bool inUse)
+        {
+            button.Background = new SolidColorBrush(inUse ? Colors.LightBlue : System.Windows.Media.Color.FromArgb(0xFF, 0xDD, 0xDD, 0xDD));
         }
         #endregion
 
@@ -402,12 +416,14 @@ namespace GameTrackerWPF
                 }
             }
             GamesSort((ISortOption)item.Items[0]);
+            SetButtonInUse(GamesButtonSort, savedState.SortGames.SortOption != null);
         }
 
         private void GamesSort_Unchecked(object sender, RoutedEventArgs e)
         {
             savedState.SortGames.SortOption = null;
             UpdateGamesUI();
+            SetButtonInUse(GamesButtonSort, savedState.SortGames.SortOption != null);
         }
 
         private void GamesSort(ISortOption sortOption)
@@ -476,6 +492,7 @@ namespace GameTrackerWPF
         {
             savedState.FilterGames = e.FilterEngine;
             UpdateGamesUI();
+            SetButtonInUse(GamesButtonSearch, savedState.FilterGames.Filters.Count > 0);
         }
         #endregion
 
@@ -591,12 +608,14 @@ namespace GameTrackerWPF
                 }
             }
             PlatformSort((ISortOption)item.Items[0]);
+            SetButtonInUse(PlatformsButtonSort, savedState.SortPlatforms.SortOption != null);
         }
 
         private void PlatformsSort_Unchecked(object sender, RoutedEventArgs e)
         {
             savedState.SortPlatforms.SortOption = null;
             UpdatePlatformsUI();
+            SetButtonInUse(PlatformsButtonSort, savedState.SortPlatforms.SortOption != null);
         }
 
         private void PlatformSort(ISortOption sortOption)
@@ -635,6 +654,7 @@ namespace GameTrackerWPF
         {
             savedState.FilterPlatforms = e.FilterEngine;
             UpdatePlatformsUI();
+            SetButtonInUse(PlatformsButtonSearch, savedState.FilterPlatforms.Filters.Count > 0);
         }
         #endregion
 

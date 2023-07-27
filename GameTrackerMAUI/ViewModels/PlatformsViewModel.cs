@@ -51,6 +51,20 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(ref _sortDirectionImageName, value);
         }
 
+        private string _sortImageName = "sort";
+        public string SortImageName
+        {
+            get => _sortImageName;
+            set => SetProperty(ref _sortImageName, value);
+        }
+
+        private string _searchImageName = "search";
+        public string SearchImageName
+        {
+            get => _searchImageName;
+            set => SetProperty(ref _searchImageName, value);
+        }
+
         public PlatformsViewModel()
         {
             Title = "Platforms";
@@ -64,6 +78,8 @@ namespace GameTrackerMAUI.ViewModels
             SortDirectionCommand = new Command(OnSortDirection);
             SearchCommand = new Command(OnSearch);
             SetSortDirectionButton();
+            SetSortButton();
+            SetSearchButton();
             this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
         }
 
@@ -85,6 +101,7 @@ namespace GameTrackerMAUI.ViewModels
                 {
                     Items.Add(item);
                 }
+                SetSearchButton();
             }
             catch (Exception ex)
             {
@@ -133,6 +150,7 @@ namespace GameTrackerMAUI.ViewModels
                 SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
 
                 ExecuteLoadItemsCommand();
+                SetSortButton();
             }
         }
 
@@ -148,6 +166,16 @@ namespace GameTrackerMAUI.ViewModels
         {
             SortDirectionButtonText = SharedDataService.SavedState.SortPlatforms.SortMode == SortMode.Ascending ? "Asc" : "Desc";
             SortDirectionImageName = SharedDataService.SavedState.SortPlatforms.SortMode == SortMode.Ascending ? "sort_ascending" : "sort_descending";
+        }
+
+        private void SetSortButton()
+        {
+            SortImageName = SharedDataService.SavedState.SortPlatforms.SortOption == null ? "sort" : "sort_active";
+        }
+
+        private void SetSearchButton()
+        {
+            SearchImageName = SharedDataService.SavedState.FilterPlatforms.Filters.Count <= 0 ? "search" : "search_active";
         }
 
         private async void OnSearch()

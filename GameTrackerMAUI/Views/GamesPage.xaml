@@ -15,10 +15,10 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Group" Command="{Binding ShowCompilations}" IconImageSource="compilations" />
+        <ToolbarItem Text="Group" Command="{Binding ShowCompilations}" IconImageSource="{Binding CompilationsImageName}" />
         <ToolbarItem Text="{Binding SortDirectionButtonText}" Command="{Binding SortDirectionCommand}" IconImageSource="{Binding SortDirectionImageName}" />
-        <ToolbarItem Text="Sort" Command="{Binding SortCommand}" IconImageSource="sort" />
-        <ToolbarItem Text="Search" Command="{Binding SearchCommand}" IconImageSource="search" />
+        <ToolbarItem Text="Sort" Command="{Binding SortCommand}" IconImageSource="{Binding SortImageName}" />
+        <ToolbarItem Text="Search" Command="{Binding SearchCommand}" IconImageSource="{Binding SearchImageName}" />
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
     </ContentPage.ToolbarItems>
 
