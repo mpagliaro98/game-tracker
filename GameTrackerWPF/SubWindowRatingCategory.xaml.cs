@@ -28,6 +28,8 @@ namespace GameTrackerWPF
         private RatingCategoryWeighted orig;
         private SettingsGame settings;
 
+        public event EventHandler Saved;
+
         public SubWindowRatingCategory(GameModule rm, SettingsGame settings, SubWindowMode mode, RatingCategoryWeighted orig)
         {
             InitializeComponent();
@@ -60,6 +62,7 @@ namespace GameTrackerWPF
                 ex.DisplayUIExceptionMessage();
                 return;
             }
+            Saved?.Invoke(this, EventArgs.Empty);
             Close();
         }
 

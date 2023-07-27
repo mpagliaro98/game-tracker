@@ -33,6 +33,8 @@ namespace GameTrackerWPF
         private string compName;
         private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
 
+        public event EventHandler Saved;
+
         public SubWindowGame(GameModule rm, SettingsGame settings, ILoadSaveHandler<ILoadSaveMethodGame> loadSave, SubWindowMode mode, GameObject orig)
         {
             InitializeComponent();
@@ -143,6 +145,7 @@ namespace GameTrackerWPF
                 ex.DisplayUIExceptionMessage();
                 return;
             }
+            Saved?.Invoke(this, EventArgs.Empty);
             Close();
         }
 

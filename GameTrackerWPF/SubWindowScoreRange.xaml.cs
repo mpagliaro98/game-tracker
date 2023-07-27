@@ -26,7 +26,9 @@ namespace GameTrackerWPF
         private GameModule rm;
         private SettingsGame settings;
         private ScoreRange orig;
-        
+
+        public event EventHandler Saved;
+
         public SubWindowScoreRange(GameModule rm, SettingsGame settings, SubWindowMode mode, ScoreRange orig)
         {
             InitializeComponent();
@@ -63,6 +65,7 @@ namespace GameTrackerWPF
                 ex.DisplayUIExceptionMessage();
                 return;
             }
+            Saved?.Invoke(this, EventArgs.Empty);
             Close();
         }
 

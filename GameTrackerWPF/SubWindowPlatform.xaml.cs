@@ -25,6 +25,8 @@ namespace GameTrackerWPF
         private Platform orig;
         private SettingsGame settings;
 
+        public event EventHandler Saved;
+
         public SubWindowPlatform(GameModule rm, SettingsGame settings, SubWindowMode mode, Platform orig)
         {
             InitializeComponent();
@@ -61,6 +63,7 @@ namespace GameTrackerWPF
                 ex.DisplayUIExceptionMessage();
                 return;
             }
+            Saved?.Invoke(this, EventArgs.Empty);
             Close();
         }
 

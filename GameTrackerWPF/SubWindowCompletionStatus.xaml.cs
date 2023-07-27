@@ -25,6 +25,8 @@ namespace GameTrackerWPF
         private StatusGame orig;
         private SettingsGame settings;
 
+        public event EventHandler Saved;
+
         public SubWindowCompletionStatus(GameModule rm, SettingsGame settings, SubWindowMode mode, StatusGame orig)
         {
             InitializeComponent();
@@ -65,6 +67,7 @@ namespace GameTrackerWPF
                 ex.DisplayUIExceptionMessage();
                 return;
             }
+            Saved?.Invoke(this, EventArgs.Empty);
             Close();
         }
 

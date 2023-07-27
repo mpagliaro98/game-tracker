@@ -30,6 +30,8 @@ namespace GameTrackerWPF
         private GameCompilation orig;
         private string originalName;
 
+        public event EventHandler Saved;
+
         public SubWindowCompilation(GameModule rm, SettingsGame settings, SubWindowMode mode, GameCompilation orig)
         {
             InitializeComponent();
@@ -87,6 +89,7 @@ namespace GameTrackerWPF
                 ex.DisplayUIExceptionMessage();
                 return;
             }
+            Saved?.Invoke(this, EventArgs.Empty);
             Close();
         }
 

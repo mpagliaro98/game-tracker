@@ -386,10 +386,15 @@ namespace GameTrackerWPF
         {
             Window window;
             if (orig.IsCompilation)
+            {
                 window = new SubWindowCompilation(rm, settings, mode, orig as GameCompilation);
+                ((SubWindowCompilation)window).Saved += GameWindow_Closed;
+            }
             else
+            {
                 window = new SubWindowGame(rm, settings, loadSave, mode, orig);
-            window.Closed += GameWindow_Closed;
+                ((SubWindowGame)window).Saved += GameWindow_Closed;
+            }
             window.ShowDialog();
         }
 
@@ -581,7 +586,7 @@ namespace GameTrackerWPF
         private void OpenSubWindowPlatform(SubWindowMode mode, Platform orig = null)
         {
             var window = new SubWindowPlatform(rm, settings, mode, orig);
-            window.Closed += PlatformWindow_Closed;
+            window.Saved += PlatformWindow_Closed;
             window.ShowDialog();
         }
 
@@ -848,7 +853,7 @@ namespace GameTrackerWPF
         private void OpenSubWindowRatingCategory(SubWindowMode mode, RatingCategoryWeighted orig = null)
         {
             var window = new SubWindowRatingCategory(rm, settings, mode, orig);
-            window.Closed += RatingCategoryWindow_Closed;
+            window.Saved += RatingCategoryWindow_Closed;
             window.ShowDialog();
         }
 
@@ -916,7 +921,7 @@ namespace GameTrackerWPF
         private void OpenSubWindowCompletionStatus(SubWindowMode mode, StatusGame orig = null)
         {
             var window = new SubWindowCompletionStatus(rm, settings, mode, orig);
-            window.Closed += CompletionStatusWindow_Closed;
+            window.Saved += CompletionStatusWindow_Closed;
             window.ShowDialog();
         }
 
@@ -984,7 +989,7 @@ namespace GameTrackerWPF
         private void OpenSubWindowScoreRange(SubWindowMode mode, ScoreRange orig)
         {
             var window = new SubWindowScoreRange(rm, settings, mode, orig);
-            window.Closed += ScoreRangeWindow_Closed;
+            window.Saved += ScoreRangeWindow_Closed;
             window.ShowDialog();
         }
 
