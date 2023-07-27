@@ -38,6 +38,9 @@ namespace GameTrackerMAUI.ViewModels
                 OnPropertyChanged(nameof(Stats));
                 OnPropertyChanged(nameof(ShowCategoryValues));
                 OnPropertyChanged(nameof(GamesInCompilation));
+                OnPropertyChanged(nameof(FinishedOn));
+                OnPropertyChanged(nameof(StartedOnName));
+                OnPropertyChanged(nameof(ShowStaticNotOwnedText));
             }
         }
 
@@ -136,6 +139,21 @@ namespace GameTrackerMAUI.ViewModels
                     return new List<GameObject>();
                 return Item.GamesInCompilation().OrderBy(game => game.Name.CleanForSorting()).ToList();
             }
+        }
+
+        public bool ShowStaticNotOwnedText
+        {
+            get => Item.IsNotOwned;
+        }
+
+        public DateTime FinishedOn
+        {
+            get => Item.IsUnfinishable ? DateTime.MinValue : Item.FinishedOn;
+        }
+
+        public string StartedOnName
+        {
+            get => Item.IsUnfinishable ? "Played On:" : "Started On:";
         }
 
         public CompilationDetailViewModel()

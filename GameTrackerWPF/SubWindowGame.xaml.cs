@@ -122,18 +122,37 @@ namespace GameTrackerWPF
                     orig.Compilation = null;
                 }
                 orig.Save(rm, settings, conn);
-                if (CheckboxCompilation.IsChecked.Value && !compName.Equals(compNameOriginal))
+                if (CheckboxCompilation.IsChecked.Value)
                 {
                     var matches = rm.GetModelObjectList(settings).OfType<GameCompilation>().Where(c => c.Name.ToLower().Equals(compName.ToLower())).ToList();
                     GameCompilation comp;
                     if (matches.Count > 0)
-                        comp = matches[0];
+                    {
+                        // existing compilation - prompt if user would like to overwrite compilation fields with game ones
+                        comp = new GameCompilation(matches[0]);
+                        if (((comp.Platform == null && orig.Platform != null) || (comp.Platform != null && orig.Platform == null) || (comp.Platform != null && !comp.Platform.Equals(orig.Platform))) ||
+                            ((comp.PlatformPlayedOn == null && orig.PlatformPlayedOn != null) || (comp.PlatformPlayedOn != null && orig.PlatformPlayedOn == null) || (comp.PlatformPlayedOn != null && !comp.PlatformPlayedOn.Equals(orig.PlatformPlayedOn))) ||
+                            ((comp.StatusExtension.Status == null && orig.StatusExtension.Status != null) || (comp.StatusExtension.Status != null && orig.StatusExtension.Status == null) || (comp.StatusExtension.Status != null && !comp.StatusExtension.Status.Equals(orig.StatusExtension.Status))))
+                        {
+                            MessageBoxResult mbr = MessageBox.Show($"The status or platform fields of this game are different from the compilation's ({compName}) status/platform fields. Would you like to propagate those changes to the compilation?", "Game Changes", MessageBoxButton.YesNo);
+                            if (mbr == MessageBoxResult.Yes)
+                            {
+                                comp.Platform = orig.Platform;
+                                comp.PlatformPlayedOn = orig.PlatformPlayedOn;
+                                comp.StatusExtension.Status = orig.StatusExtension.Status;
+                            }
+                        }
+                    }
                     else
                     {
+                        // new compilation
                         comp = new GameCompilation(settings, rm)
                         {
-                            Name = compName
+                            Name = compName,
+                            Platform = orig.Platform,
+                            PlatformPlayedOn = orig.PlatformPlayedOn
                         };
+                        comp.StatusExtension.Status = orig.StatusExtension.Status;
                     }
                     orig.Compilation = comp;
                     comp.Save(rm, settings, conn);

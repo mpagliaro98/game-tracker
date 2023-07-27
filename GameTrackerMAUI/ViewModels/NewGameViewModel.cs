@@ -419,13 +419,34 @@ namespace GameTrackerMAUI.ViewModels
                     var matches = SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).OfType<GameCompilation>().Where(c => c.Name.ToLower().Equals(CompName.ToLower())).ToList();
                     GameCompilation comp;
                     if (matches.Count > 0)
+                    {
                         comp = matches[0];
+                        if (((comp.Platform == null && Platform != null) || (comp.Platform != null && Platform == null) || (comp.Platform != null && !comp.Platform.Equals(Platform))) ||
+                            ((comp.PlatformPlayedOn == null && PlatformPlayedOn != null) || (comp.PlatformPlayedOn != null && PlatformPlayedOn == null) || (comp.PlatformPlayedOn != null && !comp.PlatformPlayedOn.Equals(PlatformPlayedOn))) ||
+                            ((comp.StatusExtension.Status == null && Status != null) || (comp.StatusExtension.Status != null && Status == null) || (comp.StatusExtension.Status != null && !comp.StatusExtension.Status.Equals(Status))))
+                        {
+                            var popup = new PopupMain("Game Changes", $"The status or platform fields of this game are different from the compilation's ({CompName}) status/platform fields. Would you like to propagate those changes to the compilation?", PopupMain.EnumInputType.YesNo)
+                            {
+                                Size = new Size(300, 250)
+                            };
+                            var result = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
+                            if (result != null && result.Item1 == PopupMain.EnumOutputType.Yes)
+                            {
+                                comp.Platform = Platform;
+                                comp.PlatformPlayedOn = PlatformPlayedOn;
+                                comp.StatusExtension.Status = Status;
+                            }
+                        }
+                    }
                     else
                     {
                         comp = new GameCompilation(SharedDataService.Settings, SharedDataService.Module)
                         {
-                            Name = CompName
+                            Name = CompName,
+                            Platform = Platform,
+                            PlatformPlayedOn = PlatformPlayedOn
                         };
+                        comp.StatusExtension.Status = Status;
                     }
                     Item.Compilation = comp;
                     comp.Save(SharedDataService.Module, SharedDataService.Settings, conn);

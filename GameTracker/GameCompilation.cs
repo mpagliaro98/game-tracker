@@ -38,6 +38,13 @@ namespace GameTracker
         public override bool IsCompilation { get { return true; } }
         public override GameCompilation Compilation { get { return null; } set { throw new InvalidOperationException("Cannot set the compilation of a compilation"); } }
 
+        public override DateTime ReleaseDate { get => GamesInCompilation().Select(g => g.ReleaseDate).Where(d => d > DateTime.MinValue).DefaultIfEmpty().Min(); set { } }
+        public override DateTime AcquiredOn { get => GamesInCompilation().Select(g => g.AcquiredOn).Where(d => d > DateTime.MinValue).DefaultIfEmpty().Min(); set { } }
+        public override DateTime StartedOn { get => GamesInCompilation().Select(g => g.StartedOn).Where(d => d > DateTime.MinValue).DefaultIfEmpty().Min(); set { } }
+        public override DateTime FinishedOn { get => GamesInCompilation().Select(g => g.FinishedOn).DefaultIfEmpty().Max(); set { } }
+        public override bool IsUnfinishable { get => GamesInCompilation().Select(g => g.IsUnfinishable).DefaultIfEmpty().All(b => b); set { } }
+        public override bool IsNotOwned { get => GamesInCompilation().Select(g => g.IsNotOwned).DefaultIfEmpty().All(b => b); set { } }
+
         public GameCompilation(SettingsGame settings, GameModule module) : base(settings, module, new CategoryExtensionGameCompilation(module.CategoryExtension, settings)) { }
 
         public GameCompilation(GameCompilation copyFrom) : base(copyFrom, new CategoryExtensionGameCompilation(copyFrom.CategoryExtension)) { }

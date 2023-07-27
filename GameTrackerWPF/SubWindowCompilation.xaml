@@ -5,11 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
         mc:Ignorable="d"
-        Title="Compilation" Height="550" Width="800" MinHeight="550" MinWidth="800">
+        Title="Compilation" Height="600" Width="800" MinHeight="600" MinWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="120" />
             <RowDefinition Height="105" />
+            <RowDefinition Height="50" />
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
@@ -69,7 +70,36 @@
                 <TextBlock x:Name="TextBlockStats" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" />
             </Grid>
         </Grid>
-        <DockPanel Grid.Row="2">
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel VerticalAlignment="Center">
+                <CheckBox x:Name="CheckboxUnfinishable" Content="Doesn't have a start/end" Margin="5,0,5,5" IsEnabled="False" />
+                <CheckBox x:Name="CheckboxNotOwned" Content="I don't own this game" Margin="5,0" IsEnabled="False" />
+            </StackPanel>
+            <StackPanel VerticalAlignment="Top" Grid.Column="1">
+                <Label Content="Release Date" />
+                <DatePicker x:Name="DatePickerRelease" Margin="5,0" IsEnabled="False" />
+            </StackPanel>
+            <StackPanel VerticalAlignment="Top" Grid.Column="2">
+                <Label Content="Acquired On" />
+                <DatePicker x:Name="DatePickerAcquired" Margin="5,0" IsEnabled="False" />
+            </StackPanel>
+            <StackPanel x:Name="StackPanelStartedOn" VerticalAlignment="Top" Grid.Column="3">
+                <Label x:Name="LabelStartedOn" Content="Started On" />
+                <DatePicker x:Name="DatePickerStarted" Margin="5,0" IsEnabled="False" />
+            </StackPanel>
+            <StackPanel x:Name="StackPanelFinishedOn" VerticalAlignment="Top" Grid.Column="4">
+                <Label Content="Finished On" />
+                <DatePicker x:Name="DatePickerFinished" Margin="5,0" IsEnabled="False" />
+            </StackPanel>
+        </Grid>
+        <DockPanel Grid.Row="3">
             <Label Content="Games in this compilation" DockPanel.Dock="Top" />
             <ListBox x:Name="GamesListBoxWrap" Margin="5" DockPanel.Dock="Bottom">
                 <ListBox.ItemsPanel>
@@ -79,7 +109,7 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </DockPanel>
-        <StackPanel Grid.Row="3" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="4" HorizontalAlignment="Center">
             <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
         </StackPanel>
     </Grid>

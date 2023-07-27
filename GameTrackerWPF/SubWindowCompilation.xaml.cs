@@ -61,6 +61,15 @@ namespace GameTrackerWPF
             if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform;
             if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
             TextBoxFinalScore.Text = orig.Score.ToString(UtilWPF.SCORE_FORMAT);
+            CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
+            CheckboxNotOwned.IsChecked = orig.IsNotOwned;
+            DatePickerRelease.SelectedDate = orig.ReleaseDate;
+            DatePickerAcquired.SelectedDate = orig.AcquiredOn;
+            DatePickerStarted.SelectedDate = orig.StartedOn;
+            DatePickerFinished.SelectedDate = orig.FinishedOn;
+            LabelStartedOn.Content = orig.IsUnfinishable ? "Played On" : "Started On";
+            Grid.SetColumnSpan(StackPanelStartedOn, orig.IsUnfinishable ? 2 : 1);
+            StackPanelFinishedOn.Visibility = orig.IsUnfinishable ? Visibility.Collapsed : Visibility.Visible;
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;

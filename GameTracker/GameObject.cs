@@ -27,16 +27,16 @@ namespace GameTracker
         [Savable] public string CompletionCriteria { get; set; } = "";
         [Savable] public string CompletionComment { get; set; } = "";
         [Savable] public string TimeSpent { get; set; } = "";
-        [Savable] public DateTime ReleaseDate { get; set; } = DateTime.MinValue;
-        [Savable] public DateTime AcquiredOn { get; set; } = DateTime.MinValue;
-        [Savable] public DateTime StartedOn { get; set; } = DateTime.MinValue;
-        [Savable] public DateTime FinishedOn { get; set; } = DateTime.MinValue;
+        [Savable] public virtual DateTime ReleaseDate { get; set; } = DateTime.MinValue;
+        [Savable] public virtual DateTime AcquiredOn { get; set; } = DateTime.MinValue;
+        [Savable] public virtual DateTime StartedOn { get; set; } = DateTime.MinValue;
+        [Savable] public virtual DateTime FinishedOn { get; set; } = DateTime.MinValue;
         [Savable] public virtual bool IsRemaster { get; set; } = false;
         [Savable] public virtual bool UseOriginalGameScore { get; set; } = false;
         [Savable(SaveOnly = true)] public virtual bool IsPartOfCompilation { get { return _compilation.HasValue(); } }
         [Savable(SaveOnly = true)] public virtual bool IsCompilation { get { return false; } }
-        [Savable] public bool IsUnfinishable { get; set; } = false;
-        [Savable] public bool IsNotOwned { get; set; } = false;
+        [Savable] public virtual bool IsUnfinishable { get; set; } = false;
+        [Savable] public virtual bool IsNotOwned { get; set; } = false;
 
         public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
