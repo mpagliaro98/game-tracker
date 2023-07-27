@@ -74,7 +74,7 @@ namespace GameTrackerWPF
         {
             try
             {
-                if (orig.Name.Length > 0 && !Name.Equals(originalName))
+                if (orig.Name.Length > 0 && !orig.Name.Equals(originalName))
                 {
                     var matches = rm.GetModelObjectList(settings).OfType<GameCompilation>().Where(c => c.Name.ToLower().Equals(orig.Name.ToLower())).ToList();
                     if (matches.Count > 0)
