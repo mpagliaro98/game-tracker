@@ -1,4 +1,5 @@
 ﻿using GameTracker;
+using GameTracker.Filtering;
 using RatableTracker.ListManipulation.Filtering;
 using System;
 using System.Collections.Generic;
@@ -33,6 +34,7 @@ namespace GameTrackerWPF
         private FilterEngine filterEngine;
         private GameModule module;
         private SettingsGame settings;
+        private FilterMode filterMode;
         private IList<IFilterOption> filterOptions;
 
         public FilterWindow(FilterEngine filterEngine, GameModule module, SettingsGame settings, FilterMode filterType)
@@ -41,6 +43,7 @@ namespace GameTrackerWPF
             this.filterEngine = filterEngine;
             this.module = module;
             this.settings = settings;
+            filterMode = filterType;
             filterOptions = GetFilterOptionList(module, settings, filterType);
             if (filterEngine.Operator == FilterOperator.And) RadioAnd.IsChecked = true;
             if (filterEngine.Operator == FilterOperator.Or) RadioOr.IsChecked = true;
@@ -62,7 +65,7 @@ namespace GameTrackerWPF
             ListBoxFilters.Items.Clear();
             foreach (var filter in filters)
             {
-                var newRow = new FilterRow(filter, module, settings, filterOptions, ListBoxFilters.Items.Count);
+                var newRow = new FilterRow(filter, module, settings, filterOptions, ListBoxFilters.Items.Count, null);
                 newRow.Remove += FilterRow_Remove;
                 ListBoxFilters.Items.Add(newRow);
             }
@@ -71,7 +74,7 @@ namespace GameTrackerWPF
         private void ButtonNew_Click(object sender, RoutedEventArgs e)
         {
             if (ListBoxFilters.Items.Count >= 100) return;
-            var newRow = new FilterRow(module, settings, filterOptions, ListBoxFilters.Items.Count);
+            var newRow = new FilterRow(module, settings, filterOptions, ListBoxFilters.Items.Count, filterMode == FilterMode.Game ? new FilterOptionModelName() : new FilterOptionPlatformName());
             newRow.Remove += FilterRow_Remove;
             ListBoxFilters.Items.Add(newRow);
             if (ListBoxFilters.Items.Count >= 100) ButtonNew.IsEnabled = false;
@@ -80,6 +83,10 @@ namespace GameTrackerWPF
         private void FilterRow_Remove(object sender, FilterRowRemoveEventArgs e)
         {
             ListBoxFilters.Items.RemoveAt(e.Index);
+            for (int i = 0; i < ListBoxFilters.Items.Count; i++)
+            {
+                ((FilterRow)ListBoxFilters.Items[i]).Index = i;
+            }
             ButtonNew.IsEnabled = true;
         }
 

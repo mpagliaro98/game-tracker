@@ -27,19 +27,19 @@ namespace GameTrackerWPF
         public FilterOptionBase FilterOption => (FilterOptionBase)ComboBoxOption.SelectedItem;
         public object FilterValues => FilterOptionControl.FilterValues;
         public bool Negate => CheckBoxNegate.IsChecked.Value;
+        public int Index { get; set; }
 
-        private int index;
         private IFilterOptionControl FilterOptionControl { get; set; }
 
         public event EventHandler<FilterRowRemoveEventArgs> Remove;
 
-        public FilterRow(GameModule module, SettingsGame settings, IList<IFilterOption> filterOptions, int index) : this(null, module, settings, filterOptions, index) { }
+        public FilterRow(GameModule module, SettingsGame settings, IList<IFilterOption> filterOptions, int index, FilterOptionBase initialValue) : this(null, module, settings, filterOptions, index, initialValue) { }
 
-        public FilterRow(FilterSegment segment, GameModule module, SettingsGame settings, IList<IFilterOption> filterOptions, int index)
+        public FilterRow(FilterSegment segment, GameModule module, SettingsGame settings, IList<IFilterOption> filterOptions, int index, FilterOptionBase initialValue)
         {
             InitializeComponent();
-            this.index = index;
-            FillComboBox(module, settings, segment?.FilterOption, filterOptions);
+            Index = index;
+            FillComboBox(module, settings, segment == null ? initialValue : segment.FilterOption, filterOptions);
             RefreshFilterOptionControl(segment?.FilterValues);
 
             if (segment != null)
@@ -86,7 +86,7 @@ namespace GameTrackerWPF
 
         private void ButtonRemove_Click(object sender, RoutedEventArgs e)
         {
-            Remove?.Invoke(this, new FilterRowRemoveEventArgs() { Index = index });
+            Remove?.Invoke(this, new FilterRowRemoveEventArgs() { Index = Index });
         }
     }
 
