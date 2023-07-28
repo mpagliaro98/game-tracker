@@ -15,10 +15,10 @@ namespace RatableTracker.ListManipulation.Sorting
     public class SortOptionModelCategory : SortOptionSimpleBase<IModelObjectCategorical>
     {
         private UniqueID _uniqueID;
-        private RatingCategory Category
+        public RatingCategory Category
         {
             get => Util.Util.FindObjectInList(((IModuleCategorical)Module).CategoryExtension.GetRatingCategoryList(), _uniqueID);
-            set => _uniqueID = value.UniqueID;
+            private set => _uniqueID = value.UniqueID;
         }
         public override string Name => Category.Name;
 

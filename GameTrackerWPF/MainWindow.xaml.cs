@@ -24,6 +24,8 @@ using RatableTracker.ScoreRanges;
 using RatableTracker.Exceptions;
 using System.Diagnostics;
 using RatableTracker.ListManipulation.Sorting;
+using RatableTracker.ListManipulation.Filtering;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace GameTrackerWPF
 {
@@ -809,7 +811,6 @@ namespace GameTrackerWPF
             var vis = rm.CategoryExtension.TotalNumRatingCategories() >= rm.CategoryExtension.LimitRatingCategories ? Visibility.Hidden : Visibility.Visible;
             SettingsButtonNewRatingCategory.Visibility = vis;
             GamesButtonSort.ContextMenu.Items.Clear();
-            savedState.SortGames.SortOption = null;
         }
 
         private void SettingsButtonNewRatingCategory_Click(object sender, RoutedEventArgs e)
@@ -840,6 +841,20 @@ namespace GameTrackerWPF
 
             try
             {
+                var count = savedState.FilterGames.Filters.RemoveAll(s => s.FilterOption is FilterOptionModelCategory cat && cat.Category.Equals(lbi.RatingCategory));
+                bool remove = false;
+                if (savedState.SortGames.SortOption is SortOptionModelCategory cat && cat.Category.Equals(lbi.RatingCategory))
+                {
+                    savedState.SortGames.SortOption = null;
+                    remove = true;
+                }
+                if (count > 0 || remove)
+                {
+                    SavedState.SaveSavedState(pathController, savedState);
+                    SetButtonInUse(GamesButtonSearch, savedState.FilterGames.Filters.Count > 0);
+                    SetButtonInUse(GamesButtonSort, false);
+                }
+
                 lbi.RatingCategory.Delete(rm, settings);
             }
             catch (Exception ex)

@@ -1,5 +1,7 @@
 ﻿using GameTrackerMAUI.Services;
 using GameTrackerMAUI.Views;
+using RatableTracker.ListManipulation.Filtering;
+using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
@@ -65,6 +67,15 @@ namespace GameTrackerMAUI.ViewModels
             var ret = await UtilMAUI.ShowPopupMainAsync("Attention", "Are you sure you would like to delete this rating category?", PopupMain.EnumInputType.YesNo);
             if (ret != null && ret.Item1 == PopupMain.EnumOutputType.Yes)
             {
+                var count = SharedDataService.SavedState.FilterGames.Filters.RemoveAll(s => s.FilterOption is FilterOptionModelCategory cat && cat.Category.Equals(Item));
+                bool remove = false;
+                if (SharedDataService.SavedState.SortGames.SortOption is SortOptionModelCategory cat && cat.Category.Equals(Item))
+                {
+                    SharedDataService.SavedState.SortGames.SortOption = null;
+                    remove = true;
+                }
+                if (count > 0 || remove) SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
+
                 Item.Delete(SharedDataService.Module, SharedDataService.Settings);
                 await Shell.Current.GoToAsync("..");
             }
