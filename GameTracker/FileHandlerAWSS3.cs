@@ -130,7 +130,7 @@ namespace GameTracker
 
         public void AppendFile(string keyName, byte[] data)
         {
-            throw new NotImplementedException();
+            AppendFile(keyName, data, new Logger());
         }
 
         public void AppendFile(string keyName, byte[] data, Logger logger)
