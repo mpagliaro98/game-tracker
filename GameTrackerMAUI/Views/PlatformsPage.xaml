@@ -22,9 +22,7 @@
     </ContentPage.ToolbarItems>
     
     <RefreshView x:DataType="local:PlatformsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView"
-                ItemsSource="{Binding Items}"
-                SelectionMode="None">
+        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:Platform">
@@ -34,15 +32,10 @@
                             <ColumnDefinition Width="0.9*" />
                             <ColumnDefinition Width="1.3*" />
                         </Grid.ColumnDefinitions>
-                        <Rectangle BackgroundColor="{Binding ., Converter={StaticResource colorContainerConverter}}" />
-                        <Label Text="{Binding Name}" Grid.Column="1"
-                            LineBreakMode="TailTruncation" 
-                            Style="{DynamicResource ListItemTextStyle}" 
-                            FontSize="16" />
-                        <Label Grid.Column="2" Text="{Binding NumGames, StringFormat='\{0\} Games'}"
-                               HorizontalTextAlignment="End"/>
-                        <Label Grid.Column="3" Text="{Binding FinishPercent, StringFormat='\{0:P2\} Finished'}"
-                               FontAttributes="Bold" HorizontalTextAlignment="End"/>
+                        <Rectangle Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
+                        <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
+                        <Label Grid.Column="2" Text="{Binding NumGames, StringFormat='\{0\} Games'}" HorizontalTextAlignment="End"/>
+                        <Label Grid.Column="3" Text="{Binding FinishPercent, StringFormat='\{0:0.##%\} Finished'}" FontAttributes="Bold" HorizontalTextAlignment="End"/>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"

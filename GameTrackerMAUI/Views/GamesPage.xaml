@@ -23,9 +23,7 @@
     </ContentPage.ToolbarItems>
 
     <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView"
-                ItemsSource="{Binding Items}"
-                SelectionMode="None">
+        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:GameObject">
@@ -35,19 +33,13 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="40" />
                         </Grid.ColumnDefinitions>
-                        <Rectangle BackgroundColor="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
-                        <Label Text="{Binding Name}" Grid.Column="1"
-                            LineBreakMode="TailTruncation" 
-                            Style="{DynamicResource ListItemTextStyle}" 
-                            FontSize="16" />
-                        <Rectangle Grid.Column="2" BackgroundColor="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
+                        <Rectangle Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
+                        <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
+                        <Rectangle Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
                         <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
-                        <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}"
-                               BackgroundColor="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}"
-                               FontAttributes="Bold" HorizontalTextAlignment="Center"
-                               IsVisible="{Binding ShowScore}"/>
+                        <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}" Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}" FontAttributes="Bold" HorizontalTextAlignment="Center" IsVisible="{Binding ShowScore}"/>
                         <Grid.GestureRecognizers>
-                            <TapGestureRecognizer 
+                            <TapGestureRecognizer
                                 NumberOfTapsRequired="1"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type local:GamesViewModel}}, Path=ItemTapped}"		
                                 CommandParameter="{Binding .}">

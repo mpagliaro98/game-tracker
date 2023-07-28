@@ -3,7 +3,7 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
                xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
                x:Class="GameTrackerMAUI.Views.PopupMain">
-    <VerticalStackLayout Margin="20" Padding="10" BackgroundColor="{StaticResource White}">
+    <VerticalStackLayout Margin="20" Padding="10" Background="{StaticResource White}">
         <Label x:Name="LabelTitle" FontSize="Large" />
         <Label x:Name="LabelMessage" FontSize="Medium" />
         <Entry x:Name="EntryInput" />

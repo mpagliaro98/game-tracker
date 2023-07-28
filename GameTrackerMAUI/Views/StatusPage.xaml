@@ -19,9 +19,7 @@
     </ContentPage.ToolbarItems>
     
     <RefreshView x:DataType="local:StatusViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView"
-                ItemsSource="{Binding Items}"
-                SelectionMode="None">
+        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:StatusGame">
@@ -31,13 +29,10 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="35" />
                         </Grid.ColumnDefinitions>
-                        <Label Text="{Binding Name}"
-                            LineBreakMode="TailTruncation" 
-                            Style="{DynamicResource ListItemTextStyle}" 
-                            FontSize="16" />
+                        <Label Text="{Binding Name}" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
                         <Label Text="F" Grid.Column="1" IsVisible="{Binding UseAsFinished}" />
                         <Label Text="H" Grid.Column="2" IsVisible="{Binding HideScoreFromList}" />
-                        <Rectangle Grid.Column="3" BackgroundColor="{Binding ., Converter={StaticResource colorContainerConverter}}" />
+                        <Rectangle Grid.Column="3" Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"

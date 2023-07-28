@@ -27,7 +27,7 @@
             <Label Text="Range:" FontSize="Small" />
             <Label Text="{Binding Item, Converter={StaticResource scoreRelationshipConverter}}" FontSize="Medium" Margin="0,0,0,10" />
             <Label Text="Color:" FontSize="Small" />
-            <Rectangle BackgroundColor="{Binding Item, Converter={StaticResource colorContainerConverter}}" HorizontalOptions="Start" HeightRequest="50" WidthRequest="50" />
+            <Rectangle Background="{Binding Item, Converter={StaticResource colorContainerConverter}}" HorizontalOptions="Start" HeightRequest="50" WidthRequest="50" />
         </StackLayout>
     </ScrollView>
 </ContentPage>

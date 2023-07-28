@@ -6,7 +6,7 @@
                xmlns:views="clr-namespace:GameTrackerMAUI.Views"
                xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
                x:Class="GameTrackerMAUI.Views.PopupList">
-    <VerticalStackLayout Margin="20" Padding="10" BackgroundColor="{StaticResource White}">
+    <VerticalStackLayout Margin="20" Padding="10" Background="{StaticResource White}">
         <VerticalStackLayout.Resources>
             <ResourceDictionary>
                 <converters:PopupListSelectedValueConverter x:Key="popupListSelectedValueConverter" />

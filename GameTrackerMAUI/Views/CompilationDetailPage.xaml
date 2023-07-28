@@ -39,8 +39,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Status:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
-                <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+                <Rectangle Background="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
             <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatform}">
@@ -53,8 +53,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
-                <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+                <Rectangle Background="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
             <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatformPlayedOn}">
@@ -67,8 +67,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
-                <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+                <Rectangle Background="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
             <Label Text="You do not own this game" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
@@ -92,7 +92,7 @@
                 </StackLayout>
 
                 <Label Text="Final Score:" FontSize="Small" />
-                <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
+                <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" Background="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
 
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
             </StackLayout>
@@ -128,15 +128,15 @@
                                 <ColumnDefinition Width="20" />
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
-                            <Rectangle BackgroundColor="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
+                            <Rectangle Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
                             <Label Text="{Binding Name}" Grid.Column="1"
                             LineBreakMode="TailTruncation" 
                             Style="{DynamicResource ListItemTextStyle}" 
                             FontSize="16" />
-                            <Rectangle Grid.Column="2" BackgroundColor="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
+                            <Rectangle Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
                             <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
                             <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}"
-                               BackgroundColor="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}"
+                               Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}"
                                FontAttributes="Bold" HorizontalTextAlignment="Center"
                                IsVisible="{Binding ShowScore}"/>
                             <Grid.GestureRecognizers>

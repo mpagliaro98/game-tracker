@@ -40,8 +40,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Status:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
-                <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+                <Rectangle Background="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
             <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatform}">
@@ -54,8 +54,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
-                <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+                <Rectangle Background="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
             <Grid Margin="0,0,0,10" IsVisible="{Binding HasPlatformPlayedOn}">
@@ -68,8 +68,8 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle BackgroundColor="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
-                <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" />
+                <Rectangle Background="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
             <Label Text="You do not own this game" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
@@ -84,7 +84,7 @@
                         <ColumnDefinition Width="32" />
                     </Grid.ColumnDefinitions>
                     <Label Text="{Binding OriginalGameName}" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="FillAndExpand" />
-                    <ImageButton Source="go" Command="{Binding OriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    <ImageButton Source="go" Command="{Binding OriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                 </Grid>
             </StackLayout>
 
@@ -96,7 +96,7 @@
                         <ColumnDefinition Width="32" />
                     </Grid.ColumnDefinitions>
                     <Label Text="{Binding Compilation.Name}" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="FillAndExpand" />
-                    <ImageButton Source="go" Command="{Binding CompilationCommand}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                    <ImageButton Source="go" Command="{Binding CompilationCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                 </Grid>
             </StackLayout>
 
@@ -119,7 +119,7 @@
                 </StackLayout>
 
                 <Label Text="Final Score:" FontSize="Small" />
-                <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" BackgroundColor="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
+                <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" Background="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
 
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
             </StackLayout>

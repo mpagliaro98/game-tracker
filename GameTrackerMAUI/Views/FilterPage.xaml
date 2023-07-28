@@ -42,7 +42,7 @@
                                     <ColumnDefinition Width="32" />
                                 </Grid.ColumnDefinitions>
                                 <Picker ItemsSource="{Binding FilterOptions, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterOption, Mode=TwoWay}" Title="Filters" HorizontalOptions="FillAndExpand" FontSize="Medium" />
-                                <ImageButton Source="cancel" Command="{Binding RemoveSegmentCommand, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" CommandParameter="{Binding Index}" HorizontalOptions="Start" BorderColor="Transparent" BackgroundColor="Transparent" Grid.Column="1" />
+                                <ImageButton Source="cancel" Command="{Binding RemoveSegmentCommand, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" CommandParameter="{Binding Index}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                             </Grid>
                             <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=1}">
                                 <Picker ItemsSource="{Binding FilterTextTypes, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterTextType, Mode=TwoWay}" ItemDisplayBinding="{Binding ., Converter={StaticResource enumDisplayConverter}}" Title="Comparison" HorizontalOptions="FillAndExpand" />

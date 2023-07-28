@@ -20,9 +20,7 @@
     </ContentPage.ToolbarItems>
     
     <RefreshView x:DataType="local:ScoreRangeViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView"
-                ItemsSource="{Binding Items}"
-                SelectionMode="None">
+        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:ScoreRange">
@@ -31,13 +29,9 @@
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="35" />
                         </Grid.ColumnDefinitions>
-                        <Label Text="{Binding Name}"
-                            LineBreakMode="TailTruncation" 
-                            Style="{DynamicResource ListItemTextStyle}" 
-                            FontSize="16" />
-                        <Label Grid.Column="1" Text="{Binding ., Converter={StaticResource scoreRelationshipConverter}}"
-                            LineBreakMode="TailTruncation" />
-                        <Rectangle Grid.Column="2" BackgroundColor="{Binding ., Converter={StaticResource colorContainerConverter}}" />
+                        <Label Text="{Binding Name}" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
+                        <Label Grid.Column="1" Text="{Binding ., Converter={StaticResource scoreRelationshipConverter}}" LineBreakMode="TailTruncation" />
+                        <Rectangle Grid.Column="2" Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer 
                                 NumberOfTapsRequired="1"
