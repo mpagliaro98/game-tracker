@@ -58,40 +58,6 @@
                         <ImageButton Source="cancel" Command="{Binding ClearPlatformPlayedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                     </Grid>
 
-                    <Label Text="Doesn't Have a Start/End:" FontSize="Small" />
-                    <Switch IsToggled="{Binding IsUnfinishable}" Margin="0,0,0,10" />
-
-                    <Label Text="I Don't Own This Game:" FontSize="Small" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" />
-                    <Switch IsToggled="{Binding IsNotOwned}" Margin="0,0,0,10" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" />
-
-                    <Label Text="Remaster/Re-release:" FontSize="Small" />
-                    <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" />
-
-                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsRemaster}">
-                        <Label Text="Original Game:" FontSize="Small" />
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="32" />
-                            </Grid.ColumnDefinitions>
-                            <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding NameAndPlatform}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
-                            <ImageButton Source="cancel" Command="{Binding ClearOriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
-                        </Grid>
-                    </StackLayout>
-
-                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}">
-                        <Label Text="Use Score of Original Game:" FontSize="Small" />
-                        <Switch IsToggled="{Binding UseOriginalGameScore}" />
-                    </StackLayout>
-
-                    <Label Text="Part of a Compilation:" FontSize="Small" />
-                    <Switch IsToggled="{Binding IsPartOfCompilation}" Margin="0,0,0,10" />
-
-                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsPartOfCompilation}">
-                        <Label Text="Name of Compilation:" FontSize="Small" />
-                        <Entry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="200" />
-                    </StackLayout>
-
                     <StackLayout Margin="0,0,0,10">
                         <Label Text="Category Scores:" FontSize="Small" />
                         <StackLayout BindableLayout.ItemsSource="{Binding CategoryValues, Mode=TwoWay}" BindableLayout.EmptyView="No categories specified" IsEnabled="{Binding IsUsingOriginalGameScore, Converter={StaticResource booleanInvertConverter}}" Margin="0,0,0,10">
@@ -108,13 +74,70 @@
                             </BindableLayout.ItemTemplate>
                         </StackLayout>
 
-                        <Label Text="Final Score:" FontSize="Small" />
-                        <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" Background="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" IsVisible="{Binding ManualFinalScore, Converter={StaticResource booleanInvertConverter}}" />
-                        <Entry Text="{Binding FinalScore, Mode=TwoWay}" FontSize="Medium" IsVisible="{Binding ManualFinalScore}" Keyboard="Numeric" />
+                        <Grid ColumnSpacing="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*" />
+                                <ColumnDefinition Width="1*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Label Text="Final Score:" FontSize="Small" />
+                            <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" Background="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" IsVisible="{Binding ManualFinalScore, Converter={StaticResource booleanInvertConverter}}" Grid.Row="1" VerticalOptions="Center" />
+                            <Entry Text="{Binding FinalScore, Mode=TwoWay}" FontSize="Medium" IsVisible="{Binding ManualFinalScore}" Keyboard="Numeric" Grid.Row="1" />
+                            <Label Text="Manual Edit" FontSize="Small" Grid.Column="1" />
+                            <Switch IsToggled="{Binding ManualFinalScore, Mode=TwoWay}" Grid.Row="1" Grid.Column="1" HorizontalOptions="Start" />
+                        </Grid>
                     </StackLayout>
 
-                    <Label Text="Manually Edit Final Score:" FontSize="Small" />
-                    <Switch IsToggled="{Binding ManualFinalScore, Mode=TwoWay}" Margin="0,0,0,10" />
+                    <Grid ColumnSpacing="5" RowSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <VerticalStackLayout>
+                            <Label Text="Doesn't Have a Start/End:" FontSize="Small" />
+                            <Switch IsToggled="{Binding IsUnfinishable}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label Text="I Don't Own This Game:" FontSize="Small" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" />
+                            <Switch IsToggled="{Binding IsNotOwned}" Margin="0,0,0,10" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" HorizontalOptions="Start" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1">
+                            <Label Text="Remaster/Re-release:" FontSize="Small" />
+                            <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                            <Label Text="Part of a Compilation:" FontSize="Small" />
+                            <Switch IsToggled="{Binding IsPartOfCompilation}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout IsVisible="{Binding IsRemaster}" Grid.Row="2">
+                            <Label Text="Original Game:" FontSize="Small" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding NameAndPlatform}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
+                                <ImageButton Source="cancel" Command="{Binding ClearOriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                            </Grid>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}" Grid.Row="3">
+                            <Label Text="Use Score of Original Game:" FontSize="Small" />
+                            <Switch IsToggled="{Binding UseOriginalGameScore}" HorizontalOptions="Start" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsPartOfCompilation}" Grid.Row="2" Grid.Column="1">
+                            <Label Text="Name of Compilation:" FontSize="Small" />
+                            <Entry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="200" />
+                        </VerticalStackLayout>
+                    </Grid>
 
                     <Label Text="Completion Criteria:" FontSize="Small" />
                     <Editor Text="{Binding CompletionCriteria, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
@@ -125,47 +148,60 @@
                     <Label Text="Time Spent:" FontSize="Small" />
                     <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
 
-                    <Label Text="Release Date:" FontSize="Small" />
-                    <Grid Margin="0,0,0,10">
+                    <Grid RowSpacing="5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="1*" />
+                        </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="32" />
-                        </Grid.ColumnDefinitions>
-                        <DatePicker Date="{Binding ReleaseDate}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                        <ImageButton Source="cancel" Command="{Binding ClearReleaseDateCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
-                    </Grid>
-
-                    <Label Text="Acquired On:" FontSize="Small" />
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="32" />
                         </Grid.ColumnDefinitions>
-                        <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                        <ImageButton Source="cancel" Command="{Binding ClearAcquiredOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                        <VerticalStackLayout>
+                            <Label Text="Release Date:" FontSize="Small" />
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <DatePicker Date="{Binding ReleaseDate}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <ImageButton Source="cancel" Command="{Binding ClearReleaseDateCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                            </Grid>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1">
+                            <Label Text="Acquired On:" FontSize="Small" />
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <ImageButton Source="cancel" Command="{Binding ClearAcquiredOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                            </Grid>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1">
+                            <Label Text="{Binding StartedOnName}" FontSize="Small" />
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <ImageButton Source="cancel" Command="{Binding ClearStartedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                            </Grid>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" IsVisible="{Binding IsUnfinishable, Converter={StaticResource booleanInvertConverter}}">
+                            <Label Text="Finished On:" FontSize="Small" />
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <ImageButton Source="cancel" Command="{Binding ClearFinishedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                            </Grid>
+                        </VerticalStackLayout>
                     </Grid>
-
-                    <Label Text="{Binding StartedOnName}" FontSize="Small" />
-                    <Grid Margin="0,0,0,10">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="32" />
-                        </Grid.ColumnDefinitions>
-                        <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                        <ImageButton Source="cancel" Command="{Binding ClearStartedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
-                    </Grid>
-
-                    <StackLayout Margin="0,0,0,10" IsVisible="{Binding IsUnfinishable, Converter={StaticResource booleanInvertConverter}}">
-                        <Label Text="Finished On:" FontSize="Small" />
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
-                                <ColumnDefinition Width="32" />
-                            </Grid.ColumnDefinitions>
-                            <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
-                            <ImageButton Source="cancel" Command="{Binding ClearFinishedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
-                        </Grid>
-                    </StackLayout>
 
                     <Label Text="Comment:" FontSize="Small" />
                     <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="10000" AutoSize="TextChanges" />

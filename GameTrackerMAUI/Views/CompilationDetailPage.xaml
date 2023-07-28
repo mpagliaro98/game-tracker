@@ -71,8 +71,6 @@
                 <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
-            <Label Text="You do not own this game" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
-
             <StackLayout IsVisible="{Binding Item.ShowScore}" Margin="0,0,0,10">
                 <StackLayout IsVisible="{Binding ShowCategoryValues}">
                     <Label Text="Category Scores:" FontSize="Small" />
@@ -96,6 +94,8 @@
 
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
             </StackLayout>
+
+            <Label Text="You do not own this game" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.ReleaseDate, Converter={StaticResource dateEmptyConverter}}">
                 <Label Text="Release Date:" FontSize="Small" />

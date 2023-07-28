@@ -72,34 +72,6 @@
                 <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
-            <Label Text="You do not own this game" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
-
-            <Label Text="Remaster/Re-release" FontSize="Medium" IsVisible="{Binding ShowStaticRemasterText}" FontAttributes="Italic" Margin="0,0,0,10" />
-
-            <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasOriginalGame}">
-                <Label Text="Is a Remaster/Re-release Of:" FontSize="Small" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="32" />
-                    </Grid.ColumnDefinitions>
-                    <Label Text="{Binding OriginalGameName}" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="FillAndExpand" />
-                    <ImageButton Source="go" Command="{Binding OriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
-                </Grid>
-            </StackLayout>
-
-            <StackLayout Margin="0,0,0,10" IsVisible="{Binding HasCompilation}">
-                <Label Text="Part of Compilation:" FontSize="Small" />
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" />
-                        <ColumnDefinition Width="32" />
-                    </Grid.ColumnDefinitions>
-                    <Label Text="{Binding Compilation.Name}" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="FillAndExpand" />
-                    <ImageButton Source="go" Command="{Binding CompilationCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
-                </Grid>
-            </StackLayout>
-
             <StackLayout IsVisible="{Binding Item.ShowScore}" Margin="0,0,0,10">
                 <StackLayout IsVisible="{Binding ShowCategoryValues}">
                     <Label Text="Category Scores:" FontSize="Small" />
@@ -122,6 +94,42 @@
                 <Label Text="{Binding FinalScore, StringFormat='{0:0.####}'}" Background="{Binding FinalScoreColor}" FontSize="Large" FontAttributes="Bold" Padding="5" />
 
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
+            </StackLayout>
+
+            <Label Text="You do not own this game" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
+
+            <Label Text="Remaster/Re-release" FontSize="Medium" IsVisible="{Binding ShowStaticRemasterText}" FontAttributes="Italic" Margin="0,0,0,10" />
+
+            <StackLayout IsVisible="{Binding HasOriginalGame}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Text="Is a Remaster/Re-release Of:" FontSize="Small" />
+                    <Label Text="{Binding OriginalGameName}" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Grid.Row="1" />
+                    <ImageButton Source="go" Command="{Binding OriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" Grid.RowSpan="2" />
+                </Grid>
+            </StackLayout>
+
+            <StackLayout IsVisible="{Binding HasCompilation}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Text="Part of Compilation:" FontSize="Small" />
+                    <Label Text="{Binding Compilation.Name}" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Grid.Row="1" />
+                    <ImageButton Source="go" Command="{Binding CompilationCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" Grid.RowSpan="2" />
+                </Grid>
             </StackLayout>
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.CompletionCriteria, Converter={StaticResource stringEmptyConverter}}">

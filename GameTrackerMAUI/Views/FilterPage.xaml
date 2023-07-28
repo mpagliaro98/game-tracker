@@ -46,7 +46,7 @@
                             </Grid>
                             <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=1}">
                                 <Picker ItemsSource="{Binding FilterTextTypes, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterTextType, Mode=TwoWay}" ItemDisplayBinding="{Binding ., Converter={StaticResource enumDisplayConverter}}" Title="Comparison" HorizontalOptions="FillAndExpand" />
-                                <Entry Text="{Binding TextValue, Mode=TwoWay}" MaxLength="100" />
+                                <Entry Text="{Binding TextValue, Mode=TwoWay}" MaxLength="100" Placeholder="Enter Text" />
                             </StackLayout>
                             <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=2}">
                                 <Picker ItemsSource="{Binding ListValues}" SelectedItem="{Binding ListSelectedValue}" ItemDisplayBinding="{Binding Value}" Title="Filter Value" HorizontalOptions="FillAndExpand" />
