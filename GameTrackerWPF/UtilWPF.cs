@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -85,6 +87,11 @@ namespace GameTrackerWPF
                 UseShellExecute = true
             };
             Process.Start(psi);
+        }
+
+        public static Version GetVersionNumber()
+        {
+            return Assembly.GetExecutingAssembly().GetName().Version;
         }
     }
 }

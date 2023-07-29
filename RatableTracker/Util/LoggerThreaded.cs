@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,14 +57,22 @@ namespace RatableTracker.Util
 
         protected virtual void LogSystemInfoOnLoggerStart()
         {
-            Log("OS INFO - " + Environment.OSVersion.VersionString + "\nCLR INFO - " + Environment.Version.ToString() + "\nFRAMEWORK VERSION - " + Util.FrameworkVersion.ToString(), false);
+            try
+            {
+                var fwAssembly = Assembly.GetExecutingAssembly();
+                Log("\nOS INFO - " + Environment.OSVersion.VersionString + "\nCLR INFO - " + Environment.Version.ToString() + "\nFRAMEWORK - " + fwAssembly.FullName, false);
+            }
+            catch (Exception ex)
+            {
+                Log("Unable to log Ratable Tracker version info due to an error: " + ex.GetType().Name + " - " + ex.Message);
+            }
         }
 
         private void DeleteOldLogFiles()
         {
             // delete logs that are more than the specified number of days old
             IList<FileInfo> files = fileHandler.GetFilesInCurrentDirectory();
-            Log("Checking for old log files over " + LOG_DELETE_THRESHOLD_DAYS.ToString() + " days old - " + files.Count.ToString() + " total files found");
+            Log("Checking for old log files over " + LOG_DELETE_THRESHOLD_DAYS.ToString() + " days old - " + files.Count.ToString() + " total files in directory");
             foreach (FileInfo file in files)
             {
                 if (file.CreatedOnUTC <= DateTime.UtcNow.AddDays(-1 * LOG_DELETE_THRESHOLD_DAYS))

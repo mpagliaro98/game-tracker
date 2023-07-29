@@ -8,10 +8,21 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <Title>Game Tracker</Title>
+    <PackageId>GameTrackerWPF</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>mpagliaro98</Authors>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/mpagliaro98/game-tracker</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/mpagliaro98/game-tracker</PackageProjectUrl>
+    <Copyright>Copyright (c) 2023 Michael Pagliaro</Copyright>
+    <PackageIcon>icon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameTracker\GameTracker.csproj" />
-    <ProjectReference Include="..\RatableTracker\RatableTracker.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\button_down.png" />
@@ -44,6 +55,16 @@
     <Analyzer Include="..\packages\AWSSDK.S3.3.7.7.22\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\LICENSE.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -53,5 +74,11 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 </Project>

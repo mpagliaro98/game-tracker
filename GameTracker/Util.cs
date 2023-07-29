@@ -9,8 +9,6 @@ namespace GameTracker
 {
     public static class Util
     {
-        public static VersionNumber GameTrackerVersion => new VersionNumber(2, 0, 0, 0);
-
         public static string StatusUsageToString(this StatusUsage statusUsage)
         {
             return statusUsage switch

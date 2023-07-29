@@ -3,6 +3,11 @@
     <TargetFrameworks>net7.0-windows;net7.0-android;net7.0-ios</TargetFrameworks>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <PackageId>GameTracker</PackageId>
+    <Title>Game Tracker Framework</Title>
+    <Version>2.0.0</Version>
+    <Authors>mpagliaro98</Authors>
+    <Copyright>Copyright (c) 2023 Michael Pagliaro</Copyright>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\RatableTracker\RatableTracker.csproj" />
