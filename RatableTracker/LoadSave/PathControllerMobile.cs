@@ -10,7 +10,11 @@ namespace RatableTracker.LoadSave
     {
         public override string ApplicationDirectory()
         {
+#if DEBUG
+            return Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DEV");
+#else
             return Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+#endif
         }
     }
 }

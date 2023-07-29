@@ -13,7 +13,11 @@ namespace RatableTracker.LoadSave
     {
         public virtual string ApplicationDirectory()
         {
+#if DEBUG
+            return Environment.ExpandEnvironmentVariables("%LocalAppData%\\mpagliaro98\\GameTracker\\DEV");
+#else
             return Environment.ExpandEnvironmentVariables("%LocalAppData%\\mpagliaro98\\GameTracker");
+#endif
         }
 
         public string Combine(string path1, string path2)
