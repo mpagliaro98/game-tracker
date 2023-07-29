@@ -218,6 +218,8 @@ namespace GameTracker
                 throw new ValidationException("Completion comment cannot be longer than " + MaxLengthCompletionComment.ToString() + " characters", CompletionComment);
             if (TimeSpent.Length > MaxLengthTimeSpent)
                 throw new ValidationException("Time spent cannot be longer than " + MaxLengthTimeSpent.ToString() + " characters", TimeSpent);
+            if (OriginalGame != null && OriginalGame.Equals(this))
+                throw new ValidationException("Cannot set the Original Game field to this game");
             try
             {
                 var temp = Score;
