@@ -20,6 +20,8 @@
     <PackageIcon>icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Product>Game Tracker</Product>
+	<ProductName>Game Tracker</ProductName>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameTracker\GameTracker.csproj" />

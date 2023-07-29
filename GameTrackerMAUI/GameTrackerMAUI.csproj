@@ -41,6 +41,7 @@
 	  <ApplicationId>com.mpagliaro98.gametrackermaui</ApplicationId>
 	  <ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 	  <ApplicationTitle>Game Tracker</ApplicationTitle>
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
