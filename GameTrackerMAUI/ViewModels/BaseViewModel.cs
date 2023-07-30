@@ -38,6 +38,7 @@ namespace GameTrackerMAUI.ViewModels
         public ILoadSaveHandler<ILoadSaveMethodGame> LoadSave => provider.GetSharedDataService().LoadSave;
         public GameTrackerFactory Factory => provider.GetFactory();
         public ISavedState SavedState => provider.GetSavedState();
+        public IAlertService AlertService => provider.GetService<IAlertService>();
 
         protected readonly IServiceProvider provider;
 

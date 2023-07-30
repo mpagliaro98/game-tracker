@@ -75,8 +75,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public async void OnDelete()
         {
-            var ret = await UtilMAUI.ShowPopupMainAsync("Attention", "Are you sure you would like to delete this?", PopupMain.EnumInputType.YesNo);
-            if (ret != null && ret.Item1 == PopupMain.EnumOutputType.Yes)
+            if (await AlertService.DisplayConfirmationAsync("Attention", "Are you sure you would like to delete this?"))
             {
                 PreDelete();
                 Item.Delete(Module, Settings);

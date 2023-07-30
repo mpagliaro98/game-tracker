@@ -37,11 +37,6 @@ namespace GameTrackerMAUI
             return await Shell.Current.CurrentPage.ShowPopupAsync(popup);
         }
 
-        public static async Task<Tuple<PopupMain.EnumOutputType, string>?> ShowPopupMainAsync(string title, string message, PopupMain.EnumInputType inputType)
-        {
-            return (Tuple<PopupMain.EnumOutputType, string>?)await ShowPopupAsync(new PopupMain(title, message, inputType));
-        }
-
         public static async Task<Tuple<PopupList.EnumOutputType, object>?> ShowPopupListAsync(string title, IEnumerable<PopupListOption> options, object selectedValue)
         {
             return (Tuple<PopupList.EnumOutputType, object>?)await ShowPopupAsync(new PopupList(title, options, selectedValue));

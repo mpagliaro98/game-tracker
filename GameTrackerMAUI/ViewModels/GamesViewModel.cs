@@ -79,11 +79,7 @@ namespace GameTrackerMAUI.ViewModels
             string msg = SavedState.ShowCompilations ?
                 "Compilations are now being shown in the list, and games in compilations are hidden." :
                 "Games in compilations are visible, and compilations are being hidden.";
-            var popup = new PopupMain("Compilations", msg, PopupMain.EnumInputType.Ok)
-            {
-                Size = new Size(300, 200)
-            };
-            await UtilMAUI.ShowPopupAsync(popup);
+            await AlertService.DisplayAlertAsync("Compilations", msg);
         }
 
         private void SetCompilationsButton()

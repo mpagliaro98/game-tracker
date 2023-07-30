@@ -40,6 +40,7 @@ namespace GameTrackerMAUI
             builder.Services.AddSingleton<ISavedState, SavedState>();
             builder.Services.AddSingleton<RatableTracker.Interfaces.ILogger>(new LoggerGameTracker(new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY)));
             builder.Services.AddSingleton<ISharedDataService, SharedDataService>();
+            builder.Services.AddSingleton<IAlertService, AlertServiceMAUI>();
             return builder;
         }
 

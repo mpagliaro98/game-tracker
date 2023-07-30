@@ -375,12 +375,7 @@ namespace GameTrackerMAUI.ViewModels
                         ((comp.PlatformPlayedOn == null && PlatformPlayedOn != null) || (comp.PlatformPlayedOn != null && PlatformPlayedOn == null) || (comp.PlatformPlayedOn != null && !comp.PlatformPlayedOn.Equals(PlatformPlayedOn))) ||
                         ((comp.StatusExtension.Status == null && Status != null) || (comp.StatusExtension.Status != null && Status == null) || (comp.StatusExtension.Status != null && !comp.StatusExtension.Status.Equals(Status))))
                     {
-                        var popup = new PopupMain("Game Changes", $"The status or platform fields of this game are different from the compilation's ({CompName}) status/platform fields. Would you like to propagate those changes to the compilation?", PopupMain.EnumInputType.YesNo)
-                        {
-                            Size = new Size(300, 250)
-                        };
-                        var result = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
-                        if (result != null && result.Item1 == PopupMain.EnumOutputType.Yes)
+                        if (await AlertService.DisplayConfirmationAsync("Game Changes", $"The status or platform fields of this game are different from the compilation's ({CompName}) status/platform fields. Would you like to propagate those changes to the compilation?"))
                         {
                             comp.Platform = Platform;
                             comp.PlatformPlayedOn = PlatformPlayedOn;

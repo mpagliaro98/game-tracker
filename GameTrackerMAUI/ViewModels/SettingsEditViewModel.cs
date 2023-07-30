@@ -102,13 +102,7 @@ namespace GameTrackerMAUI.ViewModels
 
             if (min != Settings.MinScore || max != Settings.MaxScore)
             {
-                var popup = new PopupMain("Confirmation", "Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", PopupMain.EnumInputType.YesNo)
-                {
-                    Size = new Size(300, 200)
-                };
-                var ret = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
-
-                if (ret is null || ret.Item1 != PopupMain.EnumOutputType.Yes)
+                if (!(await AlertService.DisplayConfirmationAsync("Confirmation", "Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?")))
                 {
                     return;
                 }
@@ -125,7 +119,7 @@ namespace GameTrackerMAUI.ViewModels
             }
             catch (Exception ex)
             {
-                await UtilMAUI.ShowPopupMainAsync("Unable to Save", ex.Message, PopupMain.EnumInputType.Ok);
+                await AlertService.DisplayAlertAsync("Unable to Save", ex.Message);
                 return;
             }
 
@@ -142,18 +136,11 @@ namespace GameTrackerMAUI.ViewModels
             if (FileHandlerAWSS3.KeyFileExists(PathController))
             {
                 // Remove key file
-                await Task.Delay(500); // without delay, popup won't open
-                var popup = new PopupMain("Overwrite local?", "Switch back to local has started. Transfer AWS save files to local? This will overwrite anything currently on this device.", PopupMain.EnumInputType.YesNo)
-                {
-                    Size = new Size(300, 200)
-                };
-                var ret = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
-                
                 IFileHandler newFileHandler = new FileHandlerLocalAppData(PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
-                if (ret is not null && ret.Item1 == PopupMain.EnumOutputType.Yes)
+                if (await AlertService.DisplayConfirmationAsync("Overwrite local?", "Switch back to local has started. Transfer AWS save files to local? This will overwrite anything currently on this device."))
                 {
                     ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, Factory, new Logger(Logger)));
-                    GameModule newModule = new GameModule(newLoadSave, new Logger(Logger));
+                    GameModule newModule = new(newLoadSave, new Logger(Logger));
                     Logger.Log("Starting transfer from AWS to local");
                     Module.TransferToNewModule(newModule, Settings);
                 }
@@ -166,17 +153,10 @@ namespace GameTrackerMAUI.ViewModels
                 var fileSelected = await FilePicker.PickAsync();
                 if (fileSelected != null)
                 {
-                    await Task.Delay(500); // without delay, popup won't open
-                    var popup = new PopupMain("Overwrite AWS?", "Switch to AWS has started. Transfer local save files to AWS? This will overwrite anything currently on your AWS account.", PopupMain.EnumInputType.YesNo)
-                    {
-                        Size = new Size(300, 200)
-                    };
-                    var ret = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
-
                     try
                     {
                         IFileHandler newFileHandler = new FileHandlerAWSS3(fileSelected.FullPath, PathController);
-                        if (ret is not null && ret.Item1 == PopupMain.EnumOutputType.Yes)
+                        if (await AlertService.DisplayConfirmationAsync("Overwrite AWS?", "Switch to AWS has started. Transfer local save files to AWS? This will overwrite anything currently on your AWS account."))
                         {
                             ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, Factory, new Logger(Logger)));
                             GameModule newModule = new GameModule(newLoadSave, new Logger(Logger));
@@ -187,7 +167,7 @@ namespace GameTrackerMAUI.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        await UtilMAUI.ShowPopupMainAsync("Error", "Something went wrong.\n" + ex.Message, PopupMain.EnumInputType.Ok);
+                        await AlertService.DisplayAlertAsync("Error", "Something went wrong.\n" + ex.Message);
                         FileHandlerAWSS3.DeleteKeyFile(PathController);
                     }
                 }

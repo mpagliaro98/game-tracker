@@ -81,7 +81,7 @@ namespace GameTrackerMAUI.ViewModels
             }
             catch (Exception ex)
             {
-                await UtilMAUI.ShowPopupMainAsync("Unable to Save", ex.Message, PopupMain.EnumInputType.Ok);
+                await AlertService.DisplayAlertAsync("Unable to Save", ex.Message);
                 return;
             }
 
