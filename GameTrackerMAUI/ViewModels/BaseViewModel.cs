@@ -39,6 +39,7 @@ namespace GameTrackerMAUI.ViewModels
         public GameTrackerFactory Factory => provider.GetFactory();
         public ISavedState SavedState => provider.GetSavedState();
         public IAlertService AlertService => provider.GetService<IAlertService>();
+        public IToastService ToastService => provider.GetService<IToastService>();
 
         protected readonly IServiceProvider provider;
 
