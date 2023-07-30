@@ -64,6 +64,12 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(Color));
         }
 
+        protected override void PreSave()
+        {
+            base.PreSave();
+            Abbreviation = Abbreviation.Trim();
+        }
+
         protected override IList<GameTracker.Platform> GetObjectList()
         {
             return Module.GetPlatformList(Settings);

@@ -51,6 +51,12 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(Comment));
         }
 
+        protected override void PreSave()
+        {
+            base.PreSave();
+            Comment = Comment.Trim();
+        }
+
         protected override IList<RatingCategoryWeighted> GetObjectList()
         {
             return Module.CategoryExtension.GetRatingCategoryList().OfType<RatingCategoryWeighted>().ToList();

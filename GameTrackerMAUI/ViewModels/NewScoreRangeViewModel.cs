@@ -59,6 +59,7 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override void PreSave()
         {
+            base.PreSave();
             List<double> values = new();
             if (ScoreRelationship.NumValuesRequired >= 1)
                 values.Add(Value1);

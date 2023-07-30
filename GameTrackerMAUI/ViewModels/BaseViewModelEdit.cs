@@ -90,7 +90,7 @@ namespace GameTrackerMAUI.ViewModels
 
         protected virtual void PreSave()
         {
-
+            Name = Name.Trim();
         }
 
         protected virtual async Task SaveObject()

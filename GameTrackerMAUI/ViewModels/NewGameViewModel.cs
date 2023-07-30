@@ -346,6 +346,16 @@ namespace GameTrackerMAUI.ViewModels
             return base.ValidateSave() && (!IsPartOfCompilation || (IsPartOfCompilation && !string.IsNullOrWhiteSpace(CompName)));
         }
 
+        protected override void PreSave()
+        {
+            base.PreSave();
+            CompName = CompName.Trim();
+            CompletionCriteria = CompletionCriteria.Trim();
+            CompletionComment = CompletionComment.Trim();
+            TimeSpent = TimeSpent.Trim();
+            Comment = Comment.Trim();
+        }
+
         protected override async Task SaveObject()
         {
             var vals = UseOriginalGameScore ? (Item == null ? GetValuesFromUI() : Item.CategoryExtension.CategoryValuesManual) : GetValuesFromUI();
