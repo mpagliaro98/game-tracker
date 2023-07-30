@@ -43,7 +43,7 @@ namespace GameTrackerMAUI
         public List<string> FilterValuesText => new() { FilterTextType.ToString(), TextValue };
         public string FilterValuesList => ListSelectedValue == null ? ListValues[0].Key.ToString() : ListSelectedValue.Key.ToString();
         public List<string> FilterValuesDate => new() { FilterDateType.ToString(), FilterDatePreset.ToString(), DateValue1.ToString(), DateValue2.ToString() };
-        public List<string> FilterValuesNumeric => new() { FilterNumericType.ToString(), (NumberValue1 ?? 0).ToString(), (NumberValue2 ?? 0).ToString() };
+        public List<string> FilterValuesNumeric => new() { FilterNumericType.ToString(), CleanInput(NumberValue1 ?? 0).ToString(), CleanInput(NumberValue2 ?? 0).ToString() };
 
         public bool Negate
         {
@@ -147,6 +147,17 @@ namespace GameTrackerMAUI
         public FilterContainer(int index)
         {
             _index = index;
+        }
+
+        private double CleanInput(double input)
+        {
+            return ((IFilterOptionNumeric)FilterOption).NumberFormat switch
+            {
+                FilterNumberFormat.Decimal => input,
+                FilterNumberFormat.Integer => Math.Floor(input),
+                FilterNumberFormat.Percentage => (double)input / 100,
+                _ => throw new NotImplementedException("Invalid number format: " + ((IFilterOptionNumeric)FilterOption).NumberFormat.ToDisplayString())
+            };
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

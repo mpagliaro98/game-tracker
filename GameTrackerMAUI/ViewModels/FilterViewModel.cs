@@ -219,8 +219,8 @@ namespace GameTrackerMAUI.ViewModels
                     case RatableTracker.ListManipulation.Filtering.FilterType.Numeric:
                         List<string> valuesNum = (List<string>)filter.FilterValues;
                         segment.FilterNumericType = Enum.Parse<FilterNumericType>(valuesNum[0]);
-                        segment.NumberValue1 = double.Parse(valuesNum[1]);
-                        segment.NumberValue2 = double.Parse(valuesNum[2]);
+                        segment.NumberValue1 = ((IFilterOptionNumeric)filter.FilterOption).NumberFormat == FilterNumberFormat.Percentage ? double.Parse(valuesNum[1]) * 100 : double.Parse(valuesNum[1]);
+                        segment.NumberValue2 = ((IFilterOptionNumeric)filter.FilterOption).NumberFormat == FilterNumberFormat.Percentage ? double.Parse(valuesNum[2]) * 100 : double.Parse(valuesNum[2]);
                         break;
                     default:
                         break;
