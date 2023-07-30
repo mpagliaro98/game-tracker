@@ -37,7 +37,6 @@ namespace GameTrackerMAUI.ViewModels
 
         public GamesViewModel(IServiceProvider provider) : base(provider)
         {
-            Title = "Games";
             ShowCompilations = new Command(OnShowCompilations);
         }
 

@@ -36,7 +36,7 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override async Task GoToEditPageAsync()
         {
-            await Shell.Current.GoToAsync($"{nameof(NewCategoryPage)}?{nameof(NewCategoryViewModel.ItemId)}={Item.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(NewCategoryPage)}?{nameof(NewCategoryViewModel.ItemId)}={Item.UniqueID}");
         }
 
         protected override void PreDelete()

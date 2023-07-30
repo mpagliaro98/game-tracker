@@ -74,7 +74,6 @@ namespace GameTrackerMAUI
         {
             builder.Services.AddSingleton<Views.GamesPage>();
             builder.Services.AddSingleton<Views.PlatformsPage>();
-            builder.Services.AddSingleton<Views.SettingsPage>();
 
             builder.Services.AddTransient<Views.AboutPage>();
             builder.Services.AddTransient<Views.CategoryDetailPage>();

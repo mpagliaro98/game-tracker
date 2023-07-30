@@ -23,10 +23,7 @@ namespace GameTrackerMAUI.ViewModels
         protected override FilterType FilterType => FilterType.Platform;
         public override int ListLimit => Module.LimitPlatforms;
 
-        public PlatformsViewModel(IServiceProvider provider) : base(provider)
-        {
-            Title = "Platforms";
-        }
+        public PlatformsViewModel(IServiceProvider provider) : base(provider) { }
 
         protected override IList<GameTracker.Platform> GetObjectList()
         {

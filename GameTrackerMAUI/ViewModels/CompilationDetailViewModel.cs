@@ -155,7 +155,7 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override async Task GoToEditPageAsync()
         {
-            await Shell.Current.GoToAsync($"{nameof(EditCompilationPage)}?{nameof(EditCompilationViewModel.ItemId)}={Item.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(EditCompilationPage)}?{nameof(EditCompilationViewModel.ItemId)}={Item.UniqueID}");
         }
 
         async void OnItemSelected(GameObject item)
@@ -163,8 +163,7 @@ namespace GameTrackerMAUI.ViewModels
             if (item == null)
                 return;
 
-            await Shell.Current.GoToAsync("..");
-            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={item.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={item.UniqueID}");
         }
     }
 }

@@ -67,7 +67,6 @@ namespace GameTrackerMAUI.ViewModels
 
         public async void OnEdit()
         {
-            await Shell.Current.GoToAsync("..");
             await GoToEditPageAsync();
         }
 

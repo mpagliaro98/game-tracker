@@ -6,7 +6,7 @@
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              x:DataType="local:PlatformsViewModel"
-             Title="Platforms">
+             Title="">
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:ColorContainerConverter x:Key="colorContainerConverter" />

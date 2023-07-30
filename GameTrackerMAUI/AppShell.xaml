@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:GameTrackerMAUI.Views"
-    Shell.FlyoutBehavior="Disabled">
+    FlyoutBehavior="Flyout">
 
     <Shell.Resources>
         <ResourceDictionary>
@@ -24,10 +24,28 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-    <TabBar>
-        <ShellContent Title="Games" Icon="icon_games.png" Route="GamesPage" ContentTemplate="{DataTemplate local:GamesPage}" />
-        <ShellContent Title="Platforms" Icon="icon_platforms.png" ContentTemplate="{DataTemplate local:PlatformsPage}" />
-        <ShellContent Title="Settings" Icon="icon_settings.png" ContentTemplate="{DataTemplate local:SettingsPage}" />
-    </TabBar>
+    <FlyoutItem Title="Home">
+        <Tab Title="Games" Icon="icon_games.png">
+            <ShellContent Route="GamesPageShell" ContentTemplate="{DataTemplate local:GamesPage}" />
+        </Tab>
+        <Tab Title="Platforms" Icon="icon_platforms.png">
+            <ShellContent Route="PlatformsPageShell" ContentTemplate="{DataTemplate local:PlatformsPage}" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem Title="Settings">
+        <Tab>
+            <ShellContent Route="SettingsEditPageShell" ContentTemplate="{DataTemplate local:SettingsEditPage}" />
+        </Tab>
+    </FlyoutItem>
+    <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
+        <ShellContent Title="Configure Statuses" Route="StatusPageShell" ContentTemplate="{DataTemplate local:StatusPage}" />
+        <ShellContent Title="Configure Rating Categories" Route="CategoryPageShell" ContentTemplate="{DataTemplate local:CategoryPage}" />
+        <ShellContent Title="Configure Score Ranges" Route="ScoreRangePageShell" ContentTemplate="{DataTemplate local:ScoreRangePage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="About">
+        <Tab>
+            <ShellContent Route="AboutPageShell" ContentTemplate="{DataTemplate local:AboutPage}" />
+        </Tab>
+    </FlyoutItem>
 
 </Shell>

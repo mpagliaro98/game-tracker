@@ -33,7 +33,7 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override async Task GoToEditPageAsync()
         {
-            await Shell.Current.GoToAsync($"{nameof(NewScoreRangePage)}?{nameof(NewScoreRangeViewModel.ItemId)}={Item.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(NewScoreRangePage)}?{nameof(NewScoreRangeViewModel.ItemId)}={Item.UniqueID}");
         }
     }
 }

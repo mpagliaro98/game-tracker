@@ -108,7 +108,7 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override async Task GoToEditPageAsync()
         {
-            await Shell.Current.GoToAsync($"{nameof(NewPlatformPage)}?{nameof(NewPlatformViewModel.ItemId)}={Item.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(NewPlatformPage)}?{nameof(NewPlatformViewModel.ItemId)}={Item.UniqueID}");
         }
     }
 }

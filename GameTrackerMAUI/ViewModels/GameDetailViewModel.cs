@@ -191,19 +191,17 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override async Task GoToEditPageAsync()
         {
-            await Shell.Current.GoToAsync($"{nameof(NewGamePage)}?{nameof(NewGameViewModel.ItemId)}={Item.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(NewGamePage)}?{nameof(NewGameViewModel.ItemId)}={Item.UniqueID}");
         }
 
         async void OnCompilation()
         {
-            await Shell.Current.GoToAsync("..");
-            await Shell.Current.GoToAsync($"{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={Item.Compilation.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={Item.Compilation.UniqueID}");
         }
 
         async void OnOriginalGame()
         {
-            await Shell.Current.GoToAsync("..");
-            await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(ItemId)}={Item.OriginalGame.UniqueID}");
+            await Shell.Current.GoToAsync($"../{nameof(GameDetailPage)}?{nameof(ItemId)}={Item.OriginalGame.UniqueID}");
         }
     }
 }
