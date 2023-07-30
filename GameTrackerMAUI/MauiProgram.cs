@@ -1,5 +1,9 @@
 ﻿using CommunityToolkit.Maui;
+using GameTracker;
+using GameTrackerMAUI.Services;
 using Microsoft.Extensions.Logging;
+using RatableTracker.Interfaces;
+using RatableTracker.LoadSave;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace GameTrackerMAUI
@@ -15,15 +19,80 @@ namespace GameTrackerMAUI
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
-            builder.UseMauiCommunityToolkit();
-            builder.UseSkiaSharp();
+                })
+                .UseMauiCommunityToolkit()
+                .UseSkiaSharp()
+                .RegisterServices()
+                .RegisterViewModels()
+                .RegisterViews();
 #if DEBUG
-		builder.Logging.AddDebug();
+		    builder.Logging.AddDebug();
 #endif
-            MauiExceptions.Init();
 
             return builder.Build();
+        }
+
+        private static MauiAppBuilder RegisterServices(this MauiAppBuilder builder)
+        {
+            var pathController = new PathControllerMobile();
+            builder.Services.AddSingleton<IPathController>(pathController);
+            builder.Services.AddSingleton<GameTrackerFactory>();
+            builder.Services.AddSingleton<ISavedState, SavedState>();
+            builder.Services.AddSingleton<RatableTracker.Interfaces.ILogger>(new LoggerGameTracker(new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY)));
+            builder.Services.AddSingleton<ISharedDataService, SharedDataService>();
+            return builder;
+        }
+
+        private static MauiAppBuilder RegisterViewModels(this MauiAppBuilder builder)
+        {
+            builder.Services.AddSingleton<ViewModels.GamesViewModel>();
+            builder.Services.AddSingleton<ViewModels.PlatformsViewModel>();
+
+            builder.Services.AddTransient<ViewModels.CategoryDetailViewModel>();
+            builder.Services.AddTransient<ViewModels.CategoryViewModel>();
+            builder.Services.AddTransient<ViewModels.CompilationDetailViewModel>();
+            builder.Services.AddTransient<ViewModels.EditCompilationViewModel>();
+            builder.Services.AddTransient<ViewModels.FilterViewModel>();
+            builder.Services.AddTransient<ViewModels.GameDetailViewModel>();
+            builder.Services.AddTransient<ViewModels.NewCategoryViewModel>();
+            builder.Services.AddTransient<ViewModels.NewGameViewModel>();
+            builder.Services.AddTransient<ViewModels.NewPlatformViewModel>();
+            builder.Services.AddTransient<ViewModels.NewScoreRangeViewModel>();
+            builder.Services.AddTransient<ViewModels.NewStatusViewModel>();
+            builder.Services.AddTransient<ViewModels.PlatformDetailViewModel>();
+            builder.Services.AddTransient<ViewModels.ScoreRangeDetailViewModel>();
+            builder.Services.AddTransient<ViewModels.ScoreRangeViewModel>();
+            builder.Services.AddTransient<ViewModels.SettingsEditViewModel>();
+            builder.Services.AddTransient<ViewModels.StatusDetailViewModel>();
+            builder.Services.AddTransient<ViewModels.StatusViewModel>();
+            return builder;
+        }
+
+        private static MauiAppBuilder RegisterViews(this MauiAppBuilder builder)
+        {
+            builder.Services.AddSingleton<Views.GamesPage>();
+            builder.Services.AddSingleton<Views.PlatformsPage>();
+            builder.Services.AddSingleton<Views.SettingsPage>();
+
+            builder.Services.AddTransient<Views.AboutPage>();
+            builder.Services.AddTransient<Views.CategoryDetailPage>();
+            builder.Services.AddTransient<Views.CategoryPage>();
+            builder.Services.AddTransient<Views.CompilationDetailPage>();
+            builder.Services.AddTransient<Views.EditCompilationPage>();
+            builder.Services.AddTransient<Views.FilterPage>();
+            builder.Services.AddTransient<Views.GameDetailPage>();
+            builder.Services.AddTransient<Views.NewCategoryPage>();
+            builder.Services.AddTransient<Views.NewGamePage>();
+            builder.Services.AddTransient<Views.NewPlatformPage>();
+            builder.Services.AddTransient<Views.NewScoreRangePage>();
+            builder.Services.AddTransient<Views.NewStatusPage>();
+            builder.Services.AddTransient<Views.PlatformDetailPage>();
+            builder.Services.AddTransient<Views.ScoreRangeDetailPage>();
+            builder.Services.AddTransient<Views.ScoreRangePage>();
+            builder.Services.AddTransient<Views.SettingsEditPage>();
+            builder.Services.AddTransient<Views.StatusDetailPage>();
+            builder.Services.AddTransient<Views.StatusPage>();
+            return builder;
         }
     }
 }

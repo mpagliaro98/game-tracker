@@ -4,9 +4,17 @@ namespace GameTrackerMAUI.Views;
 
 public partial class FilterPage : ContentPage
 {
-	public FilterPage()
+    private readonly BaseViewModel _viewModel;
+
+    public FilterPage(FilterViewModel vm)
 	{
 		InitializeComponent();
-        BindingContext = new FilterViewModel();
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
     }
 }

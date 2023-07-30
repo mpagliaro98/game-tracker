@@ -194,5 +194,19 @@ namespace RatableTracker.Util
         {
             return value.StartOfYear().AddYears(1).AddTicks(-1);
         }
+
+        public static int RemoveAll<T>(this IList<T> list, Predicate<T> predicate)
+        {
+            int count = 0;
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (predicate(list[i]))
+                {
+                    list.RemoveAt(i);
+                    count++;
+                }
+            }
+            return count;
+        }
     }
 }

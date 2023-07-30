@@ -4,9 +4,17 @@ namespace GameTrackerMAUI.Views;
 
 public partial class CompilationDetailPage : ContentPage
 {
-	public CompilationDetailPage()
+    private readonly BaseViewModel _viewModel;
+
+    public CompilationDetailPage(CompilationDetailViewModel vm)
 	{
 		InitializeComponent();
-        BindingContext = new CompilationDetailViewModel();
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
     }
 }

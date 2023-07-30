@@ -4,9 +4,17 @@ namespace GameTrackerMAUI.Views;
 
 public partial class PlatformDetailPage : ContentPage
 {
-	public PlatformDetailPage()
+    BaseViewModel _viewModel;
+
+    public PlatformDetailPage(PlatformDetailViewModel vm)
 	{
 		InitializeComponent();
-		BindingContext = new PlatformDetailViewModel();
-	}
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
+    }
 }

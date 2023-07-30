@@ -14,57 +14,14 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class GameDetailViewModel : BaseViewModel
+    public class GameDetailViewModel : BaseViewModelDetail<GameObject>
     {
-        private GameObject _item = new GameObject(SharedDataService.Settings, SharedDataService.Module);
-
-        public Command EditCommand { get; }
-        public Command DeleteCommand { get; }
         public Command CompilationCommand { get; }
         public Command OriginalGameCommand { get; }
 
-        public GameObject Item
-        {
-            get => _item;
-            set
-            {
-                SetProperty(ref _item, value);
-                OnPropertyChanged(nameof(CompletionStatus));
-                OnPropertyChanged(nameof(HasCompletionStatus));
-                OnPropertyChanged(nameof(Platform));
-                OnPropertyChanged(nameof(HasPlatform));
-                OnPropertyChanged(nameof(PlatformPlayedOn));
-                OnPropertyChanged(nameof(HasPlatformPlayedOn));
-                OnPropertyChanged(nameof(IsRemaster));
-                OnPropertyChanged(nameof(ShowStaticRemasterText));
-                OnPropertyChanged(nameof(OriginalGameName));
-                OnPropertyChanged(nameof(HasOriginalGame));
-                OnPropertyChanged(nameof(Compilation));
-                OnPropertyChanged(nameof(HasCompilation));
-                OnPropertyChanged(nameof(CategoryValues));
-                OnPropertyChanged(nameof(FinalScore));
-                OnPropertyChanged(nameof(FinalScoreColor));
-                OnPropertyChanged(nameof(Stats));
-                OnPropertyChanged(nameof(ShowCategoryValues));
-                OnPropertyChanged(nameof(FinishedOn));
-                OnPropertyChanged(nameof(StartedOnName));
-                OnPropertyChanged(nameof(ShowStaticNotOwnedText));
-            }
-        }
-
-        public string ItemId
-        {
-            get => Item.UniqueID.ToString();
-            set
-            {
-                var key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
-        }
-
         public StatusGame CompletionStatus
         {
-            get => (StatusGame)Item.StatusExtension.Status ?? new StatusGame(SharedDataService.Module, SharedDataService.Settings);
+            get => (StatusGame)Item.StatusExtension.Status ?? new StatusGame(Module, Settings);
         }
 
         public bool HasCompletionStatus
@@ -74,7 +31,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public GameTracker.Platform Platform
         {
-            get => Item.Platform ?? new GameTracker.Platform(SharedDataService.Module, SharedDataService.Settings);
+            get => Item.Platform ?? new GameTracker.Platform(Module, Settings);
         }
 
         public bool HasPlatform
@@ -84,7 +41,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public GameTracker.Platform PlatformPlayedOn
         {
-            get => Item.PlatformPlayedOn ?? new GameTracker.Platform(SharedDataService.Module, SharedDataService.Settings);
+            get => Item.PlatformPlayedOn ?? new GameTracker.Platform(Module, Settings);
         }
 
         public bool HasPlatformPlayedOn
@@ -125,7 +82,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public GameCompilation Compilation
         {
-            get => Item.Compilation ?? new GameCompilation(SharedDataService.Settings, SharedDataService.Module);
+            get => Item.Compilation ?? new GameCompilation(Settings, Module);
         }
 
         public bool HasCompilation
@@ -140,9 +97,11 @@ namespace GameTrackerMAUI.ViewModels
                 List<CategoryValueContainer> vals = new();
                 foreach (var cv in Item.CategoryExtension.CategoryValuesDisplay)
                 {
-                    var container = new CategoryValueContainer();
-                    container.CategoryName = cv.RatingCategory.Name;
-                    container.CategoryValue = cv.PointValue;
+                    var container = new CategoryValueContainer
+                    {
+                        CategoryName = cv.RatingCategory.Name,
+                        CategoryValue = cv.PointValue
+                    };
                     vals.Add(container);
                 }
                 return vals;
@@ -166,7 +125,7 @@ namespace GameTrackerMAUI.ViewModels
                 int rankOverall = Item.Rank;
                 int rankPlatform = -1;
                 GameTracker.Platform platform = HasPlatform ? Platform : null;
-                if (platform != null) rankPlatform = SharedDataService.Module.GetRankOfScoreByPlatform(FinalScore, platform, SharedDataService.Settings);
+                if (platform != null) rankPlatform = Module.GetRankOfScoreByPlatform(FinalScore, platform, Settings);
 
                 string text = "";
                 if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
@@ -190,40 +149,49 @@ namespace GameTrackerMAUI.ViewModels
             get => Item.IsUnfinishable ? "Played On:" : "Started On:";
         }
 
-        public GameDetailViewModel()
+        public GameDetailViewModel(IServiceProvider provider) : base(provider)
         {
-            EditCommand = new Command(OnEdit);
-            DeleteCommand = new Command(OnDelete);
             CompilationCommand = new Command(OnCompilation);
             OriginalGameCommand = new Command(OnOriginalGame);
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override GameObject CreateNewObject()
         {
-            try
-            {
-                Item = (GameObject)SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).First((obj) => obj.UniqueID.Equals(itemId));
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
+            return new GameObject(Settings, Module);
         }
 
-        async void OnEdit()
+        protected override void UpdatePropertiesOnLoad()
         {
-            await Shell.Current.GoToAsync("..");
+            OnPropertyChanged(nameof(CompletionStatus));
+            OnPropertyChanged(nameof(HasCompletionStatus));
+            OnPropertyChanged(nameof(Platform));
+            OnPropertyChanged(nameof(HasPlatform));
+            OnPropertyChanged(nameof(PlatformPlayedOn));
+            OnPropertyChanged(nameof(HasPlatformPlayedOn));
+            OnPropertyChanged(nameof(IsRemaster));
+            OnPropertyChanged(nameof(ShowStaticRemasterText));
+            OnPropertyChanged(nameof(OriginalGameName));
+            OnPropertyChanged(nameof(HasOriginalGame));
+            OnPropertyChanged(nameof(Compilation));
+            OnPropertyChanged(nameof(HasCompilation));
+            OnPropertyChanged(nameof(CategoryValues));
+            OnPropertyChanged(nameof(FinalScore));
+            OnPropertyChanged(nameof(FinalScoreColor));
+            OnPropertyChanged(nameof(Stats));
+            OnPropertyChanged(nameof(ShowCategoryValues));
+            OnPropertyChanged(nameof(FinishedOn));
+            OnPropertyChanged(nameof(StartedOnName));
+            OnPropertyChanged(nameof(ShowStaticNotOwnedText));
+        }
+
+        protected override IList<GameObject> GetObjectList()
+        {
+            return Module.GetModelObjectList(Settings).OfType<GameObject>().ToList();
+        }
+
+        protected override async Task GoToEditPageAsync()
+        {
             await Shell.Current.GoToAsync($"{nameof(NewGamePage)}?{nameof(NewGameViewModel.ItemId)}={Item.UniqueID}");
-        }
-
-        async void OnDelete()
-        {
-            var ret = await UtilMAUI.ShowPopupMainAsync("Attention", "Are you sure you would like to delete this game?", PopupMain.EnumInputType.YesNo);
-            if (ret != null && ret.Item1 == PopupMain.EnumOutputType.Yes)
-            {
-                Item.Delete(SharedDataService.Module, SharedDataService.Settings);
-                await Shell.Current.GoToAsync("..");
-            }
         }
 
         async void OnCompilation()

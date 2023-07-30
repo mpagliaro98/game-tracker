@@ -82,7 +82,7 @@ namespace GameTrackerMAUI.ViewModels
         public Command ClearCommand { get; }
         public Command RemoveSegmentCommand { get; }
 
-        public FilterViewModel()
+        public FilterViewModel(IServiceProvider provider) : base(provider)
         {
             AddItemCommand = new Command(OnAddItem, CanAddSegments);
             SearchCommand = new Command(OnSearch);
@@ -119,8 +119,8 @@ namespace GameTrackerMAUI.ViewModels
             {
                 var newSegment = new FilterSegment()
                 {
-                    Module = SharedDataService.Module,
-                    Settings = SharedDataService.Settings,
+                    Module = Module,
+                    Settings = Settings,
                     FilterOption = (FilterOptionBase)segment.FilterOption,
                     Negate = segment.Negate,
                     FilterValues = segment.FilterOption.FilterType switch
@@ -136,10 +136,10 @@ namespace GameTrackerMAUI.ViewModels
                 engine.Filters.Add(newSegment);
             }
             if (_filterType == FilterType.Game)
-                SharedDataService.SavedState.FilterGames = engine;
+                SavedState.FilterGames = engine;
             else
-                SharedDataService.SavedState.FilterPlatforms = engine;
-            SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
+                SavedState.FilterPlatforms = engine;
+            SavedState.Save(PathController);
 
             await Shell.Current.GoToAsync("..");
         }
@@ -147,10 +147,10 @@ namespace GameTrackerMAUI.ViewModels
         private async void OnClear()
         {
             if (_filterType == FilterType.Game)
-                SharedDataService.SavedState.FilterGames = new FilterEngine();
+                SavedState.FilterGames = new FilterEngine();
             else
-                SharedDataService.SavedState.FilterPlatforms = new FilterEngine();
-            SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
+                SavedState.FilterPlatforms = new FilterEngine();
+            SavedState.Save(PathController);
 
             await Shell.Current.GoToAsync("..");
         }
@@ -173,16 +173,16 @@ namespace GameTrackerMAUI.ViewModels
         private void InitUI()
         {
             if (_filterType == FilterType.Game)
-                _options = FilterEngine.GetFilterOptionList<GameObject>(SharedDataService.Module, SharedDataService.Settings);
+                _options = FilterEngine.GetFilterOptionList<GameObject>(Module, Settings);
             else
-                _options = FilterEngine.GetFilterOptionList<GameTracker.Platform>(SharedDataService.Module, SharedDataService.Settings);
+                _options = FilterEngine.GetFilterOptionList<GameTracker.Platform>(Module, Settings);
             _textTypes = Enum.GetValues<FilterTextType>().OrderBy(e => e.ToDisplayString()).ToList();
             _datePresets = Enum.GetValues<FilterDatePreset>().OrderBy(e => e.ToDisplayString()).ToList();
             _dateTypes = Enum.GetValues<FilterDateType>().OrderBy(e => e.ToDisplayString()).ToList();
             _numericTypes = Enum.GetValues<FilterNumericType>().OrderBy(e => e.ToDisplayString()).ToList();
 
             // load current filters
-            var engine = _filterType == FilterType.Game ? SharedDataService.SavedState.FilterGames : SharedDataService.SavedState.FilterPlatforms;
+            var engine = _filterType == FilterType.Game ? SavedState.FilterGames : SavedState.FilterPlatforms;
             OperatorAnd = (engine.Operator == FilterOperator.And);
             foreach (var filter in engine.Filters)
             {

@@ -4,9 +4,17 @@ namespace GameTrackerMAUI.Views;
 
 public partial class NewCategoryPage : ContentPage
 {
-	public NewCategoryPage()
+    private readonly BaseViewModel _viewModel;
+
+    public NewCategoryPage(NewCategoryViewModel vm)
 	{
 		InitializeComponent();
-        BindingContext = new NewCategoryViewModel();
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
     }
 }

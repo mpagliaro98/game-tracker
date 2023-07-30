@@ -12,81 +12,27 @@ using System.Threading.Tasks;
 
 namespace GameTrackerMAUI.ViewModels
 {
-    public class StatusViewModel : BaseViewModel
+    public class StatusViewModel : BaseViewModelList<StatusGame>
     {
-        private StatusGame _selectedItem;
+        public override int ListLimit => Module.StatusExtension.LimitStatuses;
 
-        public ObservableCollection<StatusGame> Items { get; }
-        public Command LoadItemsCommand { get; }
-        public Command AddItemCommand { get; }
-        public Command<StatusGame> ItemTapped { get; }
-
-        public StatusGame SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
-        }
-
-        public StatusViewModel()
+        public StatusViewModel(IServiceProvider provider) : base(provider)
         {
             Title = "Statuses";
-            Items = new ObservableCollection<StatusGame>();
-            LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
-
-            ItemTapped = new Command<StatusGame>(OnItemSelected);
-
-            AddItemCommand = new Command(OnAddItem, ShowAddButton);
-            this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
         }
 
-        private bool ShowAddButton(object o)
+        protected override IList<StatusGame> GetObjectList()
         {
-            return SharedDataService.Module.StatusExtension.GetStatusList().Count < SharedDataService.Module.StatusExtension.LimitStatuses;
+            return Module.StatusExtension.GetStatusList().OfType<StatusGame>().ToList();
         }
 
-        void ExecuteLoadItemsCommand()
-        {
-            IsBusy = true;
-
-            try
-            {
-                Items.Clear();
-                var items = SharedDataService.Module.StatusExtension.GetStatusList().OfType<StatusGame>().ToList();
-                foreach (var item in items)
-                {
-                    Items.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
-
-        public void OnAppearing()
-        {
-            IsBusy = true;
-            SelectedItem = null;
-        }
-
-        private async void OnAddItem(object obj)
+        protected override async Task GoToNewItemAsync()
         {
             await Shell.Current.GoToAsync(nameof(NewStatusPage));
         }
 
-        async void OnItemSelected(StatusGame item)
+        protected override async Task GoToSelectedItemAsync(StatusGame item)
         {
-            if (item == null)
-                return;
-
             await Shell.Current.GoToAsync($"{nameof(StatusDetailPage)}?{nameof(StatusDetailViewModel.ItemId)}={item.UniqueID}");
         }
     }

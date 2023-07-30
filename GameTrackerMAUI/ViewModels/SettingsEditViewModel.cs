@@ -63,7 +63,7 @@ namespace GameTrackerMAUI.ViewModels
         public Command SaveCommand { get; }
         public Command AWSCommand { get; }
 
-        public SettingsEditViewModel()
+        public SettingsEditViewModel(IServiceProvider provider) : base(provider)
         {
             SaveCommand = new Command(OnSave, ValidateSave);
             AWSCommand = new Command(OnAWS);
@@ -71,13 +71,19 @@ namespace GameTrackerMAUI.ViewModels
             SetValues();
         }
 
+        public override void OnAppearing()
+        {
+            base.OnAppearing();
+            SetValues();
+        }
+
         private void SetValues()
         {
-            MinScore = SharedDataService.Settings.MinScore.ToString();
-            MaxScore = SharedDataService.Settings.MaxScore.ToString();
-            ShowScoreNullStatus = SharedDataService.Settings.ShowScoreWhenNullStatus;
-            TreatAllGamesAsOwned = SharedDataService.Settings.TreatAllGamesAsOwned;
-            UnownedFinishCount = SharedDataService.Settings.IncludeUnownedGamesInFinishCount;
+            MinScore = Settings.MinScore.ToString();
+            MaxScore = Settings.MaxScore.ToString();
+            ShowScoreNullStatus = Settings.ShowScoreWhenNullStatus;
+            TreatAllGamesAsOwned = Settings.TreatAllGamesAsOwned;
+            UnownedFinishCount = Settings.IncludeUnownedGamesInFinishCount;
             UpdateAWSButtonText();
         }
 
@@ -94,7 +100,7 @@ namespace GameTrackerMAUI.ViewModels
             double min = double.Parse(MinScore);
             double max = double.Parse(MaxScore);
 
-            if (min != SharedDataService.Settings.MinScore || max != SharedDataService.Settings.MaxScore)
+            if (min != Settings.MinScore || max != Settings.MaxScore)
             {
                 var popup = new PopupMain("Confirmation", "Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", PopupMain.EnumInputType.YesNo)
                 {
@@ -108,14 +114,14 @@ namespace GameTrackerMAUI.ViewModels
                 }
             }
 
-            SharedDataService.Settings.MinScore = min;
-            SharedDataService.Settings.MaxScore = max;
-            SharedDataService.Settings.ShowScoreWhenNullStatus = ShowScoreNullStatus;
-            SharedDataService.Settings.TreatAllGamesAsOwned = TreatAllGamesAsOwned;
-            SharedDataService.Settings.IncludeUnownedGamesInFinishCount = UnownedFinishCount;
+            Settings.MinScore = min;
+            Settings.MaxScore = max;
+            Settings.ShowScoreWhenNullStatus = ShowScoreNullStatus;
+            Settings.TreatAllGamesAsOwned = TreatAllGamesAsOwned;
+            Settings.IncludeUnownedGamesInFinishCount = UnownedFinishCount;
             try
             {
-                SharedDataService.Settings.Save(SharedDataService.Module, SharedDataService.Settings);
+                Settings.Save(Module, Settings);
             }
             catch (Exception ex)
             {
@@ -128,12 +134,12 @@ namespace GameTrackerMAUI.ViewModels
 
         private void UpdateAWSButtonText()
         {
-            AWSButtonText = FileHandlerAWSS3.KeyFileExists(SharedDataService.PathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
+            AWSButtonText = FileHandlerAWSS3.KeyFileExists(PathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
         private async void OnAWS()
         {
-            if (FileHandlerAWSS3.KeyFileExists(SharedDataService.PathController))
+            if (FileHandlerAWSS3.KeyFileExists(PathController))
             {
                 // Remove key file
                 await Task.Delay(500); // without delay, popup won't open
@@ -143,16 +149,16 @@ namespace GameTrackerMAUI.ViewModels
                 };
                 var ret = (Tuple<PopupMain.EnumOutputType, string>)await UtilMAUI.ShowPopupAsync(popup);
                 
-                IFileHandler newFileHandler = new FileHandlerLocalAppData(SharedDataService.PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
+                IFileHandler newFileHandler = new FileHandlerLocalAppData(PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
                 if (ret is not null && ret.Item1 == PopupMain.EnumOutputType.Yes)
                 {
-                    ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, SharedDataService.Factory, App.Logger));
-                    GameModule newModule = new GameModule(newLoadSave, App.Logger);
-                    App.Logger.Log("Starting transfer from AWS to local");
-                    SharedDataService.Module.TransferToNewModule(newModule, SharedDataService.Settings);
+                    ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, Factory, new Logger(Logger)));
+                    GameModule newModule = new GameModule(newLoadSave, new Logger(Logger));
+                    Logger.Log("Starting transfer from AWS to local");
+                    Module.TransferToNewModule(newModule, Settings);
                 }
-                FileHandlerAWSS3.DeleteKeyFile(SharedDataService.PathController);
-                SharedDataService.ResetSharedObjects();
+                FileHandlerAWSS3.DeleteKeyFile(PathController);
+                provider.GetSharedDataService().ResetSharedObjects();
             }
             else
             {
@@ -169,20 +175,20 @@ namespace GameTrackerMAUI.ViewModels
 
                     try
                     {
-                        IFileHandler newFileHandler = new FileHandlerAWSS3(fileSelected.FullPath, SharedDataService.PathController);
+                        IFileHandler newFileHandler = new FileHandlerAWSS3(fileSelected.FullPath, PathController);
                         if (ret is not null && ret.Item1 == PopupMain.EnumOutputType.Yes)
                         {
-                            ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, SharedDataService.Factory, App.Logger));
-                            GameModule newModule = new GameModule(newLoadSave, App.Logger);
-                            App.Logger.Log("Starting transfer from local to AWS");
-                            SharedDataService.Module.TransferToNewModule(newModule, SharedDataService.Settings);
+                            ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, Factory, new Logger(Logger)));
+                            GameModule newModule = new GameModule(newLoadSave, new Logger(Logger));
+                            Logger.Log("Starting transfer from local to AWS");
+                            Module.TransferToNewModule(newModule, Settings);
                         }
-                        SharedDataService.ResetSharedObjects();
+                        provider.GetSharedDataService().ResetSharedObjects();
                     }
                     catch (Exception ex)
                     {
                         await UtilMAUI.ShowPopupMainAsync("Error", "Something went wrong.\n" + ex.Message, PopupMain.EnumInputType.Ok);
-                        FileHandlerAWSS3.DeleteKeyFile(SharedDataService.PathController);
+                        FileHandlerAWSS3.DeleteKeyFile(PathController);
                     }
                 }
             }

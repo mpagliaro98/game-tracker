@@ -4,9 +4,17 @@ namespace GameTrackerMAUI.Views;
 
 public partial class SettingsEditPage : ContentPage
 {
-	public SettingsEditPage()
+    BaseViewModel _viewModel;
+
+    public SettingsEditPage(SettingsEditViewModel vm)
 	{
 		InitializeComponent();
-        BindingContext = new SettingsEditViewModel();
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
     }
 }

@@ -12,34 +12,8 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class StatusDetailViewModel : BaseViewModel
+    public class StatusDetailViewModel : BaseViewModelDetail<StatusGame>
     {
-        private StatusGame _item = new StatusGame(SharedDataService.Module, SharedDataService.Settings);
-
-        public Command EditCommand { get; }
-        public Command DeleteCommand { get; }
-
-        public StatusGame Item
-        {
-            get => _item;
-            set
-            {
-                SetProperty(ref _item, value);
-                OnPropertyChanged(nameof(StatusUsageName));
-                OnPropertyChanged(nameof(ShowMarkAsFinishedOption));
-            }
-        }
-
-        public string ItemId
-        {
-            get => Item.UniqueID.ToString();
-            set
-            {
-                var key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
-        }
-
         public string StatusUsageName
         {
             get => Item.StatusUsage.StatusUsageToString();
@@ -50,38 +24,27 @@ namespace GameTrackerMAUI.ViewModels
             get => Item.StatusUsage != StatusUsage.UnfinishableGamesOnly;
         }
 
-        public StatusDetailViewModel()
+        public StatusDetailViewModel(IServiceProvider provider) : base(provider) { }
+
+        protected override StatusGame CreateNewObject()
         {
-            EditCommand = new Command(OnEdit);
-            DeleteCommand = new Command(OnDelete);
+            return new StatusGame(Module, Settings);
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override void UpdatePropertiesOnLoad()
         {
-            try
-            {
-                Item = (StatusGame)SharedDataService.Module.StatusExtension.GetStatusList().First((obj) => obj.UniqueID.Equals(itemId));
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
+            OnPropertyChanged(nameof(StatusUsageName));
+            OnPropertyChanged(nameof(ShowMarkAsFinishedOption));
         }
 
-        async void OnEdit()
+        protected override IList<StatusGame> GetObjectList()
         {
-            await Shell.Current.GoToAsync("..");
+            return Module.StatusExtension.GetStatusList().OfType<StatusGame>().ToList();
+        }
+
+        protected override async Task GoToEditPageAsync()
+        {
             await Shell.Current.GoToAsync($"{nameof(NewStatusPage)}?{nameof(NewStatusViewModel.ItemId)}={Item.UniqueID}");
-        }
-
-        async void OnDelete()
-        {
-            var ret = await UtilMAUI.ShowPopupMainAsync("Attention", "Are you sure you would like to delete this status?", PopupMain.EnumInputType.YesNo);
-            if (ret != null && ret.Item1 == PopupMain.EnumOutputType.Yes)
-            {
-                Item.Delete(SharedDataService.Module, SharedDataService.Settings);
-                await Shell.Current.GoToAsync("..");
-            }
         }
     }
 }

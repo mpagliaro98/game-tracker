@@ -15,70 +15,40 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class CategoryDetailViewModel : BaseViewModel
+    public class CategoryDetailViewModel : BaseViewModelDetail<RatingCategoryWeighted>
     {
-        private RatingCategoryWeighted _item = new RatingCategoryWeighted(SharedDataService.Module, SharedDataService.Settings);
+        public CategoryDetailViewModel(IServiceProvider provider) : base(provider) { }
 
-        public Command EditCommand { get; }
-        public Command DeleteCommand { get; }
-
-        public RatingCategoryWeighted Item
+        protected override RatingCategoryWeighted CreateNewObject()
         {
-            get => _item;
-            set => SetProperty(ref _item, value);
+            return new RatingCategoryWeighted(Module, Settings);
         }
 
-        public string ItemId
+        protected override void UpdatePropertiesOnLoad()
         {
-            get => Item.UniqueID.ToString();
-            set
-            {
-                var key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
+            
         }
 
-        public CategoryDetailViewModel()
+        protected override IList<RatingCategoryWeighted> GetObjectList()
         {
-            EditCommand = new Command(OnEdit);
-            DeleteCommand = new Command(OnDelete);
+            return Module.CategoryExtension.GetRatingCategoryList().OfType<RatingCategoryWeighted>().ToList();
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override async Task GoToEditPageAsync()
         {
-            try
-            {
-                Item = (RatingCategoryWeighted)SharedDataService.Module.CategoryExtension.GetRatingCategoryList().First((obj) => obj.UniqueID.Equals(itemId));
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
-        }
-
-        async void OnEdit()
-        {
-            await Shell.Current.GoToAsync("..");
             await Shell.Current.GoToAsync($"{nameof(NewCategoryPage)}?{nameof(NewCategoryViewModel.ItemId)}={Item.UniqueID}");
         }
 
-        async void OnDelete()
+        protected override void PreDelete()
         {
-            var ret = await UtilMAUI.ShowPopupMainAsync("Attention", "Are you sure you would like to delete this rating category?", PopupMain.EnumInputType.YesNo);
-            if (ret != null && ret.Item1 == PopupMain.EnumOutputType.Yes)
+            var count = SavedState.FilterGames.Filters.RemoveAll(s => s.FilterOption is FilterOptionModelCategory cat && cat.Category.Equals(Item));
+            bool remove = false;
+            if (SavedState.SortGames.SortOption is SortOptionModelCategory cat && cat.Category.Equals(Item))
             {
-                var count = SharedDataService.SavedState.FilterGames.Filters.RemoveAll(s => s.FilterOption is FilterOptionModelCategory cat && cat.Category.Equals(Item));
-                bool remove = false;
-                if (SharedDataService.SavedState.SortGames.SortOption is SortOptionModelCategory cat && cat.Category.Equals(Item))
-                {
-                    SharedDataService.SavedState.SortGames.SortOption = null;
-                    remove = true;
-                }
-                if (count > 0 || remove) SavedState.SaveSavedState(SharedDataService.PathController, SharedDataService.SavedState);
-
-                Item.Delete(SharedDataService.Module, SharedDataService.Settings);
-                await Shell.Current.GoToAsync("..");
+                SavedState.SortGames.SortOption = null;
+                remove = true;
             }
+            if (count > 0 || remove) SavedState.Save(PathController);
         }
     }
 }

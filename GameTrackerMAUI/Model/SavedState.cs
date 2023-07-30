@@ -1,5 +1,6 @@
 ﻿using GameTracker;
 using GameTracker.Sorting;
+using GameTrackerMAUI.Services;
 using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation.Filtering;
 using RatableTracker.ListManipulation.Sorting;
@@ -14,7 +15,7 @@ using System.Xml.Serialization;
 namespace GameTrackerMAUI
 {
     [Serializable]
-    public class SavedState
+    public class SavedState : ISavedState
     {
         public const string SAVEDSTATE_FILENAME = "savedstate.dat";
 
@@ -23,10 +24,11 @@ namespace GameTrackerMAUI
         public FilterEngine FilterPlatforms { get; set; } = new FilterEngine();
         public SortEngine SortPlatforms { get; set; } = new SortEngine();
         public bool ShowCompilations { get; set; } = false;
+        public bool Loaded { get; set; } = false;
 
-        private SavedState() { }
+        public SavedState() { }
 
-        public static SavedState LoadSavedState(IPathController pathController, GameModule module, SettingsGame settings, Logger logger)
+        public void Load(IPathController pathController, ILogger logger, GameModule module, SettingsGame settings)
         {
             TextReader reader = null;
             SavedState savedState = null;
@@ -39,33 +41,41 @@ namespace GameTrackerMAUI
             catch (FileNotFoundException)
             {
                 // first load, file does not exist yet
-                savedState = new SavedState();
             }
             catch (InvalidOperationException ex)
             {
                 logger.Log("Exception when loading saved state - " + ex.Message);
-                savedState = new SavedState();
             }
             finally
             {
                 reader?.Close();
 
-                savedState.FilterGames.SetNonSerializableFields(module, settings);
-                savedState.SortGames.SetNonSerializableFields(module, settings, new SortOptionModelName());
-                savedState.FilterPlatforms.SetNonSerializableFields(module, settings);
-                savedState.SortPlatforms.SetNonSerializableFields(module, settings, new SortOptionPlatformName());
+                if (savedState != null)
+                {
+                    FilterGames = savedState.FilterGames;
+                    FilterPlatforms = savedState.FilterPlatforms;
+                    SortGames = savedState.SortGames;
+                    SortPlatforms = savedState.SortPlatforms;
+                    ShowCompilations = savedState.ShowCompilations;
+
+                    FilterGames.SetNonSerializableFields(module, settings);
+                    SortGames.SetNonSerializableFields(module, settings, new SortOptionModelName());
+                    FilterPlatforms.SetNonSerializableFields(module, settings);
+                    SortPlatforms.SetNonSerializableFields(module, settings, new SortOptionPlatformName());
+                }
+
+                Loaded = true;
             }
-            return savedState;
         }
 
-        public static void SaveSavedState(IPathController pathController, SavedState savedState)
+        public void Save(IPathController pathController)
         {
             TextWriter writer = null;
             try
             {
                 var serializer = new XmlSerializer(typeof(SavedState));
                 writer = new StreamWriter(pathController.Combine(pathController.ApplicationDirectory(), SAVEDSTATE_FILENAME));
-                serializer.Serialize(writer, savedState);
+                serializer.Serialize(writer, this);
             }
             finally
             {

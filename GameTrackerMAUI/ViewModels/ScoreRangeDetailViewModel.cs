@@ -12,61 +12,28 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class ScoreRangeDetailViewModel : BaseViewModel
+    public class ScoreRangeDetailViewModel : BaseViewModelDetail<ScoreRange>
     {
-        private ScoreRange _item = new ScoreRange(SharedDataService.Module, SharedDataService.Settings);
+        public ScoreRangeDetailViewModel(IServiceProvider provider) : base(provider) { }
 
-        public Command EditCommand { get; }
-        public Command DeleteCommand { get; }
-
-        public ScoreRange Item
+        protected override ScoreRange CreateNewObject()
         {
-            get => _item;
-            set => SetProperty(ref _item, value);
+            return new ScoreRange(Module, Settings);
         }
 
-        public string ItemId
+        protected override void UpdatePropertiesOnLoad()
         {
-            get => Item.UniqueID.ToString();
-            set
-            {
-                var key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
+            
         }
 
-        public ScoreRangeDetailViewModel()
+        protected override IList<ScoreRange> GetObjectList()
         {
-            EditCommand = new Command(OnEdit);
-            DeleteCommand = new Command(OnDelete);
+            return Module.GetScoreRangeList();
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override async Task GoToEditPageAsync()
         {
-            try
-            {
-                Item = SharedDataService.Module.GetScoreRangeList().First((obj) => obj.UniqueID.Equals(itemId));
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
-        }
-
-        async void OnEdit()
-        {
-            await Shell.Current.GoToAsync("..");
             await Shell.Current.GoToAsync($"{nameof(NewScoreRangePage)}?{nameof(NewScoreRangeViewModel.ItemId)}={Item.UniqueID}");
-        }
-
-        async void OnDelete()
-        {
-            var ret = await UtilMAUI.ShowPopupMainAsync("Attention", "Are you sure you would like to delete this score range?", PopupMain.EnumInputType.YesNo);
-            if (ret != null && ret.Item1 == PopupMain.EnumOutputType.Yes)
-            {
-                Item.Delete(SharedDataService.Module, SharedDataService.Settings);
-                await Shell.Current.GoToAsync("..");
-            }
         }
     }
 }

@@ -4,9 +4,17 @@ namespace GameTrackerMAUI.Views;
 
 public partial class StatusDetailPage : ContentPage
 {
-	public StatusDetailPage()
+    BaseViewModel _viewModel;
+
+    public StatusDetailPage(StatusDetailViewModel vm)
 	{
 		InitializeComponent();
-        BindingContext = new StatusDetailViewModel();
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
     }
 }

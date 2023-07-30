@@ -12,81 +12,27 @@ using System.Threading.Tasks;
 
 namespace GameTrackerMAUI.ViewModels
 {
-    public class CategoryViewModel : BaseViewModel
+    public class CategoryViewModel : BaseViewModelList<RatingCategoryWeighted>
     {
-        private RatingCategoryWeighted _selectedItem;
+        public override int ListLimit => Module.CategoryExtension.LimitRatingCategories;
 
-        public ObservableCollection<RatingCategoryWeighted> Items { get; }
-        public Command LoadItemsCommand { get; }
-        public Command AddItemCommand { get; }
-        public Command<RatingCategoryWeighted> ItemTapped { get; }
-
-        public RatingCategoryWeighted SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
-        }
-
-        public CategoryViewModel()
+        public CategoryViewModel(IServiceProvider provider) : base(provider)
         {
             Title = "Rating Categories";
-            Items = new ObservableCollection<RatingCategoryWeighted>();
-            LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
-
-            ItemTapped = new Command<RatingCategoryWeighted>(OnItemSelected);
-
-            AddItemCommand = new Command(OnAddItem, ShowAddButton);
-            this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
         }
 
-        private bool ShowAddButton(object o)
+        protected override IList<RatingCategoryWeighted> GetObjectList()
         {
-            return SharedDataService.Module.CategoryExtension.GetRatingCategoryList().Count < SharedDataService.Module.CategoryExtension.LimitRatingCategories;
+            return Module.CategoryExtension.GetRatingCategoryList().OfType<RatingCategoryWeighted>().ToList();
         }
 
-        void ExecuteLoadItemsCommand()
-        {
-            IsBusy = true;
-
-            try
-            {
-                Items.Clear();
-                var items = SharedDataService.Module.CategoryExtension.GetRatingCategoryList().OfType<RatingCategoryWeighted>().ToList();
-                foreach (var item in items)
-                {
-                    Items.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
-
-        public void OnAppearing()
-        {
-            IsBusy = true;
-            SelectedItem = null;
-        }
-
-        private async void OnAddItem(object obj)
+        protected override async Task GoToNewItemAsync()
         {
             await Shell.Current.GoToAsync(nameof(NewCategoryPage));
         }
 
-        async void OnItemSelected(RatingCategoryWeighted item)
+        protected override async Task GoToSelectedItemAsync(RatingCategoryWeighted item)
         {
-            if (item == null)
-                return;
-
             await Shell.Current.GoToAsync($"{nameof(CategoryDetailPage)}?{nameof(CategoryDetailViewModel.ItemId)}={item.UniqueID}");
         }
     }

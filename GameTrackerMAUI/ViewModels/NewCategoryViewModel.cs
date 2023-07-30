@@ -14,39 +14,8 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class NewCategoryViewModel : BaseViewModel
+    public class NewCategoryViewModel : BaseViewModelEdit<RatingCategoryWeighted>
     {
-        private RatingCategoryWeighted _item = new RatingCategoryWeighted(SharedDataService.Module, SharedDataService.Settings);
-
-        public string ItemId
-        {
-            get => _item.UniqueID.ToString();
-            set
-            {
-                UniqueID key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
-        }
-
-        public RatingCategoryWeighted Item
-        {
-            get => _item;
-            set
-            {
-                SetProperty(ref _item, value);
-                Title = "Edit Category";
-                OnPropertyChanged(nameof(Name));
-                OnPropertyChanged(nameof(Weight));
-                OnPropertyChanged(nameof(Comment));
-            }
-        }
-
-        public string Name
-        {
-            get => Item.Name;
-            set => SetProperty(Item.Name, value, () => Item.Name = value);
-        }
-
         public double Weight
         {
             get => Item.Weight;
@@ -59,52 +28,32 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(Item.Comment, value, () => Item.Comment = value);
         }
 
-        public Command SaveCommand { get; }
-        public Command CancelCommand { get; }
-
-        public NewCategoryViewModel()
+        public NewCategoryViewModel(IServiceProvider provider) : base(provider)
         {
-            SaveCommand = new Command(OnSave, ValidateSave);
-            CancelCommand = new Command(OnCancel);
-            this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
             Title = "New Category";
         }
 
-        private bool ValidateSave()
+        protected override RatingCategoryWeighted CreateNewObject()
         {
-            return !String.IsNullOrWhiteSpace(Name);
+            return new RatingCategoryWeighted(Module, Settings);
         }
 
-        private async void OnCancel()
+        protected override RatingCategoryWeighted CreateCopyObject(RatingCategoryWeighted item)
         {
-            await Shell.Current.GoToAsync("..");
+            return new RatingCategoryWeighted(item);
         }
 
-        private async void OnSave()
+        protected override void UpdatePropertiesOnLoad()
         {
-            try
-            {
-                Item.Save(SharedDataService.Module, SharedDataService.Settings);
-            }
-            catch (Exception ex)
-            {
-                await UtilMAUI.ShowPopupMainAsync("Unable to Save", ex.Message, PopupMain.EnumInputType.Ok);
-                return;
-            }
-
-            await Shell.Current.GoToAsync("..");
+            Title = "Edit Category";
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(Weight));
+            OnPropertyChanged(nameof(Comment));
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override IList<RatingCategoryWeighted> GetObjectList()
         {
-            try
-            {
-                Item = (RatingCategoryWeighted)RatableTracker.Util.Util.FindObjectInList(SharedDataService.Module.CategoryExtension.GetRatingCategoryList(), itemId);
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
+            return Module.CategoryExtension.GetRatingCategoryList().OfType<RatingCategoryWeighted>().ToList();
         }
     }
 }

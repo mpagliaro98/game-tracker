@@ -14,18 +14,18 @@ namespace GameTrackerMAUI
     private static Exception _lastFirstChanceException;
 #endif
 
-        public static void Init()
+        public static void Init(RatableTracker.Interfaces.ILogger logger)
         {
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Debug.WriteLine("AppDomain.CurrentDomain.UnhandledException");
-                LogUnhandledException((Exception)args.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException");
+                LogUnhandledException((Exception)args.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException", logger);
             };
 
             TaskScheduler.UnobservedTaskException += (s, args) =>
             {
                 Debug.WriteLine("TaskScheduler.UnobservedTaskException");
-                LogUnhandledException(args.Exception, "TaskScheduler.UnobservedTaskException");
+                LogUnhandledException(args.Exception, "TaskScheduler.UnobservedTaskException", logger);
                 args.SetObserved();
             };
 
@@ -42,7 +42,7 @@ namespace GameTrackerMAUI
             Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser += (sender, args) =>
             {
                 Debug.WriteLine("Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser");
-                LogUnhandledException(args.Exception, "Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser");
+                LogUnhandledException(args.Exception, "Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser", logger);
             };
 
 #elif WINDOWS
@@ -60,26 +60,26 @@ namespace GameTrackerMAUI
                     exception = _lastFirstChanceException;
                 }
                 Debug.WriteLine("Microsoft.UI.Xaml.Application.Current.UnhandledException");
-                LogUnhandledException(exception, "Microsoft.UI.Xaml.Application.Current.UnhandledException");
+                LogUnhandledException(exception, "Microsoft.UI.Xaml.Application.Current.UnhandledException", logger);
             };
 #endif
         }
 
-        private static void LogUnhandledException(Exception exception, string source)
+        private static void LogUnhandledException(Exception exception, string source, RatableTracker.Interfaces.ILogger logger)
         {
             try
             {
                 string message = RatableTracker.Util.Util.FormatUnhandledExceptionMessage(exception, source);
-                App.Logger.Log(message);
+                logger.Log(message);
             }
             catch (Exception ex)
             {
-                App.Logger.Log("EXCEPTION IN EXCEPTION HANDLER: " + ex.Message);
+                logger.Log("EXCEPTION IN EXCEPTION HANDLER: " + ex.Message);
                 throw;
             }
             finally
             {
-                App.Logger.Dispose();
+                logger.Dispose();
             }
         }
     }

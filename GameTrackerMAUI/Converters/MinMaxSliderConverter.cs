@@ -14,8 +14,9 @@ namespace GameTrackerMAUI.Converters
         {
             // input : CategoryValue
             double val = (double)value;
-            double min = SharedDataService.Settings.MinScore;
-            double max = SharedDataService.Settings.MaxScore;
+            var provider = Application.Current.Handler.MauiContext.Services;
+            double min = provider.GetSharedDataService().Settings.MinScore;
+            double max = provider.GetSharedDataService().Settings.MaxScore;
             if (max - min == 0)
                 return 0.0;
             double result = (val - min) / (max - min);
@@ -26,8 +27,9 @@ namespace GameTrackerMAUI.Converters
         {
             // input : Slider
             double val = (double)value;
-            double min = SharedDataService.Settings.MinScore;
-            double max = SharedDataService.Settings.MaxScore;
+            var provider = Application.Current.Handler.MauiContext.Services;
+            double min = provider.GetSharedDataService().Settings.MinScore;
+            double max = provider.GetSharedDataService().Settings.MaxScore;
             return ((max - min) * val) + min;
         }
     }

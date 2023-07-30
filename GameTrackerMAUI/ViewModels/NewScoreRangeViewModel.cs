@@ -13,43 +13,10 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class NewScoreRangeViewModel : BaseViewModel
+    public class NewScoreRangeViewModel : BaseViewModelEdit<ScoreRange>
     {
-        private ScoreRange _item = new ScoreRange(SharedDataService.Module, SharedDataService.Settings);
-
-        public string ItemId
-        {
-            get => _item.UniqueID.ToString();
-            set
-            {
-                UniqueID key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
-        }
-
-        public ScoreRange Item
-        {
-            get => _item;
-            set
-            {
-                SetProperty(ref _item, value);
-                Title = "Edit Score Range";
-                OnPropertyChanged(nameof(Name));
-                OnPropertyChanged(nameof(ScoreRelationship));
-                Value1 = _item.ValueList.Count() >= 1 ? _item.ValueList.ElementAt(0) : 0;
-                Value2 = _item.ValueList.Count() >= 2 ? _item.ValueList.ElementAt(1) : 0;
-                OnPropertyChanged(nameof(Color));
-            }
-        }
-
         private double val1 = 0;
         private double val2 = 0;
-
-        public string Name
-        {
-            get => Item.Name;
-            set => SetProperty(Item.Name, value, () => Item.Name = value);
-        }
 
         public ScoreRelationship ScoreRelationship
         {
@@ -77,62 +44,52 @@ namespace GameTrackerMAUI.ViewModels
 
         public IEnumerable<ScoreRelationship> ScoreRelationships
         {
-            get => SharedDataService.Module.GetScoreRelationshipList();
+            get => Module.GetScoreRelationshipList();
         }
 
-        public Command SaveCommand { get; }
-        public Command CancelCommand { get; }
-
-        public NewScoreRangeViewModel()
+        public NewScoreRangeViewModel(IServiceProvider provider) : base(provider)
         {
-            SaveCommand = new Command(OnSave, ValidateSave);
-            CancelCommand = new Command(OnCancel);
-            this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
             Title = "New Score Range";
         }
 
-        private bool ValidateSave()
+        protected override bool ValidateSave()
         {
-            return !String.IsNullOrWhiteSpace(Name) && ScoreRelationship != null;
+            return base.ValidateSave() && ScoreRelationship != null;
         }
 
-        private async void OnCancel()
+        protected override void PreSave()
         {
-            await Shell.Current.GoToAsync("..");
-        }
-
-        private async void OnSave()
-        {
-            List<double> values = new List<double>();
+            List<double> values = new();
             if (ScoreRelationship.NumValuesRequired >= 1)
                 values.Add(Value1);
             if (ScoreRelationship.NumValuesRequired >= 2)
                 values.Add(Value2);
             Item.ValueList = values;
-
-            try
-            {
-                Item.Save(SharedDataService.Module, SharedDataService.Settings);
-            }
-            catch (Exception ex)
-            {
-                await UtilMAUI.ShowPopupMainAsync("Unable to Save", ex.Message, PopupMain.EnumInputType.Ok);
-                return;
-            }
-
-            await Shell.Current.GoToAsync("..");
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override ScoreRange CreateNewObject()
         {
-            try
-            {
-                Item = RatableTracker.Util.Util.FindObjectInList(SharedDataService.Module.GetScoreRangeList(), itemId);
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
+            return new ScoreRange(Module, Settings);
+        }
+
+        protected override ScoreRange CreateCopyObject(ScoreRange item)
+        {
+            return new ScoreRange(item);
+        }
+
+        protected override void UpdatePropertiesOnLoad()
+        {
+            Title = "Edit Score Range";
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(ScoreRelationship));
+            Value1 = Item.ValueList.Count >= 1 ? Item.ValueList.ElementAt(0) : 0;
+            Value2 = Item.ValueList.Count >= 2 ? Item.ValueList.ElementAt(1) : 0;
+            OnPropertyChanged(nameof(Color));
+        }
+
+        protected override IList<ScoreRange> GetObjectList()
+        {
+            return Module.GetScoreRangeList();
         }
     }
 }

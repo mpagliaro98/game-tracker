@@ -4,9 +4,17 @@ namespace GameTrackerMAUI.Views;
 
 public partial class GameDetailPage : ContentPage
 {
-	public GameDetailPage()
+    private readonly BaseViewModel _viewModel;
+
+    public GameDetailPage(GameDetailViewModel vm)
 	{
 		InitializeComponent();
-		BindingContext = new GameDetailViewModel();
-	}
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
+    }
 }

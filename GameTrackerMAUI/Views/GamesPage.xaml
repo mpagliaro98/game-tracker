@@ -33,6 +33,9 @@
                             <ColumnDefinition Width="20" />
                             <ColumnDefinition Width="40" />
                         </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="22" />
+                        </Grid.RowDefinitions>
                         <Rectangle Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
                         <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
                         <Rectangle Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
@@ -40,9 +43,9 @@
                         <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}" Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}" FontAttributes="Bold" HorizontalTextAlignment="Center" IsVisible="{Binding ShowScore}"/>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer
-                                NumberOfTapsRequired="1"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:GamesViewModel}}, Path=ItemTapped}"		
-                                CommandParameter="{Binding .}">
+                            NumberOfTapsRequired="1"
+                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:GamesViewModel}}, Path=ItemTapped}"		
+                            CommandParameter="{Binding .}">
                             </TapGestureRecognizer>
                         </Grid.GestureRecognizers>
                     </Grid>

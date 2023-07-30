@@ -4,10 +4,18 @@ namespace GameTrackerMAUI.Views;
 
 public partial class NewGamePage : ContentPage
 {
-	public NewGamePage()
+    private readonly BaseViewModel _viewModel;
+
+    public NewGamePage(NewGameViewModel vm)
 	{
 		InitializeComponent();
-        BindingContext = new NewGameViewModel();
+        BindingContext = _viewModel = vm;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.OnAppearing();
     }
 
     private void DatePicker_Focused(object sender, FocusEventArgs e)

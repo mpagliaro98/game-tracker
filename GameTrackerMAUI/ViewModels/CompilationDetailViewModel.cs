@@ -13,50 +13,13 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class CompilationDetailViewModel : BaseViewModel
+    public class CompilationDetailViewModel : BaseViewModelDetail<GameObject>
     {
-        private GameCompilation _item = new GameCompilation(SharedDataService.Settings, SharedDataService.Module);
-
-        public Command EditCommand { get; }
         public Command<GameObject> ItemTapped { get; }
-
-        public GameCompilation Item
-        {
-            get => _item;
-            set
-            {
-                SetProperty(ref _item, value);
-                OnPropertyChanged(nameof(CompletionStatus));
-                OnPropertyChanged(nameof(HasCompletionStatus));
-                OnPropertyChanged(nameof(Platform));
-                OnPropertyChanged(nameof(HasPlatform));
-                OnPropertyChanged(nameof(PlatformPlayedOn));
-                OnPropertyChanged(nameof(HasPlatformPlayedOn));
-                OnPropertyChanged(nameof(CategoryValues));
-                OnPropertyChanged(nameof(FinalScore));
-                OnPropertyChanged(nameof(FinalScoreColor));
-                OnPropertyChanged(nameof(Stats));
-                OnPropertyChanged(nameof(ShowCategoryValues));
-                OnPropertyChanged(nameof(GamesInCompilation));
-                OnPropertyChanged(nameof(FinishedOn));
-                OnPropertyChanged(nameof(StartedOnName));
-                OnPropertyChanged(nameof(ShowStaticNotOwnedText));
-            }
-        }
-
-        public string ItemId
-        {
-            get => Item.UniqueID.ToString();
-            set
-            {
-                var key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
-        }
 
         public StatusGame CompletionStatus
         {
-            get => (StatusGame)Item.StatusExtension.Status ?? new StatusGame(SharedDataService.Module, SharedDataService.Settings);
+            get => (StatusGame)Item.StatusExtension.Status ?? new StatusGame(Module, Settings);
         }
 
         public bool HasCompletionStatus
@@ -66,7 +29,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public GameTracker.Platform Platform
         {
-            get => Item.Platform ?? new GameTracker.Platform(SharedDataService.Module, SharedDataService.Settings);
+            get => Item.Platform ?? new GameTracker.Platform(Module, Settings);
         }
 
         public bool HasPlatform
@@ -76,7 +39,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public GameTracker.Platform PlatformPlayedOn
         {
-            get => Item.PlatformPlayedOn ?? new GameTracker.Platform(SharedDataService.Module, SharedDataService.Settings);
+            get => Item.PlatformPlayedOn ?? new GameTracker.Platform(Module, Settings);
         }
 
         public bool HasPlatformPlayedOn
@@ -117,7 +80,7 @@ namespace GameTrackerMAUI.ViewModels
                 int rankOverall = Item.Rank;
                 int rankPlatform = -1;
                 GameTracker.Platform platform = HasPlatform ? Platform : null;
-                if (platform != null) rankPlatform = SharedDataService.Module.GetRankOfScoreByPlatform(FinalScore, platform, SharedDataService.Settings);
+                if (platform != null) rankPlatform = Module.GetRankOfScoreByPlatform(FinalScore, platform, Settings);
 
                 string text = "";
                 if (rankPlatform > 0) text += "#" + rankPlatform.ToString() + " on " + platform.Name + "\n";
@@ -137,7 +100,7 @@ namespace GameTrackerMAUI.ViewModels
             {
                 if (Item.Name == "")
                     return new List<GameObject>();
-                return Item.GamesInCompilation().OrderBy(game => game.Name.CleanForSorting()).ToList();
+                return ((GameCompilation)Item).GamesInCompilation().OrderBy(game => game.Name.CleanForSorting()).ToList();
             }
         }
 
@@ -156,27 +119,42 @@ namespace GameTrackerMAUI.ViewModels
             get => Item.IsUnfinishable ? "Played On:" : "Started On:";
         }
 
-        public CompilationDetailViewModel()
+        public CompilationDetailViewModel(IServiceProvider provider) : base(provider)
         {
-            EditCommand = new Command(OnEdit);
             ItemTapped = new Command<GameObject>(OnItemSelected);
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override GameObject CreateNewObject()
         {
-            try
-            {
-                Item = (GameCompilation)SharedDataService.Module.GetModelObjectList(SharedDataService.Settings).First((obj) => obj.UniqueID.Equals(itemId));
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
+            return new GameCompilation(Settings, Module);
         }
 
-        async void OnEdit()
+        protected override void UpdatePropertiesOnLoad()
         {
-            await Shell.Current.GoToAsync("..");
+            OnPropertyChanged(nameof(CompletionStatus));
+            OnPropertyChanged(nameof(HasCompletionStatus));
+            OnPropertyChanged(nameof(Platform));
+            OnPropertyChanged(nameof(HasPlatform));
+            OnPropertyChanged(nameof(PlatformPlayedOn));
+            OnPropertyChanged(nameof(HasPlatformPlayedOn));
+            OnPropertyChanged(nameof(CategoryValues));
+            OnPropertyChanged(nameof(FinalScore));
+            OnPropertyChanged(nameof(FinalScoreColor));
+            OnPropertyChanged(nameof(Stats));
+            OnPropertyChanged(nameof(ShowCategoryValues));
+            OnPropertyChanged(nameof(GamesInCompilation));
+            OnPropertyChanged(nameof(FinishedOn));
+            OnPropertyChanged(nameof(StartedOnName));
+            OnPropertyChanged(nameof(ShowStaticNotOwnedText));
+        }
+
+        protected override IList<GameObject> GetObjectList()
+        {
+            return Module.GetModelObjectList(Settings).OfType<GameObject>().ToList();
+        }
+
+        protected override async Task GoToEditPageAsync()
+        {
             await Shell.Current.GoToAsync($"{nameof(EditCompilationPage)}?{nameof(EditCompilationViewModel.ItemId)}={Item.UniqueID}");
         }
 

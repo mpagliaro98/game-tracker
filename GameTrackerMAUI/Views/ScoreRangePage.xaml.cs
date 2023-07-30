@@ -4,12 +4,12 @@ namespace GameTrackerMAUI.Views;
 
 public partial class ScoreRangePage : ContentPage
 {
-    ScoreRangeViewModel _viewModel;
+    private readonly BaseViewModel _viewModel;
 
-    public ScoreRangePage()
+    public ScoreRangePage(ScoreRangeViewModel vm)
     {
         InitializeComponent();
-        BindingContext = _viewModel = new ScoreRangeViewModel();
+        BindingContext = _viewModel = vm;
     }
 
     protected override void OnAppearing()

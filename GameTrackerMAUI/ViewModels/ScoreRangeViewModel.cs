@@ -12,81 +12,27 @@ using System.Threading.Tasks;
 
 namespace GameTrackerMAUI.ViewModels
 {
-    public class ScoreRangeViewModel : BaseViewModel
+    public class ScoreRangeViewModel : BaseViewModelList<ScoreRange>
     {
-        private ScoreRange _selectedItem;
+        public override int ListLimit => Module.LimitRanges;
 
-        public ObservableCollection<ScoreRange> Items { get; }
-        public Command LoadItemsCommand { get; }
-        public Command AddItemCommand { get; }
-        public Command<ScoreRange> ItemTapped { get; }
-
-        public ScoreRange SelectedItem
-        {
-            get => _selectedItem;
-            set
-            {
-                SetProperty(ref _selectedItem, value);
-                OnItemSelected(value);
-            }
-        }
-
-        public ScoreRangeViewModel()
+        public ScoreRangeViewModel(IServiceProvider provider) : base(provider)
         {
             Title = "Score Ranges";
-            Items = new ObservableCollection<ScoreRange>();
-            LoadItemsCommand = new Command(ExecuteLoadItemsCommand);
-
-            ItemTapped = new Command<ScoreRange>(OnItemSelected);
-
-            AddItemCommand = new Command(OnAddItem, ShowAddButton);
-            this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
         }
 
-        private bool ShowAddButton(object o)
+        protected override IList<ScoreRange> GetObjectList()
         {
-            return SharedDataService.Module.GetScoreRangeList().Count < SharedDataService.Module.LimitRanges;
+            return Module.GetScoreRangeList();
         }
 
-        void ExecuteLoadItemsCommand()
-        {
-            IsBusy = true;
-
-            try
-            {
-                Items.Clear();
-                var items = SharedDataService.Module.GetScoreRangeList();
-                foreach (var item in items)
-                {
-                    Items.Add(item);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
-            }
-        }
-
-        public void OnAppearing()
-        {
-            IsBusy = true;
-            SelectedItem = null;
-        }
-
-        private async void OnAddItem(object obj)
+        protected override async Task GoToNewItemAsync()
         {
             await Shell.Current.GoToAsync(nameof(NewScoreRangePage));
         }
 
-        async void OnItemSelected(ScoreRange item)
+        protected override async Task GoToSelectedItemAsync(ScoreRange item)
         {
-            if (item == null)
-                return;
-
             await Shell.Current.GoToAsync($"{nameof(ScoreRangeDetailPage)}?{nameof(ScoreRangeDetailViewModel.ItemId)}={item.UniqueID}");
         }
     }

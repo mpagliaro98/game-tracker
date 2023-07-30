@@ -7,98 +7,94 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GameTrackerMAUI.Services
 {
-    public static class SharedDataService
+    public class SharedDataService : ISharedDataService
     {
-        private static GameModule _module = null;
-        public static GameModule Module
+        public GameModule Module { get; private set; } = null;
+        public SettingsGame Settings { get; private set; } = null;
+        public IFileHandler FileHandlerSaves { get; private set; } = null;
+        public ILoadSaveHandler<ILoadSaveMethodGame> LoadSave { get; private set; } = null;
+        public bool Loaded { get; private set; } = false;
+
+        private readonly GameTrackerFactory _factory;
+        private readonly IPathController _pathController;
+        private readonly ILogger _logger;
+
+        public SharedDataService(IServiceProvider provider)
         {
-            get
-            {
-                if (_module is null)
-                {
-                    var sw = new Stopwatch();
-                    sw.Start();
-                    _module = new GameModule(LoadSave, App.Logger);
-                    _module.LoadData(Settings);
-                    sw.Stop();
-                    Debug.WriteLine("Module loaded in " + sw.ElapsedMilliseconds.ToString() + "ms");
-                }
-                return _module;
-            }
-            set { _module = value; }
+            Loaded = false;
+            _factory = provider.GetFactory();
+            _pathController = provider.GetPathController();
+            _logger = provider.GetLogger();
         }
 
-        private static SettingsGame _settings = null;
-        public static SettingsGame Settings
+        public void ResetSharedObjects()
         {
-            get
-            {
-                if (_settings == null)
-                {
-                    try
-                    {
-                        _settings = (SettingsGame)RatableTracker.Util.Settings.Load(LoadSave);
-                    }
-                    catch (NoDataFoundException)
-                    {
-                        // first load
-                        _settings = new SettingsGame();
-                    }
-                }
-                return _settings;
-            }
-            set { _settings = value; }
+            Loaded = false;
+            _logger.Log("Shared objects reset");
         }
 
-        public static IPathController PathController => new PathControllerMobile();
-
-        public static GameTrackerFactory Factory => new GameTrackerFactory();
-
-        private static IFileHandler _fileHandlerSaves = null;
-        public static IFileHandler FileHandlerSaves
+        public void Load()
         {
-            get
+            if (FileHandlerAWSS3.KeyFileExists(_pathController))
+                FileHandlerSaves = new FileHandlerAWSS3(_pathController);
+            else
+                FileHandlerSaves = new FileHandlerLocalAppData(_pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
+
+            LoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(FileHandlerSaves, _factory, new Logger(_logger)));
+
+            try
             {
-                if (FileHandlerAWSS3.KeyFileExists(PathController))
-                    _fileHandlerSaves ??= new FileHandlerAWSS3(PathController);
-                else
-                    _fileHandlerSaves ??= new FileHandlerLocalAppData(PathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
-                return _fileHandlerSaves;
+                Settings = (SettingsGame)RatableTracker.Util.Settings.Load(LoadSave);
             }
+            catch (NoDataFoundException)
+            {
+                // first load
+                Settings = new SettingsGame();
+            }
+
+            var sw = new Stopwatch();
+            sw.Start();
+            Module = new GameModule(LoadSave, new Logger(_logger));
+            Module.LoadData(Settings);
+            sw.Stop();
+            Debug.WriteLine("Module loaded in " + sw.ElapsedMilliseconds.ToString() + "ms");
+
+            Loaded = true;
         }
 
-        private static ILoadSaveHandler<ILoadSaveMethodGame> _loadSave = null;
-        public static ILoadSaveHandler<ILoadSaveMethodGame> LoadSave
+        public async Task LoadAsync()
         {
-            get
-            {
-                _loadSave ??= new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(FileHandlerSaves, Factory, App.Logger));
-                return _loadSave;
-            }
-        }
+            if (FileHandlerAWSS3.KeyFileExists(_pathController))
+                FileHandlerSaves = new FileHandlerAWSS3(_pathController);
+            else
+                FileHandlerSaves = new FileHandlerLocalAppData(_pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
 
-        private static SavedState _savedState = null;
-        public static SavedState SavedState
-        {
-            get
-            {
-                _savedState ??= SavedState.LoadSavedState(PathController, Module, Settings, App.Logger);
-                return _savedState;
-            }
-        }
+            LoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(FileHandlerSaves, _factory, new Logger(_logger)));
 
-        public static void ResetSharedObjects()
-        {
-            _fileHandlerSaves = null;
-            _loadSave = null;
-            _settings = null;
-            _module = null;
-            App.Logger.Log("Shared objects reset");
+            try
+            {
+                Settings = (SettingsGame)RatableTracker.Util.Settings.Load(LoadSave);
+            }
+            catch (NoDataFoundException)
+            {
+                // first load
+                Settings = new SettingsGame();
+            }
+
+            var sw = new Stopwatch();
+            sw.Start();
+            Module = new GameModule(LoadSave, new Logger(_logger));
+            await Module.LoadDataAsync(Settings);
+            sw.Stop();
+            Debug.WriteLine("Module loaded in " + sw.ElapsedMilliseconds.ToString() + "ms");
+
+            Loaded = true;
         }
     }
 }

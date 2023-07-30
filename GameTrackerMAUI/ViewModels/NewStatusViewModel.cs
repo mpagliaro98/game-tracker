@@ -12,42 +12,8 @@ using System.Threading.Tasks;
 namespace GameTrackerMAUI.ViewModels
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
-    public class NewStatusViewModel : BaseViewModel
+    public class NewStatusViewModel : BaseViewModelEdit<StatusGame>
     {
-        private StatusGame _item = new StatusGame(SharedDataService.Module, SharedDataService.Settings);
-
-        public string ItemId
-        {
-            get => _item.UniqueID.ToString();
-            set
-            {
-                UniqueID key = UniqueID.Parse(value);
-                LoadItemId(key);
-            }
-        }
-
-        public StatusGame Item
-        {
-            get => _item;
-            set
-            {
-                SetProperty(ref _item, value);
-                Title = "Edit Status";
-                OnPropertyChanged(nameof(Name));
-                OnPropertyChanged(nameof(UseAsFinished));
-                OnPropertyChanged(nameof(HideScoreFromList));
-                OnPropertyChanged(nameof(Color));
-                OnPropertyChanged(nameof(StatusUsage));
-                OnPropertyChanged(nameof(ShowMarkAsFinishedOption));
-            }
-        }
-
-        public string Name
-        {
-            get => Item.Name;
-            set => SetProperty(Item.Name, value, () => Item.Name = value);
-        }
-
         public bool UseAsFinished
         {
             get => Item.UseAsFinished;
@@ -86,52 +52,35 @@ namespace GameTrackerMAUI.ViewModels
             get => StatusUsage != StatusUsage.UnfinishableGamesOnly;
         }
 
-        public Command SaveCommand { get; }
-        public Command CancelCommand { get; }
-
-        public NewStatusViewModel()
+        public NewStatusViewModel(IServiceProvider provider) : base(provider)
         {
-            SaveCommand = new Command(OnSave, ValidateSave);
-            CancelCommand = new Command(OnCancel);
-            this.PropertyChanged += (_, __) => SaveCommand.ChangeCanExecute();
             Title = "New Status";
         }
 
-        private bool ValidateSave()
+        protected override StatusGame CreateNewObject()
         {
-            return !String.IsNullOrWhiteSpace(Name);
+            return new StatusGame(Module, Settings);
         }
 
-        private async void OnCancel()
+        protected override StatusGame CreateCopyObject(StatusGame item)
         {
-            await Shell.Current.GoToAsync("..");
+            return new StatusGame(item);
         }
 
-        private async void OnSave()
+        protected override void UpdatePropertiesOnLoad()
         {
-            try
-            {
-                Item.Save(SharedDataService.Module, SharedDataService.Settings);
-            }
-            catch (Exception ex)
-            {
-                await UtilMAUI.ShowPopupMainAsync("Unable to Save", ex.Message, PopupMain.EnumInputType.Ok);
-                return;
-            }
-
-            await Shell.Current.GoToAsync("..");
+            Title = "Edit Status";
+            OnPropertyChanged(nameof(Name));
+            OnPropertyChanged(nameof(UseAsFinished));
+            OnPropertyChanged(nameof(HideScoreFromList));
+            OnPropertyChanged(nameof(Color));
+            OnPropertyChanged(nameof(StatusUsage));
+            OnPropertyChanged(nameof(ShowMarkAsFinishedOption));
         }
 
-        public void LoadItemId(UniqueID itemId)
+        protected override IList<StatusGame> GetObjectList()
         {
-            try
-            {
-                Item = (StatusGame)RatableTracker.Util.Util.FindObjectInList(SharedDataService.Module.StatusExtension.GetStatusList(), itemId);
-            }
-            catch (Exception)
-            {
-                Debug.WriteLine("Failed to Load Item");
-            }
+            return Module.StatusExtension.GetStatusList().OfType<StatusGame>().ToList();
         }
     }
 }
