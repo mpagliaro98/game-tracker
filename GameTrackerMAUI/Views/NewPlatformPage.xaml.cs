@@ -6,7 +6,7 @@ public partial class NewPlatformPage : ContentPage
 {
     private readonly BaseViewModel _viewModel;
 
-    public NewPlatformPage(PlatformsViewModel vm)
+    public NewPlatformPage(NewPlatformViewModel vm)
 	{
 		InitializeComponent();
 		BindingContext = _viewModel = vm;

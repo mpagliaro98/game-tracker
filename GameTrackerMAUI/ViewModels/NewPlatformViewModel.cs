@@ -66,7 +66,7 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override IList<GameTracker.Platform> GetObjectList()
         {
-            throw new NotImplementedException();
+            return Module.GetPlatformList(Settings);
         }
     }
 }
