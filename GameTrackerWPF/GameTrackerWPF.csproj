@@ -22,6 +22,7 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <Product>Game Tracker</Product>
 	<ProductName>Game Tracker</ProductName>
+	<ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameTracker\GameTracker.csproj" />
