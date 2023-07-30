@@ -21,6 +21,7 @@ namespace GameTrackerMAUI
             Routing.RegisterRoute(nameof(StatusDetailPage), typeof(StatusDetailPage));
             Routing.RegisterRoute(nameof(NewStatusPage), typeof(NewStatusPage));
             Routing.RegisterRoute(nameof(FilterPage), typeof(FilterPage));
+            Routing.RegisterRoute(nameof(LogsPage), typeof(LogsPage));
         }
     }
 }

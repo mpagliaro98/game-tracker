@@ -120,14 +120,18 @@ namespace RatableTracker.Util
             }
         }
 
-        public string MostRecentLogs()
+        public IEnumerable<FileInfo> EnumerateLogFiles()
         {
-            byte[] fileContent;
+            IList<FileInfo> files = fileHandler.GetFilesInCurrentDirectory();
+            return files.OrderByDescending(f => f.CreatedOnUTC).AsEnumerable();
+        }
+
+        public string GetLogFileContents(string logFileName)
+        {
             lock (fileLock)
             {
-                fileContent = fileHandler.LoadFile(logFileName);
+                return Util.TextEncoding.GetString(fileHandler.LoadFile(logFileName));
             }
-            return Util.TextEncoding.GetString(fileContent);
         }
     }
 }

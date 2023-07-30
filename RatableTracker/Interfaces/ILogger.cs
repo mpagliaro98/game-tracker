@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RatableTracker.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ namespace RatableTracker.Interfaces
     public interface ILogger : IDisposable
     {
         void Log(string message);
-        string MostRecentLogs();
+        IEnumerable<RatableTracker.Util.FileInfo> EnumerateLogFiles();
+        string GetLogFileContents(string logFileName);
     }
 }

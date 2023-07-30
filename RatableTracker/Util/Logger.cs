@@ -25,11 +25,6 @@ namespace RatableTracker.Util
             logger?.Log(message);
         }
 
-        public string MostRecentLogs()
-        {
-            return logger == null ? "No logger has been attached" : logger.MostRecentLogs();
-        }
-
         public void Dispose()
         {
             logger?.Dispose();

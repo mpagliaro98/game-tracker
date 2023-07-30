@@ -41,4 +41,9 @@ public partial class AboutPage : ContentPage
             // An unexpected error occurred. No browser may be installed on the device.
         }
     }
+
+    private async void ButtonLogs_Clicked(object sender, EventArgs e)
+    {
+        await Shell.Current.GoToAsync($"{nameof(LogsPage)}");
+    }
 }

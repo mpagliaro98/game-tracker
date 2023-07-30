@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Storage;
 using GameTracker;
 using GameTrackerMAUI.Services;
 using Microsoft.Extensions.Logging;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
+using RatableTracker.Util;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace GameTrackerMAUI
@@ -38,10 +40,11 @@ namespace GameTrackerMAUI
             builder.Services.AddSingleton<IPathController>(pathController);
             builder.Services.AddSingleton<GameTrackerFactory>();
             builder.Services.AddSingleton<ISavedState, SavedState>();
-            builder.Services.AddSingleton<RatableTracker.Interfaces.ILogger>(new LoggerGameTracker(new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY)));
+            builder.Services.AddSingleton<RatableTracker.Interfaces.ILogger>(new LoggerGameTracker(new FileHandlerLocalAppData(pathController, LoggerThreaded.LOG_DIRECTORY)));
             builder.Services.AddSingleton<ISharedDataService, SharedDataService>();
             builder.Services.AddSingleton<IAlertService, AlertServiceMAUI>();
             builder.Services.AddSingleton<IToastService, ToastServiceToolkit>();
+            builder.Services.AddSingleton(FileSaver.Default);
             return builder;
         }
 
@@ -67,6 +70,7 @@ namespace GameTrackerMAUI
             builder.Services.AddTransient<ViewModels.SettingsEditViewModel>();
             builder.Services.AddTransient<ViewModels.StatusDetailViewModel>();
             builder.Services.AddTransient<ViewModels.StatusViewModel>();
+            builder.Services.AddTransient<ViewModels.LogsViewModel>();
             return builder;
         }
 
@@ -93,6 +97,7 @@ namespace GameTrackerMAUI
             builder.Services.AddTransient<Views.SettingsEditPage>();
             builder.Services.AddTransient<Views.StatusDetailPage>();
             builder.Services.AddTransient<Views.StatusPage>();
+            builder.Services.AddTransient<Views.LogsPage>();
             return builder;
         }
     }

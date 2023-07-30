@@ -9,6 +9,7 @@
             <Label x:Name="aboutLabel" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" LineBreakMode="WordWrap" HorizontalTextAlignment="Center" />
             <Button x:Name="ButtonRepo" Text="Go to Project Repository" HorizontalOptions="Center" Clicked="ButtonRepo_Clicked" />
             <Button x:Name="ButtonUpdates" Text="Check for Updates" HorizontalOptions="Center" Clicked="ButtonUpdates_Clicked" />
+            <Button x:Name="ButtonLogs" Text="View Log Files" HorizontalOptions="Center" Clicked="ButtonLogs_Clicked" />
         </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>
