@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace GameTrackerMAUI.ViewModels
 {
-    public class GamesViewModel : BaseViewModelListSortSearch<GameObject>
+    public class GamesViewModel : BaseViewModelListSortSearch<GameObject>, IQueryAttributable
     {
         public Command ShowCompilations { get; }
 
@@ -84,6 +84,15 @@ namespace GameTrackerMAUI.ViewModels
         private void SetCompilationsButton()
         {
             CompilationsImageName = SavedState.ShowCompilations ? "compilations_active" : "compilations";
+        }
+
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.ContainsKey(nameof(FromFilterPage)))
+            {
+                FromFilterPage = Convert.ToBoolean(query[nameof(FromFilterPage)]);
+                query.Remove(nameof(FromFilterPage));
+            }
         }
     }
 }

@@ -16,7 +16,7 @@ using RatableTracker.ListManipulation.Filtering;
 
 namespace GameTrackerMAUI.ViewModels
 {
-    public class PlatformsViewModel : BaseViewModelListSortSearch<GameTracker.Platform>
+    public class PlatformsViewModel : BaseViewModelListSortSearch<GameTracker.Platform>, IQueryAttributable
     {
         protected override FilterEngine FilterObject => SavedState.FilterPlatforms;
         protected override SortEngine SortObject => SavedState.SortPlatforms;
@@ -38,6 +38,15 @@ namespace GameTrackerMAUI.ViewModels
         protected override async Task GoToSelectedItemAsync(GameTracker.Platform item)
         {
             await Shell.Current.GoToAsync($"{nameof(PlatformDetailPage)}?{nameof(PlatformDetailViewModel.ItemId)}={item.UniqueID}");
+        }
+
+        public void ApplyQueryAttributes(IDictionary<string, object> query)
+        {
+            if (query.ContainsKey(nameof(FromFilterPage)))
+            {
+                FromFilterPage = Convert.ToBoolean(query[nameof(FromFilterPage)]);
+                query.Remove(nameof(FromFilterPage));
+            }
         }
     }
 }

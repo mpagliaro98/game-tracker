@@ -12,6 +12,7 @@ namespace GameTrackerMAUI.ViewModels
 {
     public abstract class BaseViewModelListSortSearch<T> : BaseViewModelList<T>
     {
+        public bool FromFilterPage { get; set; } = false;
         public Command SortCommand { get; }
         public Command SortDirectionCommand { get; }
         public Command SearchCommand { get; }
@@ -63,9 +64,15 @@ namespace GameTrackerMAUI.ViewModels
             SetSearchButton();
         }
 
-        protected override void PostLoad()
+        protected override async Task PostLoadAsync()
         {
             SetSearchButton();
+            if (FromFilterPage)
+            {
+                var count = Items.Count;
+                await ToastService.ShowToastAsync($"{count} item{(count != 1 ? "s" : "")} found");
+                FromFilterPage = false;
+            }
         }
 
         private async void OnSort()

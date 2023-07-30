@@ -58,7 +58,7 @@ namespace GameTrackerMAUI.ViewModels
                 var items = await Task.Run(GetObjectList);
                 items.RemoveAll(SkipItemOnLoadList);
                 Items = new ObservableCollection<T>(items);
-                PostLoad();
+                await PostLoadAsync();
             }
             catch (Exception ex)
             {
@@ -77,9 +77,9 @@ namespace GameTrackerMAUI.ViewModels
             return false;
         }
 
-        protected virtual void PostLoad()
+        protected virtual async Task PostLoadAsync()
         {
-
+            await Task.Run(() => { }); // do nothing
         }
 
         public override void OnAppearing()

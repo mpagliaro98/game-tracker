@@ -141,7 +141,10 @@ namespace GameTrackerMAUI.ViewModels
                 SavedState.FilterPlatforms = engine;
             SavedState.Save(PathController);
 
-            await Shell.Current.GoToAsync("..");
+            if (_filterType == FilterType.Game)
+                await Shell.Current.GoToAsync($"..?{nameof(GamesViewModel.FromFilterPage)}={true}");
+            else
+                await Shell.Current.GoToAsync($"..?{nameof(PlatformsViewModel.FromFilterPage)}={true}");
         }
 
         private async void OnClear()
