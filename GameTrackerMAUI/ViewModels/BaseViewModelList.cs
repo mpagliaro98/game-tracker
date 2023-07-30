@@ -52,9 +52,9 @@ namespace GameTrackerMAUI.ViewModels
 
         public async Task ExecuteLoadItemsCommand()
         {
-            IsBusy = true;
             try
             {
+                Items.Clear();
                 var items = await Task.Run(GetObjectList);
                 items.RemoveAll(SkipItemOnLoadList);
                 Items = new ObservableCollection<T>(items);

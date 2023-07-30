@@ -74,7 +74,7 @@ namespace GameTrackerMAUI.ViewModels
         {
             SavedState.ShowCompilations = !SavedState.ShowCompilations;
             SavedState.Save(PathController);
-            await ExecuteLoadItemsCommand();
+            IsBusy = true;
             SetCompilationsButton();
             string msg = SavedState.ShowCompilations ?
                 "Compilations are now being shown in the list, and games in compilations are hidden." :

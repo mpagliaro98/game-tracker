@@ -52,7 +52,7 @@ namespace GameTrackerMAUI.ViewModels
         {
             SortCommand = new Command(OnSort);
             SearchCommand = new Command(OnSearch);
-            SortDirectionCommand = new Command(async () => await OnSortDirection());
+            SortDirectionCommand = new Command(OnSortDirection);
         }
 
         public override void OnAppearing()
@@ -85,17 +85,17 @@ namespace GameTrackerMAUI.ViewModels
                     SortObject.SortOption = (SortOptionBase)ret.Item2;
                 SavedState.Save(PathController);
 
-                await ExecuteLoadItemsCommand();
+                IsBusy = true;
                 SetSortButton();
             }
         }
 
-        private async Task OnSortDirection()
+        private void OnSortDirection()
         {
             SortObject.SortMode = SortObject.SortMode == SortMode.Ascending ? SortMode.Descending : SortMode.Ascending;
             SetSortDirectionButton();
             SavedState.Save(PathController);
-            await ExecuteLoadItemsCommand();
+            IsBusy = true;
         }
 
         private void SetSortDirectionButton()

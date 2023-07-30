@@ -133,6 +133,7 @@ namespace GameTrackerMAUI.ViewModels
 
         private async void OnAWS()
         {
+            Task t = null;
             if (FileHandlerAWSS3.KeyFileExists(PathController))
             {
                 // Remove key file
@@ -146,6 +147,7 @@ namespace GameTrackerMAUI.ViewModels
                 }
                 FileHandlerAWSS3.DeleteKeyFile(PathController);
                 provider.GetSharedDataService().ResetSharedObjects();
+                t = provider.GetSharedDataServiceAsync(); // start the load now
             }
             else
             {
@@ -164,6 +166,7 @@ namespace GameTrackerMAUI.ViewModels
                             Module.TransferToNewModule(newModule, Settings);
                         }
                         provider.GetSharedDataService().ResetSharedObjects();
+                        t = provider.GetSharedDataServiceAsync(); // start the load now
                     }
                     catch (Exception ex)
                     {
@@ -173,6 +176,7 @@ namespace GameTrackerMAUI.ViewModels
                 }
             }
             UpdateAWSButtonText();
+            if (t != null) await t;
         }
     }
 }
