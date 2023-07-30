@@ -5,8 +5,10 @@
              Shell.TabBarIsVisible="False"
              Title="About">
     <ContentPage.Content>
-        <StackLayout>
+        <VerticalStackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
             <Label x:Name="aboutLabel" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" LineBreakMode="WordWrap" HorizontalTextAlignment="Center" />
-        </StackLayout>
+            <Button x:Name="ButtonRepo" Text="Go to Project Repository" HorizontalOptions="Center" Clicked="ButtonRepo_Clicked" />
+            <Button x:Name="ButtonUpdates" Text="Check for Updates" HorizontalOptions="Center" Clicked="ButtonUpdates_Clicked" />
+        </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>
