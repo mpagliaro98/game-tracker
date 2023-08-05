@@ -121,7 +121,7 @@ namespace GameTrackerMAUI.ViewModels
                 {
                     Module = Module,
                     Settings = Settings,
-                    FilterOption = (FilterOptionBase)segment.FilterOption,
+                    FilterOption = ((FilterOptionBase)segment.FilterOption).Copy(),
                     Negate = segment.Negate,
                     FilterValues = segment.FilterOption.FilterType switch
                     {

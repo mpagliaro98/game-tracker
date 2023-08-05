@@ -100,9 +100,11 @@ namespace GameTrackerWPF
             {
                 var filter = new FilterSegment()
                 {
-                    FilterOption = row.FilterOption,
+                    FilterOption = row.FilterOption.Copy(),
                     FilterValues = row.FilterValues,
-                    Negate = row.Negate
+                    Negate = row.Negate,
+                    Module = module,
+                    Settings = settings
                 };
                 filterEngine.Filters.Add(filter);
             }
