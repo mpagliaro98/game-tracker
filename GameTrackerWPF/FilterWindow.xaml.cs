@@ -47,7 +47,7 @@ namespace GameTrackerWPF
             filterOptions = GetFilterOptionList(module, settings, filterType);
             if (filterEngine.Operator == FilterOperator.And) RadioAnd.IsChecked = true;
             if (filterEngine.Operator == FilterOperator.Or) RadioOr.IsChecked = true;
-            BindFilterList(filterEngine.Filters);
+            BindFilterList(SetDefaultFilterRow(filterEngine.Filters, filterType));
         }
 
         private IList<IFilterOption> GetFilterOptionList(GameModule module, SettingsGame settings, FilterMode filterType)
@@ -115,6 +115,21 @@ namespace GameTrackerWPF
         {
             Search?.Invoke(this, new FilterWindowSearchEventArgs() { FilterEngine = new FilterEngine() });
             Close();
+        }
+
+        private List<FilterSegment> SetDefaultFilterRow(List<FilterSegment> filters, FilterMode filterType)
+        {
+            if (filters.Count <= 0)
+            {
+                return filterType switch
+                {
+                    FilterMode.Game => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionModelName() { Module = module, Settings = settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = module, Settings = settings } },
+                    FilterMode.Platform => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionPlatformName() { Module = module, Settings = settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = module, Settings = settings } },
+                    _ => throw new NotImplementedException()
+                };
+            }
+            else
+                return filters;
         }
     }
 

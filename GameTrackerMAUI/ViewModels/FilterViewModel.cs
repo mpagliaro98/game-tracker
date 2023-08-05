@@ -187,7 +187,7 @@ namespace GameTrackerMAUI.ViewModels
             // load current filters
             var engine = _filterType == FilterType.Game ? SavedState.FilterGames : SavedState.FilterPlatforms;
             OperatorAnd = (engine.Operator == FilterOperator.And);
-            foreach (var filter in engine.Filters)
+            foreach (var filter in SetDefaultFilterRow(engine.Filters, _filterType))
             {
                 var segment = new FilterContainer(FilterSegments.Count);
                 FilterSegments.Add(segment);
@@ -226,6 +226,21 @@ namespace GameTrackerMAUI.ViewModels
                         break;
                 }
             }
+        }
+
+        private List<FilterSegment> SetDefaultFilterRow(List<FilterSegment> filters, FilterType filterType)
+        {
+            if (filters.Count <= 0)
+            {
+                return filterType switch
+                {
+                    FilterType.Game => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionModelName() { Module = Module, Settings = Settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = Module, Settings = Settings } },
+                    FilterType.Platform => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionPlatformName() { Module = Module, Settings = Settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = Module, Settings = Settings } },
+                    _ => throw new NotImplementedException()
+                };
+            }
+            else
+                return filters;
         }
     }
 }
