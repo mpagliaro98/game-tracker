@@ -1066,7 +1066,9 @@ namespace GameTrackerWPF
                     byte[] contents;
                     using (var conn = loadSave.NewConnection())
                         contents = conn.ExportSaveBackup();
-                    fileHandler.SaveFile(dialog.FileName, contents);
+                    string encodedString = Convert.ToBase64String(contents);
+                    byte[] fileData = RatableTracker.Util.Util.TextEncoding.GetBytes(encodedString);
+                    fileHandler.SaveFile(dialog.FileName, fileData, App.Logger);
                     MessageBox.Show("Saved a save backup to " + dialog.FileName, "Save Backup", MessageBoxButton.OK);
                 }
             }
@@ -1091,7 +1093,9 @@ namespace GameTrackerWPF
                 if (dialog.ShowDialog() == true)
                 {
                     IFileHandler fileHandler = new FileHandlerLocal("", pathController);
-                    byte[] contents = fileHandler.LoadFile(dialog.FileName);
+                    byte[] fileData = fileHandler.LoadFile(dialog.FileName, App.Logger);
+                    string base64Data = RatableTracker.Util.Util.TextEncoding.GetString(fileData);
+                    byte[] contents = Convert.FromBase64String(base64Data);
                     using (var conn = loadSave.NewConnection())
                         conn.ImportSaveBackup(contents);
                     MessageBox.Show("Successfully imported the save backup from " + dialog.FileName, "Import Backup", MessageBoxButton.OK);

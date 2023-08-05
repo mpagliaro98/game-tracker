@@ -36,8 +36,12 @@ namespace GameTrackerMAUI
             try
             {
                 string filename = "backup_" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH-mm-ss") + ".bac";
-                using var conn = provider.GetService<ISharedDataService>().LoadSave.NewConnection();
-                using var stream = new MemoryStream(conn.ExportSaveBackup());
+                byte[] contents = null;
+                using (var conn = provider.GetService<ISharedDataService>().LoadSave.NewConnection())
+                    contents = conn.ExportSaveBackup();
+                string encodedString = Convert.ToBase64String(contents);
+                byte[] fileData = RatableTracker.Util.Util.TextEncoding.GetBytes(encodedString);
+                using var stream = new MemoryStream(fileData);
                 var result = await provider.GetService<IFileSaver>().SaveAsync(filename, stream, new CancellationToken());
                 if (result.IsSuccessful)
                 {
@@ -68,12 +72,20 @@ namespace GameTrackerMAUI
                 });
                 if (result != null)
                 {
-                    using var stream = await result.OpenReadAsync();
-                    using var ms = new MemoryStream();
-                    stream.CopyTo(ms);
+                    byte[] fileData = null;
+                    using (var ms = new MemoryStream())
+                    {
+                        using (var stream = await result.OpenReadAsync())
+                        {
+                            stream.CopyTo(ms);
+                        }
+                        fileData = ms.ToArray();
+                    }
+                    string base64Data = RatableTracker.Util.Util.TextEncoding.GetString(fileData);
+                    byte[] contents = Convert.FromBase64String(base64Data);
 
-                    using var conn = provider.GetService<ISharedDataService>().LoadSave.NewConnection();
-                    conn.ImportSaveBackup(ms.ToArray());
+                    using (var conn = provider.GetService<ISharedDataService>().LoadSave.NewConnection())
+                        conn.ImportSaveBackup(contents);
 
                     await provider.GetService<IAlertService>().DisplayAlertAsync("Import", "Successfully imported the backup save data. Refresh the screen to view the imported data.");
                     logger.Log("Backup file successfully imported from: " + result.FileName);

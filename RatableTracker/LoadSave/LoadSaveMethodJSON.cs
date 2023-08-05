@@ -591,13 +591,18 @@ namespace RatableTracker.LoadSave
             string result = JsonConvert.SerializeObject(backup);
             var resultBytes = Util.Util.TextEncoding.GetBytes(result);
             Log("Finished save file backup (" + resultBytes.Length.ToString() + " bytes)");
+            resultBytes = resultBytes.Compress();
+            Log("Compressed to " + resultBytes.Length.ToString() + " bytes");
             return resultBytes;
         }
 
         public void ImportSaveBackup(byte[] contents)
         {
             Log("Starting save file backup import (" + contents.Length.ToString() + " bytes)");
-            var backup = JsonConvert.DeserializeObject<Dictionary<string, byte[]>>(Util.Util.TextEncoding.GetString(contents));
+            contents = contents.Decompress();
+            Log("Decompressed to " + contents.Length.ToString() + " bytes");
+            string json = Util.Util.TextEncoding.GetString(contents);
+            var backup = JsonConvert.DeserializeObject<Dictionary<string, byte[]>>(json);
             foreach (var name in GetFileNames())
             {
                 if (backup.ContainsKey(name))
