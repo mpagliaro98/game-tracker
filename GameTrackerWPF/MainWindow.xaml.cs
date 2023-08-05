@@ -490,7 +490,7 @@ namespace GameTrackerWPF
 
         private void GamesButtonSearch_Click(object sender, RoutedEventArgs e)
         {
-            FilterWindow window = new FilterWindow(savedState.FilterGames, rm, settings, FilterMode.Game);
+            FilterWindow window = new FilterWindow(savedState.FilterGames, rm, settings, FilterMode.Game, savedState, pathController);
             window.Search += GameFilterWindow_Search;
             window.ShowDialog();
         }
@@ -652,7 +652,7 @@ namespace GameTrackerWPF
 
         private void PlatformsButtonSearch_Click(object sender, RoutedEventArgs e)
         {
-            FilterWindow window = new FilterWindow(savedState.FilterPlatforms, rm, settings, FilterMode.Platform);
+            FilterWindow window = new FilterWindow(savedState.FilterPlatforms, rm, settings, FilterMode.Platform, savedState, pathController);
             window.Search += PlatformFilterWindow_Search;
             window.ShowDialog();
         }

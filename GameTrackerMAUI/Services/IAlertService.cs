@@ -10,5 +10,6 @@ namespace GameTrackerMAUI.Services
     {
         Task DisplayAlertAsync(string title, string message, string confirm = "OK");
         Task<bool> DisplayConfirmationAsync(string title, string message, string yesOption = "Yes", string noOption = "No");
+        Task<string> DisplayInputAsync(string title, string message, string initialValue = "");
     }
 }

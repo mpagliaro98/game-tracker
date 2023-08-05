@@ -24,6 +24,8 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
         <ToolbarItem Text="Search" Command="{Binding SearchCommand}" IconImageSource="search" />
+        <ToolbarItem Text="Save Search" Command="{Binding SaveSearchCommand}" Order="Secondary" />
+        <ToolbarItem Text="Load Saved Search" Command="{Binding LoadSavedSearchCommand}" Order="Secondary" />
     </ContentPage.ToolbarItems>
 
     <ScrollView>

@@ -1,5 +1,6 @@
 ﻿using GameTracker;
 using GameTracker.Filtering;
+using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation.Filtering;
 using System;
 using System.Collections.Generic;
@@ -31,18 +32,20 @@ namespace GameTrackerWPF
     {
         public event EventHandler<FilterWindowSearchEventArgs> Search;
 
-        private FilterEngine filterEngine;
         private GameModule module;
         private SettingsGame settings;
         private FilterMode filterMode;
         private IList<IFilterOption> filterOptions;
+        private SavedState savedState;
+        private IPathController pathController;
 
-        public FilterWindow(FilterEngine filterEngine, GameModule module, SettingsGame settings, FilterMode filterType)
+        public FilterWindow(FilterEngine filterEngine, GameModule module, SettingsGame settings, FilterMode filterType, SavedState savedState, IPathController pathController)
         {
             InitializeComponent();
-            this.filterEngine = filterEngine;
             this.module = module;
             this.settings = settings;
+            this.savedState = savedState;
+            this.pathController = pathController;
             filterMode = filterType;
             filterOptions = GetFilterOptionList(module, settings, filterType);
             if (filterEngine.Operator == FilterOperator.And) RadioAnd.IsChecked = true;
@@ -92,6 +95,13 @@ namespace GameTrackerWPF
 
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
+            var filterEngine = UIValuesToFilterEngine();
+            Search?.Invoke(this, new FilterWindowSearchEventArgs() { FilterEngine = filterEngine });
+            Close();
+        }
+
+        private FilterEngine UIValuesToFilterEngine()
+        {
             FilterEngine filterEngine = new()
             {
                 Operator = RadioAnd.IsChecked.Value ? FilterOperator.And : FilterOperator.Or
@@ -108,9 +118,7 @@ namespace GameTrackerWPF
                 };
                 filterEngine.Filters.Add(filter);
             }
-
-            Search?.Invoke(this, new FilterWindowSearchEventArgs() { FilterEngine = filterEngine });
-            Close();
+            return filterEngine;
         }
 
         private void ButtonClear_Click(object sender, RoutedEventArgs e)
@@ -132,6 +140,72 @@ namespace GameTrackerWPF
             }
             else
                 return filters;
+        }
+
+        private void ButtonSaveSearch_Click(object sender, RoutedEventArgs e)
+        {
+            if ((filterMode == FilterMode.Game ? savedState.GameSavedSearches : savedState.PlatformSavedSearches).Count >= 30)
+            {
+                MessageBox.Show("You can keep up to 30 saved searches at a time.", "Limit Reached", MessageBoxButton.OK);
+                return;
+            }
+
+            InputDialog inputDialog = new("Enter a name for this saved search:", "New Saved Search");
+            if (inputDialog.ShowDialog() == true && inputDialog.Answer.Trim().Length > 0)
+            {
+                var engine = UIValuesToFilterEngine();
+                engine.SearchName = inputDialog.Answer.Trim();
+                if (filterMode == FilterMode.Game)
+                    savedState.GameSavedSearches.Add(engine);
+                else
+                    savedState.PlatformSavedSearches.Add(engine);
+                SavedState.SaveSavedState(pathController, savedState);
+            }
+        }
+
+        private void ButtonLoadSearch_Click(object sender, RoutedEventArgs e)
+        {
+            ButtonLoadSearch.ContextMenu.Items.Clear();
+            int idx = 0;
+            foreach (var engine in filterMode == FilterMode.Game ? savedState.GameSavedSearches : savedState.PlatformSavedSearches)
+            {
+                var item = new MenuItem
+                {
+                    DisplayMemberPath = "Item2",
+                    Header = engine.SearchName
+                };
+                item.Items.Add(Tuple.Create(engine, "Load", idx));
+                item.Items.Add(Tuple.Create<FilterEngine, string, int>(null, "Delete", idx));
+                item.Click += Item_Click;
+                ButtonLoadSearch.ContextMenu.Items.Add(item);
+                idx++;
+            }
+
+            var contextMenu = ButtonLoadSearch.ContextMenu;
+            contextMenu.PlacementTarget = ButtonLoadSearch;
+            contextMenu.IsOpen = true;
+        }
+
+        private void Item_Click(object sender, RoutedEventArgs e)
+        {
+            MenuItem item = (MenuItem)sender;
+            var src = (Tuple<FilterEngine, string, int>)((MenuItem)e.OriginalSource).Header;
+            if (src.Item1 == null)
+            {
+                if (filterMode == FilterMode.Game)
+                    savedState.GameSavedSearches.RemoveAt(src.Item3);
+                else
+                    savedState.PlatformSavedSearches.RemoveAt(src.Item3);
+                SavedState.SaveSavedState(pathController, savedState);
+            }
+            else
+            {
+                FilterEngine engine = src.Item1;
+                BindFilterList(engine.Filters);
+                if (engine.Operator == FilterOperator.And) RadioAnd.IsChecked = true;
+                if (engine.Operator == FilterOperator.Or) RadioOr.IsChecked = true;
+                item.IsChecked = false;
+            }
         }
     }
 

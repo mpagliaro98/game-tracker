@@ -17,5 +17,10 @@ namespace GameTrackerMAUI.Services
         {
             return Application.Current.MainPage.DisplayAlert(title, message, yesOption, noOption);
         }
+
+        public Task<string> DisplayInputAsync(string title, string message, string initialValue = "")
+        {
+            return Application.Current.MainPage.DisplayPromptAsync(title, message, initialValue: initialValue);
+        }
     }
 }

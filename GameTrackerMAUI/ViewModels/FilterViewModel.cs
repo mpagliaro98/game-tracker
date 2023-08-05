@@ -1,6 +1,8 @@
 ﻿using GameTracker;
 using GameTracker.Filtering;
+using GameTrackerMAUI.Model;
 using GameTrackerMAUI.Services;
+using GameTrackerMAUI.Views;
 using RatableTracker.ListManipulation.Filtering;
 using RatableTracker.Util;
 using System;
@@ -81,6 +83,8 @@ namespace GameTrackerMAUI.ViewModels
         public Command SearchCommand { get; }
         public Command ClearCommand { get; }
         public Command RemoveSegmentCommand { get; }
+        public Command SaveSearchCommand { get; }
+        public Command LoadSavedSearchCommand { get; }
 
         public FilterViewModel(IServiceProvider provider) : base(provider)
         {
@@ -88,6 +92,8 @@ namespace GameTrackerMAUI.ViewModels
             SearchCommand = new Command(OnSearch);
             ClearCommand = new Command(OnClear);
             RemoveSegmentCommand = new Command<int>(OnRemoveSegment);
+            SaveSearchCommand = new Command(OnSaveSearch);
+            LoadSavedSearchCommand = new Command(OnLoadSavedSearch);
             this.PropertyChanged += (_, __) => AddItemCommand.ChangeCanExecute();
         }
 
@@ -113,6 +119,21 @@ namespace GameTrackerMAUI.ViewModels
 
         private async void OnSearch()
         {
+            var engine = UIValuesToFilterEngine();
+            if (_filterType == FilterType.Game)
+                SavedState.FilterGames = engine;
+            else
+                SavedState.FilterPlatforms = engine;
+            SavedState.Save(PathController);
+
+            if (_filterType == FilterType.Game)
+                await Shell.Current.GoToAsync($"..?{nameof(GamesViewModel.FromFilterPage)}={true}");
+            else
+                await Shell.Current.GoToAsync($"..?{nameof(PlatformsViewModel.FromFilterPage)}={true}");
+        }
+
+        private FilterEngine UIValuesToFilterEngine()
+        {
             var engine = new FilterEngine();
             engine.Operator = OperatorAnd ? FilterOperator.And : FilterOperator.Or;
             foreach (var segment in FilterSegments)
@@ -135,16 +156,7 @@ namespace GameTrackerMAUI.ViewModels
                 };
                 engine.Filters.Add(newSegment);
             }
-            if (_filterType == FilterType.Game)
-                SavedState.FilterGames = engine;
-            else
-                SavedState.FilterPlatforms = engine;
-            SavedState.Save(PathController);
-
-            if (_filterType == FilterType.Game)
-                await Shell.Current.GoToAsync($"..?{nameof(GamesViewModel.FromFilterPage)}={true}");
-            else
-                await Shell.Current.GoToAsync($"..?{nameof(PlatformsViewModel.FromFilterPage)}={true}");
+            return engine;
         }
 
         private async void OnClear()
@@ -168,6 +180,52 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(FilterSegments)); // triggers validation check for add button
         }
 
+        private async void OnSaveSearch()
+        {
+            if ((_filterType == FilterType.Game ? SavedState.GameSavedSearches : SavedState.PlatformSavedSearches).Count >= 30)
+            {
+                await AlertService.DisplayAlertAsync("Limit Reached", "You can keep up to 30 saved searches at a time.");
+                return;
+            }
+
+            string name = await AlertService.DisplayInputAsync("Save Search", "Enter a name for this saved search", "New Saved Search");
+            if (name != null && name.Trim().Length > 0)
+            {
+                var engine = UIValuesToFilterEngine();
+                engine.SearchName = name.Trim();
+                if (_filterType == FilterType.Game)
+                    SavedState.GameSavedSearches.Add(engine);
+                else
+                    SavedState.PlatformSavedSearches.Add(engine);
+                SavedState.Save(PathController);
+            }
+        }
+
+        private async void OnLoadSavedSearch()
+        {
+            List<PopupListOption> options = (_filterType == FilterType.Game ? SavedState.GameSavedSearches : SavedState.PlatformSavedSearches).Select(e => new PopupListOption(e, e.SearchName)).ToList();
+            var ret = await UtilMAUI.ShowPopupListAsync("Saved Searches", options, null, OnSavedSearchDelete);
+            if (ret != null && ret.Item1 == PopupList.EnumOutputType.Selection)
+            {
+                if (ret.Item2 is null)
+                    return;
+                else
+                    BindFilters((FilterEngine)ret.Item2);
+            }
+        }
+
+        private async void OnSavedSearchDelete(PopupListOption item, int index)
+        {
+            if (await AlertService.DisplayConfirmationAsync("Delete", "Are you sure you would like to delete this saved search?"))
+            {
+                if (_filterType == FilterType.Game)
+                    SavedState.GameSavedSearches.RemoveAt(index);
+                else
+                    SavedState.PlatformSavedSearches.RemoveAt(index);
+                SavedState.Save(PathController);
+            }
+        }
+
         private bool CanAddSegments()
         {
             return FilterSegments.Count < 100;
@@ -186,6 +244,12 @@ namespace GameTrackerMAUI.ViewModels
 
             // load current filters
             var engine = _filterType == FilterType.Game ? SavedState.FilterGames : SavedState.FilterPlatforms;
+            BindFilters(engine);
+        }
+
+        private void BindFilters(FilterEngine engine)
+        {
+            FilterSegments.Clear();
             OperatorAnd = (engine.Operator == FilterOperator.And);
             foreach (var filter in SetDefaultFilterRow(engine.Filters, _filterType))
             {

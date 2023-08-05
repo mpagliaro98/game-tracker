@@ -19,6 +19,7 @@ namespace RatableTracker.ListManipulation.Filtering
     [Serializable]
     public class FilterEngine
     {
+        public string SearchName { get; set; } = "";
         public List<FilterSegment> Filters { get; set; } = new List<FilterSegment>();
         public FilterOperator Operator { get; set; } = FilterOperator.And;
 

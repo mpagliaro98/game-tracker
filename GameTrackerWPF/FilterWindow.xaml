@@ -18,12 +18,20 @@
                 <ColumnDefinition Width="90" />
                 <ColumnDefinition Width="100" />
                 <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="85" />
+                <ColumnDefinition Width="115" />
                 <ColumnDefinition Width="80" />
             </Grid.ColumnDefinitions>
             <Button x:Name="ButtonNew" Content="New Filter" HorizontalAlignment="Left" Width="70" VerticalAlignment="Center" Margin="5,0,0,0" Click="ButtonNew_Click" />
             <RadioButton x:Name="RadioAnd" Grid.Column="1" Content="All are true" GroupName="AndOr" VerticalAlignment="Center" Margin="5,0,0,0" />
             <RadioButton x:Name="RadioOr" Grid.Column="2" Content="Any are true" GroupName="AndOr" VerticalAlignment="Center" Margin="5,0,0,0" />
-            <Button x:Name="ButtonClear" Grid.Column="4" Content="Clear" HorizontalAlignment="Right" Width="60" VerticalAlignment="Center" Margin="0,0,5,0" Click="ButtonClear_Click" />
+            <Button x:Name="ButtonSaveSearch" Grid.Column="4" Content="Save Search" VerticalAlignment="Center" Click="ButtonSaveSearch_Click" Margin="5,0,0,0" />
+            <Button x:Name="ButtonLoadSearch" Grid.Column="5" Content="Load Saved Search" VerticalAlignment="Center" Click="ButtonLoadSearch_Click" Margin="5,0,0,0">
+                <Button.ContextMenu>
+                    <ContextMenu />
+                </Button.ContextMenu>
+            </Button>
+            <Button x:Name="ButtonClear" Grid.Column="6" Content="Clear" HorizontalAlignment="Right" Width="60" VerticalAlignment="Center" Margin="0,0,5,0" Click="ButtonClear_Click" />
         </Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Grid.Row="1">
             <ListBox x:Name="ListBoxFilters" HorizontalContentAlignment="Stretch" />

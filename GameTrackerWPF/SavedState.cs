@@ -26,6 +26,8 @@ namespace GameTrackerWPF
         public bool ShowCompilations { get; set; } = false;
         [XmlIgnore] public bool Loaded { get; set; } = false;
         public GameDisplayMode DisplayMode { get; set; } = GameDisplayMode.DISPLAY_SMALL;
+        public List<FilterEngine> GameSavedSearches { get; set; } = new List<FilterEngine>();
+        public List<FilterEngine> PlatformSavedSearches { get; set; } = new List<FilterEngine>();
 
         private SavedState() { }
 
@@ -57,6 +59,10 @@ namespace GameTrackerWPF
                 savedState.SortGames.SetNonSerializableFields(module, settings, new SortOptionModelName());
                 savedState.FilterPlatforms.SetNonSerializableFields(module, settings);
                 savedState.SortPlatforms.SetNonSerializableFields(module, settings, new SortOptionPlatformName());
+                foreach (var engine in savedState.GameSavedSearches)
+                    engine.SetNonSerializableFields(module, settings);
+                foreach (var engine in savedState.PlatformSavedSearches)
+                    engine.SetNonSerializableFields(module, settings);
             }
             return savedState;
         }

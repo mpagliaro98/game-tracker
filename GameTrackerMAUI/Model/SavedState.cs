@@ -23,6 +23,8 @@ namespace GameTrackerMAUI
         public SortEngine SortGames { get; set; } = new SortEngine();
         public FilterEngine FilterPlatforms { get; set; } = new FilterEngine();
         public SortEngine SortPlatforms { get; set; } = new SortEngine();
+        public List<FilterEngine> GameSavedSearches { get; set; } = new List<FilterEngine>();
+        public List<FilterEngine> PlatformSavedSearches { get; set; } = new List<FilterEngine>();
         public bool ShowCompilations { get; set; } = false;
         public bool Loaded { get; set; } = false;
 
@@ -56,12 +58,18 @@ namespace GameTrackerMAUI
                     FilterPlatforms = savedState.FilterPlatforms;
                     SortGames = savedState.SortGames;
                     SortPlatforms = savedState.SortPlatforms;
+                    GameSavedSearches = savedState.GameSavedSearches;
+                    PlatformSavedSearches = savedState.PlatformSavedSearches;
                     ShowCompilations = savedState.ShowCompilations;
 
                     FilterGames.SetNonSerializableFields(module, settings);
                     SortGames.SetNonSerializableFields(module, settings, new SortOptionModelName());
                     FilterPlatforms.SetNonSerializableFields(module, settings);
                     SortPlatforms.SetNonSerializableFields(module, settings, new SortOptionPlatformName());
+                    foreach (var engine in savedState.GameSavedSearches)
+                        engine.SetNonSerializableFields(module, settings);
+                    foreach (var engine in savedState.PlatformSavedSearches)
+                        engine.SetNonSerializableFields(module, settings);
                 }
 
                 Loaded = true;
