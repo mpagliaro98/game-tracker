@@ -24,7 +24,7 @@
         </ResourceDictionary>
     </Shell.Resources>
 
-    <FlyoutItem Title="Home">
+    <FlyoutItem Title="Home" Icon="home.png">
         <Tab Title="Games" Icon="icon_games.png">
             <ShellContent Route="GamesPageShell" ContentTemplate="{DataTemplate local:GamesPage}" />
         </Tab>
@@ -33,18 +33,18 @@
         </Tab>
     </FlyoutItem>
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        <ShellContent Title="Configure Statuses" Route="StatusPageShell" ContentTemplate="{DataTemplate local:StatusPage}" />
-        <ShellContent Title="Configure Rating Categories" Route="CategoryPageShell" ContentTemplate="{DataTemplate local:CategoryPage}" />
-        <ShellContent Title="Configure Score Ranges" Route="ScoreRangePageShell" ContentTemplate="{DataTemplate local:ScoreRangePage}" />
+        <ShellContent Title="Configure Statuses" Icon="list.png" Route="StatusPageShell" ContentTemplate="{DataTemplate local:StatusPage}" />
+        <ShellContent Title="Configure Rating Categories" Icon="categories.png" Route="CategoryPageShell" ContentTemplate="{DataTemplate local:CategoryPage}" />
+        <ShellContent Title="Configure Score Ranges" Icon="stars.png" Route="ScoreRangePageShell" ContentTemplate="{DataTemplate local:ScoreRangePage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Settings">
+    <FlyoutItem Title="Settings" Icon="icon_settings.png">
         <Tab>
             <ShellContent Route="SettingsEditPageShell" ContentTemplate="{DataTemplate local:SettingsEditPage}" />
         </Tab>
     </FlyoutItem>
-    <MenuItem x:Name="MenuItemExport" Text="Backup Save Data" Clicked="MenuItemExport_Clicked" />
-    <MenuItem x:Name="MenuItemImport" Text="Import Save Data Backup" Clicked="MenuItemImport_Clicked" />
-    <FlyoutItem Title="About">
+    <MenuItem x:Name="MenuItemExport" IconImageSource="icon_export.png" Text="Backup Save Data" Clicked="MenuItemExport_Clicked" />
+    <MenuItem x:Name="MenuItemImport" IconImageSource="icon_import.png" Text="Import Save Data Backup" Clicked="MenuItemImport_Clicked" />
+    <FlyoutItem Title="About" Icon="about.png">
         <Tab>
             <ShellContent Route="AboutPageShell" ContentTemplate="{DataTemplate local:AboutPage}" />
         </Tab>
