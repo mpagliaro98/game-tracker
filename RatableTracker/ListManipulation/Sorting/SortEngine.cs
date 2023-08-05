@@ -117,9 +117,10 @@ namespace RatableTracker.ListManipulation.Sorting
             SortOption?.SetNonSerializableFields(module, settings);
         }
 
-        public static IList<ISortOption> GetSortOptionList<T>(TrackerModule module, Settings settings)
+        public static IList<ISortOption> GetSortOptionList<T>(TrackerModule module, Settings settings, ICollection<Type> exclude = null)
         {
             // use reflection to find and instantiate all objects with SortOptionAttribute and InAutoList=true with the type of T or an ancestor
+            exclude ??= new List<Type>();
             Type currentType = typeof(T);
             var listTypes = new List<Type>();
             var listTypesManual = new List<Type>();
@@ -134,6 +135,8 @@ namespace RatableTracker.ListManipulation.Sorting
                         {
                             if (attr.InAutoList)
                             {
+                                if (exclude.Contains(t))
+                                    continue;
                                 if (currentType.Equals(attr.ExpectedType) || currentType.IsSubclassOf(attr.ExpectedType) || currentType.GetInterfaces().Contains(attr.ExpectedType))
                                 {
                                     if (attr.InstantiateManually)

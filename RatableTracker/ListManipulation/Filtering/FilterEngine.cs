@@ -53,9 +53,10 @@ namespace RatableTracker.ListManipulation.Filtering
             }
         }
 
-        public static IList<IFilterOption> GetFilterOptionList<T>(TrackerModule module, Settings settings)
+        public static IList<IFilterOption> GetFilterOptionList<T>(TrackerModule module, Settings settings, ICollection<Type> exclude = null)
         {
             // use reflection to find and instantiate all objects with FilterOptionAttribute and InAutoList=true with the type of T or an ancestor
+            exclude ??= new List<Type>();
             Type currentType = typeof(T);
             var listTypes = new List<Type>();
             var listTypesManual = new List<Type>();
@@ -70,6 +71,8 @@ namespace RatableTracker.ListManipulation.Filtering
                         {
                             if (attr.InAutoList)
                             {
+                                if (exclude.Contains(t))
+                                    continue;
                                 if (currentType.Equals(attr.ExpectedType) || currentType.IsSubclassOf(attr.ExpectedType) || currentType.GetInterfaces().Contains(attr.ExpectedType))
                                 {
                                     if (attr.InstantiateManually)

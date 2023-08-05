@@ -324,7 +324,7 @@ namespace GameTrackerWPF
         {
             if (!savedState.Loaded || GamesButtonSort.ContextMenu.Items.Count > 0) return;
             GamesButtonSort.ContextMenu.Items.Clear();
-            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<GameObject>(rm, settings);
+            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<GameObject>(rm, settings, new List<Type>() { typeof(SortOptionModelRank) });
             foreach (var option in sortOptions)
             {
                 var item = new MenuItem

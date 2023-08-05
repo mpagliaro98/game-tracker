@@ -77,7 +77,7 @@ namespace GameTrackerMAUI.ViewModels
 
         private async void OnSort()
         {
-            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<T>(Module, Settings);
+            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<T>(Module, Settings, new List<Type>() { typeof(SortOptionModelRank) });
             List<PopupListOption> options = sortOptions.Select(so => new PopupListOption(so, so.Name)).ToList();
 
             ISortOption selectedValue = SortObject.SortOption;
