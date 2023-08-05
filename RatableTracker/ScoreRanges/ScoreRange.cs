@@ -75,13 +75,13 @@ namespace RatableTracker.ScoreRanges
         protected override void AddEventHandlers()
         {
             base.AddEventHandlers();
-            Settings.SettingsChanged += OnSettingsChanged;
+            Settings.SettingsMinMaxScoreChanged += OnSettingsChanged;
         }
 
         protected override void RemoveEventHandlers()
         {
             base.RemoveEventHandlers();
-            Settings.SettingsChanged -= OnSettingsChanged;
+            Settings.SettingsMinMaxScoreChanged -= OnSettingsChanged;
         }
 
         protected virtual void OnSettingsChanged(object sender, Events.SettingsChangeArgs args)

@@ -107,13 +107,13 @@ namespace RatableTracker.ObjAddOns
         protected override void AddEventHandlers()
         {
             Module.RatingCategoryDeleted += OnRatingCategoryDeleted;
-            Settings.SettingsChanged += OnSettingsChanged;
+            Settings.SettingsMinMaxScoreChanged += OnSettingsChanged;
         }
 
         protected override void RemoveEventHandlers()
         {
             Module.RatingCategoryDeleted -= OnRatingCategoryDeleted;
-            Settings.SettingsChanged -= OnSettingsChanged;
+            Settings.SettingsMinMaxScoreChanged -= OnSettingsChanged;
         }
 
         public virtual double ScoreOfCategory(RatingCategory ratingCategory)

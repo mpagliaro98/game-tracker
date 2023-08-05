@@ -1,4 +1,5 @@
-﻿using RatableTracker.Exceptions;
+﻿using RatableTracker.Events;
+using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Model;
@@ -13,6 +14,8 @@ namespace RatableTracker.Util
 {
     public class SettingsScore : Settings
     {
+        public event SettingsChangeHandler SettingsMinMaxScoreChanged;
+
         // save min/max score changes to temporary variables until Save is called
         private double _minScore = 0;
         private double _tempMinScore = 0;
@@ -53,6 +56,9 @@ namespace RatableTracker.Util
         protected override void PostSave(TrackerModule module, bool isNew, ILoadSaveMethod conn)
         {
             base.PostSave(module, isNew, conn);
+
+            if (_tempMinScore != _minScore || _tempMaxScore != _maxScore)
+                SettingsMinMaxScoreChanged?.Invoke(this, new SettingsChangeArgs(GetType(), conn));
 
             // set temp values back equal to the real values
             _tempMinScore = _minScore;
