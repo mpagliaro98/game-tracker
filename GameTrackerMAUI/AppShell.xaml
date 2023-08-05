@@ -32,15 +32,15 @@
             <ShellContent Route="PlatformsPageShell" ContentTemplate="{DataTemplate local:PlatformsPage}" />
         </Tab>
     </FlyoutItem>
-    <FlyoutItem Title="Settings">
-        <Tab>
-            <ShellContent Route="SettingsEditPageShell" ContentTemplate="{DataTemplate local:SettingsEditPage}" />
-        </Tab>
-    </FlyoutItem>
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent Title="Configure Statuses" Route="StatusPageShell" ContentTemplate="{DataTemplate local:StatusPage}" />
         <ShellContent Title="Configure Rating Categories" Route="CategoryPageShell" ContentTemplate="{DataTemplate local:CategoryPage}" />
         <ShellContent Title="Configure Score Ranges" Route="ScoreRangePageShell" ContentTemplate="{DataTemplate local:ScoreRangePage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Settings">
+        <Tab>
+            <ShellContent Route="SettingsEditPageShell" ContentTemplate="{DataTemplate local:SettingsEditPage}" />
+        </Tab>
     </FlyoutItem>
     <FlyoutItem Title="About">
         <Tab>
