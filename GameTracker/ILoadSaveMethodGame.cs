@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GameTracker
 {
-    public interface ILoadSaveMethodGame : ILoadSaveMethodScoreStatusCategorical
+    public interface ILoadSaveMethodGame : ILoadSaveMethodScoreStatusCategorical, ISaveBackupHandler
     {
         void SaveOnePlatform(Platform platform);
         void SaveAllPlatforms(IList<Platform> platform);

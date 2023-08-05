@@ -21,6 +21,10 @@
                 <MenuItem x:Name="MenuLogFiles" Header="View _Log Files" Click="MenuLogFiles_Click" />
                 <MenuItem x:Name="MenuExit" Header="_Exit" Click="MenuExit_Click" />
             </MenuItem>
+            <MenuItem Header="_Options">
+                <MenuItem x:Name="MenuBackupExport" Header="_Create Save Backup" Click="MenuBackupExport_Click" />
+                <MenuItem x:Name="MenuBackupImport" Header="_Import Save Backup" Click="MenuBackupImport_Click" />
+            </MenuItem>
             <MenuItem Header="_About">
                 <MenuItem x:Name="MenuGitHub" Header="_GitHub Repository" Click="MenuGitHub_Click" />
                 <MenuItem x:Name="MenuUpdate" Header="Check For _Updates" Click="MenuUpdate_Click" />

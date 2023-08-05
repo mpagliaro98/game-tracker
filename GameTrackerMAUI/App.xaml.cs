@@ -12,7 +12,7 @@ namespace GameTrackerMAUI
         {
             InitializeComponent();
             MauiExceptions.Init(provider.GetLogger());
-            MainPage = new AppShell();
+            MainPage = new AppShell(provider);
         }
     }
 }

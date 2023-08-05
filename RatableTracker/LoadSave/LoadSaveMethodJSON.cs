@@ -19,7 +19,7 @@ using RatableTracker.ListManipulation.Sorting;
 
 namespace RatableTracker.LoadSave
 {
-    public class LoadSaveMethodJSON : ILoadSaveMethodScoreStatusCategorical
+    public class LoadSaveMethodJSON : ILoadSaveMethodScoreStatusCategorical, ISaveBackupHandler
     {
         public const string SAVE_FILE_DIRECTORY = "savefiles";
 
@@ -569,5 +569,60 @@ namespace RatableTracker.LoadSave
         {
             return LoadAll(EnsureStatusesAreLoaded, ref statuses, (s) => factory.GetStatus(s, module, settings));
         }
+
+        #region Save Backup
+        public byte[] ExportSaveBackup()
+        {
+            Log("Starting save file backup");
+            var backup = new Dictionary<string, byte[]>();
+            foreach (var name in GetFileNames())
+            {
+                var bytes = fileHandler.LoadFile(name, logger);
+                if (bytes.Length > 0)
+                {
+                    Log("Save backup export: found " + name + " (" + bytes.Length.ToString() + " bytes)");
+                    backup.Add(name, bytes);
+                }
+                else
+                {
+                    Log("Save backup export: expected " + name + ", not found or empty file");
+                }
+            }
+            string result = JsonConvert.SerializeObject(backup);
+            var resultBytes = Util.Util.TextEncoding.GetBytes(result);
+            Log("Finished save file backup (" + resultBytes.Length.ToString() + " bytes)");
+            return resultBytes;
+        }
+
+        public void ImportSaveBackup(byte[] contents)
+        {
+            Log("Starting save file backup import (" + contents.Length.ToString() + " bytes)");
+            var backup = JsonConvert.DeserializeObject<Dictionary<string, byte[]>>(Util.Util.TextEncoding.GetString(contents));
+            foreach (var name in GetFileNames())
+            {
+                if (backup.ContainsKey(name))
+                {
+                    var bytes = backup[name];
+                    Log("Save backup import: found " + name + " (" + bytes.Length.ToString() + " bytes)");
+                    fileHandler.SaveFile(name, bytes, logger);
+                }
+                else
+                {
+                    Log("Save backup import: expected " + name + ", not found");
+                    fileHandler.DeleteFile(name, logger);
+                }
+            }
+            Log("Finished save file backup import");
+        }
+
+        protected virtual IEnumerable<string> GetFileNames()
+        {
+            yield return MODEL_OBJECT_FILE;
+            yield return SETTINGS_FILE;
+            yield return SCORE_RANGE_FILE;
+            yield return STATUS_FILE;
+            yield return CATEGORY_FILE;
+        }
+        #endregion
     }
 }

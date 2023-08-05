@@ -45,6 +45,7 @@ namespace GameTrackerMAUI
             builder.Services.AddSingleton<IAlertService, AlertServiceMAUI>();
             builder.Services.AddSingleton<IToastService, ToastServiceToolkit>();
             builder.Services.AddSingleton(FileSaver.Default);
+            builder.Services.AddSingleton(FilePicker.Default);
             return builder;
         }
 

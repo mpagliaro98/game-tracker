@@ -1016,7 +1016,7 @@ namespace GameTrackerWPF
 
         #endregion
 
-        #region "Menu Bar"
+        #region Menu Bar
         private void MenuExit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
@@ -1048,14 +1048,63 @@ namespace GameTrackerWPF
                 "\nThis open-source software is covered under the MIT license, see the license in the GitHub repository for more information.";
             MessageBox.Show(message, "About", MessageBoxButton.OK);
         }
-        #endregion
 
-        public sealed class SortMenuItem
+        private void MenuBackupExport_Click(object sender, RoutedEventArgs e)
         {
-            public SortMenuItem()
+            try
             {
-
+                SaveFileDialog dialog = new()
+                {
+                    DefaultExt = ".bac",
+                    Title = "Export Save Backup",
+                    FileName = "backup_" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH-mm-ss"),
+                    Filter = "Save Backups|*.bac"
+                };
+                if (dialog.ShowDialog() == true)
+                {
+                    IFileHandler fileHandler = new FileHandlerLocal("", pathController);
+                    byte[] contents;
+                    using (var conn = loadSave.NewConnection())
+                        contents = conn.ExportSaveBackup();
+                    fileHandler.SaveFile(dialog.FileName, contents);
+                    MessageBox.Show("Saved a save backup to " + dialog.FileName, "Save Backup", MessageBoxButton.OK);
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Log("Error exporting save backup: " + ex.GetType().Name + " - " + ex.Message);
+                App.Logger.Log(ex.StackTrace);
+                MessageBox.Show("An error occurred when trying to export the save backup. Please try again later.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private async void MenuBackupImport_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                OpenFileDialog dialog = new()
+                {
+                    DefaultExt = ".bac",
+                    Title = "Import Save Backup",
+                    Filter = "Save Backups|*.bac"
+                };
+                if (dialog.ShowDialog() == true)
+                {
+                    IFileHandler fileHandler = new FileHandlerLocal("", pathController);
+                    byte[] contents = fileHandler.LoadFile(dialog.FileName);
+                    using (var conn = loadSave.NewConnection())
+                        conn.ImportSaveBackup(contents);
+                    MessageBox.Show("Successfully imported the save backup from " + dialog.FileName, "Import Backup", MessageBoxButton.OK);
+                    await LoadAllData();
+                }
+            }
+            catch (Exception ex)
+            {
+                App.Logger.Log("Error importing save backup: " + ex.GetType().Name + " - " + ex.Message);
+                App.Logger.Log(ex.StackTrace);
+                MessageBox.Show("An error occurred when trying to import the save backup. Please try again later.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        #endregion
     }
 }

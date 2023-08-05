@@ -42,6 +42,8 @@
             <ShellContent Route="SettingsEditPageShell" ContentTemplate="{DataTemplate local:SettingsEditPage}" />
         </Tab>
     </FlyoutItem>
+    <MenuItem x:Name="MenuItemExport" Text="Backup Save Data" Clicked="MenuItemExport_Clicked" />
+    <MenuItem x:Name="MenuItemImport" Text="Import Save Data Backup" Clicked="MenuItemImport_Clicked" />
     <FlyoutItem Title="About">
         <Tab>
             <ShellContent Route="AboutPageShell" ContentTemplate="{DataTemplate local:AboutPage}" />

@@ -71,5 +71,12 @@ namespace GameTracker
         {
             SaveOne(EnsurePlatformsAreLoaded, ref platforms, platform, ref platformsChanged);
         }
+
+        protected override IEnumerable<string> GetFileNames()
+        {
+            foreach (var s in base.GetFileNames())
+                yield return s;
+            yield return PLATFORMS_FILE;
+        }
     }
 }
