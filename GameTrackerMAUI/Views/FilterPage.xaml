@@ -18,6 +18,7 @@
             <converters:FilterDateBetweenConverter x:Key="filterDateBetweenConverter" />
             <converters:FilterNumericBetweenConverter x:Key="filterNumericBetweenConverter" />
             <converters:IntGreaterThanConverter x:Key="intGreaterThanConverter" />
+            <converters:FilterTextIsEmptyConverter x:Key="filterTextIsEmptyConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -48,7 +49,7 @@
                             </Grid>
                             <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=1}">
                                 <Picker ItemsSource="{Binding FilterTextTypes, Source={RelativeSource AncestorType={x:Type local:FilterViewModel}}}" SelectedItem="{Binding FilterTextType, Mode=TwoWay}" ItemDisplayBinding="{Binding ., Converter={StaticResource enumDisplayConverter}}" Title="Comparison" HorizontalOptions="FillAndExpand" />
-                                <Entry Text="{Binding TextValue, Mode=TwoWay}" MaxLength="100" Placeholder="Enter Text" />
+                                <Entry Text="{Binding TextValue, Mode=TwoWay}" MaxLength="100" Placeholder="Enter Text" IsVisible="{Binding FilterTextType, Converter={StaticResource filterTextIsEmptyConverter}}" />
                             </StackLayout>
                             <StackLayout IsVisible="{Binding FilterOption, Converter={StaticResource filterTypeVisibleConverter}, ConverterParameter=2}">
                                 <Picker ItemsSource="{Binding ListValues}" SelectedItem="{Binding ListSelectedValue}" ItemDisplayBinding="{Binding Value}" Title="Filter Value" HorizontalOptions="FillAndExpand" />

@@ -29,6 +29,7 @@ namespace GameTrackerWPF
         {
             InitializeComponent();
             FillComboBox();
+            ComboBoxTextType.SelectionChanged += ComboBoxTextType_SelectionChanged;
             if (initialValue != null) SetInitialValues((List<string>)initialValue);
         }
 
@@ -46,6 +47,11 @@ namespace GameTrackerWPF
         {
             ComboBoxTextType.SelectedValue = (FilterTextType)Enum.Parse(typeof(FilterTextType), values[0]);
             TextBoxValue.Text = values[1];
+        }
+
+        private void ComboBoxTextType_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            TextBoxValue.Visibility = (FilterTextType)ComboBoxTextType.SelectedValue == FilterTextType.IsEmpty ? Visibility.Collapsed : Visibility.Visible;
         }
 
         public sealed class FilterTextComboBoxItem

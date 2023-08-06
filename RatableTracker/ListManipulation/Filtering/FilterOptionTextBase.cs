@@ -14,7 +14,8 @@ namespace RatableTracker.ListManipulation.Filtering
     {
         [EnumDisplay(Name = "Starts With")] StartsWith = 1,
         [EnumDisplay(Name = "Ends With")] EndsWith = 2,
-        Contains = 3
+        Contains = 3,
+        [EnumDisplay(Name = "Is Empty")] IsEmpty = 4
     }
 
     public abstract class FilterOptionTextBase<T> : FilterOptionBase, IFilterOptionText, IFilterOptionAction<T>
@@ -46,6 +47,7 @@ namespace RatableTracker.ListManipulation.Filtering
                 FilterTextType.StartsWith => (obj) => GetComparisonValue(obj).ToLower().StartsWith(FilterText.ToLower()),
                 FilterTextType.EndsWith => (obj) => GetComparisonValue(obj).ToLower().EndsWith(FilterText.ToLower()),
                 FilterTextType.Contains => (obj) => GetComparisonValue(obj).ToLower().Contains(FilterText.ToLower()),
+                FilterTextType.IsEmpty => (obj) => GetComparisonValue(obj).Length <= 0,
                 _ => throw new ListManipulationException("Invalid filter text type: " + TextType.ToString(), TextType),
             };
         }
