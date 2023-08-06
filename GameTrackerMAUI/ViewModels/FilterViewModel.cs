@@ -124,6 +124,8 @@ namespace GameTrackerMAUI.ViewModels
                 SavedState.FilterGames = engine;
             else
                 SavedState.FilterPlatforms = engine;
+            if (SavedState.FilterGames.Filters.Exists(s => s.FilterOption.Equals(new FilterOptionGameCompilations()) && !s.Negate))
+                SavedState.ShowCompilations = true;
             SavedState.Save(PathController);
 
             if (_filterType == FilterType.Game)

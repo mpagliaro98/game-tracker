@@ -26,6 +26,7 @@ using System.Diagnostics;
 using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.ListManipulation.Filtering;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using GameTracker.Filtering;
 
 namespace GameTrackerWPF
 {
@@ -498,6 +499,11 @@ namespace GameTrackerWPF
         private void GameFilterWindow_Search(object sender, FilterWindowSearchEventArgs e)
         {
             savedState.FilterGames = e.FilterEngine;
+            if (savedState.FilterGames.Filters.Exists(s => s.FilterOption.Equals(new FilterOptionGameCompilations()) && !s.Negate))
+            {
+                CheckboxShowCompilations.IsChecked = true;
+                savedState.ShowCompilations = true;
+            }
             UpdateGamesUI();
             SetButtonInUse(GamesButtonSearch, savedState.FilterGames.Filters.Count > 0);
         }

@@ -96,6 +96,7 @@ namespace GameTrackerWPF
         private void ButtonSearch_Click(object sender, RoutedEventArgs e)
         {
             var filterEngine = UIValuesToFilterEngine();
+
             Search?.Invoke(this, new FilterWindowSearchEventArgs() { FilterEngine = filterEngine });
             Close();
         }
