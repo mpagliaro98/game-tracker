@@ -57,7 +57,7 @@ namespace GameTrackerWPF
         {
             return filterType switch
             {
-                FilterMode.Game => FilterEngine.GetFilterOptionList<GameObject>(module, settings, new List<Type>() { typeof(FilterOptionModelRank) }),
+                FilterMode.Game => FilterEngine.GetFilterOptionList<GameObject>(module, settings, new List<Type>() { typeof(FilterOptionModelRank), typeof(FilterOptionModelComment) }),
                 FilterMode.Platform => FilterEngine.GetFilterOptionList<Platform>(module, settings),
                 _ => throw new NotImplementedException()
             };

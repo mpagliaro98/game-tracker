@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
         mc:Ignorable="d"
-        Title="Game" Height="600" Width="900" MinHeight="600" MinWidth="900">
+        Title="Game" Height="700" Width="900" MinHeight="700" MinWidth="900">
     <Window.Resources>
         <BitmapImage x:Key="ButtonEdit" UriSource="/Images/button_pencil.png" />
         <BitmapImage x:Key="ButtonLock" UriSource="/Images/button_lock.png" />
@@ -17,7 +17,8 @@
             <RowDefinition Height="50" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="2.5*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
         <Grid>
@@ -148,10 +149,18 @@
                 <RowDefinition Height="26" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <Label Content="Comments" />
+            <Label Content="Comment" />
+            <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="5000" />
+        </Grid>
+        <Grid VerticalAlignment="Stretch" Grid.Row="6">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Content="Thoughts" />
             <TextBox x:Name="TextBoxComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="10000" />
         </Grid>
-        <StackPanel Grid.Row="6" HorizontalAlignment="Center">
+        <StackPanel Grid.Row="7" HorizontalAlignment="Center">
             <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonSave_Click" />
         </StackPanel>
     </Grid>

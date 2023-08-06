@@ -167,8 +167,13 @@
                 <Label Text="{Binding Item.FinishedOn, Converter={StaticResource dateDisplayConverter}}" FontSize="Medium" />
             </StackLayout>
 
-            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.Comment, Converter={StaticResource stringEmptyConverter}}">
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.GameComment, Converter={StaticResource stringEmptyConverter}}">
                 <Label Text="Comment:" FontSize="Small" />
+                <Label Text="{Binding Item.GameComment}" FontSize="Medium" LineBreakMode="WordWrap" />
+            </StackLayout>
+
+            <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.Comment, Converter={StaticResource stringEmptyConverter}}">
+                <Label Text="Thoughts:" FontSize="Small" />
                 <Label Text="{Binding Item.Comment}" FontSize="Medium" LineBreakMode="WordWrap" />
             </StackLayout>
         </StackLayout>

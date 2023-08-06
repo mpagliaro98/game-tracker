@@ -237,7 +237,7 @@ namespace GameTrackerMAUI.ViewModels
         private void InitUI()
         {
             if (_filterType == FilterType.Game)
-                _options = FilterEngine.GetFilterOptionList<GameObject>(Module, Settings, new List<Type>() { typeof(FilterOptionModelRank) });
+                _options = FilterEngine.GetFilterOptionList<GameObject>(Module, Settings, new List<Type>() { typeof(FilterOptionModelRank), typeof(FilterOptionModelComment) });
             else
                 _options = FilterEngine.GetFilterOptionList<GameTracker.Platform>(Module, Settings);
             _textTypes = Enum.GetValues<FilterTextType>().OrderBy(e => e.ToDisplayString()).ToList();

@@ -102,6 +102,12 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(Item.FinishedOn, value, () => Item.FinishedOn = value);
         }
 
+        public string GameComment
+        {
+            get => Item.GameComment;
+            set => SetProperty(Item.GameComment, value, () => Item.GameComment = value);
+        }
+
         public string Comment
         {
             get => Item.Comment;
@@ -314,6 +320,7 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(StartedOn));
             OnPropertyChanged(nameof(FinishedOn));
             OnPropertyChanged(nameof(Comment));
+            OnPropertyChanged(nameof(GameComment));
             OnPropertyChanged(nameof(IsRemaster));
             IsPartOfCompilation = Item.IsPartOfCompilation;
             OnPropertyChanged(nameof(CompName));
@@ -354,6 +361,7 @@ namespace GameTrackerMAUI.ViewModels
             CompletionComment = CompletionComment.Trim();
             TimeSpent = TimeSpent.Trim();
             Comment = Comment.Trim();
+            GameComment = GameComment.Trim();
         }
 
         protected override async Task SaveObject()

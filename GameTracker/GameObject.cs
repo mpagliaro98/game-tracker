@@ -21,12 +21,14 @@ namespace GameTracker
         public static int MaxLengthCompletionCriteria => 1000;
         public static int MaxLengthCompletionComment => 1000;
         public static int MaxLengthTimeSpent => 1000;
+        public static int MaxLengthGameComment => 5000;
 
         public new CategoryExtensionGame CategoryExtension { get { return (CategoryExtensionGame)base.CategoryExtension; } }
 
         [Savable] public string CompletionCriteria { get; set; } = "";
         [Savable] public string CompletionComment { get; set; } = "";
         [Savable] public string TimeSpent { get; set; } = "";
+        [Savable] public string GameComment { get; set; } = "";
         [Savable] public virtual DateTime ReleaseDate { get; set; } = DateTime.MinValue;
         [Savable] public virtual DateTime AcquiredOn { get; set; } = DateTime.MinValue;
         [Savable] public virtual DateTime StartedOn { get; set; } = DateTime.MinValue;
@@ -195,6 +197,7 @@ namespace GameTracker
             CompletionCriteria = copyFrom.CompletionCriteria;
             CompletionComment = copyFrom.CompletionComment;
             TimeSpent = copyFrom.TimeSpent;
+            GameComment = copyFrom.GameComment;
             ReleaseDate = copyFrom.ReleaseDate;
             AcquiredOn = copyFrom.AcquiredOn;
             StartedOn = copyFrom.StartedOn;
@@ -218,6 +221,8 @@ namespace GameTracker
                 throw new ValidationException("Completion comment cannot be longer than " + MaxLengthCompletionComment.ToString() + " characters", CompletionComment);
             if (TimeSpent.Length > MaxLengthTimeSpent)
                 throw new ValidationException("Time spent cannot be longer than " + MaxLengthTimeSpent.ToString() + " characters", TimeSpent);
+            if (GameComment.Length > MaxLengthGameComment)
+                throw new ValidationException("Game comment cannot be longer than " + MaxLengthGameComment.ToString() + " characters", GameComment);
             if (OriginalGame != null && OriginalGame.Equals(this))
                 throw new ValidationException("Cannot set the Original Game field to this game");
             try

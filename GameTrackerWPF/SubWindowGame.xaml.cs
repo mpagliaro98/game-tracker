@@ -72,6 +72,7 @@ namespace GameTrackerWPF
             if (!orig.StartedOn.Equals(DateTime.MinValue)) DatePickerStarted.SelectedDate = orig.StartedOn;
             if (!orig.FinishedOn.Equals(DateTime.MinValue)) DatePickerFinished.SelectedDate = orig.FinishedOn;
             TextBoxComments.Text = orig.Comment;
+            TextBoxGameComments.Text = orig.GameComment;
             TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
             CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
             TextboxCompilation.Text = this.compNameOriginal;
@@ -102,6 +103,7 @@ namespace GameTrackerWPF
             DatePickerStarted.SelectedDateChanged += DatePickerStarted_SelectedDateChanged;
             DatePickerFinished.SelectedDateChanged += DatePickerFinished_SelectedDateChanged;
             TextBoxComments.TextChanged += TextBoxComments_TextChanged;
+            TextBoxGameComments.TextChanged += TextBoxGameComments_TextChanged;
 
             // refresh UI logic
             UpdateScores();
@@ -422,6 +424,11 @@ namespace GameTrackerWPF
         private void TextBoxComments_TextChanged(object sender, TextChangedEventArgs e)
         {
             orig.Comment = TextBoxComments.Text.Trim();
+        }
+
+        private void TextBoxGameComments_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.GameComment = TextBoxGameComments.Text.Trim();
         }
         #endregion
 
