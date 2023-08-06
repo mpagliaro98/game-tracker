@@ -75,9 +75,7 @@ namespace GameTrackerMAUI.ViewModels
             SavedState.Save(PathController);
             IsBusy = true;
             SetCompilationsButton();
-            string msg = SavedState.ShowCompilations ?
-                "Compilations are now being shown in the list, and games in compilations are hidden." :
-                "Games in compilations are visible, and compilations are being hidden.";
+            string msg = SavedState.ShowCompilations ? "Now showing compilations" : "Compilations are now hidden";
             await ToastService.ShowToastAsync(msg);
         }
 
