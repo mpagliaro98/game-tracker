@@ -369,7 +369,7 @@ namespace GameTrackerWPF
         {
             ListBoxItemGameSmall lbi = GetControlFromMenuItem<ListBoxItemGameSmall>((MenuItem)sender);
 
-            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this game?", "Delete Game Confirmation", MessageBoxButton.YesNo);
+            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("Are you sure you would like to delete this game?", "Delete Game Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
             try
@@ -570,7 +570,7 @@ namespace GameTrackerWPF
         {
             ListBoxItemPlatform lbi = GetControlFromMenuItem<ListBoxItemPlatform>((MenuItem)sender);
 
-            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this platform and all data associated with it?", "Delete Platform Confirmation", MessageBoxButton.YesNo);
+            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("Are you sure you would like to delete this platform and all data associated with it?", "Delete Platform Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
             try
@@ -696,7 +696,7 @@ namespace GameTrackerWPF
 
             if (minScore != settings.MinScore || maxScore != settings.MaxScore)
             {
-                MessageBoxResult mbr = MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
+                MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("Changing the score ranges will scale all your existing scores to fit within the new range. Would you like to do this?", "Change Score Range Confirmation", MessageBoxButton.YesNo);
                 if (mbr != MessageBoxResult.Yes) return;
             }
 
@@ -727,7 +727,7 @@ namespace GameTrackerWPF
             if (FileHandlerAWSS3.KeyFileExists(pathController))
             {
                 // Remove key file
-                var result = MessageBox.Show("Game Tracker will switch to using save files directly on this device.\n\nWould you also like to download your data from AWS and replace any local data with your AWS data?", "Overwrite local?", MessageBoxButton.YesNo);
+                var result = Xceed.Wpf.Toolkit.MessageBox.Show("Game Tracker will switch to using save files directly on this device.\n\nWould you also like to download your data from AWS and replace any local data with your AWS data?", "Overwrite local?", MessageBoxButton.YesNo);
                 
                 IFileHandler newFileHandler = new FileHandlerLocalAppData(pathController, LoadSaveMethodJSON.SAVE_FILE_DIRECTORY);
                 ILoadSaveHandler<ILoadSaveMethodGame> newLoadSave = new LoadSaveHandler<ILoadSaveMethodGame>(() => new LoadSaveMethodJSONGame(newFileHandler, factory, App.Logger));
@@ -759,7 +759,7 @@ namespace GameTrackerWPF
                 OpenFileDialog fileDialog = new OpenFileDialog();
                 if (fileDialog.ShowDialog() == true)
                 {
-                    var result = MessageBox.Show("Game Tracker will switch to using remote save files with AWS.\n\nWould you also like to upload your data to AWS and replace any existing remote data?", "Overwrite AWS?", MessageBoxButton.YesNo);
+                    var result = Xceed.Wpf.Toolkit.MessageBox.Show("Game Tracker will switch to using remote save files with AWS.\n\nWould you also like to upload your data to AWS and replace any existing remote data?", "Overwrite AWS?", MessageBoxButton.YesNo);
                     try
                     {
                         IFileHandler newFileHandler = new FileHandlerAWSS3(fileDialog.FileName, pathController);
@@ -836,7 +836,7 @@ namespace GameTrackerWPF
         {
             ListBoxItemRatingCategory lbi = GetControlFromMenuItem<ListBoxItemRatingCategory>((MenuItem)sender);
 
-            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this rating category and all data associated with it?", "Delete Rating Category Confirmation", MessageBoxButton.YesNo);
+            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("Are you sure you would like to delete this rating category and all data associated with it?", "Delete Rating Category Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
             try
@@ -918,7 +918,7 @@ namespace GameTrackerWPF
         {
             ListBoxItemCompletionStatus lbi = GetControlFromMenuItem<ListBoxItemCompletionStatus>((MenuItem)sender);
 
-            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this status and all data associated with it?", "Delete Status Confirmation", MessageBoxButton.YesNo);
+            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("Are you sure you would like to delete this status and all data associated with it?", "Delete Status Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
             try
@@ -986,7 +986,7 @@ namespace GameTrackerWPF
         {
             ListBoxItemScoreRange lbi = GetControlFromMenuItem<ListBoxItemScoreRange>((MenuItem)sender);
 
-            MessageBoxResult mbr = MessageBox.Show("Are you sure you would like to delete this score range?", "Delete Score Range Confirmation", MessageBoxButton.YesNo);
+            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show("Are you sure you would like to delete this score range?", "Delete Score Range Confirmation", MessageBoxButton.YesNo);
             if (mbr != MessageBoxResult.Yes) return;
 
             try
@@ -1046,7 +1046,7 @@ namespace GameTrackerWPF
                 "\nAuthor: Michael Pagliaro" +
                 "\nGitHub: github.com/mpagliaro98" +
                 "\nThis open-source software is covered under the MIT license, see the license in the GitHub repository for more information.";
-            MessageBox.Show(message, "About", MessageBoxButton.OK);
+            Xceed.Wpf.Toolkit.MessageBox.Show(message, "About", MessageBoxButton.OK);
         }
 
         private void MenuBackupExport_Click(object sender, RoutedEventArgs e)
@@ -1069,14 +1069,14 @@ namespace GameTrackerWPF
                     string encodedString = Convert.ToBase64String(contents);
                     byte[] fileData = RatableTracker.Util.Util.TextEncoding.GetBytes(encodedString);
                     fileHandler.SaveFile(dialog.FileName, fileData, App.Logger);
-                    MessageBox.Show("Saved a save backup to " + dialog.FileName, "Save Backup", MessageBoxButton.OK);
+                    Xceed.Wpf.Toolkit.MessageBox.Show("Saved a save backup to " + dialog.FileName, "Save Backup", MessageBoxButton.OK);
                 }
             }
             catch (Exception ex)
             {
                 App.Logger.Log("Error exporting save backup: " + ex.GetType().Name + " - " + ex.Message);
                 App.Logger.Log(ex.StackTrace);
-                MessageBox.Show("An error occurred when trying to export the save backup. Please try again later.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Xceed.Wpf.Toolkit.MessageBox.Show("An error occurred when trying to export the save backup. Please try again later.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -1098,7 +1098,7 @@ namespace GameTrackerWPF
                     byte[] contents = Convert.FromBase64String(base64Data);
                     using (var conn = loadSave.NewConnection())
                         conn.ImportSaveBackup(contents);
-                    MessageBox.Show("Successfully imported the save backup from " + dialog.FileName, "Import Backup", MessageBoxButton.OK);
+                    Xceed.Wpf.Toolkit.MessageBox.Show("Successfully imported the save backup from " + dialog.FileName, "Import Backup", MessageBoxButton.OK);
                     await LoadAllData();
                 }
             }
@@ -1106,7 +1106,7 @@ namespace GameTrackerWPF
             {
                 App.Logger.Log("Error importing save backup: " + ex.GetType().Name + " - " + ex.Message);
                 App.Logger.Log(ex.StackTrace);
-                MessageBox.Show("An error occurred when trying to import the save backup. Please try again later.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                Xceed.Wpf.Toolkit.MessageBox.Show("An error occurred when trying to import the save backup. Please try again later.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         #endregion

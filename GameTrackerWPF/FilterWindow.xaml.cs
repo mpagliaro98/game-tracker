@@ -146,7 +146,7 @@ namespace GameTrackerWPF
         {
             if ((filterMode == FilterMode.Game ? savedState.GameSavedSearches : savedState.PlatformSavedSearches).Count >= 30)
             {
-                MessageBox.Show("You can keep up to 30 saved searches at a time.", "Limit Reached", MessageBoxButton.OK);
+                Xceed.Wpf.Toolkit.MessageBox.Show("You can keep up to 30 saved searches at a time.", "Limit Reached", MessageBoxButton.OK);
                 return;
             }
 

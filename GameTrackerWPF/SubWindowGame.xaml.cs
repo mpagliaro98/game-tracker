@@ -134,7 +134,7 @@ namespace GameTrackerWPF
                             ((comp.PlatformPlayedOn == null && orig.PlatformPlayedOn != null) || (comp.PlatformPlayedOn != null && orig.PlatformPlayedOn == null) || (comp.PlatformPlayedOn != null && !comp.PlatformPlayedOn.Equals(orig.PlatformPlayedOn))) ||
                             ((comp.StatusExtension.Status == null && orig.StatusExtension.Status != null) || (comp.StatusExtension.Status != null && orig.StatusExtension.Status == null) || (comp.StatusExtension.Status != null && !comp.StatusExtension.Status.Equals(orig.StatusExtension.Status))))
                         {
-                            MessageBoxResult mbr = MessageBox.Show($"The status or platform fields of this game are different from the compilation's ({compName}) status/platform fields. Would you like to propagate those changes to the compilation?", "Game Changes", MessageBoxButton.YesNo);
+                            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show($"The status or platform fields of this game are different from the compilation's ({compName}) status/platform fields. Would you like to propagate those changes to the compilation?", "Game Changes", MessageBoxButton.YesNo);
                             if (mbr == MessageBoxResult.Yes)
                             {
                                 comp.Platform = orig.Platform;

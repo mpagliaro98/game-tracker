@@ -74,9 +74,9 @@ namespace GameTrackerWPF
         public static void DisplayUIExceptionMessage(this Exception e)
         {
             if (e is ValidationException val)
-                MessageBox.Show(val.Message, "Invalid Fields");
+                Xceed.Wpf.Toolkit.MessageBox.Show(val.Message, "Invalid Fields");
             else
-                MessageBox.Show("Unexpected error - " + e.GetType().Name + ": " + e.Message + "\n\nSee the logs for more information.", "Unexpected Error");
+                Xceed.Wpf.Toolkit.MessageBox.Show("Unexpected error - " + e.GetType().Name + ": " + e.Message + "\n\nSee the logs for more information.", "Unexpected Error");
         }
 
         public static void GoToURL(string url)
