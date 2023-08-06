@@ -12,6 +12,6 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <ComboBox x:Name="ComboBoxTextType" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="5" SelectedValuePath="Value" DisplayMemberPath="DisplayText" />
-        <TextBox x:Name="TextBoxValue" Grid.Column="1" VerticalAlignment="Center" Margin="5" MaxLength="100" HorizontalAlignment="Stretch" />
+        <TextBox x:Name="TextBoxValue" Grid.Column="1" VerticalAlignment="Center" Margin="5" MaxLength="100" HorizontalAlignment="Stretch" TextWrapping="NoWrap" />
     </Grid>
 </UserControl>

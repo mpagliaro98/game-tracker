@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:GameTrackerWPF"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid x:Name="GridMain" HorizontalAlignment="Stretch">
+    <Grid x:Name="GridMain" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150" />
             <ColumnDefinition Width="1*" />

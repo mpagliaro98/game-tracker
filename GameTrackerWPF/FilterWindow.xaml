@@ -34,7 +34,7 @@
             <Button x:Name="ButtonClear" Grid.Column="6" Content="Clear" HorizontalAlignment="Right" Width="60" VerticalAlignment="Center" Margin="0,0,5,0" Click="ButtonClear_Click" />
         </Grid>
         <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Visible" Grid.Row="1">
-            <ListBox x:Name="ListBoxFilters" HorizontalContentAlignment="Stretch" />
+            <ListBox x:Name="ListBoxFilters" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
         </ScrollViewer>
         <Button x:Name="ButtonSearch" Content="Search" Grid.Row="2" HorizontalAlignment="Center" Width="100" VerticalAlignment="Center" Click="ButtonSearch_Click" />
     </Grid>
