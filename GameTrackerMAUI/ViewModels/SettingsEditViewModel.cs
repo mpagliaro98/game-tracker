@@ -123,7 +123,7 @@ namespace GameTrackerMAUI.ViewModels
                 return;
             }
 
-            await Shell.Current.GoToAsync("..");
+            await ToastService.ShowToastAsync("Successfully saved settings");
         }
 
         private void UpdateAWSButtonText()

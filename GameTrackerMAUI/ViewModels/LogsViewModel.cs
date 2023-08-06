@@ -38,6 +38,10 @@ namespace GameTrackerMAUI.ViewModels
         {
             if (item != null)
             {
+#if ANDROID
+                // fix for MAUI bug where permissions for FileSaver don't work on Android 13 (API 33)
+                await UtilMAUI.RequestPermissionAsync(ToastService);
+#endif
                 var fileInfo = item as RatableTracker.Util.FileInfo;
                 string logContent = Logger.GetLogFileContents(((RatableTracker.Util.FileInfo)item).Name);
                 using var stream = new MemoryStream(RatableTracker.Util.Util.TextEncoding.GetBytes(logContent));

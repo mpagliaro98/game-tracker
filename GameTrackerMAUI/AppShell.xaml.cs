@@ -35,6 +35,10 @@ namespace GameTrackerMAUI
             var logger = provider.GetService<ILogger>();
             try
             {
+#if ANDROID
+                // fix for MAUI bug where permissions for FileSaver don't work on Android 13 (API 33)
+                await UtilMAUI.RequestPermissionAsync(provider.GetService<IToastService>());
+#endif
                 string filename = "backup_" + DateTime.UtcNow.ToString("MM-dd-yyyy_HH-mm-ss") + ".bac";
                 byte[] contents = null;
                 using (var conn = provider.GetService<ISharedDataService>().LoadSave.NewConnection())

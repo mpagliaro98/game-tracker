@@ -6,6 +6,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameTrackerMAUI.Services;
+#if ANDROID
+using Android;
+using Android.Content.PM;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
+#endif
 
 #nullable enable
 
@@ -42,5 +49,27 @@ namespace GameTrackerMAUI
             return (Tuple<PopupList.EnumOutputType, object>?)await ShowPopupAsync(new PopupList(title, options, selectedValue, doubleTap));
         }
 #nullable disable
+
+#if ANDROID
+    // fix for MAUI bug where certain storage permissions don't work on Android 13 (API 33)
+    public static async Task<bool> RequestPermissionAsync(IToastService toastService)
+    {
+        var activity = Platform.CurrentActivity ?? throw new NullReferenceException("Current activity is null");
+
+        if (ContextCompat.CheckSelfPermission(activity, Manifest.Permission.ReadExternalStorage) == Permission.Granted)
+        {
+            return true;
+        }
+
+        if (ActivityCompat.ShouldShowRequestPermissionRationale(activity, Manifest.Permission.ReadExternalStorage))
+        {
+            await toastService.ShowToastAsync("Please grant access to external storage");
+        }
+
+        ActivityCompat.RequestPermissions(activity, new[] { Manifest.Permission.ReadExternalStorage }, 1);
+
+        return false;
+    }
+#endif
     }
 }
