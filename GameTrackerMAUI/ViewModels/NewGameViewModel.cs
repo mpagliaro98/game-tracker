@@ -380,12 +380,25 @@ namespace GameTrackerMAUI.ViewModels
                 GameCompilation comp;
                 if (matches.Count > 0)
                 {
+                    // existing compilation - prompt if user would like to overwrite compilation fields with game ones
                     comp = matches[0];
-                    if (((comp.Platform == null && Platform != null) || (comp.Platform != null && Platform == null) || (comp.Platform != null && !comp.Platform.Equals(Platform))) ||
-                        ((comp.PlatformPlayedOn == null && PlatformPlayedOn != null) || (comp.PlatformPlayedOn != null && PlatformPlayedOn == null) || (comp.PlatformPlayedOn != null && !comp.PlatformPlayedOn.Equals(PlatformPlayedOn))) ||
-                        ((comp.StatusExtension.Status == null && Status != null) || (comp.StatusExtension.Status != null && Status == null) || (comp.StatusExtension.Status != null && !comp.StatusExtension.Status.Equals(Status))))
+                    var compStatus = comp.StatusExtension.Status;
+                    var compPlat = comp.Platform;
+                    var compPlatPlayed = comp.PlatformPlayedOn;
+                    var gameStatus = Status;
+                    var gamePlat = Platform;
+                    var gamePlatPlayed = PlatformPlayedOn;
+                    string message = "";
+                    if (compStatus == null ? gameStatus != null : !compStatus.Equals(gameStatus))
+                        message += (message.Length > 0 ? "\n" : "") + "Status: " + (gameStatus == null ? "None" : gameStatus.Name);
+                    if (compPlat == null ? gamePlat != null : !compPlat.Equals(gamePlat))
+                        message += (message.Length > 0 ? "\n" : "") + "Platform: " + (gamePlat == null ? "None" : gamePlat.Name);
+                    if (compPlatPlayed == null ? gamePlatPlayed != null : !compPlatPlayed.Equals(gamePlatPlayed))
+                        message += (message.Length > 0 ? "\n" : "") + "Platform Played On: " + (gamePlatPlayed == null ? "None" : gamePlatPlayed.Name);
+
+                    if (message.Length > 0)
                     {
-                        if (await AlertService.DisplayConfirmationAsync("Game Changes", $"The status or platform fields of this game are different from the compilation's ({CompName}) status/platform fields. Would you like to propagate those changes to the compilation?"))
+                        if (await AlertService.DisplayConfirmationAsync("Game Changes", $"Would you also like to apply these changes to {comp.Name}?\n{message}"))
                         {
                             comp.Platform = Platform;
                             comp.PlatformPlayedOn = PlatformPlayedOn;

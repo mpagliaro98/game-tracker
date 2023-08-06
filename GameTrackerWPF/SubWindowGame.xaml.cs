@@ -130,11 +130,23 @@ namespace GameTrackerWPF
                     {
                         // existing compilation - prompt if user would like to overwrite compilation fields with game ones
                         comp = new GameCompilation(matches[0]);
-                        if (((comp.Platform == null && orig.Platform != null) || (comp.Platform != null && orig.Platform == null) || (comp.Platform != null && !comp.Platform.Equals(orig.Platform))) ||
-                            ((comp.PlatformPlayedOn == null && orig.PlatformPlayedOn != null) || (comp.PlatformPlayedOn != null && orig.PlatformPlayedOn == null) || (comp.PlatformPlayedOn != null && !comp.PlatformPlayedOn.Equals(orig.PlatformPlayedOn))) ||
-                            ((comp.StatusExtension.Status == null && orig.StatusExtension.Status != null) || (comp.StatusExtension.Status != null && orig.StatusExtension.Status == null) || (comp.StatusExtension.Status != null && !comp.StatusExtension.Status.Equals(orig.StatusExtension.Status))))
+                        var compStatus = comp.StatusExtension.Status;
+                        var compPlat = comp.Platform;
+                        var compPlatPlayed = comp.PlatformPlayedOn;
+                        var gameStatus = orig.StatusExtension.Status;
+                        var gamePlat = orig.Platform;
+                        var gamePlatPlayed = orig.PlatformPlayedOn;
+                        string message = "";
+                        if (compStatus == null ? gameStatus != null : !compStatus.Equals(gameStatus))
+                            message += (message.Length > 0 ? "\n" : "") + "Status: " + (gameStatus == null ? "None" : gameStatus.Name);
+                        if (compPlat == null ? gamePlat != null : !compPlat.Equals(gamePlat))
+                            message += (message.Length > 0 ? "\n" : "") + "Platform: " + (gamePlat == null ? "None" : gamePlat.Name);
+                        if (compPlatPlayed == null ? gamePlatPlayed != null : !compPlatPlayed.Equals(gamePlatPlayed))
+                            message += (message.Length > 0 ? "\n" : "") + "Platform Played On: " + (gamePlatPlayed == null ? "None" : gamePlatPlayed.Name);
+
+                        if (message.Length > 0)
                         {
-                            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show($"The status or platform fields of this game are different from the compilation's ({compName}) status/platform fields. Would you like to propagate those changes to the compilation?", "Game Changes", MessageBoxButton.YesNo);
+                            MessageBoxResult mbr = Xceed.Wpf.Toolkit.MessageBox.Show($"Would you also like to apply these changes to {comp.Name}?\n{message}", "Game Changes", MessageBoxButton.YesNo);
                             if (mbr == MessageBoxResult.Yes)
                             {
                                 comp.Platform = orig.Platform;
