@@ -66,8 +66,8 @@
                                     <StackLayout>
                                         <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
                                         <StackLayout Orientation="Horizontal">
-                                            <Slider HorizontalOptions="FillAndExpand" Minimum="0" Maximum="1" Value="{Binding CategoryValue, Mode=TwoWay, Converter={StaticResource minMaxSliderConverter}}" x:Name="slider" />
-                                            <Entry Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.#}'}" FontSize="Medium" MaxLength="10" WidthRequest="50" HorizontalOptions="Start" Keyboard="Numeric" />
+                                            <Slider HorizontalOptions="FillAndExpand" Minimum="0" Maximum="1" Value="{Binding CategoryValue, Mode=TwoWay, Converter={StaticResource minMaxSliderConverter}}" x:Name="slider" IsEnabled="{Binding IsUsingOriginalGameScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}, Converter={StaticResource booleanInvertConverter}}" />
+                                            <Entry Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.#}'}" FontSize="Medium" MaxLength="10" WidthRequest="50" HorizontalOptions="Start" Keyboard="Numeric" IsEnabled="{Binding IsUsingOriginalGameScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}, Converter={StaticResource booleanInvertConverter}}" />
                                         </StackLayout>
                                     </StackLayout>
                                 </DataTemplate>
