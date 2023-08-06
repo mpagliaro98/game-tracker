@@ -198,6 +198,7 @@ namespace GameTrackerMAUI.ViewModels
                 else
                     SavedState.PlatformSavedSearches.Add(engine);
                 SavedState.Save(PathController);
+                await ToastService.ShowToastAsync("Successfully saved your search criteria");
             }
         }
 
