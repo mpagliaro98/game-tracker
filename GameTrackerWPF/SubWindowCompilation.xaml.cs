@@ -108,9 +108,14 @@ namespace GameTrackerWPF
             var item = new ComboBoxItem();
             item.Content = "N/A";
             cb.Items.Add(item);
-            foreach (StatusGame cs in rm.StatusExtension.GetStatusList().OrderBy(s => s.Name))
+            foreach (StatusGame cs in rm.StatusExtension.GetStatusList().OfType<StatusGame>().OrderBy(s => s.Name))
             {
-                cb.Items.Add(cs);
+                if ((orig.IsUnfinishable && cs.StatusUsage == StatusUsage.UnfinishableGamesOnly) ||
+                    (!orig.IsUnfinishable && cs.StatusUsage == StatusUsage.FinishableGamesOnly) ||
+                    cs.StatusUsage == StatusUsage.AllGames)
+                {
+                    cb.Items.Add(cs);
+                }
             }
         }
 

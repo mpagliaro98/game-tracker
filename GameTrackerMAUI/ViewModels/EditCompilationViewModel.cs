@@ -29,7 +29,13 @@ namespace GameTrackerMAUI.ViewModels
 
         public IEnumerable<Status> CompletionStatuses
         {
-            get => Module.StatusExtension.GetStatusList().OrderBy(s => s.Name).ToList();
+            get => Module.StatusExtension.GetStatusList()
+                .OfType<StatusGame>()
+                .Where(s => (Item.IsUnfinishable && s.StatusUsage == StatusUsage.UnfinishableGamesOnly) ||
+                            (!Item.IsUnfinishable && s.StatusUsage == StatusUsage.FinishableGamesOnly) ||
+                            s.StatusUsage == StatusUsage.AllGames)
+                .OrderBy(s => s.Name)
+                .ToList();
         }
 
         public GameTracker.Platform Platform
