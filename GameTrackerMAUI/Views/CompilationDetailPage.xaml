@@ -118,8 +118,8 @@
             </StackLayout>
 
             <Label Text="Games in this Compilation:" FontSize="Small" />
-            <CollectionView ItemsSource="{Binding GamesInCompilation}" SelectionMode="None" HeightRequest="150">
-                <CollectionView.ItemTemplate>
+            <VerticalStackLayout BindableLayout.ItemsSource="{Binding GamesInCompilation}">
+                <BindableLayout.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="5" x:DataType="gametracker:GameObject">
                             <Grid.ColumnDefinitions>
@@ -148,8 +148,8 @@
                             </Grid.GestureRecognizers>
                         </Grid>
                     </DataTemplate>
-                </CollectionView.ItemTemplate>
-            </CollectionView>
+                </BindableLayout.ItemTemplate>
+            </VerticalStackLayout>
         </StackLayout>
     </ScrollView>
 </ContentPage>
