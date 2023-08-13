@@ -9,6 +9,7 @@ using RatableTracker.ScoreRanges;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -320,6 +321,101 @@ namespace GameTracker
             }
             else
                 return base.Score;
+        }
+
+        private IList<Tuple<GameObject, int>> FindGamesWithSimilarName(int maxNumGames)
+        {
+            if (Name.Length <= 0) return new List<Tuple<GameObject, int>>();
+            var similarNames = new List<Tuple<GameObject, int>>();
+            var games = Module.GetGamesIncludeInStats(Settings);
+            foreach (var game in games)
+            {
+                if (game.Equals(this)) continue;
+                int dist = Util.LevenshteinDistance(Name.ToLower(), game.Name.ToLower());
+                int threshold = Convert.ToInt32(Math.Floor(Math.Max(Name.Length, game.Name.Length) * 0.65)); // skip if names are more than 65% different
+                if (dist >= threshold) continue;
+                similarNames.Add(Tuple.Create(game, dist));
+            }
+            // improve threshold: if a large enough gap exists between two entries on the list relative to every other gap, use that as the threshold
+            // if a large gap doesn't exist, default to something like 65%
+            var result = similarNames.OrderBy(t => t.Item2).ToList();
+#if DEBUG
+            Debug.WriteLine("\nAll games under threshold for " + Name + " (" + Name.Length.ToString() + ")");
+            for (int i = 0; i < maxNumGames; i++)
+            {
+                if (i >= result.Count) break;
+                var t = result[i];
+                Debug.WriteLine("\t==> " + t.Item1.Name + " (" + t.Item1.Name.Length.ToString() + ")" + " - " + t.Item2.ToString() + " (threshold: " + Convert.ToInt32(Math.Floor(Math.Max(Name.Length, t.Item1.Name.Length) * 0.65)).ToString() + ")");
+            }
+#endif
+            return result.Take(maxNumGames).ToList();
+        }
+
+        private IList<GameObject> FindGamesWithSimilarNameAndScore(int maxNumGames, double compareScore, RatingCategory category = null)
+        {
+            var similarNames = FindGamesWithSimilarName(999);
+            var matches = similarNames.OrderBy(g => (g.Item2 * 0.3) + Math.Abs(compareScore - (category == null ? g.Item1.ScoreDisplay : g.Item1.CategoryExtension.ScoreOfCategoryDisplay(category)))).Take(maxNumGames).ToList();
+#if DEBUG
+            Debug.WriteLine("Closest score matches for " + Name + " (" + compareScore.ToString() + ")");
+            for (int i = 0; i < maxNumGames; i++)
+            {
+                if (i >= matches.Count) break;
+                var g = matches[i].Item1;
+                Debug.WriteLine("\t==> " + g.Name + " (" + (category == null ? g.ScoreDisplay : g.CategoryExtension.ScoreOfCategoryDisplay(category)).ToString() + ")" + " - " + Math.Abs(compareScore - (category == null ? g.ScoreDisplay : g.CategoryExtension.ScoreOfCategoryDisplay(category))).ToString() + "+" + (matches[i].Item2 * 0.3).ToString());
+            }
+            Debug.WriteLine("");
+#endif
+            return matches.Select(t => t.Item1).ToList();
+        }
+
+        private IList<GameObject> FindGamesWithHigherScore(int maxNumGames, double compareScore, RatingCategory category = null, IList<GameObject> exclude = null)
+        {
+            exclude ??= new List<GameObject>();
+            var similarScores = new List<Tuple<GameObject, double>>();
+            var games = Module.GetGamesIncludeInStats(Settings);
+            foreach (var game in games)
+            {
+                if (game.Equals(this) || exclude.Contains(game)) continue;
+                double score = category == null ? game.ScoreDisplay : game.CategoryExtension.ScoreOfCategoryDisplay(category);
+                if (score > compareScore) similarScores.Add(Tuple.Create(game, score));
+            }
+            return similarScores.OrderBy(t => t.Item2).Select(t => t.Item1).Take(maxNumGames).ToList();
+        }
+
+        private IList<GameObject> FindGamesWithLowerScore(int maxNumGames, double compareScore, RatingCategory category = null, IList<GameObject> exclude = null)
+        {
+            exclude ??= new List<GameObject>();
+            var similarScores = new List<Tuple<GameObject, double>>();
+            var games = Module.GetGamesIncludeInStats(Settings);
+            foreach (var game in games)
+            {
+                if (game.Equals(this) || exclude.Contains(game)) continue;
+                double score = category == null ? game.ScoreDisplay : game.CategoryExtension.ScoreOfCategoryDisplay(category);
+                if (score <= compareScore) similarScores.Add(Tuple.Create(game, score));
+            }
+            return similarScores.OrderByDescending(t => t.Item2).Select(t => t.Item1).Take(maxNumGames).ToList();
+        }
+
+        public IList<Tuple<string, GameObject>> SimilarScoreSuggestions(double compareScore, RatingCategory category = null)
+        {
+            const int maxSimilarName = 2;
+            const int maxGames = 4;
+            var similarNames = FindGamesWithSimilarNameAndScore(maxSimilarName, compareScore, category);
+            int numHigher = Convert.ToInt32(Math.Ceiling((double)(maxGames - similarNames.Count) / 2));
+            int numLower = Convert.ToInt32(Math.Floor((double)(maxGames - similarNames.Count) / 2));
+            var higher = FindGamesWithHigherScore(numHigher, compareScore, category, similarNames);
+            var lower = FindGamesWithLowerScore(numLower + (numHigher - higher.Count), compareScore, category, similarNames);
+            var fullList = similarNames.Concat(higher).Concat(lower).ToList();
+
+            var scoreList = fullList.Select(g => Tuple.Create(g, category == null ? g.ScoreDisplay : g.CategoryExtension.ScoreOfCategoryDisplay(category))).ToList();
+            scoreList.Add(Tuple.Create(this, compareScore));
+
+            var outputLines = new List<Tuple<string, GameObject>>();
+            foreach (var game in scoreList.OrderByDescending(t => t.Item2))
+            {
+                outputLines.Add(Tuple.Create(game.Item1.Name + " - " + game.Item2.ToString("0.##"), game.Item1));
+            }
+            return outputLines;
         }
     }
 }

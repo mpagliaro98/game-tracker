@@ -76,7 +76,7 @@
                             <Image Source="{StaticResource ButtonEdit}" />
                         </Button>
                     </StackPanel>
-                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" />
+                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" GotFocus="TextBoxFinalScore_GotFocus" LostFocus="TextBoxFinalScore_LostFocus" />
                 </DockPanel>
                 <TextBlock x:Name="TextBlockStats" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" />
             </Grid>

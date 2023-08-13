@@ -269,6 +269,8 @@ namespace GameTrackerWPF
                     Text = categoryValue.PointValue.ToString()
                 };
                 text.TextChanged += TextBoxScore_TextChanged;
+                text.GotFocus += TextBoxScore_GotFocus;
+                text.LostFocus += TextBoxScore_LostFocus;
                 text.Tag = rc;
                 dock.Children.Add(label);
                 dock.Children.Add(text);
@@ -352,7 +354,7 @@ namespace GameTrackerWPF
             this.compName = TextboxCompilation.Text.Trim();
         }
 
-        private void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
+        private async void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (orig.IsUsingOriginalGameScore || !orig.CategoryExtension.AreCategoryValuesEditable) return;
 
@@ -364,6 +366,7 @@ namespace GameTrackerWPF
 
             orig.CategoryExtension.CategoryValuesManual.First(cv => cv.RatingCategory.Equals(rc)).PointValue = result ? score : settings.MinScore;
             UpdateScores();
+            await RefreshScoreSuggestions(textbox, rc);
         }
 
         private void ButtonEditScore_Click(object sender, RoutedEventArgs e)
@@ -373,7 +376,7 @@ namespace GameTrackerWPF
             UpdateScores();
         }
 
-        private void TextBoxFinalScore_TextChanged(object sender, TextChangedEventArgs e)
+        private async void TextBoxFinalScore_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (orig.IsUsingOriginalGameScore || !orig.CategoryExtension.IgnoreCategories) return;
 
@@ -384,6 +387,7 @@ namespace GameTrackerWPF
 
             orig.ManualScore = result ? score : settings.MinScore;
             UpdateScores();
+            await RefreshScoreSuggestions(TextBoxFinalScore);
         }
 
         private void TextboxCompletionCriteria_TextChanged(object sender, TextChangedEventArgs e)
@@ -429,6 +433,31 @@ namespace GameTrackerWPF
         private void TextBoxGameComments_TextChanged(object sender, TextChangedEventArgs e)
         {
             orig.GameComment = TextBoxGameComments.Text.Trim();
+        }
+
+        private async void TextBoxScore_GotFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            RatingCategory rc = (RatingCategory)tb.Tag;
+            await RefreshScoreSuggestions(tb, rc);
+        }
+
+        private void TextBoxScore_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox tb = (TextBox)sender;
+            ClearPreviousScoreSuggestions(tb);
+            if (tb.Text.Length == 0) tb.Text = settings.MinScore.ToString();
+        }
+
+        private async void TextBoxFinalScore_GotFocus(object sender, RoutedEventArgs e)
+        {
+            await RefreshScoreSuggestions(TextBoxFinalScore);
+        }
+
+        private void TextBoxFinalScore_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ClearPreviousScoreSuggestions(TextBoxFinalScore);
+            if (TextBoxFinalScore.Text.Length == 0) TextBoxFinalScore.Text = settings.MinScore.ToString();
         }
         #endregion
 
@@ -512,8 +541,40 @@ namespace GameTrackerWPF
                     var charBeforeRemoval = textbox.Text[change.Offset - 1];
                     if (charBeforeRemoval == '.' || charBeforeRemoval == '0') return true;
                 }
+                else if (change.RemovedLength > 0 && change.Offset == 0 && textbox.Text.Length == 0) return true;
             }
             return false;
+        }
+
+        private async Task RefreshScoreSuggestions(TextBox textBox, RatingCategory category = null)
+        {
+            ClearPreviousScoreSuggestions(textBox);
+            bool result = double.TryParse(textBox.Text, out double score);
+            if (!result)
+            {
+                textBox.ToolTip = null;
+                return;
+            }
+
+            var tooltip = new ToolTip();
+            var tb = new TextBlock();
+
+            var suggestions = await Task.Run(() => orig.SimilarScoreSuggestions(score, category));
+            foreach (var line in suggestions)
+            {
+                bool newLine = tb.Inlines.Count > 0;
+                tb.Inlines.Add(new Run((newLine ? "\n" : "") + line.Item1) { FontWeight = orig.Equals(line.Item2) ? FontWeights.Bold : FontWeights.Normal });
+            }
+            tooltip.Content = tb;
+            if (textBox.ToolTip != null) ((ToolTip)textBox.ToolTip).IsOpen = false;
+            textBox.ToolTip = tooltip;
+            tooltip.PlacementTarget = textBox;
+            tooltip.IsOpen = true;
+        }
+
+        private void ClearPreviousScoreSuggestions(TextBox textBox)
+        {
+            if (textBox.ToolTip != null) ((ToolTip)textBox.ToolTip).IsOpen = false;
         }
     }
 }

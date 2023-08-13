@@ -78,7 +78,7 @@
                         <BindableLayout.ItemTemplate>
                             <DataTemplate x:DataType="base:CategoryValueContainer">
                                 <StackLayout>
-                                    <Label Text="{Binding CategoryName}" FontSize="Small" FontAttributes="Italic" />
+                                    <Label Text="{Binding Category.Name}" FontSize="Small" FontAttributes="Italic" />
                                     <StackLayout Orientation="Horizontal">
                                         <Slider Minimum="0" Maximum="1" Value="{Binding CategoryValue, Converter={StaticResource minMaxSliderConverter}}" IsEnabled="False" HorizontalOptions="FillAndExpand" x:Name="slider" />
                                         <Label Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.##}'}" FontSize="Medium" WidthRequest="50" HorizontalOptions="Start" />

@@ -1,4 +1,5 @@
 using GameTrackerMAUI.ViewModels;
+using SimpleToolkit.Core;
 
 namespace GameTrackerMAUI.Views;
 
@@ -23,5 +24,17 @@ public partial class NewGamePage : ContentPage
         var picker = (DatePicker)sender;
         if (picker.Date <= picker.MinimumDate)
             picker.Date = DateTime.Today;
+    }
+
+    private void slider_DragStarted(object sender, EventArgs e)
+    {
+        Slider slider = (Slider)sender;
+        slider.ShowAttachedPopover();
+    }
+
+    private void slider_DragCompleted(object sender, EventArgs e)
+    {
+        Slider slider = (Slider)sender;
+        slider.HideAttachedPopover();
     }
 }

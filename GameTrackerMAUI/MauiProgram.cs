@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using RatableTracker.Interfaces;
 using RatableTracker.LoadSave;
 using RatableTracker.Util;
+using SimpleToolkit.Core;
 using SkiaSharp.Views.Maui.Controls.Hosting;
 
 namespace GameTrackerMAUI
@@ -24,6 +25,7 @@ namespace GameTrackerMAUI
                 })
                 .UseMauiCommunityToolkit()
                 .UseSkiaSharp()
+                .UseSimpleToolkit()
                 .RegisterServices()
                 .RegisterViewModels()
                 .RegisterViews();

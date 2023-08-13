@@ -97,9 +97,8 @@ namespace GameTrackerMAUI.ViewModels
                 List<CategoryValueContainer> vals = new();
                 foreach (var cv in Item.CategoryExtension.CategoryValuesDisplay)
                 {
-                    var container = new CategoryValueContainer
+                    var container = new CategoryValueContainer(Item, cv.RatingCategory)
                     {
-                        CategoryName = cv.RatingCategory.Name,
                         CategoryValue = cv.PointValue
                     };
                     vals.Add(container);

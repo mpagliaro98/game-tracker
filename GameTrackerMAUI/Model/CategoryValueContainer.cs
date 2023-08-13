@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GameTracker;
+using RatableTracker.ObjAddOns;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -10,19 +12,72 @@ namespace GameTrackerMAUI
 {
     public class CategoryValueContainer : INotifyPropertyChanged
     {
-        private string categoryName = "";
+        private readonly GameObject game;
+        private readonly RatingCategory category;
         private double categoryValue = 0;
+        private string _similarScoreBefore = "";
+        private string _similarScoreGame = "";
+        private string _similarScoreAfter = "";
+        private bool refreshing = false;
 
-        public string CategoryName
+        public GameObject Game
         {
-            get => categoryName;
-            set => SetProperty(ref categoryName, value);
+            get => game;
+        }
+
+        public RatingCategory Category
+        {
+            get => category;
         }
 
         public double CategoryValue
         {
             get => categoryValue;
-            set => SetProperty(ref categoryValue, value);
+            set
+            {
+                SetProperty(ref categoryValue, value);
+                if (!refreshing)
+                {
+                    var _ = RefreshSimilar();
+                }
+            }
+        }
+
+        public string SimilarScoreBefore => _similarScoreBefore;
+        public string SimilarScoreGame => _similarScoreGame;
+        public string SimilarScoreAfter => _similarScoreAfter;
+
+        public CategoryValueContainer(GameObject game, RatingCategory category)
+        {
+            this.game = game;
+            this.category = category;
+        }
+
+        public async Task RefreshSimilar()
+        {
+            refreshing = true;
+            var similar = await Task.Run(() => Game.SimilarScoreSuggestions(CategoryValue, Category));
+            _similarScoreBefore = "";
+            _similarScoreGame = "";
+            _similarScoreAfter = "";
+            bool afterGame = false;
+            foreach (var t in similar)
+            {
+                if (t.Item2.Equals(Game))
+                {
+                    if (_similarScoreBefore.Length > 0) _similarScoreBefore += "\n";
+                    _similarScoreGame = t.Item1 + "\n";
+                    afterGame = true;
+                }
+                else if (afterGame)
+                    _similarScoreAfter += (_similarScoreAfter.Length > 0 ? "\n" : "") + t.Item1;
+                else
+                    _similarScoreBefore += (_similarScoreBefore.Length > 0 ? "\n" : "") + t.Item1;
+            }
+            OnPropertyChanged(nameof(SimilarScoreBefore));
+            OnPropertyChanged(nameof(SimilarScoreGame));
+            OnPropertyChanged(nameof(SimilarScoreAfter));
+            refreshing = false;
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,

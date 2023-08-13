@@ -475,7 +475,7 @@ namespace GameTrackerMAUI.ViewModels
             BindingList<CategoryValueContainer> newVals = new();
             foreach (CategoryValue item in oldVals)
             {
-                newVals.Add(new CategoryValueContainer() { CategoryName = item.RatingCategory.Name, CategoryValue = item.PointValue });
+                newVals.Add(new CategoryValueContainer(Item, item.RatingCategory) { CategoryValue = item.PointValue });
             }
             newVals.ListChanged += CategoryValues_ListChanged;
             return newVals;
@@ -500,9 +500,8 @@ namespace GameTrackerMAUI.ViewModels
             var vals = new BindingList<CategoryValueContainer>();
             foreach (var cat in Module.CategoryExtension.GetRatingCategoryList())
             {
-                var container = new CategoryValueContainer
+                var container = new CategoryValueContainer(Item, cat)
                 {
-                    CategoryName = cat.Name,
                     CategoryValue = Item == null ? Settings.MinScore : Item.CategoryExtension.ScoreOfCategory(cat)
                 };
                 vals.Add(container);
