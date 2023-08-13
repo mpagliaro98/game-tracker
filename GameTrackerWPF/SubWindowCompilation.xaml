@@ -5,12 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
         mc:Ignorable="d"
-        Title="Compilation" Height="600" Width="800" MinHeight="600" MinWidth="800">
+        Title="Compilation" Height="700" Width="800" MinHeight="700" MinWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="120" />
             <RowDefinition Height="105" />
             <RowDefinition Height="50" />
+            <RowDefinition Height="265" />
             <RowDefinition Height="*" />
             <RowDefinition Height="40" />
         </Grid.RowDefinitions>
@@ -109,7 +110,15 @@
                 </ListBox.ItemsPanel>
             </ListBox>
         </DockPanel>
-        <StackPanel Grid.Row="4" HorizontalAlignment="Center">
+        <Grid VerticalAlignment="Stretch" Grid.Row="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="26" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Label Content="Comment" />
+            <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="5000" />
+        </Grid>
+        <StackPanel Grid.Row="5" HorizontalAlignment="Center">
             <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
         </StackPanel>
     </Grid>

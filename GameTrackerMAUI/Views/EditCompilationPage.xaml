@@ -26,6 +26,9 @@
 
                     <Label Text="Platform Played On:" FontSize="Small" />
                     <Picker ItemsSource="{Binding Platforms}" ItemDisplayBinding="{Binding Name}" SelectedItem="{Binding PlatformPlayedOn}" Title="--Select One--" Margin="0,0,0,10" />
+
+                    <Label Text="Comment:" FontSize="Small" />
+                    <Editor Text="{Binding GameComment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="5000" AutoSize="TextChanges" />
                 </StackLayout>
             </ScrollView>
         </ContentView>

@@ -54,6 +54,7 @@ namespace GameTrackerWPF
             ComboBoxStatus.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
             ComboBoxPlatform.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
             ComboBoxPlatformPlayedOn.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
+            TextBoxGameComments.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
 
             // set fields in the UI
             TextboxName.Text = orig.Name;
@@ -61,6 +62,7 @@ namespace GameTrackerWPF
             if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform;
             if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
             TextBoxFinalScore.Text = orig.Score.ToString(UtilWPF.SCORE_FORMAT);
+            TextBoxGameComments.Text = orig.GameComment;
             CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
             CheckboxNotOwned.IsChecked = orig.IsNotOwned;
             DatePickerRelease.SelectedDate = orig.ReleaseDate;
@@ -76,6 +78,7 @@ namespace GameTrackerWPF
             ComboBoxStatus.SelectionChanged += ComboBoxStatus_SelectionChanged;
             ComboBoxPlatform.SelectionChanged += ComboBoxPlatform_SelectionChanged;
             ComboBoxPlatformPlayedOn.SelectionChanged += ComboBoxPlatformPlayedOn_SelectionChanged;
+            TextBoxGameComments.TextChanged += TextBoxGameComments_TextChanged;
 
             // refresh UI logic
             UpdateStats();
@@ -207,6 +210,11 @@ namespace GameTrackerWPF
         private void ComboBoxPlatformPlayedOn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex > 0 ? (Platform)ComboBoxPlatformPlayedOn.SelectedItem : null;
+        }
+
+        private void TextBoxGameComments_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            orig.GameComment = TextBoxGameComments.Text.Trim();
         }
 
         private void UpdateStats()

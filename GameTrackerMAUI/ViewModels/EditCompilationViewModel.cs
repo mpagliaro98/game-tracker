@@ -55,6 +55,12 @@ namespace GameTrackerMAUI.ViewModels
             get => Module.GetPlatformList(new SortEngine() { SortOption = new SortOptionPlatformName() }, Settings);
         }
 
+        public string GameComment
+        {
+            get => Item.GameComment;
+            set => SetProperty(Item.GameComment, value, () => Item.GameComment = value);
+        }
+
         public EditCompilationViewModel(IServiceProvider provider) : base(provider) { }
 
         protected override GameCompilation CreateNewObject()
@@ -74,11 +80,18 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(Platform));
             OnPropertyChanged(nameof(PlatformPlayedOn));
+            OnPropertyChanged(nameof(GameComment));
         }
 
         protected override IList<GameCompilation> GetObjectList()
         {
             return Module.GetModelObjectList(Settings).OfType<GameCompilation>().ToList();
+        }
+
+        protected override void PreSave()
+        {
+            base.PreSave();
+            GameComment = GameComment.Trim();
         }
 
         protected override async Task SaveObject()
