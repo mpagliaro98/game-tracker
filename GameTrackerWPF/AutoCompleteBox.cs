@@ -49,7 +49,8 @@ namespace GameTrackerWPF
 
         private void InputText_LostFocus(object sender, RoutedEventArgs e)
         {
-            IsSuggestionVisible = !((ListBox)GetTemplateChild("suggestionBox")).IsFocused;
+            ListBoxItem lbi = suggestionBox.ItemContainerGenerator.ContainerFromIndex(suggestionBox.SelectedIndex) as ListBoxItem;
+            IsSuggestionVisible = lbi.IsKeyboardFocused;
         }
 
         void onKeyUp(object sender, KeyEventArgs e)
