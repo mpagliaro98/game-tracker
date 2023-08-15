@@ -26,6 +26,7 @@
                     <Label Text="Acquired Year:" FontSize="Small" />
                     <Entry Text="{Binding AcquiredYear, Mode=TwoWay}" FontSize="Medium" Keyboard="Numeric" Margin="0,0,0,10" />
                     <Label Text="Color:" FontSize="Small" />
+                    <Rectangle Background="{Binding Color}" HorizontalOptions="Start" HeightRequest="50" WidthRequest="50" />
                     <cp:ColorPicker x:Name="colors" PickedColor="{Binding Color, Mode=TwoWay}" Margin="0,0,0,10" ColorSpectrumStyle="ShadeToHueToTintStyle" WidthRequest="300" HeightRequest="300" />
                 </StackLayout>
             </ScrollView>
