@@ -489,12 +489,12 @@ namespace GameTrackerMAUI.ViewModels
             FinishedOn = DateTime.MinValue;
         }
 
-        private BindingList<CategoryValueContainer> ToValueContainerList(IEnumerable<CategoryValue> oldVals)
+        private BindingList<CategoryValueContainer> ToValueContainerList(IEnumerable<CategoryValue> oldVals, bool calculateSimilar = false)
         {
             BindingList<CategoryValueContainer> newVals = new();
             foreach (CategoryValue item in oldVals)
             {
-                newVals.Add(new CategoryValueContainer(Item, item.RatingCategory) { CategoryValue = item.PointValue });
+                newVals.Add(new CategoryValueContainer(Item, item.RatingCategory, calculateSimilar) { CategoryValue = item.PointValue });
             }
             newVals.ListChanged += CategoryValues_ListChanged;
             return newVals;
@@ -519,7 +519,7 @@ namespace GameTrackerMAUI.ViewModels
             var vals = new BindingList<CategoryValueContainer>();
             foreach (var cat in Module.CategoryExtension.GetRatingCategoryList())
             {
-                var container = new CategoryValueContainer(Item, cat)
+                var container = new CategoryValueContainer(Item, cat, true)
                 {
                     CategoryValue = Item == null ? Settings.MinScore : Item.CategoryExtension.ScoreOfCategory(cat)
                 };

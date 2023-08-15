@@ -18,7 +18,9 @@ namespace GameTrackerMAUI
         private string _similarScoreBefore = "";
         private string _similarScoreGame = "";
         private string _similarScoreAfter = "";
+        private bool calculateSimilar = false;
         private bool refreshing = false;
+        private Mutex refreshMutex = new(false);
 
         public GameObject Game
         {
@@ -36,8 +38,11 @@ namespace GameTrackerMAUI
             set
             {
                 SetProperty(ref categoryValue, value);
+                if (!calculateSimilar) return;
+                refreshMutex.WaitOne();
                 if (!refreshing)
                 {
+                    refreshMutex.ReleaseMutex();
                     var _ = RefreshSimilar();
                 }
             }
@@ -47,15 +52,18 @@ namespace GameTrackerMAUI
         public string SimilarScoreGame => _similarScoreGame;
         public string SimilarScoreAfter => _similarScoreAfter;
 
-        public CategoryValueContainer(GameObject game, RatingCategory category)
+        public CategoryValueContainer(GameObject game, RatingCategory category, bool calculateSimilar = false)
         {
             this.game = game;
             this.category = category;
+            this.calculateSimilar = calculateSimilar;
         }
 
         public async Task RefreshSimilar()
         {
+            refreshMutex.WaitOne();
             refreshing = true;
+            refreshMutex.ReleaseMutex();
             var similar = await Task.Run(() => Game.SimilarScoreSuggestions(CategoryValue, Category));
             _similarScoreBefore = "";
             _similarScoreGame = "";
@@ -77,7 +85,9 @@ namespace GameTrackerMAUI
             OnPropertyChanged(nameof(SimilarScoreBefore));
             OnPropertyChanged(nameof(SimilarScoreGame));
             OnPropertyChanged(nameof(SimilarScoreAfter));
+            refreshMutex.WaitOne();
             refreshing = false;
+            refreshMutex.ReleaseMutex();
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,
