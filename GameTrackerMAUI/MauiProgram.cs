@@ -8,6 +8,7 @@ using RatableTracker.LoadSave;
 using RatableTracker.Util;
 using SimpleToolkit.Core;
 using SkiaSharp.Views.Maui.Controls.Hosting;
+using zoft.MauiExtensions.Controls;
 
 namespace GameTrackerMAUI
 {
@@ -26,6 +27,7 @@ namespace GameTrackerMAUI
                 .UseMauiCommunityToolkit()
                 .UseSkiaSharp()
                 .UseSimpleToolkit()
+                .UseZoftAutoCompleteEntry()
                 .RegisterServices()
                 .RegisterViewModels()
                 .RegisterViews();

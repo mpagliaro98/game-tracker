@@ -7,6 +7,7 @@
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
+             xmlns:zoft="http://zoft.MauiExtensions/Controls"
              x:DataType="local:NewGameViewModel"
              Shell.TabBarIsVisible="False"
              Title="{Binding Title}">
@@ -15,6 +16,7 @@
             <converters:BooleanInvertConverter x:Key="booleanInvertConverter" />
             <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
             <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
+            <converters:OffsetConverter x:Key="offsetConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -70,7 +72,7 @@
                                             <Slider HorizontalOptions="FillAndExpand" Minimum="0" Maximum="1" Value="{Binding CategoryValue, Mode=TwoWay, Converter={StaticResource minMaxSliderConverter}}" x:Name="slider" IsEnabled="{Binding IsUsingOriginalGameScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}, Converter={StaticResource booleanInvertConverter}}" DragStarted="slider_DragStarted" DragCompleted="slider_DragCompleted">
                                                 <simpleCore:Popover.AttachedPopover>
                                                     <simpleCore:Popover>
-                                                        <Border Background="White" Padding="5">
+                                                        <Border Background="White" Padding="5" WidthRequest="{Binding Source={x:Reference slider}, Path=Width}" HeightRequest="125">
                                                             <Border.StrokeShape>
                                                                 <RoundRectangle CornerRadius="6" />
                                                             </Border.StrokeShape>
@@ -138,24 +140,27 @@
                             <Label Text="Part of a Compilation:" FontSize="Small" />
                             <Switch IsToggled="{Binding IsPartOfCompilation}" Margin="0,0,0,10" HorizontalOptions="Start" />
                         </VerticalStackLayout>
-                        <VerticalStackLayout IsVisible="{Binding IsRemaster}" Grid.Row="2">
-                            <Label Text="Original Game:" FontSize="Small" />
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
-                                    <ColumnDefinition Width="32" />
-                                </Grid.ColumnDefinitions>
-                                <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding NameAndPlatform}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="FillAndExpand" />
-                                <ImageButton Source="cancel" Command="{Binding ClearOriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
-                            </Grid>
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}" Grid.Row="3">
+                        <FlexLayout JustifyContent="SpaceEvenly" Grid.Row="2" Grid.ColumnSpan="2">
+                            <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsRemaster}" FlexLayout.Basis="50%" FlexLayout.Grow="1">
+                                <Label Text="Original Game:" FontSize="Small" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="1*" />
+                                        <ColumnDefinition Width="32" />
+                                    </Grid.ColumnDefinitions>
+                                    <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding NameAndPlatform}" SelectedItem="{Binding OriginalGame}" Title="--Select One--" HorizontalOptions="Fill" MaximumWidthRequest="{Binding Source={RelativeSource AncestorType={x:Type VerticalStackLayout}}, Path=Width, Converter={StaticResource offsetConverter}, ConverterParameter=32}" />
+                                    <ImageButton Source="cancel" Command="{Binding ClearOriginalGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                                </Grid>
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsPartOfCompilation}" FlexLayout.Basis="50%" FlexLayout.Grow="1">
+                                <Label Text="Name of Compilation:" FontSize="Small" />
+                                <zoft:AutoCompleteEntry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="200"
+                                ItemsSource="{Binding Compilations}" TextMemberPath="Name" DisplayMemberPath="Name" SelectedSuggestion="{Binding SelectedComp}" />
+                            </VerticalStackLayout>
+                        </FlexLayout>
+                        <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}" Grid.Row="3" Grid.ColumnSpan="2">
                             <Label Text="Use Score of Original Game:" FontSize="Small" />
                             <Switch IsToggled="{Binding UseOriginalGameScore}" HorizontalOptions="Start" />
-                        </VerticalStackLayout>
-                        <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsPartOfCompilation}" Grid.Row="2" Grid.Column="1">
-                            <Label Text="Name of Compilation:" FontSize="Small" />
-                            <Entry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="200" />
                         </VerticalStackLayout>
                     </Grid>
 

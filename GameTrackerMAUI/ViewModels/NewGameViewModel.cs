@@ -173,7 +173,11 @@ namespace GameTrackerMAUI.ViewModels
         public string CompName
         {
             get => _compName;
-            set => SetProperty(_compName, value, () => _compName = value);
+            set
+            {
+                SetProperty(ref _compName, value);
+                OnPropertyChanged(nameof(Compilations));
+            }
         }
 
         public BindingList<CategoryValueContainer> CategoryValues
@@ -269,6 +273,18 @@ namespace GameTrackerMAUI.ViewModels
             }
         }
 
+        public IEnumerable<GameCompilation> Compilations
+        {
+            get => Module.GetModelObjectList(Settings).OfType<GameCompilation>().Where(g => g.Name.ToLower().Contains(CompName.ToLower())).ToList();
+        }
+
+        private GameCompilation _selectedComp = null;
+        public GameCompilation SelectedComp
+        {
+            get => _selectedComp;
+            set => SetProperty(ref _selectedComp, value);
+        }
+
         public Command ClearStatusCommand { get; }
         public Command ClearPlatformCommand { get; }
         public Command ClearPlatformPlayedOnCommand { get; }
@@ -324,6 +340,7 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(IsRemaster));
             IsPartOfCompilation = Item.IsPartOfCompilation;
             OnPropertyChanged(nameof(CompName));
+            OnPropertyChanged(nameof(Compilations));
             OnPropertyChanged(nameof(ManualFinalScore));
             OnPropertyChanged(nameof(CategoryValues));
             OnPropertyChanged(nameof(FinalScore));
@@ -346,6 +363,8 @@ namespace GameTrackerMAUI.ViewModels
         {
             _compNameOriginal = item.IsPartOfCompilation ? item.Compilation.Name : "";
             CompName = _compNameOriginal;
+            // fix for AutoCompleteEntry bug - otherwise setting text would always result in empty text
+            if (CompName.Length > 0) SelectedComp = Compilations.Where(g => g.Name.Equals(CompName)).FirstOrDefault();
         }
 
         protected override bool ValidateSave()

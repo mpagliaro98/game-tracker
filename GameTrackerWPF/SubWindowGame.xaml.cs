@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -33,6 +34,8 @@ namespace GameTrackerWPF
         private string compName;
         private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
 
+        public ObservableCollection<string> CompNames { get; set; } = new ObservableCollection<string>();
+
         public event EventHandler Saved;
 
         public SubWindowGame(GameModule rm, SettingsGame settings, ILoadSaveHandler<ILoadSaveMethodGame> loadSave, SubWindowMode mode, GameObject orig)
@@ -44,6 +47,11 @@ namespace GameTrackerWPF
             this.settings = settings;
             this.compNameOriginal = orig.IsPartOfCompilation ? orig.Compilation.Name : "";
             this.compName = this.compNameOriginal;
+            CompNames.Clear();
+            foreach (var name in rm.GetModelObjectList(settings).OfType<GameObject>().Where(g => g.IsCompilation).Select(g => g.Name).ToList())
+            {
+                CompNames.Add(name);
+            }
 
             // initialize UI containers
             CreateRatingCategories();
@@ -75,7 +83,7 @@ namespace GameTrackerWPF
             TextBoxGameComments.Text = orig.GameComment;
             TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
             CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
-            TextboxCompilation.Text = this.compNameOriginal;
+            TextboxComp.Text = this.compNameOriginal;
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;
@@ -93,7 +101,7 @@ namespace GameTrackerWPF
             ComboBoxPlatformPlayedOn.SelectionChanged += ComboBoxPlatformPlayedOn_SelectionChanged;
             CheckboxCompilation.Checked += CheckboxCompilation_Checked;
             CheckboxCompilation.Unchecked += CheckboxCompilation_Checked;
-            TextboxCompilation.TextChanged += TextboxCompilation_TextChanged;
+            TextboxComp.TextChanged += TextboxCompilation_TextChanged;
             TextBoxFinalScore.TextChanged += TextBoxFinalScore_TextChanged;
             TextboxCompletionCriteria.TextChanged += TextboxCompletionCriteria_TextChanged;
             TextboxCompletionComment.TextChanged += TextboxCompletionComment_TextChanged;
@@ -351,7 +359,7 @@ namespace GameTrackerWPF
 
         private void TextboxCompilation_TextChanged(object sender, TextChangedEventArgs e)
         {
-            this.compName = TextboxCompilation.Text.Trim();
+            this.compName = TextboxComp.Text.Trim();
         }
 
         private async void TextBoxScore_TextChanged(object sender, TextChangedEventArgs e)
@@ -521,7 +529,7 @@ namespace GameTrackerWPF
 
         private void UpdateCompilationFields()
         {
-            TextboxCompilation.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
+            TextboxComp.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
             ButtonCompilationLink.Visibility = CheckboxCompilation.IsChecked.Value && orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Hidden;
         }
 

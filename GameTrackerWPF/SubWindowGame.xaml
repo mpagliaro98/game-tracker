@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
         mc:Ignorable="d"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="Game" Height="700" Width="900" MinHeight="700" MinWidth="900">
     <Window.Resources>
         <BitmapImage x:Key="ButtonEdit" UriSource="/Images/button_pencil.png" />
@@ -99,7 +100,7 @@
             <CheckBox x:Name="CheckboxUseOriginalGameScore" Content="Use score of original game" Grid.Column="3" VerticalAlignment="Center" Margin="5,0" />
             <ComboBox x:Name="ComboboxOriginalGame" Grid.Column="2" DisplayMemberPath="NameAndPlatform" VerticalAlignment="Center" />
             <Button x:Name="ButtonCompilationLink" Grid.Row="1" Grid.Column="3" Content="Go to compilation" Visibility="Hidden" Click="ButtonCompilationLink_Click" VerticalAlignment="Center" HorizontalAlignment="Left" Padding="5,0" Margin="5,0" />
-            <TextBox x:Name="TextboxCompilation" Grid.Row="1" Grid.Column="2" ToolTip="Name of the compilation" VerticalAlignment="Center" />
+            <local:AutoCompleteBox x:Name="TextboxComp" Grid.Row="1" Grid.Column="2" ToolTip="Name of the compilation" VerticalAlignment="Center" ItemsSource="{Binding Path=CompNames}" />
         </Grid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
