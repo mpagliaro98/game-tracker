@@ -52,6 +52,8 @@ namespace GameTrackerMAUI.ViewModels
             get => StatusUsage != StatusUsage.UnfinishableGamesOnly;
         }
 
+        public int MaxLengthName => StatusGame.MaxLengthName;
+
         public NewStatusViewModel(IServiceProvider provider) : base(provider)
         {
             Title = "New Status";

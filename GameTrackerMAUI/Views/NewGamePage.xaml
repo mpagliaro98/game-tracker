@@ -29,7 +29,7 @@
             <ScrollView>
                 <StackLayout Spacing="3" Padding="15">
                     <Label Text="Name:" FontSize="Small" />
-                    <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
+                    <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="{Binding MaxLengthName}" />
 
                     <Label Text="Status:" FontSize="Small" />
                     <Grid Margin="0,0,0,10">
@@ -154,7 +154,7 @@
                             </VerticalStackLayout>
                             <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsPartOfCompilation}" FlexLayout.Basis="50%" FlexLayout.Grow="1">
                                 <Label Text="Name of Compilation:" FontSize="Small" />
-                                <zoft:AutoCompleteEntry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="200"
+                                <zoft:AutoCompleteEntry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="{Binding MaxLengthCompName}"
                                 ItemsSource="{Binding Compilations}" TextMemberPath="Name" DisplayMemberPath="Name" SelectedSuggestion="{Binding SelectedComp}" />
                             </VerticalStackLayout>
                         </FlexLayout>
@@ -165,13 +165,13 @@
                     </Grid>
 
                     <Label Text="Completion Criteria:" FontSize="Small" />
-                    <Editor Text="{Binding CompletionCriteria, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
+                    <Editor Text="{Binding CompletionCriteria, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="{Binding MaxLengthCompletionCriteria}" AutoSize="TextChanges" />
 
                     <Label Text="Completion Comment:" FontSize="Small" />
-                    <Editor Text="{Binding CompletionComment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
+                    <Editor Text="{Binding CompletionComment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="{Binding MaxLengthCompletionComment}" AutoSize="TextChanges" />
 
                     <Label Text="Time Spent:" FontSize="Small" />
-                    <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="1000" AutoSize="TextChanges" />
+                    <Editor Text="{Binding TimeSpent, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="{Binding MaxLengthTimeSpent}" AutoSize="TextChanges" />
 
                     <Grid RowSpacing="5">
                         <Grid.RowDefinitions>
@@ -229,10 +229,10 @@
                     </Grid>
 
                     <Label Text="Comment:" FontSize="Small" />
-                    <Editor Text="{Binding GameComment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="5000" AutoSize="TextChanges" />
+                    <Editor Text="{Binding GameComment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="{Binding MaxLengthGameComment}" AutoSize="TextChanges" />
 
                     <Label Text="Thoughts:" FontSize="Small" />
-                    <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="10000" AutoSize="TextChanges" />
+                    <Editor Text="{Binding Comment, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="{Binding MaxLengthComment}" AutoSize="TextChanges" />
                 </StackLayout>
             </ScrollView>
         </ContentView>

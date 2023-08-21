@@ -13,7 +13,7 @@ namespace RatableTracker.Model
 {
     public class RankedObject : TrackerObjectBase
     {
-        public static int MaxLengthComment => 10000;
+        public static int MaxLengthComment => 30000;
 
         [Savable()] public string Comment { get; set; } = "";
 

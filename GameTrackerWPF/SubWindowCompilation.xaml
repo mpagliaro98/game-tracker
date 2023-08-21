@@ -116,7 +116,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Label Content="Comment" />
-            <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="5000" />
+            <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
         </Grid>
         <StackPanel Grid.Row="5" HorizontalAlignment="Center">
             <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonUpdate_Click" />

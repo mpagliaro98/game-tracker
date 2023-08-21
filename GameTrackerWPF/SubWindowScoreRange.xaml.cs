@@ -40,6 +40,9 @@ namespace GameTrackerWPF
             FillCombobox();
             ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
 
+            // set max length
+            TextboxName.MaxLength = ScoreRange.MaxLengthName;
+
             // set fields in the UI
             TextboxName.Text = orig.Name;
             ColorPickerColor.SelectedColor = orig.Color.ToMediaColor();

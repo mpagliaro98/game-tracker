@@ -24,7 +24,7 @@
             <ScrollView>
                 <StackLayout Spacing="3" Padding="15">
                     <Label Text="Name:" FontSize="Small" />
-                    <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="200" />
+                    <Entry Text="{Binding Name, Mode=TwoWay}" FontSize="Medium" Margin="0,0,0,10" MaxLength="{Binding MaxLengthName}" />
                     <Label Text="Mark as finished:" FontSize="Small" IsVisible="{Binding ShowMarkAsFinishedOption}" />
                     <CheckBox IsChecked="{Binding UseAsFinished, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" IsVisible="{Binding ShowMarkAsFinishedOption}" />
                     <Label Text="Hide score:" FontSize="Small" />

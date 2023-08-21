@@ -40,6 +40,10 @@ namespace GameTrackerWPF
             // initialize UI containers
             ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
 
+            // set max length
+            TextboxName.MaxLength = RatingCategoryWeighted.MaxLengthName;
+            TextboxComment.MaxLength = RatingCategoryWeighted.MaxLengthComment;
+
             // set fields in the UI
             TextboxName.Text = orig.Name;
             TextboxComment.Text = orig.Comment;

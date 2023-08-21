@@ -47,6 +47,8 @@ namespace GameTrackerMAUI.ViewModels
             get => Module.GetScoreRelationshipList();
         }
 
+        public int MaxLengthName => ScoreRange.MaxLengthName;
+
         public NewScoreRangeViewModel(IServiceProvider provider) : base(provider)
         {
             Title = "New Score Range";

@@ -28,6 +28,9 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(Item.Comment, value, () => Item.Comment = value);
         }
 
+        public int MaxLengthName => RatingCategoryWeighted.MaxLengthName;
+        public int MaxLengthComment => RatingCategoryWeighted.MaxLengthComment;
+
         public NewCategoryViewModel(IServiceProvider provider) : base(provider)
         {
             Title = "New Category";

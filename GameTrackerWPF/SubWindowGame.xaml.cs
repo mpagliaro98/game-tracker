@@ -61,6 +61,14 @@ namespace GameTrackerWPF
             FillComboboxGames(ComboboxOriginalGame);
             ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
 
+            // set max length
+            TextboxName.MaxLength = GameObject.MaxLengthName;
+            TextboxCompletionCriteria.MaxLength = GameObject.MaxLengthCompletionCriteria;
+            TextboxCompletionComment.MaxLength = GameObject.MaxLengthCompletionComment;
+            TextboxTimeSpent.MaxLength = GameObject.MaxLengthTimeSpent;
+            TextBoxGameComments.MaxLength = GameObject.MaxLengthGameComment;
+            TextBoxComments.MaxLength = GameObject.MaxLengthComment;
+
             // set fields in the UI
             TextboxName.Text = orig.Name;
             if (orig.StatusExtension.Status != null) ComboBoxStatus.SelectedItem = orig.StatusExtension.Status;

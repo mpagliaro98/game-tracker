@@ -285,6 +285,14 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(ref _selectedComp, value);
         }
 
+        public int MaxLengthName => GameObject.MaxLengthName;
+        public int MaxLengthCompName => GameCompilation.MaxLengthName;
+        public int MaxLengthCompletionCriteria => GameObject.MaxLengthCompletionCriteria;
+        public int MaxLengthCompletionComment => GameObject.MaxLengthCompletionComment;
+        public int MaxLengthTimeSpent => GameObject.MaxLengthTimeSpent;
+        public int MaxLengthComment => GameObject.MaxLengthComment;
+        public int MaxLengthGameComment => GameObject.MaxLengthGameComment;
+
         public Command ClearStatusCommand { get; }
         public Command ClearPlatformCommand { get; }
         public Command ClearPlatformPlayedOnCommand { get; }

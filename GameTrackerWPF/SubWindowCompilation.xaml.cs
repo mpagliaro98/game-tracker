@@ -56,6 +56,10 @@ namespace GameTrackerWPF
             ComboBoxPlatformPlayedOn.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
             TextBoxGameComments.IsEnabled = (mode != SubWindowMode.MODE_VIEW);
 
+            // set max length
+            TextboxName.MaxLength = GameCompilation.MaxLengthName;
+            TextBoxGameComments.MaxLength = GameCompilation.MaxLengthGameComment;
+
             // set fields in the UI
             TextboxName.Text = orig.Name;
             if (orig.StatusExtension.Status != null) ComboBoxStatus.SelectedItem = orig.StatusExtension.Status;

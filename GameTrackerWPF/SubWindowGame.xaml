@@ -151,7 +151,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Label Content="Comment" />
-            <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="5000" />
+            <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
         </Grid>
         <Grid VerticalAlignment="Stretch" Grid.Row="6">
             <Grid.RowDefinitions>
@@ -159,7 +159,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Label Content="Thoughts" />
-            <TextBox x:Name="TextBoxComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" MaxLength="10000" />
+            <TextBox x:Name="TextBoxComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
         </Grid>
         <StackPanel Grid.Row="7" HorizontalAlignment="Center">
             <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonSave_Click" />

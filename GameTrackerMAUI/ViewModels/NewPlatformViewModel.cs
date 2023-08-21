@@ -39,6 +39,9 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(Item.Color.ToMAUIColor(), value, () => Item.Color = value.ToFrameworkColor());
         }
 
+        public int MaxLengthName => GameTracker.Platform.MaxLengthName;
+        public int MaxLengthAbbreviation => GameTracker.Platform.MaxLengthAbbreviation;
+
         public NewPlatformViewModel(IServiceProvider provider) : base(provider)
         {
             Title = "New Platform";

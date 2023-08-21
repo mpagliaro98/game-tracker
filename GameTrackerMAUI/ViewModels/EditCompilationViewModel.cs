@@ -61,6 +61,9 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(Item.GameComment, value, () => Item.GameComment = value);
         }
 
+        public int MaxLengthName => GameCompilation.MaxLengthName;
+        public int MaxLengthGameComment => GameCompilation.MaxLengthGameComment;
+
         public EditCompilationViewModel(IServiceProvider provider) : base(provider) { }
 
         protected override GameCompilation CreateNewObject()
