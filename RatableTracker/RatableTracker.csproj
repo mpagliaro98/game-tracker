@@ -5,7 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>RatableTracker</PackageId>
     <Title>Tracker Framework</Title>
-    <Version>2.1.1</Version>
+    <Version>2.1.2</Version>
     <Authors>mpagliaro98</Authors>
     <Copyright>Copyright (c) 2023 Michael Pagliaro</Copyright>
   </PropertyGroup>

@@ -4,6 +4,7 @@ using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace RatableTracker.ListManipulation.Filtering
         private UniqueID _uniqueID;
         public RatingCategory Category
         {
-            get => Util.Util.FindObjectInList(((IModuleCategorical)Module).CategoryExtension.GetRatingCategoryList(), _uniqueID);
+            get => Util.Util.FindObjectInList(((IModuleCategorical)Module).CategoryExtension.GetRatingCategoryList(), _uniqueID) ?? new RatingCategory((IModuleCategorical)Module, (SettingsScore)Settings);
             private set => _uniqueID = value.UniqueID;
         }
         public override string Name => Category.Name;
@@ -26,7 +27,15 @@ namespace RatableTracker.ListManipulation.Filtering
 
         protected override double GetComparisonValue(IModelObjectCategorical obj)
         {
-            return obj.CategoryExtension.IgnoreCategories ? ((SettingsScore)Settings).MinScore : obj.CategoryExtension.ScoreOfCategoryDisplay(Category);
+            try
+            {
+                return obj.CategoryExtension.IgnoreCategories ? ((SettingsScore)Settings).MinScore : obj.CategoryExtension.ScoreOfCategoryDisplay(Category);
+            }
+            catch
+            {
+                Debug.WriteLine("Error when filtering on category - category does not exist");
+                return ((SettingsScore)Settings).MinScore;
+            }
         }
 
         public override bool Equals(object obj)

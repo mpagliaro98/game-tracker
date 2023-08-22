@@ -69,6 +69,12 @@ namespace GameTrackerWPF
         private void RefreshFilterOptionControl(object initialValues)
         {
             var option = (IFilterOption)ComboBoxOption.SelectedItem;
+            if (option == null)
+            {
+                option = (IFilterOption)ComboBoxOption.Items[0];
+                ComboBoxOption.SelectedIndex = 0;
+                initialValues = null;
+            }
             if (GridMain.Children.Count >= 4) GridMain.Children.RemoveAt(3);
             UIElement control = option.FilterType switch
             {
