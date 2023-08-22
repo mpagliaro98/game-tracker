@@ -74,8 +74,8 @@ namespace GameTrackerWPF
             DatePickerStarted.SelectedDate = orig.StartedOn;
             DatePickerFinished.SelectedDate = orig.FinishedOn;
             LabelStartedOn.Content = orig.IsUnfinishable ? "Played On" : "Started On";
-            Grid.SetColumnSpan(StackPanelStartedOn, orig.IsUnfinishable ? 2 : 1);
-            StackPanelFinishedOn.Visibility = orig.IsUnfinishable ? Visibility.Collapsed : Visibility.Visible;
+            Grid.SetColumnSpan(StackPanelStartedOn, orig.IsUnfinishable || !orig.IsFinished ? 2 : 1);
+            StackPanelFinishedOn.Visibility = orig.IsUnfinishable || !orig.IsFinished ? Visibility.Collapsed : Visibility.Visible;
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;

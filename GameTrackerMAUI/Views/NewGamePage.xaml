@@ -215,7 +215,7 @@
                                 <ImageButton Source="cancel" Command="{Binding ClearStartedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                             </Grid>
                         </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" IsVisible="{Binding IsUnfinishable, Converter={StaticResource booleanInvertConverter}}">
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" IsVisible="{Binding ShowFinishedOn}">
                             <Label Text="Finished On:" FontSize="Small" />
                             <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>

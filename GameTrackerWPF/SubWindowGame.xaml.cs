@@ -313,6 +313,7 @@ namespace GameTrackerWPF
         private void ComboBoxStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.StatusExtension.Status = ComboBoxStatus.SelectedIndex > 0 ? (Status)ComboBoxStatus.SelectedItem : null;
+            UpdateDateFieldVisibility();
         }
 
         private void CheckboxUnfinishable_Checked(object sender, RoutedEventArgs e)
@@ -518,9 +519,11 @@ namespace GameTrackerWPF
 
         private void UpdateDateFieldVisibility()
         {
-            StackPanelFinishedOn.Visibility = orig.IsUnfinishable ? Visibility.Hidden : Visibility.Visible;
-            Grid.SetColumnSpan(StackPanelStartedOn, orig.IsUnfinishable ? 2 : 1);
+            var hideFinishedOn = orig.IsUnfinishable || !orig.IsFinished;
+            StackPanelFinishedOn.Visibility = hideFinishedOn ? Visibility.Hidden : Visibility.Visible;
+            Grid.SetColumnSpan(StackPanelStartedOn, hideFinishedOn ? 2 : 1);
             LabelStartedOn.Content = orig.IsUnfinishable ? "Played On" : "Started On";
+            if (hideFinishedOn) DatePickerFinished.SelectedDate = DateTime.MinValue;
         }
 
         private void UpdateStats()

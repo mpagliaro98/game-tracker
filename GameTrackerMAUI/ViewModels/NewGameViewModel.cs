@@ -29,12 +29,16 @@ namespace GameTrackerMAUI.ViewModels
         private bool isPartOfCompilation;
         private bool showScoreFlag;
         private BindingList<CategoryValueContainer> vals = new BindingList<CategoryValueContainer>();
-        private bool showFinishedOn;
 
         public Status Status
         {
             get => Item.StatusExtension.Status;
-            set => SetProperty(Item.StatusExtension.Status, value, () => Item.StatusExtension.Status = value);
+            set
+            {
+                SetProperty(Item.StatusExtension.Status, value, () => Item.StatusExtension.Status = value);
+                OnPropertyChanged(nameof(ShowFinishedOn));
+                if (!ShowFinishedOn) FinishedOn = DateTime.MinValue;
+            }
         }
 
         public IEnumerable<Status> CompletionStatuses
@@ -214,7 +218,8 @@ namespace GameTrackerMAUI.ViewModels
             set
             {
                 SetProperty(Item.IsUnfinishable, value, () => Item.IsUnfinishable = value);
-                ShowFinishedOn = !value;
+                OnPropertyChanged(nameof(ShowFinishedOn));
+                if (!ShowFinishedOn) FinishedOn = DateTime.MinValue;
                 OnPropertyChanged(nameof(StartedOnName));
                 var previousStatus = Status;
                 OnPropertyChanged(nameof(CompletionStatuses));
@@ -235,8 +240,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public bool ShowFinishedOn
         {
-            get => showFinishedOn;
-            set => SetProperty(ref showFinishedOn, value);
+            get => !(Item.IsUnfinishable || !Item.IsFinished);
         }
 
         public string StartedOnName
@@ -360,6 +364,7 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(CompletionStatuses));
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(IsNotOwned));
+            OnPropertyChanged(nameof(ShowFinishedOn));
         }
 
         protected override IList<GameObject> GetObjectList()
