@@ -90,5 +90,10 @@ namespace GameTrackerMAUI
                 writer?.Close();
             }
         }
+
+        public void Delete(IPathController pathController)
+        {
+            pathController.DeleteFile(pathController.Combine(pathController.ApplicationDirectory(), SAVEDSTATE_FILENAME));
+        }
     }
 }

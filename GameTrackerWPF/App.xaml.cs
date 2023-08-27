@@ -47,6 +47,8 @@ namespace GameTrackerWPF
             {
                 string message = RatableTracker.Util.Util.FormatUnhandledExceptionMessage(exception, source);
                 Logger.Log(message);
+                SavedState.DeleteSavedState(new PathControllerWindows());
+                Logger.Log("Successfully deleted saved state");
             }
             catch (Exception ex)
             {

@@ -81,5 +81,10 @@ namespace GameTrackerWPF
                 writer?.Close();
             }
         }
+
+        public static void DeleteSavedState(IPathController pathController)
+        {
+            pathController.DeleteFile(pathController.Combine(pathController.ApplicationDirectory(), SAVEDSTATE_FILENAME));
+        }
     }
 }

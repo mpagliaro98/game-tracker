@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GameTrackerMAUI.Services;
+using RatableTracker.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -14,18 +16,18 @@ namespace GameTrackerMAUI
     private static Exception _lastFirstChanceException;
 #endif
 
-        public static void Init(RatableTracker.Interfaces.ILogger logger)
+        public static void Init(RatableTracker.Interfaces.ILogger logger, ISavedState savedState, IPathController pathController)
         {
             AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
             {
                 Debug.WriteLine("AppDomain.CurrentDomain.UnhandledException");
-                LogUnhandledException((Exception)args.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException", logger);
+                LogUnhandledException((Exception)args.ExceptionObject, "AppDomain.CurrentDomain.UnhandledException", logger, savedState, pathController);
             };
 
             TaskScheduler.UnobservedTaskException += (s, args) =>
             {
                 Debug.WriteLine("TaskScheduler.UnobservedTaskException");
-                LogUnhandledException(args.Exception, "TaskScheduler.UnobservedTaskException", logger);
+                LogUnhandledException(args.Exception, "TaskScheduler.UnobservedTaskException", logger, savedState, pathController);
                 args.SetObserved();
             };
 
@@ -42,7 +44,7 @@ namespace GameTrackerMAUI
             Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser += (sender, args) =>
             {
                 Debug.WriteLine("Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser");
-                LogUnhandledException(args.Exception, "Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser", logger);
+                LogUnhandledException(args.Exception, "Android.Runtime.AndroidEnvironment.UnhandledExceptionRaiser", logger, savedState, pathController);
             };
 
 #elif WINDOWS
@@ -60,17 +62,19 @@ namespace GameTrackerMAUI
                     exception = _lastFirstChanceException;
                 }
                 Debug.WriteLine("Microsoft.UI.Xaml.Application.Current.UnhandledException");
-                LogUnhandledException(exception, "Microsoft.UI.Xaml.Application.Current.UnhandledException", logger);
+                LogUnhandledException(exception, "Microsoft.UI.Xaml.Application.Current.UnhandledException", logger, savedState, pathController);
             };
 #endif
         }
 
-        private static void LogUnhandledException(Exception exception, string source, RatableTracker.Interfaces.ILogger logger)
+        private static void LogUnhandledException(Exception exception, string source, RatableTracker.Interfaces.ILogger logger, ISavedState savedState, IPathController pathController)
         {
             try
             {
                 string message = RatableTracker.Util.Util.FormatUnhandledExceptionMessage(exception, source);
                 logger.Log(message);
+                savedState.Delete(pathController);
+                logger.Log("Successfully deleted saved state");
             }
             catch (Exception ex)
             {

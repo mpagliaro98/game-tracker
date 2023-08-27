@@ -22,5 +22,6 @@ namespace GameTrackerMAUI.Services
         bool Loaded { get; set; }
         void Load(IPathController pathController, ILogger logger, GameModule module, SettingsGame settings);
         void Save(IPathController pathController);
+        void Delete(IPathController pathController);
     }
 }

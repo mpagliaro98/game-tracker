@@ -42,7 +42,7 @@ namespace GameTrackerMAUI
 
         public List<string> FilterValuesText => new() { FilterTextType.ToString(), TextValue };
         public string FilterValuesList => ListSelectedValue == null ? ListValues[0].Key.ToString() : ListSelectedValue.Key.ToString();
-        public List<string> FilterValuesDate => new() { FilterDateType.ToString(), FilterDatePreset.ToString(), DateValue1.ToString(), DateValue2.ToString() };
+        public List<string> FilterValuesDate => new() { FilterDateType == null ? RatableTracker.ListManipulation.Filtering.FilterDateType.Before.ToString() : FilterDateType.ToString(), FilterDatePreset == null ? RatableTracker.ListManipulation.Filtering.FilterDatePreset.None.ToString() : FilterDatePreset.ToString(), DateValue1.ToString(), DateValue2.ToString() };
         public List<string> FilterValuesNumeric => new() { FilterNumericType.ToString(), CleanInput(NumberValue1 ?? 0).ToString(), CleanInput(NumberValue2 ?? 0).ToString() };
 
         public bool Negate
