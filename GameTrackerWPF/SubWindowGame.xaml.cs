@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -14,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameTracker;
+using MahApps.Metro.Controls;
+using MahApps.Metro.IconPacks;
 using RatableTracker.Exceptions;
 using RatableTracker.Interfaces;
 using RatableTracker.ObjAddOns;
@@ -25,7 +28,7 @@ namespace GameTrackerWPF
     /// <summary>
     /// Interaction logic for SubWindowGame.xaml
     /// </summary>
-    public partial class SubWindowGame : Window
+    public partial class SubWindowGame : MetroWindow
     {
         private GameModule rm;
         private GameObject orig;
@@ -33,6 +36,7 @@ namespace GameTrackerWPF
         private string compNameOriginal;
         private string compName;
         private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
+        private bool showScoreSuggestions = true;
 
         public ObservableCollection<string> CompNames { get; set; } = new ObservableCollection<string>();
 
@@ -57,9 +61,10 @@ namespace GameTrackerWPF
             CreateRatingCategories();
             FillComboboxStatuses(ComboBoxStatus);
             FillComboboxPlatforms(ComboBoxPlatform);
-            FillComboboxPlatforms(ComboBoxPlatformPlayedOn);
+            FillComboboxPlatforms(ComboBoxPlatformPlayedOn, defaultItem: "Same as Platform");
             FillComboboxGames(ComboboxOriginalGame);
-            ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
+            ButtonSave.ToolTip = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
+            TabList.SelectedIndex = string.IsNullOrEmpty(orig.Name) ? 1 : 0;
 
             // set max length
             TextboxName.MaxLength = GameObject.MaxLengthName;
@@ -92,6 +97,23 @@ namespace GameTrackerWPF
             TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
             CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
             TextboxComp.Text = this.compNameOriginal;
+
+            SummaryName.Text = string.IsNullOrEmpty(orig.Name) ? "Save this game to see summary info" : orig.Name;
+            SummaryPlatform.Content = orig.PlatformEffective != null ? "On " + orig.PlatformEffective.Name : "";
+            SummaryStatus.Content = orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Name : "";
+            SummaryThoughts.Text = orig.Comment;
+            SummaryRelease.Content = orig.ReleaseDate.ToShortDateString();
+            SummaryReleaseContainer.Visibility = orig.ReleaseDate > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
+            SummaryAcquired.Content = orig.AcquiredOn.ToShortDateString();
+            SummaryAcquiredContainer.Visibility = orig.AcquiredOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
+            SummaryStarted.Content = orig.StartedOn.ToShortDateString();
+            SummaryStartedContainer.Visibility = orig.StartedOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
+            SummaryStartedLabel.Content = orig.IsUnfinishable ? "Played On:" : "Started On:";
+            SummaryFinished.Content = orig.FinishedOn.ToShortDateString();
+            SummaryFinishedContainer.Visibility = orig.FinishedOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
+            SummaryCompilation.Content = orig.IsPartOfCompilation ? "Part of compilation: " + orig.Compilation.Name : "";
+            SummaryCompilationContainer.Visibility = orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Collapsed;
+            ButtonCompilationLink.Visibility = orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Hidden;
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;
@@ -126,6 +148,8 @@ namespace GameTrackerWPF
             UpdateRemasterFields();
             UpdateDateFieldVisibility();
             UpdateCompilationFields();
+            UpdatePlatformColor();
+            UpdateStatusColor();
         }
 
         private void ButtonSave_Click(object sender, RoutedEventArgs e)
@@ -222,11 +246,11 @@ namespace GameTrackerWPF
                 cb.SelectedIndex = 0;
         }
 
-        private void FillComboboxPlatforms(ComboBox cb)
+        private void FillComboboxPlatforms(ComboBox cb, string defaultItem = "N/A")
         {
             cb.Items.Clear();
             var item = new ComboBoxItem();
-            item.Content = "N/A";
+            item.Content = defaultItem;
             cb.Items.Add(item);
             foreach (Platform platform in rm.GetPlatformList(settings).OrderBy(p => p.Name))
             {
@@ -308,12 +332,16 @@ namespace GameTrackerWPF
         private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
         {
             orig.Name = TextboxName.Text.Trim();
+            SummaryName.Text = orig.Name;
         }
 
         private void ComboBoxStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.StatusExtension.Status = ComboBoxStatus.SelectedIndex > 0 ? (Status)ComboBoxStatus.SelectedItem : null;
+            SummaryStatus.Content = orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Name : "";
             UpdateDateFieldVisibility();
+            UpdateStatusColor();
+            UpdateScoreSummary();
         }
 
         private void CheckboxUnfinishable_Checked(object sender, RoutedEventArgs e)
@@ -321,6 +349,9 @@ namespace GameTrackerWPF
             orig.IsUnfinishable = CheckboxUnfinishable.IsChecked.Value;
             UpdateDateFieldVisibility();
             FillComboboxStatuses(ComboBoxStatus);
+            SummaryStatus.Content = orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Name : "";
+            SummaryStartedLabel.Content = orig.IsUnfinishable ? "Played On:" : "Started On:";
+            UpdateStatusColor();
         }
 
         private void CheckboxNotOwned_Checked(object sender, RoutedEventArgs e)
@@ -331,13 +362,17 @@ namespace GameTrackerWPF
         private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.Platform = ComboBoxPlatform.SelectedIndex > 0 ? (Platform)ComboBoxPlatform.SelectedItem : null;
+            SummaryPlatform.Content = orig.PlatformEffective != null ? "On " + orig.PlatformEffective.Name : "";
             UpdateStats();
+            UpdatePlatformColor();
         }
 
         private void ComboBoxPlatformPlayedOn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex > 0 ? (Platform)ComboBoxPlatformPlayedOn.SelectedItem : null;
+            SummaryPlatform.Content = orig.PlatformEffective != null ? "On " + orig.PlatformEffective.Name : "";
             UpdateStats();
+            UpdatePlatformColor();
         }
 
         private void CheckboxRemaster_Checked(object sender, RoutedEventArgs e)
@@ -425,26 +460,35 @@ namespace GameTrackerWPF
         private void DatePickerRelease_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.ReleaseDate = DatePickerRelease.SelectedDate.HasValue ? DatePickerRelease.SelectedDate.Value : DateTime.MinValue;
+            SummaryRelease.Content = orig.ReleaseDate.ToShortDateString();
+            SummaryReleaseContainer.Visibility = orig.ReleaseDate > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void DatePickerAcquired_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.AcquiredOn = DatePickerAcquired.SelectedDate.HasValue ? DatePickerAcquired.SelectedDate.Value : DateTime.MinValue;
+            SummaryAcquired.Content = orig.AcquiredOn.ToShortDateString();
+            SummaryAcquiredContainer.Visibility = orig.AcquiredOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void DatePickerStarted_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.StartedOn = DatePickerStarted.SelectedDate.HasValue ? DatePickerStarted.SelectedDate.Value : DateTime.MinValue;
+            SummaryStarted.Content = orig.StartedOn.ToShortDateString();
+            SummaryStartedContainer.Visibility = orig.StartedOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void DatePickerFinished_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.FinishedOn = DatePickerFinished.SelectedDate.HasValue ? DatePickerFinished.SelectedDate.Value : DateTime.MinValue;
+            SummaryFinished.Content = orig.FinishedOn.ToShortDateString();
+            SummaryFinishedContainer.Visibility = orig.FinishedOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void TextBoxComments_TextChanged(object sender, TextChangedEventArgs e)
         {
             orig.Comment = TextBoxComments.Text.Trim();
+            SummaryThoughts.Text = orig.Comment;
         }
 
         private void TextBoxGameComments_TextChanged(object sender, TextChangedEventArgs e)
@@ -456,7 +500,10 @@ namespace GameTrackerWPF
         {
             TextBox tb = (TextBox)sender;
             RatingCategory rc = (RatingCategory)tb.Tag;
-            await RefreshScoreSuggestions(tb, rc);
+            if (showScoreSuggestions)
+                await RefreshScoreSuggestions(tb, rc);
+            else
+                showScoreSuggestions = true;
         }
 
         private void TextBoxScore_LostFocus(object sender, RoutedEventArgs e)
@@ -489,11 +536,10 @@ namespace GameTrackerWPF
                 text.Text = orig.CategoryExtension.ScoreOfCategory(rc).ToString(UtilWPF.SCORE_FORMAT);
             }
 
-            Image image = new Image();
-            image.Source = (ImageSource)Resources[!orig.CategoryExtension.IgnoreCategories ? "ButtonEdit" : "ButtonLock"];
-            ButtonEditScore.Content = image;
+            if (ButtonEditScore.Template.FindName("IconEditScore", ButtonEditScore) is PackIconMaterial icon)
+                icon.Kind = !orig.CategoryExtension.IgnoreCategories ? PackIconMaterialKind.Pencil : PackIconMaterialKind.Lock;
             ButtonEditScore.ToolTip = !orig.CategoryExtension.IgnoreCategories ? "Edit the final score manually" : "Use categories to automatically calculate the final score";
-            TextBoxFinalScore.IsEnabled = orig.CategoryExtension.IgnoreCategories;
+            TextBoxFinalScore.IsEnabled = !orig.IsUsingOriginalGameScore && orig.CategoryExtension.IgnoreCategories;
 
             TextBoxFinalScore.Text = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
             ScoreRange sr = orig.ScoreRange;
@@ -507,14 +553,26 @@ namespace GameTrackerWPF
                 TextBoxFinalScore.Background = new SolidColorBrush(color.ToMediaColor());
             }
             UpdateStats();
+            UpdateScoreSummary();
+        }
+
+        private void UpdateScoreSummary()
+        {
+            SummaryScoreContainer.Visibility = orig.ShowScore ? Visibility.Visible : Visibility.Collapsed;
+            SummaryScoreContainer.Background = new SolidColorBrush(orig.ShowScore && orig.ScoreRangeDisplay != null ? orig.ScoreRangeDisplay.Color.ToMediaColor() : Colors.White);
+            SummaryScore.Content = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
         }
 
         private void UpdateRemasterFields()
         {
-            ComboboxOriginalGame.Visibility = orig.IsRemaster ? Visibility.Visible : Visibility.Hidden;
+            ComboboxOriginalGame.Visibility = orig.IsRemaster ? Visibility.Visible : Visibility.Collapsed;
             CheckboxUseOriginalGameScore.Visibility = orig.IsRemaster && orig.HasOriginalGame ? Visibility.Visible : Visibility.Hidden;
+            CheckboxUseOriginalGameScore.Content = "Use score of " + (orig.IsRemaster && orig.HasOriginalGame ? orig.OriginalGame.NameAndPlatform : "original game");
             GridRatingCategories.IsEnabled = !orig.IsUsingOriginalGameScore;
-            GridFinalScore.IsEnabled = !orig.IsUsingOriginalGameScore;
+            TextBoxFinalScore.IsEnabled = !orig.IsUsingOriginalGameScore && orig.CategoryExtension.IgnoreCategories;
+            ButtonEditScore.IsEnabled = !orig.IsUsingOriginalGameScore;
+            SummaryRemaster.Content = orig.IsRemaster ? (orig.HasOriginalGame ? "Remaster/re-release of " + orig.OriginalGame.NameAndPlatform : "Is a remaster/re-release") : "";
+            SummaryRemaster.Visibility = orig.IsRemaster ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void UpdateDateFieldVisibility()
@@ -538,10 +596,37 @@ namespace GameTrackerWPF
             TextBlockStats.Text = text;
         }
 
+        private void UpdatePlatformColor()
+        {
+            Resources["PlatformColorStyle"] = new LinearGradientBrush(
+                new GradientStopCollection(
+                    new List<GradientStop>() {
+                        new(orig.PlatformEffective != null ? orig.PlatformEffective.Color.ToMediaColor() : Colors.White, 1),
+                        new(Colors.White, 0.1)
+                    }
+                ),
+                new System.Windows.Point(0, 0.5),
+                new System.Windows.Point(1, 0.5)
+            );
+        }
+
+        private void UpdateStatusColor()
+        {
+            Resources["StatusColorStyle"] = new LinearGradientBrush(
+                new GradientStopCollection(
+                    new List<GradientStop>() {
+                        new(orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Color.ToMediaColor() : Colors.White, 1),
+                        new(Colors.White, 0.1)
+                    }
+                ),
+                new System.Windows.Point(0, 0.5),
+                new System.Windows.Point(1, 0.5)
+            );
+        }
+
         private void UpdateCompilationFields()
         {
             TextboxComp.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
-            ButtonCompilationLink.Visibility = CheckboxCompilation.IsChecked.Value && orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Hidden;
         }
 
         private bool TextChangeNearPeriod(TextBox textbox, ICollection<TextChange> changes)
@@ -594,6 +679,11 @@ namespace GameTrackerWPF
         private void ClearPreviousScoreSuggestions(TextBox textBox)
         {
             if (textBox.ToolTip != null) ((ToolTip)textBox.ToolTip).IsOpen = false;
+        }
+
+        private void TabList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            showScoreSuggestions = TabList.SelectedIndex != 3;
         }
     }
 }

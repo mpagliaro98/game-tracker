@@ -1,4 +1,5 @@
 ﻿using GameTracker;
+using MahApps.Metro.Controls;
 using RatableTracker.Exceptions;
 using RatableTracker.ObjAddOns;
 using RatableTracker.ScoreRanges;
@@ -23,7 +24,7 @@ namespace GameTrackerWPF
     /// <summary>
     /// Interaction logic for SubWindowCompilation.xaml
     /// </summary>
-    public partial class SubWindowCompilation : Window
+    public partial class SubWindowCompilation : MetroWindow
     {
         private GameModule rm;
         private SettingsGame settings;
@@ -44,7 +45,7 @@ namespace GameTrackerWPF
             CreateRatingCategories();
             FillComboboxStatuses(ComboBoxStatus);
             FillComboboxPlatforms(ComboBoxPlatform);
-            FillComboboxPlatforms(ComboBoxPlatformPlayedOn);
+            FillComboboxPlatforms(ComboBoxPlatformPlayedOn, defaultItem: "Same as Platform");
             ComboBoxStatus.SelectedIndex = 0;
             ComboBoxPlatform.SelectedIndex = 0;
             ComboBoxPlatformPlayedOn.SelectedIndex = 0;
@@ -69,13 +70,19 @@ namespace GameTrackerWPF
             TextBoxGameComments.Text = orig.GameComment;
             CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
             CheckboxNotOwned.IsChecked = orig.IsNotOwned;
-            DatePickerRelease.SelectedDate = orig.ReleaseDate;
-            DatePickerAcquired.SelectedDate = orig.AcquiredOn;
-            DatePickerStarted.SelectedDate = orig.StartedOn;
-            DatePickerFinished.SelectedDate = orig.FinishedOn;
-            LabelStartedOn.Content = orig.IsUnfinishable ? "Played On" : "Started On";
-            Grid.SetColumnSpan(StackPanelStartedOn, orig.IsUnfinishable || !orig.IsFinished ? 2 : 1);
-            StackPanelFinishedOn.Visibility = orig.IsUnfinishable || !orig.IsFinished ? Visibility.Collapsed : Visibility.Visible;
+
+            SummaryName.Text = string.IsNullOrEmpty(orig.Name) ? "Save this game to see summary info" : orig.Name;
+            SummaryPlatform.Content = orig.PlatformEffective != null ? "On " + orig.PlatformEffective.Name : "";
+            SummaryStatus.Content = orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Name : "";
+            SummaryRelease.Content = orig.ReleaseDate.ToShortDateString();
+            SummaryReleaseContainer.Visibility = orig.ReleaseDate > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
+            SummaryAcquired.Content = orig.AcquiredOn.ToShortDateString();
+            SummaryAcquiredContainer.Visibility = orig.AcquiredOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
+            SummaryStarted.Content = orig.StartedOn.ToShortDateString();
+            SummaryStartedContainer.Visibility = orig.StartedOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
+            SummaryStartedLabel.Content = orig.IsUnfinishable ? "Played On:" : "Started On:";
+            SummaryFinished.Content = orig.FinishedOn.ToShortDateString();
+            SummaryFinishedContainer.Visibility = orig.FinishedOn > DateTime.MinValue ? Visibility.Visible : Visibility.Collapsed;
 
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;
@@ -86,6 +93,9 @@ namespace GameTrackerWPF
 
             // refresh UI logic
             UpdateStats();
+            UpdateScoreSummary();
+            UpdatePlatformColor();
+            UpdateStatusColor();
         }
 
         private void ButtonUpdate_Click(object sender, RoutedEventArgs e)
@@ -126,11 +136,11 @@ namespace GameTrackerWPF
             }
         }
 
-        private void FillComboboxPlatforms(ComboBox cb)
+        private void FillComboboxPlatforms(ComboBox cb, string defaultItem = "N/A")
         {
             cb.Items.Clear();
             var item = new ComboBoxItem();
-            item.Content = "N/A";
+            item.Content = defaultItem;
             cb.Items.Add(item);
             foreach (Platform platform in rm.GetPlatformList(settings).OrderBy(p => p.Name))
             {
@@ -198,22 +208,30 @@ namespace GameTrackerWPF
         private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
         {
             orig.Name = TextboxName.Text.Trim();
+            SummaryName.Text = orig.Name;
         }
 
         private void ComboBoxStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.StatusExtension.Status = ComboBoxStatus.SelectedIndex > 0 ? (Status)ComboBoxStatus.SelectedItem : null;
+            SummaryStatus.Content = orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Name : "";
+            UpdateStatusColor();
+            UpdateScoreSummary();
         }
 
         private void ComboBoxPlatform_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.Platform = ComboBoxPlatform.SelectedIndex > 0 ? (Platform)ComboBoxPlatform.SelectedItem : null;
+            SummaryPlatform.Content = orig.PlatformEffective != null ? "On " + orig.PlatformEffective.Name : "";
             UpdateStats();
+            UpdatePlatformColor();
         }
 
         private void ComboBoxPlatformPlayedOn_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.PlatformPlayedOn = ComboBoxPlatformPlayedOn.SelectedIndex > 0 ? (Platform)ComboBoxPlatformPlayedOn.SelectedItem : null;
+            SummaryPlatform.Content = orig.PlatformEffective != null ? "On " + orig.PlatformEffective.Name : "";
+            UpdatePlatformColor();
         }
 
         private void TextBoxGameComments_TextChanged(object sender, TextChangedEventArgs e)
@@ -231,6 +249,41 @@ namespace GameTrackerWPF
             }
             text += "#" + rm.GetRankOfScore(orig.Score, settings).ToString() + " overall";
             TextBlockStats.Text = text;
+        }
+
+        private void UpdateScoreSummary()
+        {
+            SummaryScoreContainer.Visibility = orig.ShowScore ? Visibility.Visible : Visibility.Collapsed;
+            SummaryScoreContainer.Background = new SolidColorBrush(orig.ShowScore && orig.ScoreRangeDisplay != null ? orig.ScoreRangeDisplay.Color.ToMediaColor() : Colors.White);
+            SummaryScore.Content = orig.ScoreMinIfCyclical.ToString(UtilWPF.SCORE_FORMAT);
+        }
+
+        private void UpdatePlatformColor()
+        {
+            Resources["PlatformColorStyle"] = new LinearGradientBrush(
+                new GradientStopCollection(
+                    new List<GradientStop>() {
+                        new(orig.PlatformEffective != null ? orig.PlatformEffective.Color.ToMediaColor() : Colors.White, 1),
+                        new(Colors.White, 0.1)
+                    }
+                ),
+                new System.Windows.Point(0, 0.5),
+                new System.Windows.Point(1, 0.5)
+            );
+        }
+
+        private void UpdateStatusColor()
+        {
+            Resources["StatusColorStyle"] = new LinearGradientBrush(
+                new GradientStopCollection(
+                    new List<GradientStop>() {
+                        new(orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Color.ToMediaColor() : Colors.White, 1),
+                        new(Colors.White, 0.1)
+                    }
+                ),
+                new System.Windows.Point(0, 0.5),
+                new System.Windows.Point(1, 0.5)
+            );
         }
     }
 }

@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
 using GameTracker;
+using MahApps.Metro.Controls;
 using RatableTracker.Exceptions;
 using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
@@ -22,7 +23,7 @@ namespace GameTrackerWPF
     /// <summary>
     /// Interaction logic for SubWindowRatingCategory.xaml
     /// </summary>
-    public partial class SubWindowRatingCategory : Window
+    public partial class SubWindowRatingCategory : MetroWindow
     {
         private GameModule rm;
         private RatingCategoryWeighted orig;

@@ -27,13 +27,16 @@ using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.ListManipulation.Filtering;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using GameTracker.Filtering;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.IconPacks;
 
 namespace GameTrackerWPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
         private const string TAB_GAMES = "TabGames";
         private const string TAB_PLATFORMS = "TabPlatforms";
@@ -150,7 +153,6 @@ namespace GameTrackerWPF
                     UpdatePlatformsUI();
                     break;
                 case TAB_SETTINGS:
-                    ResetSettingsLabels();
                     UpdateSettingsUI();
                     UpdateRatingCategoryUI();
                     UpdateCompletionStatusUI();
@@ -191,20 +193,28 @@ namespace GameTrackerWPF
         private void ToggleSortModeButton(Button button)
         {
             SortMode mode = (SortMode)button.Tag;
-            Image image;
+            PackIconMaterial icon;
             switch (mode)
             {
                 case SortMode.Ascending:
-                    image = new Image();
-                    image.Source = (ImageSource)Resources["ButtonDown"];
-                    button.Content = image;
+                    icon = new()
+                    {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Kind = PackIconMaterialKind.SortAlphabeticalDescending
+                    };
+                    button.Content = icon;
                     button.ToolTip = "Descending";
                     button.Tag = SortMode.Descending;
                     break;
                 case SortMode.Descending:
-                    image = new Image();
-                    image.Source = (ImageSource)Resources["ButtonUp"];
-                    button.Content = image;
+                    icon = new()
+                    {
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Kind = PackIconMaterialKind.SortAlphabeticalAscending
+                    };
+                    button.Content = icon;
                     button.ToolTip = "Ascending";
                     button.Tag = SortMode.Ascending;
                     break;
@@ -406,10 +416,11 @@ namespace GameTrackerWPF
             UpdateGamesUI();
         }
 
-        private void GamesButtonSort_Click(object sender, RoutedEventArgs e)
+        private void ShowContextMenu(object sender, RoutedEventArgs e)
         {
-            var contextMenu = GamesButtonSort.ContextMenu;
-            contextMenu.PlacementTarget = GamesButtonSort;
+            var control = sender as Control;
+            var contextMenu = control.ContextMenu;
+            contextMenu.PlacementTarget = control;
             contextMenu.IsOpen = true;
         }
 
@@ -672,6 +683,26 @@ namespace GameTrackerWPF
         #endregion
 
         #region Settings Tab
+        private void ButtonSettingsGeneral_Click(object sender, RoutedEventArgs e)
+        {
+            FlyoutSettings.IsOpen = true;
+        }
+
+        private void ButtonSettingsStatuses_Click(object sender, RoutedEventArgs e)
+        {
+            FlyoutStatuses.IsOpen = true;
+        }
+
+        private void ButtonSettingsCategories_Click(object sender, RoutedEventArgs e)
+        {
+            FlyoutCategories.IsOpen = true;
+        }
+
+        private void ButtonSettingsRanges_Click(object sender, RoutedEventArgs e)
+        {
+            FlyoutRanges.IsOpen = true;
+        }
+
         #region General Settings
         private void UpdateSettingsUI()
         {
@@ -683,20 +714,13 @@ namespace GameTrackerWPF
             SettingsAWSButton.Content = FileHandlerAWSS3.KeyFileExists(pathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
-        private void ResetSettingsLabels()
+        private async void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
         {
-            SettingsLabelError.Visibility = Visibility.Collapsed;
-            SettingsLabelSuccess.Visibility = Visibility.Collapsed;
-        }
-
-        private void SettingsGridButtonSave_Click(object sender, RoutedEventArgs e)
-        {
-            ResetSettingsLabels();
             string minScoreInput = SettingsTextboxMin.Text;
             string maxScoreInput = SettingsTextboxMax.Text;
             if (!(double.TryParse(minScoreInput, out double minScore) && double.TryParse(maxScoreInput, out double maxScore)))
             {
-                SettingsLabelError.Visibility = Visibility.Visible;
+                await this.ShowMessageAsync("Save Failed", "Values are formatted incorrectly. Please correct your input and try again.", MessageDialogStyle.Affirmative);
                 return;
             }
 
@@ -723,7 +747,7 @@ namespace GameTrackerWPF
 
             UpdateSettingsUI();
             UpdateScoreRangeUI();
-            SettingsLabelSuccess.Visibility = Visibility.Visible;
+            await this.ShowMessageAsync("Success", "Your settings were successfully saved.", MessageDialogStyle.Affirmative);
         }
 
         private async void SettingsAWSButton_Click(object sender, RoutedEventArgs e)
@@ -1043,7 +1067,7 @@ namespace GameTrackerWPF
             UtilWPF.GoToURL("https://github.com/mpagliaro98/game-tracker/releases");
         }
 
-        private void MenuAbout_Click(object sender, RoutedEventArgs e)
+        private async void MenuAbout_Click(object sender, RoutedEventArgs e)
         {
             string message = "Game Tracker: " + UtilWPF.GetVersionNumber().ToString() +
 #if DEBUG
@@ -1052,7 +1076,7 @@ namespace GameTrackerWPF
                 "\nAuthor: Michael Pagliaro" +
                 "\nGitHub: github.com/mpagliaro98" +
                 "\nThis open-source software is covered under the MIT license, see the license in the GitHub repository for more information.";
-            Xceed.Wpf.Toolkit.MessageBox.Show(message, "About", MessageBoxButton.OK);
+            await this.ShowMessageAsync("About", message);
         }
 
         private void MenuBackupExport_Click(object sender, RoutedEventArgs e)

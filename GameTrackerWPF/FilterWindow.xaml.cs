@@ -1,5 +1,7 @@
 ﻿using GameTracker;
 using GameTracker.Filtering;
+using MahApps.Metro.Controls;
+using MahApps.Metro.Controls.Dialogs;
 using RatableTracker.Interfaces;
 using RatableTracker.ListManipulation.Filtering;
 using System;
@@ -28,7 +30,7 @@ namespace GameTrackerWPF
     /// <summary>
     /// Interaction logic for FilterWindow.xaml
     /// </summary>
-    public partial class FilterWindow : Window
+    public partial class FilterWindow : MetroWindow
     {
         public event EventHandler<FilterWindowSearchEventArgs> Search;
 
@@ -143,11 +145,11 @@ namespace GameTrackerWPF
                 return filters;
         }
 
-        private void ButtonSaveSearch_Click(object sender, RoutedEventArgs e)
+        private async void ButtonSaveSearch_Click(object sender, RoutedEventArgs e)
         {
             if ((filterMode == FilterMode.Game ? savedState.GameSavedSearches : savedState.PlatformSavedSearches).Count >= 30)
             {
-                Xceed.Wpf.Toolkit.MessageBox.Show("You can keep up to 30 saved searches at a time.", "Limit Reached", MessageBoxButton.OK);
+                await this.ShowMessageAsync("Limit Reached", "You can keep up to 30 saved searches at a time.");
                 return;
             }
 

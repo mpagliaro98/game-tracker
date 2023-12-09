@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameTracker;
+using MahApps.Metro.Controls;
 using RatableTracker.Exceptions;
 
 namespace GameTrackerWPF
@@ -19,7 +20,7 @@ namespace GameTrackerWPF
     /// <summary>
     /// Interaction logic for SubWindowCompletionStatus.xaml
     /// </summary>
-    public partial class SubWindowCompletionStatus : Window
+    public partial class SubWindowCompletionStatus : MetroWindow
     {
         private GameModule rm;
         private StatusGame orig;

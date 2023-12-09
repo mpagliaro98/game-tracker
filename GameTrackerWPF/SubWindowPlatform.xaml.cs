@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using GameTracker;
+using MahApps.Metro.Controls;
 using RatableTracker.Exceptions;
 
 namespace GameTrackerWPF
@@ -19,7 +20,7 @@ namespace GameTrackerWPF
     /// <summary>
     /// Interaction logic for SubWindowPlatform.xaml
     /// </summary>
-    public partial class SubWindowPlatform : Window
+    public partial class SubWindowPlatform : MetroWindow
     {
         private GameModule rm;
         private Platform orig;
@@ -35,7 +36,7 @@ namespace GameTrackerWPF
             this.settings = settings;
 
             // initialize UI containers
-            ButtonSave.Content = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
+            ButtonSave.ToolTip = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
 
             // set max length
             TextboxName.MaxLength = Platform.MaxLengthName;

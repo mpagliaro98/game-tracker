@@ -1,11 +1,20 @@
-﻿<Window xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"  x:Class="GameTrackerWPF.SubWindowCompletionStatus"
+﻿<mah:MetroWindow xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"  x:Class="GameTrackerWPF.SubWindowCompletionStatus"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        Title="Status" Height="270" Width="300" MinHeight="270" MinWidth="300">
+        Title="Status" Height="350" Width="300" MinHeight="350" MinWidth="300">
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button x:Name="ButtonSave" ToolTip="Create" Click="ButtonSave_Click">
+                <icons:PackIconMaterial Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
     <StackPanel>
         <Label Content="Name" />
         <TextBox x:Name="TextboxName" Margin="5,0" Width="200" HorizontalAlignment="Left" />
@@ -15,6 +24,5 @@
         <CheckBox x:Name="CheckboxHideScore" Content="Hide score" Margin="5,10,0,5" />
         <Label Content="What games this status can apply to" />
         <ComboBox x:Name="ComboboxUsage" Margin="5,0" Width="250" HorizontalAlignment="Left" />
-        <Button x:Name="ButtonSave" Content="Create" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" Click="ButtonSave_Click" />
     </StackPanel>
-</Window>
+</mah:MetroWindow>

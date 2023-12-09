@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GameTrackerWPF"
+             xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid x:Name="GridMain" HorizontalAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
@@ -16,6 +17,8 @@
         </Grid.ColumnDefinitions>
         <ComboBox x:Name="ComboBoxOption" VerticalAlignment="Center" Margin="5" />
         <CheckBox x:Name="CheckBoxNegate" Grid.Column="3" Content="Negate" VerticalAlignment="Center" />
-        <Button x:Name="ButtonRemove" Grid.Column="4" Content="Remove" VerticalAlignment="Center" Click="ButtonRemove_Click" />
+        <Button x:Name="ButtonRemove" Grid.Column="4" ToolTip="Remove" VerticalAlignment="Center" HorizontalAlignment="Center" Height="20" Width="20" Click="ButtonRemove_Click" Style="{DynamicResource MahApps.Styles.Button.Circle}">
+            <icons:PackIconMaterial Kind="Close" VerticalAlignment="Center" HorizontalAlignment="Center" Height="10" Width="10" />
+        </Button>
     </Grid>
 </UserControl>

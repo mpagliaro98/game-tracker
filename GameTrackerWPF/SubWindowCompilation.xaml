@@ -1,125 +1,140 @@
-﻿<Window x:Class="GameTrackerWPF.SubWindowCompilation"
+﻿<mah:MetroWindow x:Class="GameTrackerWPF.SubWindowCompilation"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameTrackerWPF"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         Title="Compilation" Height="700" Width="800" MinHeight="700" MinWidth="800">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="120" />
-            <RowDefinition Height="105" />
-            <RowDefinition Height="50" />
-            <RowDefinition Height="265" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="40" />
-        </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0*" />  <!-- Width="0.5*" -->
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Image x:Name="ImageGame" Margin="10" />
-            <Grid Grid.Column="1">
+    <mah:MetroWindow.LeftWindowCommands>
+        <mah:WindowCommands>
+            <Button x:Name="ButtonUpdate" ToolTip="Create" Click="ButtonUpdate_Click">
+                <icons:PackIconMaterial Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            </Button>
+        </mah:WindowCommands>
+    </mah:MetroWindow.LeftWindowCommands>
+    <mah:MetroAnimatedTabControl x:Name="TabList">
+        <mah:MetroTabItem Header="Summary">
+            <Grid VerticalAlignment="Top">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="265" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="SummaryName" FontSize="26pt" FontWeight="Bold" TextWrapping="Wrap" Padding="5">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Background" Value="{DynamicResource PlatformColorStyle}" />
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <Label x:Name="SummaryPlatform" FontSize="14pt" Grid.Row="1" />
+                <Label x:Name="SummaryStatus" FontSize="20pt" Grid.Row="2">
+                    <Label.Style>
+                        <Style TargetType="Label">
+                            <Setter Property="Background" Value="{DynamicResource StatusColorStyle}" />
+                        </Style>
+                    </Label.Style>
+                </Label>
+                <StackPanel x:Name="SummaryScoreContainer" HorizontalAlignment="Stretch" Grid.Row="3" Margin="0,10">
+                    <Label Content="Score" HorizontalAlignment="Center" />
+                    <Label x:Name="SummaryScore" FontSize="30pt" FontWeight="Bold" HorizontalAlignment="Center" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Grid.Row="4">
+                    <StackPanel x:Name="SummaryReleaseContainer">
+                        <Label Content="Release Date:" />
+                        <Label x:Name="SummaryRelease" FontSize="14pt" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel x:Name="SummaryAcquiredContainer">
+                        <Label Content="Acquired On:" />
+                        <Label x:Name="SummaryAcquired" FontSize="14pt" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel x:Name="SummaryStartedContainer">
+                        <Label x:Name="SummaryStartedLabel" Content="Started On:" />
+                        <Label x:Name="SummaryStarted" FontSize="14pt" FontWeight="Bold" />
+                    </StackPanel>
+                    <StackPanel x:Name="SummaryFinishedContainer">
+                        <Label Content="Finished On:" />
+                        <Label x:Name="SummaryFinished" FontSize="14pt" FontWeight="Bold" />
+                    </StackPanel>
+                </StackPanel>
+                <DockPanel Grid.Row="5">
+                    <Label Content="Games in this compilation:" DockPanel.Dock="Top" />
+                    <ListBox x:Name="GamesListBoxWrap" Margin="5" DockPanel.Dock="Bottom">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+                </DockPanel>
+            </Grid>
+        </mah:MetroTabItem>
+        <mah:MetroTabItem Header="Game">
+            <Grid VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="105" />
+                    <RowDefinition Height="105" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <StackPanel VerticalAlignment="Center">
                     <Label Content="Name" />
                     <TextBox x:Name="TextboxName" Margin="5,0" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" VerticalAlignment="Center">
-                    <Label Content="Platform" />
-                    <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" />
-                </StackPanel>
-            </Grid>
-            <Grid Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <StackPanel VerticalAlignment="Center">
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel VerticalAlignment="Center">
+                        <Label Content="Platform" />
+                        <ComboBox x:Name="ComboBoxPlatform" Margin="5,0" />
+                    </StackPanel>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <Label Content="Platform Played On" />
+                        <ComboBox x:Name="ComboBoxPlatformPlayedOn" Margin="5,0" />
+                    </StackPanel>
+                </Grid>
+                <StackPanel Grid.Row="2" VerticalAlignment="Center">
                     <Label Content="Status" />
                     <ComboBox x:Name="ComboBoxStatus" Margin="5,0" />
                 </StackPanel>
-                <StackPanel Grid.Row="1" VerticalAlignment="Center">
-                    <Label Content="Platform Played On" />
-                    <ComboBox x:Name="ComboBoxPlatformPlayedOn" Margin="5,0" />
+                <StackPanel Grid.Row="3" VerticalAlignment="Center" Margin="0,10,0,0">
+                    <CheckBox x:Name="CheckboxUnfinishable" Content="Doesn't have a start/end" Margin="5,0,5,5" IsEnabled="False" />
+                    <CheckBox x:Name="CheckboxNotOwned" Content="I don't own this game" Margin="5,0" IsEnabled="False" />
                 </StackPanel>
+                <Grid x:Name="GridRatingCategories" Grid.Row="4" />
+                <Grid x:Name="GridFinalScore" Grid.Row="5" Margin="5" Background="#FFF1F1F1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="300" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+                            <Label Content="Final Score" />
+                        </StackPanel>
+                        <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" IsReadOnly="True" />
+                    </DockPanel>
+                    <TextBlock x:Name="TextBlockStats" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" />
+                </Grid>
+                <Grid VerticalAlignment="Stretch" Grid.Row="6">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Label Content="Comment" />
+                    <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+                </Grid>
             </Grid>
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2.5*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <Grid x:Name="GridRatingCategories" />
-            <Grid x:Name="GridFinalScore" Grid.Column="1" Margin="5" Background="#FFF1F1F1">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-                        <Label Content="Final Score" />
-                    </StackPanel>
-                    <TextBox x:Name="TextBoxFinalScore" Margin="5,0,5,5" BorderThickness="0" Background="#FFF9F9F9" FontSize="40" IsReadOnly="True" />
-                </DockPanel>
-                <TextBlock x:Name="TextBlockStats" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" />
-            </Grid>
-        </Grid>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions>
-            <StackPanel VerticalAlignment="Center">
-                <CheckBox x:Name="CheckboxUnfinishable" Content="Doesn't have a start/end" Margin="5,0,5,5" IsEnabled="False" />
-                <CheckBox x:Name="CheckboxNotOwned" Content="I don't own this game" Margin="5,0" IsEnabled="False" />
-            </StackPanel>
-            <StackPanel VerticalAlignment="Top" Grid.Column="1">
-                <Label Content="Release Date" />
-                <DatePicker x:Name="DatePickerRelease" Margin="5,0" IsEnabled="False" />
-            </StackPanel>
-            <StackPanel VerticalAlignment="Top" Grid.Column="2">
-                <Label Content="Acquired On" />
-                <DatePicker x:Name="DatePickerAcquired" Margin="5,0" IsEnabled="False" />
-            </StackPanel>
-            <StackPanel x:Name="StackPanelStartedOn" VerticalAlignment="Top" Grid.Column="3">
-                <Label x:Name="LabelStartedOn" Content="Started On" />
-                <DatePicker x:Name="DatePickerStarted" Margin="5,0" IsEnabled="False" />
-            </StackPanel>
-            <StackPanel x:Name="StackPanelFinishedOn" VerticalAlignment="Top" Grid.Column="4">
-                <Label Content="Finished On" />
-                <DatePicker x:Name="DatePickerFinished" Margin="5,0" IsEnabled="False" />
-            </StackPanel>
-        </Grid>
-        <DockPanel Grid.Row="3">
-            <Label Content="Games in this compilation" DockPanel.Dock="Top" />
-            <ListBox x:Name="GamesListBoxWrap" Margin="5" DockPanel.Dock="Bottom">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <WrapPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-            </ListBox>
-        </DockPanel>
-        <Grid VerticalAlignment="Stretch" Grid.Row="4">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="26" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <Label Content="Comment" />
-            <TextBox x:Name="TextBoxGameComments" VerticalAlignment="Stretch" Margin="5,0,5,5" Grid.Row="1" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
-        </Grid>
-        <StackPanel Grid.Row="5" HorizontalAlignment="Center">
-            <Button x:Name="ButtonUpdate" Content="Update" Width="100" HorizontalAlignment="Center" Margin="5,10,0,0" Click="ButtonUpdate_Click" />
-        </StackPanel>
-    </Grid>
-</Window>
+        </mah:MetroTabItem>
+    </mah:MetroAnimatedTabControl>
+</mah:MetroWindow>

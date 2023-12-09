@@ -15,13 +15,14 @@ using GameTracker;
 using RatableTracker.ScoreRanges;
 using RatableTracker.Exceptions;
 using Xceed.Wpf.Toolkit;
+using MahApps.Metro.Controls;
 
 namespace GameTrackerWPF
 {
     /// <summary>
     /// Interaction logic for SubWindowScoreRange.xaml
     /// </summary>
-    public partial class SubWindowScoreRange : Window
+    public partial class SubWindowScoreRange : MetroWindow
     {
         private GameModule rm;
         private SettingsGame settings;

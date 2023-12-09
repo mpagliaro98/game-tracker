@@ -7,7 +7,7 @@
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>icon-new.ico</ApplicationIcon>
     <Title>Game Tracker</Title>
     <PackageId>GameTrackerWPF</PackageId>
     <Version>1.2.0</Version>
@@ -58,6 +58,9 @@
     <Analyzer Include="..\packages\AWSSDK.S3.3.7.7.22\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="icon-new.ico" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="..\LICENSE.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
@@ -71,6 +74,8 @@
     <Resource Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.4.10" />
+    <PackageReference Include="MahApps.Metro.IconPacks.Material" Version="4.11.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="Microsoft.DotNet.UpgradeAssistant.Extensions.Default.Analyzers" Version="0.4.355802">
