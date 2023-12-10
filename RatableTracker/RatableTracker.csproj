@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net7.0-windows;net7.0-android;net7.0-ios</TargetFrameworks>
+    <TargetFrameworks>net8.0-windows;net8.0-android;net8.0-ios</TargetFrameworks>
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PackageId>RatableTracker</PackageId>
