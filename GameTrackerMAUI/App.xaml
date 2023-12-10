@@ -9,7 +9,7 @@
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="Primary">#2A6DD5</Color>
             <Style TargetType="Button">
                 <Setter Property="TextColor" Value="White"></Setter>
                 <Setter Property="VisualStateManager.VisualStateGroups">

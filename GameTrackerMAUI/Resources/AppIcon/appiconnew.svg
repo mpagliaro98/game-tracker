@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVG-edit - https://github.com/SVG-Edit/svgedit-->
+ <g class="layer">
+  <title>Layer 1</title>
+  <g id="svg_20" transform="matrix(1 0 0 1 0 0)">
+   <rect fill="#2ac2d5" height="421.07" id="svg_7" rx="5" ry="5" stroke="#2a6dd5" stroke-width="0" width="67.19" x="35" y="38.14"/>
+   <rect fill="#2ac2d5" height="421.07" id="svg_17" rx="5" ry="5" stroke="#2a6dd5" stroke-width="0" width="67.19" x="129.07" y="38.14"/>
+   <rect fill="#2ac2d5" height="470" id="svg_18" rx="5" ry="5" stroke="#2a6dd5" stroke-width="0" transform="matrix(0.882291 -0.155572 0.155572 0.882291 -33.2823 100.479)" width="75" x="287.04" y="-9.81"/>
+  </g>
+  <g id="svg_1">
+   <ellipse cx="313" cy="330" fill="#2ad592" id="svg_14" rx="60.28" ry="60.28" stroke="#2a6dd5" stroke-width="16"/>
+   <ellipse cx="313" cy="90" fill="#2ad592" id="svg_4" rx="60.28" ry="60.28" stroke="#2a6dd5" stroke-width="16"/>
+   <ellipse cx="413" cy="210" fill="#2ad592" id="svg_13" rx="60.28" ry="60.28" stroke="#2a6dd5" stroke-width="16"/>
+   <ellipse cx="213" cy="210" fill="#2ad592" id="svg_19" rx="60.28" ry="60.28" stroke="#2a6dd5" stroke-width="16"/>
+  </g>
+ </g>
+</svg>
