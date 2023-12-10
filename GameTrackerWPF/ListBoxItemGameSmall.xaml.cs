@@ -37,7 +37,9 @@ namespace GameTrackerWPF
             var platform = rg.PlatformEffective;
             var completionStatus = rg.StatusExtension.Status;
 
+            GridMain.Opacity = rg.IsNotOwned ? 0.7 : 1.0;
             LabelName.Content = rg.Name;
+            LabelName.FontStyle = rg.IsNotOwned ? FontStyles.Italic : FontStyles.Normal;
             LabelPlatform.Content = platform != null ? platform.Name : "";
             LabelStatus.Content = completionStatus != null ? completionStatus.Name : "";
             if (completionStatus != null) LabelStatus.Background = new SolidColorBrush(completionStatus.Color.ToMediaColor());

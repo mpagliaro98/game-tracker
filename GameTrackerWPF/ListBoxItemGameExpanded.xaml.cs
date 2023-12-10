@@ -38,7 +38,9 @@ namespace GameTrackerWPF
             var playedOn = rg.Platform != null ? rg.PlatformPlayedOn : null;
             var completionStatus = rg.StatusExtension.Status;
 
+            GridMain.Opacity = rg.IsNotOwned ? 0.7 : 1.0;
             TextBlockName.Text = rg.Name;
+            TextBlockName.FontStyle = rg.IsNotOwned ? FontStyles.Italic : FontStyles.Normal;
             TextBlockPlatform.Text = platform != null ? platform.Name : "";
             TextBlockPlayedOn.Text = playedOn != null ? "Played on: " + playedOn.Name : "";
             if (playedOn == null)
