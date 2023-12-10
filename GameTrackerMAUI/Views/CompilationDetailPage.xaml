@@ -18,6 +18,8 @@
             <converters:ColorConverter x:Key="colorConverter" />
             <converters:DateEmptyConverter x:Key="dateEmptyConverter" />
             <converters:DateDisplayConverter x:Key="dateDisplayConverter" />
+            <converters:NotOwnedOpacityConverter x:Key="notOwnedOpacityConverter" />
+            <converters:NotOwnedFontAttributesConverter x:Key="notOwnedFontAttributesConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -122,7 +124,7 @@
             <VerticalStackLayout BindableLayout.ItemsSource="{Binding GamesInCompilation}">
                 <BindableLayout.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="5" x:DataType="gametracker:GameObject">
+                        <Grid Padding="5" x:DataType="gametracker:GameObject" Opacity="{Binding IsNotOwned, Converter={StaticResource notOwnedOpacityConverter}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="4" />
                                 <ColumnDefinition Width="1*" />
@@ -130,10 +132,7 @@
                                 <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
                             <Rectangle Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
-                            <Label Text="{Binding Name}" Grid.Column="1"
-                            LineBreakMode="TailTruncation" 
-                            Style="{DynamicResource ListItemTextStyle}" 
-                            FontSize="16" />
+                            <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" FontAttributes="{Binding IsNotOwned, Converter={StaticResource notOwnedFontAttributesConverter}}" />
                             <Rectangle Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
                             <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
                             <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}"
