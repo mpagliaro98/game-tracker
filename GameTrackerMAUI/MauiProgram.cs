@@ -19,6 +19,9 @@ namespace GameTrackerMAUI
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
+                .ConfigureMauiHandlers(handlers =>
+                    handlers.AddHandler<DatePicker, DatePickerWithFocusHandler>()
+                )
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
