@@ -8,7 +8,7 @@ using RatableTracker.LoadSave;
 using RatableTracker.Util;
 using SimpleToolkit.Core;
 using SkiaSharp.Views.Maui.Controls.Hosting;
-using zoft.MauiExtensions.Controls;
+using Syncfusion.Maui.Core.Hosting;
 
 namespace GameTrackerMAUI
 {
@@ -19,9 +19,6 @@ namespace GameTrackerMAUI
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .ConfigureMauiHandlers(handlers =>
-                    handlers.AddHandler<DatePicker, DatePickerWithFocusHandler>()
-                )
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -30,7 +27,7 @@ namespace GameTrackerMAUI
                 .UseMauiCommunityToolkit()
                 .UseSkiaSharp()
                 .UseSimpleToolkit()
-                .UseZoftAutoCompleteEntry()
+                .ConfigureSyncfusionCore()
                 .RegisterServices()
                 .RegisterViewModels()
                 .RegisterViews();

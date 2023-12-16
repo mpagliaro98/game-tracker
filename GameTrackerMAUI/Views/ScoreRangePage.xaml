@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:model="clr-namespace:RatableTracker.ScoreRanges;assembly=RatableTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              x:DataType="local:ScoreRangeViewModel"
              Shell.TabBarIsVisible="False"
              Title="Score Ranges">
@@ -18,10 +19,10 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
     </ContentPage.ToolbarItems>
-    
+
     <RefreshView x:DataType="local:ScoreRangeViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
-            <CollectionView.ItemTemplate>
+        <syncfusion:SfListView ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemSize="32">
+            <syncfusion:SfListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:ScoreRange">
                         <Grid.ColumnDefinitions>
@@ -31,17 +32,10 @@
                         </Grid.ColumnDefinitions>
                         <Label Text="{Binding Name}" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
                         <Label Grid.Column="1" Text="{Binding ., Converter={StaticResource scoreRelationshipConverter}}" LineBreakMode="TailTruncation" />
-                        <Rectangle Grid.Column="2" Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer 
-                                NumberOfTapsRequired="1"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:ScoreRangeViewModel}}, Path=ItemTapped}"		
-                                CommandParameter="{Binding .}">
-                            </TapGestureRecognizer>
-                        </Grid.GestureRecognizers>
+                        <Label Grid.Column="2" Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
                     </Grid>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
     </RefreshView>
 </ContentPage>

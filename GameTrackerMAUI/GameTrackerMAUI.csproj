@@ -29,6 +29,7 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<UserSecretsId>bbff0d4b-c75b-4f2b-a50c-622d73849bee</UserSecretsId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android|AnyCPU'">
@@ -121,6 +122,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="6.0.1" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 	</ItemGroup>
@@ -132,7 +134,10 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
 		<PackageReference Include="SimpleToolkit.Core" Version="3.0.0" />
 		<PackageReference Include="SkiaSharp" Version="2.88.6" />
-		<PackageReference Include="zoft.MauiExtensions.Controls.AutoCompleteEntry" Version="2.0.0" />
+		<PackageReference Include="Syncfusion.Maui.Expander" Version="23.2.7" />
+		<PackageReference Include="Syncfusion.Maui.Inputs" Version="23.2.7" />
+		<PackageReference Include="Syncfusion.Maui.ListView" Version="23.2.7" />
+		<PackageReference Include="Syncfusion.Maui.Picker" Version="23.2.7" />
 	</ItemGroup>
 
 	<ItemGroup>

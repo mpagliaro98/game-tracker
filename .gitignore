@@ -352,3 +352,4 @@ healthchecksdb
 /UpgradeReport.sarif
 /Scripts/Migration Testing
 /_DEPLOY.txt
+/GameTrackerMAUI/MauiStartup.cs

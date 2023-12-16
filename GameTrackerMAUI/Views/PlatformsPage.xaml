@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              x:DataType="local:PlatformsViewModel"
              Title="">
     <ContentPage.Resources>
@@ -20,10 +21,10 @@
         <ToolbarItem Text="Search" Command="{Binding SearchCommand}" IconImageSource="{Binding SearchImageName}" />
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
     </ContentPage.ToolbarItems>
-    
+
     <RefreshView x:DataType="local:PlatformsViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
-            <CollectionView.ItemTemplate>
+        <syncfusion:SfListView ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemSize="32">
+            <syncfusion:SfListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:Platform">
                         <Grid.ColumnDefinitions>
@@ -35,20 +36,13 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="22" />
                         </Grid.RowDefinitions>
-                        <Rectangle Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
+                        <Label Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
                         <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
                         <Label Grid.Column="2" Text="{Binding NumGames, StringFormat='\{0\} Games'}" HorizontalTextAlignment="End"/>
                         <Label Grid.Column="3" Text="{Binding FinishPercent, StringFormat='\{0:0.##%\} Finished'}" FontAttributes="Bold" HorizontalTextAlignment="End"/>
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer 
-                                NumberOfTapsRequired="1"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:PlatformsViewModel}}, Path=ItemTapped}"		
-                                CommandParameter="{Binding .}">
-                            </TapGestureRecognizer>
-                        </Grid.GestureRecognizers>
                     </Grid>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
     </RefreshView>
 </ContentPage>

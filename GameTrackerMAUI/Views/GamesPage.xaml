@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              x:DataType="local:GamesViewModel"
              Title="">
     <ContentPage.Resources>
@@ -25,8 +26,8 @@
     </ContentPage.ToolbarItems>
 
     <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
-            <CollectionView.ItemTemplate>
+        <syncfusion:SfListView ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemSize="32">
+            <syncfusion:SfListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:GameObject" Opacity="{Binding IsNotOwned, Converter={StaticResource notOwnedOpacityConverter}}">
                         <Grid.ColumnDefinitions>
@@ -38,21 +39,15 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="22" />
                         </Grid.RowDefinitions>
-                        <Rectangle Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
+                        <!--must use Label Background instead of Rectangle Background - MAUI bug where Rectangle Background in a list uses the wrong value-->
+                        <Label Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
                         <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" FontAttributes="{Binding IsNotOwned, Converter={StaticResource notOwnedFontAttributesConverter}}" />
-                        <Rectangle Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
+                        <Label Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
                         <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
                         <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}" Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}" FontAttributes="Bold" HorizontalTextAlignment="Center" IsVisible="{Binding ShowScore}"/>
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer
-                            NumberOfTapsRequired="1"
-                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:GamesViewModel}}, Path=ItemTapped}"		
-                            CommandParameter="{Binding .}">
-                            </TapGestureRecognizer>
-                        </Grid.GestureRecognizers>
                     </Grid>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
     </RefreshView>
 </ContentPage>

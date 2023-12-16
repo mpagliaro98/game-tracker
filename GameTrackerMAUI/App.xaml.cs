@@ -10,6 +10,7 @@ namespace GameTrackerMAUI
     {
         public App(IServiceProvider provider)
         {
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense(MauiStartup.GetLicenseKey());
             InitializeComponent();
             MauiExceptions.Init(provider.GetLogger(), provider.GetSavedState(), provider.GetPathController());
             MainPage = new AppShell(provider);

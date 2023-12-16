@@ -7,7 +7,8 @@
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
-             xmlns:zoft="http://zoft.MauiExtensions/Controls"
+             xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
+             xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
              x:DataType="local:NewGameViewModel"
              Shell.TabBarIsVisible="False"
              Title="{Binding Title}">
@@ -17,6 +18,7 @@
             <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
             <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
             <converters:OffsetConverter x:Key="offsetConverter" />
+            <converters:DatePickerDisplayConverter x:Key="datePickerDisplayConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -154,8 +156,7 @@
                             </VerticalStackLayout>
                             <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsPartOfCompilation}" FlexLayout.Basis="50%" FlexLayout.Grow="1">
                                 <Label Text="Name of Compilation:" FontSize="Small" />
-                                <zoft:AutoCompleteEntry Text="{Binding CompName, Mode=TwoWay}" FontSize="Medium" MaxLength="{Binding MaxLengthCompName}"
-                                ItemsSource="{Binding Compilations}" TextMemberPath="Name" DisplayMemberPath="Name" SelectedSuggestion="{Binding SelectedComp}" />
+                                <editors:SfAutocomplete x:Name="autocomplete" Text="{Binding CompName, Mode=TwoWay}" ItemsSource="{Binding Compilations}" TextMemberPath="Name" DisplayMemberPath="Name" FontSize="Medium" SelectedItem="{Binding SelectedComp}" />
                             </VerticalStackLayout>
                         </FlexLayout>
                         <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding ShowScoreFlag}" Grid.Row="3" Grid.ColumnSpan="2">
@@ -186,10 +187,15 @@
                             <Label Text="Release Date:" FontSize="Small" />
                             <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="32" />
                                 </Grid.ColumnDefinitions>
-                                <DatePicker Date="{Binding ReleaseDate}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <Button x:Name="BRelease" HorizontalOptions="StartAndExpand" Text="{Binding ReleaseDate, Converter={StaticResource datePickerDisplayConverter}}" Clicked="BRelease_Clicked" Style="{StaticResource DatePicker}" Background="Transparent" />
+                                <picker:SfDatePicker x:Name="DPRelease" SelectedDate="{Binding ReleaseDate, Mode=TwoWay}" Mode="RelativeDialog" RelativePosition="AlignTop" MinimumDate="1/1/0001" Format="MM_dd_yyyy" Opened="DatePickerOpened">
+                                    <picker:SfDatePicker.HeaderView>
+                                        <picker:PickerHeaderView Text="Release Date" />
+                                    </picker:SfDatePicker.HeaderView>
+                                </picker:SfDatePicker>
                                 <ImageButton Source="cancel" Command="{Binding ClearReleaseDateCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                             </Grid>
                         </VerticalStackLayout>
@@ -197,10 +203,15 @@
                             <Label Text="Acquired On:" FontSize="Small" />
                             <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="32" />
                                 </Grid.ColumnDefinitions>
-                                <DatePicker Date="{Binding AcquiredOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <Button x:Name="BAcquired" HorizontalOptions="StartAndExpand" Text="{Binding AcquiredOn, Converter={StaticResource datePickerDisplayConverter}}" Clicked="BAcquired_Clicked" Style="{StaticResource DatePicker}" Background="Transparent" />
+                                <picker:SfDatePicker x:Name="DPAcquired" SelectedDate="{Binding AcquiredOn, Mode=TwoWay}" Mode="RelativeDialog" RelativePosition="AlignTop" MinimumDate="1/1/0001" Format="MM_dd_yyyy" Opened="DatePickerOpened">
+                                    <picker:SfDatePicker.HeaderView>
+                                        <picker:PickerHeaderView Text="Acquired On" />
+                                    </picker:SfDatePicker.HeaderView>
+                                </picker:SfDatePicker>
                                 <ImageButton Source="cancel" Command="{Binding ClearAcquiredOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                             </Grid>
                         </VerticalStackLayout>
@@ -208,10 +219,15 @@
                             <Label Text="{Binding StartedOnName}" FontSize="Small" />
                             <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="32" />
                                 </Grid.ColumnDefinitions>
-                                <DatePicker Date="{Binding StartedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <Button x:Name="BStart" HorizontalOptions="StartAndExpand" Text="{Binding StartedOn, Converter={StaticResource datePickerDisplayConverter}}" Clicked="BStart_Clicked" Style="{StaticResource DatePicker}" Background="Transparent" />
+                                <picker:SfDatePicker x:Name="DPStart" SelectedDate="{Binding StartedOn, Mode=TwoWay}" Mode="RelativeDialog" RelativePosition="AlignTop" MinimumDate="1/1/0001" Format="MM_dd_yyyy" Opened="DatePickerOpened">
+                                    <picker:SfDatePicker.HeaderView>
+                                        <picker:PickerHeaderView Text="Started On" />
+                                    </picker:SfDatePicker.HeaderView>
+                                </picker:SfDatePicker>
                                 <ImageButton Source="cancel" Command="{Binding ClearStartedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                             </Grid>
                         </VerticalStackLayout>
@@ -219,10 +235,15 @@
                             <Label Text="Finished On:" FontSize="Small" />
                             <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="32" />
                                 </Grid.ColumnDefinitions>
-                                <DatePicker Date="{Binding FinishedOn}" Focused="DatePicker_Focused" MinimumDate="1/1/0001" HorizontalOptions="FillAndExpand" />
+                                <Button x:Name="BFinish" HorizontalOptions="StartAndExpand" Text="{Binding FinishedOn, Converter={StaticResource datePickerDisplayConverter}}" Clicked="BFinish_Clicked" Style="{StaticResource DatePicker}" Background="Transparent" />
+                                <picker:SfDatePicker x:Name="DPFinish" SelectedDate="{Binding FinishedOn, Mode=TwoWay}" Mode="RelativeDialog" RelativePosition="AlignTop" MinimumDate="1/1/0001" Format="MM_dd_yyyy" Opened="DatePickerOpened">
+                                    <picker:SfDatePicker.HeaderView>
+                                        <picker:PickerHeaderView Text="Finished On" />
+                                    </picker:SfDatePicker.HeaderView>
+                                </picker:SfDatePicker>
                                 <ImageButton Source="cancel" Command="{Binding ClearFinishedOnCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
                             </Grid>
                         </VerticalStackLayout>

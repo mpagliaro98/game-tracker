@@ -5,6 +5,7 @@
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
              x:DataType="local:StatusViewModel"
              Shell.TabBarIsVisible="False"
              Title="Statuses">
@@ -17,10 +18,10 @@
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
     </ContentPage.ToolbarItems>
-    
+
     <RefreshView x:DataType="local:StatusViewModel" Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <CollectionView x:Name="ItemsListView" ItemsSource="{Binding Items}" SelectionMode="None">
-            <CollectionView.ItemTemplate>
+        <syncfusion:SfListView ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemSize="32">
+            <syncfusion:SfListView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="5" x:DataType="model:StatusGame">
                         <Grid.ColumnDefinitions>
@@ -32,17 +33,10 @@
                         <Label Text="{Binding Name}" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" />
                         <Label Text="F" Grid.Column="1" IsVisible="{Binding UseAsFinished}" />
                         <Label Text="H" Grid.Column="2" IsVisible="{Binding HideScoreFromList}" />
-                        <Rectangle Grid.Column="3" Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer 
-                                NumberOfTapsRequired="1"
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type local:StatusViewModel}}, Path=ItemTapped}"		
-                                CommandParameter="{Binding .}">
-                            </TapGestureRecognizer>
-                        </Grid.GestureRecognizers>
+                        <Label Grid.Column="3" Background="{Binding ., Converter={StaticResource colorContainerConverter}}" />
                     </Grid>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
     </RefreshView>
 </ContentPage>
