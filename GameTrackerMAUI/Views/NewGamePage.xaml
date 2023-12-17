@@ -9,6 +9,7 @@
              xmlns:simpleCore="clr-namespace:SimpleToolkit.Core;assembly=SimpleToolkit.Core"
              xmlns:picker="clr-namespace:Syncfusion.Maui.Picker;assembly=Syncfusion.Maui.Picker"
              xmlns:editors="clr-namespace:Syncfusion.Maui.Inputs;assembly=Syncfusion.Maui.Inputs"
+             xmlns:sliders="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
              x:DataType="local:NewGameViewModel"
              Shell.TabBarIsVisible="False"
              Title="{Binding Title}">
@@ -71,7 +72,7 @@
                                     <StackLayout>
                                         <Label Text="{Binding Category.Name}" FontSize="Small" FontAttributes="Italic" />
                                         <StackLayout Orientation="Horizontal">
-                                            <Slider HorizontalOptions="FillAndExpand" Minimum="0" Maximum="1" Value="{Binding CategoryValue, Mode=TwoWay, Converter={StaticResource minMaxSliderConverter}}" x:Name="slider" IsEnabled="{Binding IsUsingOriginalGameScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}, Converter={StaticResource booleanInvertConverter}}" DragStarted="slider_DragStarted" DragCompleted="slider_DragCompleted">
+                                            <sliders:SfSlider x:Name="slider" Minimum="{Binding Settings.MinScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}}" Maximum="{Binding Settings.MaxScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}}" Value="{Binding CategoryValue}" StepSize="0.1" ShowLabels="True" ShowTicks="True" Interval="{Binding ScoreInterval, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}}" MinorTicksPerInterval="0" HorizontalOptions="FillAndExpand" VerticalOptions="Start" ValueChangeStart="slider_DragStarted" ValueChangeEnd="slider_DragCompleted">
                                                 <simpleCore:Popover.AttachedPopover>
                                                     <simpleCore:Popover>
                                                         <Border Background="White" Padding="5" WidthRequest="{Binding Source={x:Reference slider}, Path=Width}" HeightRequest="125">
@@ -90,8 +91,8 @@
                                                         </Border>
                                                     </simpleCore:Popover>
                                                 </simpleCore:Popover.AttachedPopover>
-                                            </Slider>
-                                            <Entry Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.#}'}" FontSize="Medium" MaxLength="10" WidthRequest="50" HorizontalOptions="Start" Keyboard="Numeric" IsEnabled="{Binding IsUsingOriginalGameScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}, Converter={StaticResource booleanInvertConverter}}" />
+                                            </sliders:SfSlider>
+                                            <Entry Text="{Binding Source={x:Reference slider}, Path=Value, StringFormat='{0:0.#}'}" FontSize="Medium" MaxLength="10" WidthRequest="50" HorizontalOptions="Start" Keyboard="Numeric" IsEnabled="{Binding IsUsingOriginalGameScore, Source={RelativeSource AncestorType={x:Type local:NewGameViewModel}}, Converter={StaticResource booleanInvertConverter}}" />
                                         </StackLayout>
                                     </StackLayout>
                                 </DataTemplate>

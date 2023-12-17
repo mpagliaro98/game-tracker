@@ -5,6 +5,7 @@
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:base="clr-namespace:GameTrackerMAUI"
+             xmlns:sliders="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
              x:DataType="local:GameDetailViewModel"
              Shell.TabBarIsVisible="False"
              Title="Game">
@@ -40,7 +41,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Status:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle Background="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Background="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
@@ -54,7 +55,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle Background="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Background="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
@@ -68,7 +69,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle Background="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Background="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
@@ -81,8 +82,8 @@
                                 <StackLayout>
                                     <Label Text="{Binding Category.Name}" FontSize="Small" FontAttributes="Italic" />
                                     <StackLayout Orientation="Horizontal">
-                                        <Slider Minimum="0" Maximum="1" Value="{Binding CategoryValue, Converter={StaticResource minMaxSliderConverter}}" IsEnabled="False" HorizontalOptions="FillAndExpand" x:Name="slider" />
-                                        <Label Text="{Binding Source={x:Reference slider}, Path=Value, Converter={StaticResource minMaxScoreConverter}, StringFormat='{0:0.#}'}" FontSize="Medium" WidthRequest="50" HorizontalOptions="Start" />
+                                        <sliders:SfSlider x:Name="slider" Minimum="{Binding Settings.MinScore, Source={RelativeSource AncestorType={x:Type local:GameDetailViewModel}}}" Maximum="{Binding Settings.MaxScore, Source={RelativeSource AncestorType={x:Type local:GameDetailViewModel}}}" Value="{Binding CategoryValue}" ShowLabels="True" ShowTicks="True" Interval="{Binding ScoreInterval, Source={RelativeSource AncestorType={x:Type local:GameDetailViewModel}}}" MinorTicksPerInterval="0" IsEnabled="False" HorizontalOptions="FillAndExpand" VerticalOptions="Start" />
+                                        <Label Text="{Binding Source={x:Reference slider}, Path=Value, StringFormat='{0:0.#}'}" FontSize="Medium" WidthRequest="50" HorizontalOptions="Start" />
                                     </StackLayout>
                                 </StackLayout>
                             </DataTemplate>

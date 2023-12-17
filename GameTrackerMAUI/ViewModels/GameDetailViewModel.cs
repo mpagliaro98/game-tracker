@@ -148,6 +148,8 @@ namespace GameTrackerMAUI.ViewModels
             get => Item.IsUnfinishable ? "Played On:" : "Started On:";
         }
 
+        public double ScoreInterval => (Settings.MaxScore - Settings.MinScore) / 10;
+
         public GameDetailViewModel(IServiceProvider provider) : base(provider)
         {
             CompilationCommand = new Command(OnCompilation);

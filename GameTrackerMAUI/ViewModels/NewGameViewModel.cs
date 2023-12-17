@@ -289,6 +289,8 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(ref _selectedComp, value);
         }
 
+        public double ScoreInterval => (Settings.MaxScore - Settings.MinScore) / 10;
+
         public int MaxLengthName => GameObject.MaxLengthName;
         public int MaxLengthCompName => GameCompilation.MaxLengthName;
         public int MaxLengthCompletionCriteria => GameObject.MaxLengthCompletionCriteria;

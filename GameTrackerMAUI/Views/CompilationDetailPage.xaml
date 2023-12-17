@@ -42,7 +42,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Status:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle Background="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Background="{Binding CompletionStatus.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding CompletionStatus.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
@@ -56,7 +56,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle Background="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Background="{Binding Platform.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding Platform.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 
@@ -70,7 +70,7 @@
                     <RowDefinition />
                 </Grid.RowDefinitions>
                 <Label Text="Platform Played On:" FontSize="Small" Grid.ColumnSpan="2" />
-                <Rectangle Background="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
+                <Label Background="{Binding PlatformPlayedOn.Color, Converter={StaticResource colorConverter}}" Grid.Row="1" />
                 <Label Text="{Binding PlatformPlayedOn.Name}" FontSize="Medium" Grid.Column="1" Grid.Row="1" VerticalOptions="CenterAndExpand" />
             </Grid>
 

@@ -14,8 +14,8 @@ namespace GameTrackerMAUI.Converters
             object val = values[0];
             object selected = values[1];
             if (val == null || selected == null)
-                return FontAttributes.None;
-            return val.Equals(selected) ? FontAttributes.Bold : FontAttributes.None;
+                return new SolidColorBrush(Colors.Transparent);
+            return val.Equals(selected) ? new SolidColorBrush(Colors.LavenderBlush) : new SolidColorBrush(Colors.Transparent);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

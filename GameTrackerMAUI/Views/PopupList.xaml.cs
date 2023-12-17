@@ -42,7 +42,7 @@ public partial class PopupList : Popup
     void OnItemDoubleTapped(PopupListOption item)
     {
         int index = 0;
-        foreach (PopupListOption listItem in ItemList.ItemsSource)
+        foreach (PopupListOption listItem in (ItemList.ItemsSource as IEnumerable<PopupListOption>))
         {
             if (listItem.Equals(item))
                 break;

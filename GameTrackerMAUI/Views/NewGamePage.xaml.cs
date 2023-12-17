@@ -23,14 +23,12 @@ public partial class NewGamePage : ContentPage
 
     private void slider_DragStarted(object sender, EventArgs e)
     {
-        Slider slider = (Slider)sender;
-        slider.ShowAttachedPopover();
+        (sender as View).ShowAttachedPopover();
     }
 
     private void slider_DragCompleted(object sender, EventArgs e)
     {
-        Slider slider = (Slider)sender;
-        slider.HideAttachedPopover();
+        (sender as View).HideAttachedPopover();
     }
 
     private void BAcquired_Clicked(object sender, EventArgs e)
