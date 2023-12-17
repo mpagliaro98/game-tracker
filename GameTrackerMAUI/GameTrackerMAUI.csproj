@@ -83,6 +83,7 @@
 	  <ApplicationDisplayVersion>1.3.0</ApplicationDisplayVersion>
 	  <ApplicationVersion>5</ApplicationVersion>
 	  <ApplicationId>com.mpagliaro98.gametrackermaui</ApplicationId>
+	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>

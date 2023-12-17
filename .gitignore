@@ -353,3 +353,4 @@ healthchecksdb
 /Scripts/Migration Testing
 /_DEPLOY.txt
 /GameTrackerMAUI/MauiStartup.cs
+/Installer
