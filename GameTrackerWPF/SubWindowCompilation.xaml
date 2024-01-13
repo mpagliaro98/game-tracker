@@ -7,7 +7,7 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        Title="Compilation" Height="700" Width="800" MinHeight="700" MinWidth="800">
+        Title="Compilation" Height="600" Width="800" MinHeight="600" MinWidth="500">
     <mah:MetroWindow.LeftWindowCommands>
         <mah:WindowCommands>
             <Button x:Name="ButtonUpdate" ToolTip="Create" Click="ButtonUpdate_Click">

@@ -8,7 +8,7 @@
         xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="Game" Height="700" Width="900" MinHeight="700" MinWidth="900">
+        Title="Game" Height="600" Width="800" MinHeight="530" MinWidth="500">
     <Window.Resources>
         <BitmapImage x:Key="ButtonEdit" UriSource="/Images/button_pencil.png" />
         <BitmapImage x:Key="ButtonLock" UriSource="/Images/button_lock.png" />

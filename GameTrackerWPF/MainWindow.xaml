@@ -7,7 +7,7 @@
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:icons="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
-        Title="Game Tracker" Height="600" Width="1100" MinHeight="600" MinWidth="1100" Loaded="Window_Loaded">
+        Title="Game Tracker" Height="600" Width="1000" MinHeight="400" MinWidth="700" Loaded="Window_Loaded">
     <Window.Resources>
         <BitmapImage x:Key="ButtonSearch" UriSource="/Images/button_search.png" />
         <BitmapImage x:Key="ButtonSort" UriSource="/Images/button_sort.png" />
@@ -62,7 +62,7 @@
                     <StackPanel DockPanel.Dock="Top">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="50" />
                                 <ColumnDefinition Width="1*" />
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
@@ -214,22 +214,24 @@
         <mah:FlyoutsControl>
             <mah:Flyout x:Name="FlyoutSettings" Header="Settings" Position="Right" Width="500">
                 <DockPanel>
-                <StackPanel x:Name="SettingsLayout">
-                        <Label x:Name="SettingsLabelMin" Content="Minimum Score" />
-                        <TextBox x:Name="SettingsTextboxMin" Margin="5,0" Width="150" HorizontalAlignment="Left" />
-                        <Label x:Name="SettingsLabelMax" Content="Maximum Score" />
-                        <TextBox x:Name="SettingsTextboxMax" Margin="5,0" Width="150" HorizontalAlignment="Left" />
-                        <CheckBox x:Name="CheckboxShowScoreNullStatus" Content="Show score for games with no status" Margin="5,10,0,0" />
-                        <CheckBox x:Name="CheckboxTreatGamesAsOwned" Content="Treat all games as owned" Margin="5,10,0,0" />
-                        <CheckBox x:Name="CheckboxUnownedFinishCount" Content="Include un-owned games in # finished games" Margin="5,10,0,0" />
-                        <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" IsEnabled="False" />
-                        <Expander Header="Advanced" Margin="0,20,0,0">
-                            <StackPanel>
-                                <TextBlock Text="Click the button below to transfer your saved data to AWS. Doing so will allow you to access your data on any platform Game Tracker supports. You will need an AWS account, then you must generate your unique key and secret key on AWS. Once you download that key file, click the button below and select that file." TextWrapping="Wrap" HorizontalAlignment="Center" Margin="5" />
-                                <Button x:Name="SettingsAWSButton" Margin="5" Height="30" Width="230" Click="SettingsAWSButton_Click" />
-                            </StackPanel>
-                        </Expander>
-                    </StackPanel>
+                    <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="SettingsLayout">
+                            <Label x:Name="SettingsLabelMin" Content="Minimum Score" />
+                            <TextBox x:Name="SettingsTextboxMin" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                            <Label x:Name="SettingsLabelMax" Content="Maximum Score" />
+                            <TextBox x:Name="SettingsTextboxMax" Margin="5,0" Width="150" HorizontalAlignment="Left" />
+                            <CheckBox x:Name="CheckboxShowScoreNullStatus" Content="Show score for games with no status" Margin="5,10,0,0" />
+                            <CheckBox x:Name="CheckboxTreatGamesAsOwned" Content="Treat all games as owned" Margin="5,10,0,0" />
+                            <CheckBox x:Name="CheckboxUnownedFinishCount" Content="Include un-owned games in # finished games" Margin="5,10,0,0" />
+                            <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" IsEnabled="False" />
+                            <Expander Header="Advanced" Margin="0,20,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="Click the button below to transfer your saved data to AWS. Doing so will allow you to access your data on any platform Game Tracker supports. You will need an AWS account, then you must generate your unique key and secret key on AWS. Once you download that key file, click the button below and select that file." TextWrapping="Wrap" HorizontalAlignment="Center" Margin="5" />
+                                    <Button x:Name="SettingsAWSButton" Margin="5" Height="30" Width="230" Click="SettingsAWSButton_Click" />
+                                </StackPanel>
+                            </Expander>
+                        </StackPanel>
+                    </ScrollViewer>
                 </DockPanel>
             </mah:Flyout>
 
