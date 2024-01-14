@@ -115,7 +115,7 @@ namespace RatableTracker.Modules
             }
             catch (ListManipulationException e)
             {
-                Logger.Log(e.GetType().Name + ": " + e.Message + " - value " + e.InvalidValue.ToString());
+                Logger.Log(e.GetType().Name + ": " + e.Message + " - value " + (e.InvalidValue?.ToString() ?? "(null)"));
                 throw;
             }
         }

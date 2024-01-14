@@ -28,7 +28,7 @@ namespace GameTrackerWPF
             get { return rg; }
         }
 
-        public ListBoxItemGameBox(GameModule rm, GameObject rg)
+        public ListBoxItemGameBox(GameModule rm, GameObject rg, bool shortDLCName = false)
         {
             InitializeComponent();
             this.rg = rg;
@@ -37,7 +37,10 @@ namespace GameTrackerWPF
             var completionStatus = rg.StatusExtension.Status;
 
             GridMain.Opacity = rg.IsNotOwned ? 0.7 : 1.0;
-            TextBlockName.Text = rg.Name;
+            GridMain.ToolTip = shortDLCName ? rg.DisplayName : rg.Name;
+            DLCText.Visibility = rg.IsDLC ? Visibility.Visible : Visibility.Collapsed;
+            DLCIndicator.Visibility = rg.IsDLC ? Visibility.Visible : Visibility.Collapsed;
+            TextBlockName.Text = shortDLCName ? rg.DisplayName : rg.Name;
             TextBlockName.FontStyle = rg.IsNotOwned ? FontStyles.Italic : FontStyles.Normal;
             TextBlockPlatform.Text = platform != null ? platform.Name : "";
             TextBlockStatus.Text = completionStatus != null ? completionStatus.Name : "";

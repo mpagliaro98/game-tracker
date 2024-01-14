@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GameTrackerMAUI.ViewModels"
              xmlns:base="clr-namespace:GameTrackerMAUI"
              xmlns:sliders="clr-namespace:Syncfusion.Maui.Sliders;assembly=Syncfusion.Maui.Sliders"
+             xmlns:gametracker="clr-namespace:GameTracker;assembly=GameTracker"
              x:DataType="local:GameDetailViewModel"
              Shell.TabBarIsVisible="False"
              Title="Game">
@@ -18,6 +19,9 @@
             <converters:MinMaxScoreConverter x:Key="minMaxScoreConverter" />
             <converters:MinMaxSliderConverter x:Key="minMaxSliderConverter" />
             <converters:ColorConverter x:Key="colorConverter" />
+            <converters:ColorContainerConverter x:Key="colorContainerConverter" />
+            <converters:NotOwnedFontAttributesConverter x:Key="notOwnedFontAttributesConverter" />
+            <converters:NotOwnedOpacityConverter x:Key="notOwnedOpacityConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -29,7 +33,7 @@
     <ScrollView>
         <StackLayout Spacing="10" Padding="15">
             <Label Text="Name:" FontSize="Small" />
-            <Label Text="{Binding Item.Name}" FontSize="Large" Margin="0,0,0,10" />
+            <Label Text="{Binding Item.DisplayName}" FontSize="Large" Margin="0,0,0,10" />
 
             <Grid Margin="0,0,0,10" IsVisible="{Binding HasCompletionStatus}">
                 <Grid.ColumnDefinitions>
@@ -97,7 +101,25 @@
                 <Label Text="{Binding Stats}" LineBreakMode="WordWrap" FontSize="Small" FontAttributes="Bold" />
             </StackLayout>
 
-            <Label Text="You do not own this game" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
+            <Label Text="{Binding DontOwnText}" FontSize="Medium" IsVisible="{Binding ShowStaticNotOwnedText}" FontAttributes="Italic" Margin="0,0,0,10" />
+
+            <Label Text="This is DLC" FontSize="Medium" IsVisible="{Binding ShowStaticDLCText}" FontAttributes="Italic" Margin="0,0,0,10" />
+
+            <StackLayout IsVisible="{Binding HasBaseGame}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="32" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <Label Text="Base Game:" FontSize="Small" />
+                    <Label Text="{Binding BaseGameName}" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="FillAndExpand" Grid.Row="1" />
+                    <ImageButton Source="go" Command="{Binding BaseGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" Grid.RowSpan="2" />
+                </Grid>
+            </StackLayout>
 
             <Label Text="Remaster/Re-release" FontSize="Medium" IsVisible="{Binding ShowStaticRemasterText}" FontAttributes="Italic" Margin="0,0,0,10" />
 
@@ -132,6 +154,40 @@
                     <ImageButton Source="go" Command="{Binding CompilationCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" Grid.RowSpan="2" />
                 </Grid>
             </StackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding HasDLC}">
+                <Label Text="DLC:" FontSize="Small" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding DLCList}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5" x:DataType="gametracker:GameObject" Opacity="{Binding IsNotOwned, Converter={StaticResource notOwnedOpacityConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="40" />
+                                </Grid.ColumnDefinitions>
+                                <Label Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
+                                <Polygon Points="0,0 20,0, 20,20" Grid.Column="1" Stroke="DarkGoldenrod" Fill="Yellow" StrokeThickness="2" HorizontalOptions="End" VerticalOptions="Start" ZIndex="1" IsVisible="{Binding IsDLC}" />
+                                <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" FontAttributes="{Binding IsNotOwned, Converter={StaticResource notOwnedFontAttributesConverter}}" />
+                                <Label Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
+                                <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
+                                <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}"
+                                   Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}"
+                                   FontAttributes="Bold" HorizontalTextAlignment="Center"
+                                   IsVisible="{Binding ShowScore}"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        NumberOfTapsRequired="1"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:GameDetailViewModel}}, Path=ItemTapped}"		
+                                        CommandParameter="{Binding .}"> 
+                                    </TapGestureRecognizer>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
 
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.CompletionCriteria, Converter={StaticResource stringEmptyConverter}}">
                 <Label Text="Completion Criteria:" FontSize="Small" />

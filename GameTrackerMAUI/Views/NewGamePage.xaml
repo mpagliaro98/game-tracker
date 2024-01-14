@@ -45,7 +45,7 @@
                     </Grid>
 
                     <Label Text="Platform:" FontSize="Small" />
-                    <Grid Margin="0,0,0,10">
+                    <Grid Margin="0,0,0,10" IsEnabled="{Binding CanEditPlatform}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="32" />
@@ -55,7 +55,7 @@
                     </Grid>
 
                     <Label Text="Platform Played On:" FontSize="Small" />
-                    <Grid Margin="0,0,0,10">
+                    <Grid Margin="0,0,0,10" IsEnabled="{Binding CanEditPlatform}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="32" />
@@ -119,6 +119,31 @@
                     <Grid ColumnSpacing="5" RowSpacing="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <VerticalStackLayout>
+                            <Label Text="This is DLC:" FontSize="Small" />
+                            <Switch IsToggled="{Binding IsDLC}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsDLC}" Grid.Row="1">
+                            <Label Text="Base Game:" FontSize="Small" />
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="32" />
+                                </Grid.ColumnDefinitions>
+                                <Picker ItemsSource="{Binding Games}" ItemDisplayBinding="{Binding NameAndPlatform}" SelectedItem="{Binding BaseGame}" Title="--Select One--" HorizontalOptions="Fill" MaximumWidthRequest="{Binding Source={RelativeSource AncestorType={x:Type VerticalStackLayout}}, Path=Width, Converter={StaticResource offsetConverter}, ConverterParameter=32}" />
+                                <ImageButton Source="cancel" Command="{Binding ClearBaseGameCommand}" HorizontalOptions="Start" BorderColor="Transparent" Background="Transparent" Grid.Column="1" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <Grid ColumnSpacing="5" RowSpacing="5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
@@ -132,18 +157,18 @@
                             <Switch IsToggled="{Binding IsUnfinishable}" Margin="0,0,0,10" HorizontalOptions="Start" />
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1">
-                            <Label Text="I Don't Own This Game:" FontSize="Small" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" />
+                            <Label Text="{Binding DontOwnName}" FontSize="Small" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" />
                             <Switch IsToggled="{Binding IsNotOwned}" Margin="0,0,0,10" IsVisible="{Binding TreatAllGamesAsOwned, Converter={StaticResource booleanInvertConverter}}" HorizontalOptions="Start" />
                         </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Row="1">
+                        <VerticalStackLayout Grid.Row="1" IsVisible="{Binding IsDLC, Converter={StaticResource booleanInvertConverter}}">
                             <Label Text="Remaster/Re-release:" FontSize="Small" />
                             <Switch IsToggled="{Binding IsRemaster}" Margin="0,0,0,10" HorizontalOptions="Start" />
                         </VerticalStackLayout>
-                        <VerticalStackLayout Grid.Row="1" Grid.Column="1">
+                        <VerticalStackLayout Grid.Row="1" Grid.Column="1" IsVisible="{Binding IsDLC, Converter={StaticResource booleanInvertConverter}}">
                             <Label Text="Part of a Compilation:" FontSize="Small" />
                             <Switch IsToggled="{Binding IsPartOfCompilation}" Margin="0,0,0,10" HorizontalOptions="Start" />
                         </VerticalStackLayout>
-                        <FlexLayout JustifyContent="SpaceEvenly" Grid.Row="2" Grid.ColumnSpan="2">
+                        <FlexLayout JustifyContent="SpaceEvenly" Grid.Row="2" Grid.ColumnSpan="2" IsVisible="{Binding IsDLC, Converter={StaticResource booleanInvertConverter}}">
                             <VerticalStackLayout Margin="0,0,0,10" IsVisible="{Binding IsRemaster}" FlexLayout.Basis="50%" FlexLayout.Grow="1">
                                 <Label Text="Original Game:" FontSize="Small" />
                                 <Grid>

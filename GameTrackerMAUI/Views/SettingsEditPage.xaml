@@ -23,6 +23,8 @@
                 <CheckBox IsChecked="{Binding TreatAllGamesAsOwned, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
                 <Label Text="Include un-owned games in the count of finished games:" FontSize="Small" />
                 <CheckBox IsChecked="{Binding UnownedFinishCount, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                <Label Text="Include DLC in game statistics &amp; counts:" FontSize="Small" />
+                <CheckBox IsChecked="{Binding IncludeDLCInStats, Mode=TwoWay}" Margin="0,0,0,10" HorizontalOptions="Start" />
                 <syncfusion:SfExpander AnimationDuration="200">
                     <syncfusion:SfExpander.Header>
                         <StackLayout Padding="5">

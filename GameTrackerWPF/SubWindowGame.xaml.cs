@@ -37,6 +37,7 @@ namespace GameTrackerWPF
         private string compName;
         private ILoadSaveHandler<ILoadSaveMethodGame> loadSave;
         private bool showScoreSuggestions = true;
+        private bool isDLC = false;
 
         public ObservableCollection<string> CompNames { get; set; } = new ObservableCollection<string>();
 
@@ -51,6 +52,7 @@ namespace GameTrackerWPF
             this.settings = settings;
             this.compNameOriginal = orig.IsPartOfCompilation ? orig.Compilation.Name : "";
             this.compName = this.compNameOriginal;
+            this.isDLC = orig.IsDLC;
             CompNames.Clear();
             foreach (var name in rm.GetModelObjectList(settings).OfType<GameObject>().Where(g => g.IsCompilation).Select(g => g.Name).ToList())
             {
@@ -62,7 +64,8 @@ namespace GameTrackerWPF
             FillComboboxStatuses(ComboBoxStatus);
             FillComboboxPlatforms(ComboBoxPlatform);
             FillComboboxPlatforms(ComboBoxPlatformPlayedOn, defaultItem: "Same as Platform");
-            FillComboboxGames(ComboboxOriginalGame);
+            FillComboboxGames(ComboboxOriginalGame, defaultItem: "--Select the game this is a remaster of--");
+            FillComboboxGames(ComboboxBaseGame, defaultItem: "--Select the game this is DLC for--");
             ButtonSave.ToolTip = mode == SubWindowMode.MODE_ADD ? "Create" : "Update";
             TabList.SelectedIndex = string.IsNullOrEmpty(orig.Name) ? 1 : 0;
 
@@ -80,10 +83,12 @@ namespace GameTrackerWPF
             if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform;
             if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn;
             if (orig.OriginalGame != null) ComboboxOriginalGame.SelectedItem = orig.OriginalGame;
+            if (orig.IsDLC && ((GameDLC)orig).HasBaseGame) ComboboxBaseGame.SelectedItem = ((GameDLC)orig).BaseGame;
             CheckboxUnfinishable.IsChecked = orig.IsUnfinishable;
             CheckboxNotOwned.IsChecked = orig.IsNotOwned;
             CheckboxNotOwned.Visibility = settings.TreatAllGamesAsOwned ? Visibility.Hidden : Visibility.Visible;
             CheckboxRemaster.IsChecked = orig.IsRemaster;
+            CheckboxDLC.IsChecked = isDLC;
             CheckboxUseOriginalGameScore.IsChecked = orig.UseOriginalGameScore;
             TextboxCompletionCriteria.Text = orig.CompletionCriteria;
             TextboxCompletionComment.Text = orig.CompletionComment;
@@ -98,7 +103,7 @@ namespace GameTrackerWPF
             CheckboxCompilation.IsChecked = orig.IsPartOfCompilation;
             TextboxComp.Text = this.compNameOriginal;
 
-            SummaryName.Text = string.IsNullOrEmpty(orig.Name) ? "Save this game to see summary info" : orig.Name;
+            SummaryName.Text = string.IsNullOrEmpty(orig.Name) ? "Save this game to see summary info" : orig.DisplayName;
             SummaryPlatform.Content = orig.PlatformEffective != null ? "On " + orig.PlatformEffective.Name : "";
             SummaryStatus.Content = orig.StatusExtension.Status != null ? orig.StatusExtension.Status.Name : "";
             SummaryThoughts.Text = orig.Comment;
@@ -115,14 +120,36 @@ namespace GameTrackerWPF
             SummaryCompilationContainer.Visibility = orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Collapsed;
             ButtonCompilationLink.Visibility = orig.IsPartOfCompilation ? Visibility.Visible : Visibility.Hidden;
 
+            // fill related game lists
+            int numLists = 0;
+            bool hasDLC = FillDLC();
+            if (hasDLC) numLists += 1;
+            GridRelated.ColumnDefinitions.Clear();
+            GridRelated.RowDefinitions.Clear();
+            for (int i = 0; i < numLists; i++)
+            {
+                GridRelated.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            }
+            if (numLists > 0) GridRelated.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(265) });
+            int currentCol = 0;
+            if (hasDLC)
+            {
+                Grid.SetColumn(PanelRelatedDLC, currentCol);
+                currentCol += 1;
+            }
+            GridRelated.Visibility = numLists > 0 ? Visibility.Visible : Visibility.Collapsed;
+
             // set event handlers
             TextboxName.TextChanged += TextboxName_TextChanged;
             ComboBoxPlatform.SelectionChanged += ComboBoxPlatform_SelectionChanged;
             CheckboxRemaster.Checked += CheckboxRemaster_Checked;
             CheckboxRemaster.Unchecked += CheckboxRemaster_Checked;
+            CheckboxDLC.Checked += CheckboxDLC_Checked;
+            CheckboxDLC.Unchecked += CheckboxDLC_Checked;
             CheckboxUseOriginalGameScore.Checked += CheckboxUseOriginalGameScore_Checked;
             CheckboxUseOriginalGameScore.Unchecked += CheckboxUseOriginalGameScore_Checked;
             ComboboxOriginalGame.SelectionChanged += ComboboxOriginalGame_SelectionChanged;
+            ComboboxBaseGame.SelectionChanged += ComboboxBaseGame_SelectionChanged;
             ComboBoxStatus.SelectionChanged += ComboBoxStatus_SelectionChanged;
             CheckboxUnfinishable.Checked += CheckboxUnfinishable_Checked;
             CheckboxUnfinishable.Unchecked += CheckboxUnfinishable_Checked;
@@ -146,6 +173,7 @@ namespace GameTrackerWPF
             // refresh UI logic
             UpdateScores();
             UpdateRemasterFields();
+            UpdateDLC();
             UpdateDateFieldVisibility();
             UpdateCompilationFields();
             UpdatePlatformColor();
@@ -259,16 +287,28 @@ namespace GameTrackerWPF
             cb.SelectedIndex = 0;
         }
 
-        private void FillComboboxGames(ComboBox cb)
+        private void FillComboboxGames(ComboBox cb, string defaultItem = "N/A")
         {
             cb.Items.Clear();
-            cb.Items.Add(new { NameAndPlatform = "--Select the game this is a remaster of--" });
-            foreach (GameObject game in rm.GetModelObjectList(settings).OfType<GameObject>().OrderBy(ro => ro.Name))
+            cb.Items.Add(new { NameAndPlatform = defaultItem });
+            foreach (GameObject game in rm.GetModelObjectList(settings).OfType<GameObject>().Where(o => !o.IsDLC).OrderBy(ro => ro.Name))
             {
                 if (game.Equals(orig) || (game.IsPartOfCompilation && game.Equals(game.Compilation))) continue;
                 cb.Items.Add(game);
             }
             cb.SelectedIndex = 0;
+        }
+
+        private bool FillDLC()
+        {
+            var games = orig.GetDLC();
+            DLCListBoxWrap.Items.Clear();
+            foreach (var game in games)
+            {
+                IListBoxItemGame item = new ListBoxItemGameBox(rm, game, shortDLCName: true);
+                DLCListBoxWrap.Items.Add(item);
+            }
+            return games.Count > 0;
         }
 
         private void CreateRatingCategories()
@@ -332,7 +372,7 @@ namespace GameTrackerWPF
         private void TextboxName_TextChanged(object sender, TextChangedEventArgs e)
         {
             orig.Name = TextboxName.Text.Trim();
-            SummaryName.Text = orig.Name;
+            UpdateName();
         }
 
         private void ComboBoxStatus_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -382,6 +422,14 @@ namespace GameTrackerWPF
             UpdateScores();
         }
 
+        private void CheckboxDLC_Checked(object sender, RoutedEventArgs e)
+        {
+            isDLC = CheckboxDLC.IsChecked.Value;
+            UpdateDLC();
+            UpdateScores();
+            UpdateName();
+        }
+
         private void ComboboxOriginalGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             orig.OriginalGame = ComboboxOriginalGame.SelectedIndex > 0 ? (GameObject)ComboboxOriginalGame.SelectedItem : null;
@@ -389,10 +437,18 @@ namespace GameTrackerWPF
             UpdateScores();
         }
 
+        private void ComboboxBaseGame_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ((GameDLC)orig).BaseGame = ComboboxBaseGame.SelectedIndex > 0 ? (GameObject)ComboboxBaseGame.SelectedItem : null;
+            UpdateDLC();
+            UpdateScores();
+            UpdateName();
+        }
+
         private void CheckboxUseOriginalGameScore_Checked(object sender, RoutedEventArgs e)
         {
             orig.UseOriginalGameScore = CheckboxUseOriginalGameScore.IsChecked.Value;
-            UpdateRemasterFields();
+            UpdateDLC();
             UpdateScores();
         }
 
@@ -525,6 +581,11 @@ namespace GameTrackerWPF
         }
         #endregion
 
+        private void UpdateName()
+        {
+            SummaryName.Text = orig.DisplayName;
+        }
+
         private void UpdateScores()
         {
             for (int i = 0; i < rm.CategoryExtension.TotalNumRatingCategories(); i++)
@@ -573,6 +634,31 @@ namespace GameTrackerWPF
             ButtonEditScore.IsEnabled = !orig.IsUsingOriginalGameScore;
             SummaryRemaster.Content = orig.IsRemaster ? (orig.HasOriginalGame ? "Remaster/re-release of " + orig.OriginalGame.NameAndPlatform : "Is a remaster/re-release") : "";
             SummaryRemaster.Visibility = orig.IsRemaster ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        private void UpdateDLC()
+        {
+            if (isDLC && !orig.IsDLC)
+            {
+                orig = new GameDLC(orig);
+                ((GameDLC)orig).BaseGame = ComboboxBaseGame.SelectedIndex > 0 ? (GameObject)ComboboxBaseGame.SelectedItem : null;
+            }
+            else if (!isDLC && orig.IsDLC)
+            {
+                orig = new GameObject(orig);
+            }
+
+            DLCIndicator.Visibility = isDLC ? Visibility.Visible : Visibility.Collapsed;
+            ComboboxBaseGame.Visibility = isDLC ? Visibility.Visible : Visibility.Collapsed;
+            ComboBoxPlatform.IsEnabled = !isDLC || ComboboxBaseGame.SelectedIndex <= 0;
+            ComboBoxPlatformPlayedOn.IsEnabled = !isDLC || ComboboxBaseGame.SelectedIndex <= 0;
+            if (orig.Platform != null) ComboBoxPlatform.SelectedItem = orig.Platform; else ComboBoxPlatform.SelectedIndex = 0;
+            if (orig.PlatformPlayedOn != null) ComboBoxPlatformPlayedOn.SelectedItem = orig.PlatformPlayedOn; else ComboBoxPlatformPlayedOn.SelectedIndex = 0;
+            StackPanelComp.Visibility = !isDLC ? Visibility.Visible : Visibility.Collapsed;
+            StackPanelRemaster.Visibility = !isDLC ? Visibility.Visible : Visibility.Collapsed;
+            CheckboxNotOwned.Content = "I don't own this " + (isDLC ? "DLC" : "game");
+            SummaryDLC.Content = orig.IsDLC ? ((orig as GameDLC).HasBaseGame ? "Base game: " + (orig as GameDLC).BaseGame.Name : "This is DLC") : "";
+            SummaryDLC.Visibility = orig.IsDLC ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void UpdateDateFieldVisibility()
@@ -626,7 +712,7 @@ namespace GameTrackerWPF
 
         private void UpdateCompilationFields()
         {
-            TextboxComp.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Hidden;
+            GridComp.Visibility = CheckboxCompilation.IsChecked.Value ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private bool TextChangeNearPeriod(TextBox textbox, ICollection<TextChange> changes)

@@ -104,7 +104,7 @@ namespace GameTrackerMAUI.ViewModels
 
             // set default values
             if (_filterType == FilterType.Game)
-                segment.FilterOption = new FilterOptionModelName();
+                segment.FilterOption = new FilterOptionGameName();
             else
                 segment.FilterOption = new FilterOptionPlatformName();
             segment.FilterTextType = FilterTextType.Contains;
@@ -237,7 +237,7 @@ namespace GameTrackerMAUI.ViewModels
         private void InitUI()
         {
             if (_filterType == FilterType.Game)
-                _options = FilterEngine.GetFilterOptionList<GameObject>(Module, Settings, new List<Type>() { typeof(FilterOptionModelRank), typeof(FilterOptionModelComment) });
+                _options = FilterEngine.GetFilterOptionList<GameObject>(Module, Settings, new List<Type>() { typeof(FilterOptionModelRank), typeof(FilterOptionModelComment), typeof(FilterOptionModelName) });
             else
                 _options = FilterEngine.GetFilterOptionList<GameTracker.Platform>(Module, Settings);
             _textTypes = Enum.GetValues<FilterTextType>().OrderBy(e => e.ToDisplayString()).ToList();
@@ -301,7 +301,7 @@ namespace GameTrackerMAUI.ViewModels
             {
                 return filterType switch
                 {
-                    FilterType.Game => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionModelName() { Module = Module, Settings = Settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = Module, Settings = Settings } },
+                    FilterType.Game => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionGameName() { Module = Module, Settings = Settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = Module, Settings = Settings } },
                     FilterType.Platform => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionPlatformName() { Module = Module, Settings = Settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = Module, Settings = Settings } },
                     _ => throw new NotImplementedException()
                 };

@@ -59,7 +59,7 @@ namespace GameTrackerWPF
         {
             return filterType switch
             {
-                FilterMode.Game => FilterEngine.GetFilterOptionList<GameObject>(module, settings, new List<Type>() { typeof(FilterOptionModelRank), typeof(FilterOptionModelComment) }),
+                FilterMode.Game => FilterEngine.GetFilterOptionList<GameObject>(module, settings, new List<Type>() { typeof(FilterOptionModelRank), typeof(FilterOptionModelComment), typeof(FilterOptionModelName) }),
                 FilterMode.Platform => FilterEngine.GetFilterOptionList<Platform>(module, settings),
                 _ => throw new NotImplementedException()
             };
@@ -79,7 +79,7 @@ namespace GameTrackerWPF
         private void ButtonNew_Click(object sender, RoutedEventArgs e)
         {
             if (ListBoxFilters.Items.Count >= 100) return;
-            var newRow = new FilterRow(module, settings, filterOptions, ListBoxFilters.Items.Count, filterMode == FilterMode.Game ? new FilterOptionModelName() : new FilterOptionPlatformName());
+            var newRow = new FilterRow(module, settings, filterOptions, ListBoxFilters.Items.Count, filterMode == FilterMode.Game ? new FilterOptionGameName() : new FilterOptionPlatformName());
             newRow.Remove += FilterRow_Remove;
             ListBoxFilters.Items.Add(newRow);
             if (ListBoxFilters.Items.Count >= 100) ButtonNew.IsEnabled = false;
@@ -136,7 +136,7 @@ namespace GameTrackerWPF
             {
                 return filterType switch
                 {
-                    FilterMode.Game => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionModelName() { Module = module, Settings = settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = module, Settings = settings } },
+                    FilterMode.Game => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionGameName() { Module = module, Settings = settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = module, Settings = settings } },
                     FilterMode.Platform => new List<FilterSegment>() { new FilterSegment() { FilterOption = new FilterOptionPlatformName() { Module = module, Settings = settings }, FilterValues = new List<string>() { FilterTextType.Contains.ToString(), "" }, Module = module, Settings = settings } },
                     _ => throw new NotImplementedException()
                 };

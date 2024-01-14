@@ -116,6 +116,10 @@ namespace GameTracker
         public IList<GameObject> GetGamesOnPlatform(Platform platform, SettingsGame settings, FilterEngine filterEngine)
         {
             filterEngine.Filters.Add(new FilterSegment() { FilterOption = new FilterOptionGameOnlyNonCompilations() });
+            if (!settings.IncludeDLCInStats)
+            {
+                filterEngine.Filters.Add(new FilterSegment() { FilterOption = new FilterOptionGameDLC(), Negate = true });
+            }
             filterEngine.Filters.Add(new FilterSegment() { FilterOption = new FilterOptionGamePlatform(), FilterValues = platform.UniqueID.ToString() });
             filterEngine.Operator = FilterOperator.And;
             return GetModelObjectList<GameObject>(filterEngine, settings);
@@ -123,7 +127,7 @@ namespace GameTracker
 
         public IList<GameObject> GetGamesIncludeInStats(SettingsGame settings)
         {
-            return GetModelObjectList(settings).OfType<GameObject>().Where(obj => !obj.IsCompilation && obj.IncludeInStats).ToList();
+            return GetModelObjectList(settings).OfType<GameObject>().Where(obj => !obj.IsCompilation && (settings.IncludeDLCInStats || !obj.IsDLC) && obj.IncludeInStats).ToList();
         }
 
         public IList<GameObject> GetGamesOnPlatformIncludeInStats(Platform platform, SettingsGame settings)

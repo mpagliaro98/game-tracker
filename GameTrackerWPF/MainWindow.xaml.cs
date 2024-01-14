@@ -93,6 +93,7 @@ namespace GameTrackerWPF
             ToggleSortModeButton(GamesButtonSortMode);
 
             CheckboxShowCompilations.IsChecked = savedState.ShowCompilations;
+            CheckboxShowDLC.IsChecked = savedState.ShowDLC;
             SetButtonInUse(GamesButtonSearch, savedState.FilterGames.Filters.Count > 0);
             SetButtonInUse(PlatformsButtonSearch, savedState.FilterPlatforms.Filters.Count > 0);
             SetButtonInUse(GamesButtonSort, savedState.SortGames.SortOption != null);
@@ -278,6 +279,9 @@ namespace GameTrackerWPF
                 if ((savedState.ShowCompilations && !rg.IsCompilation && rg.IsPartOfCompilation) || (!savedState.ShowCompilations && rg.IsCompilation))
                     continue;
 
+                if (!savedState.ShowDLC && rg.IsDLC)
+                    continue;
+
                 UserControl item = savedState.DisplayMode switch
                 {
                     GameDisplayMode.DISPLAY_SMALL => new ListBoxItemGameSmall(rm, rg),
@@ -335,7 +339,7 @@ namespace GameTrackerWPF
         {
             if (!savedState.Loaded || GamesButtonSort.ContextMenu.Items.Count > 0) return;
             GamesButtonSort.ContextMenu.Items.Clear();
-            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<GameObject>(rm, settings, new List<Type>() { typeof(SortOptionModelRank) });
+            IList<ISortOption> sortOptions = SortEngine.GetSortOptionList<GameObject>(rm, settings, new List<Type>() { typeof(SortOptionModelRank), typeof(SortOptionModelName) });
             foreach (var option in sortOptions)
             {
                 var item = new MenuItem
@@ -373,7 +377,14 @@ namespace GameTrackerWPF
             {
                 lbi = (IListBoxItemGame)sender;
             }
-            OpenSubWindowGame(SubWindowMode.MODE_EDIT, lbi.Game.IsCompilation ? new GameCompilation(lbi.Game as GameCompilation) : new GameObject(lbi.Game));
+            GameObject game;
+            if (lbi.Game.IsCompilation)
+                game = new GameCompilation(lbi.Game as GameCompilation);
+            else if (lbi.Game.IsDLC)
+                game = new GameDLC(lbi.Game as GameDLC);
+            else
+                game = new GameObject(lbi.Game);
+            OpenSubWindowGame(SubWindowMode.MODE_EDIT, game);
         }
 
         private void GameDelete(object sender, RoutedEventArgs e)
@@ -500,6 +511,12 @@ namespace GameTrackerWPF
             UpdateGamesUI();
         }
 
+        private void CheckboxShowDLC_Checked(object sender, RoutedEventArgs e)
+        {
+            savedState.ShowDLC = CheckboxShowDLC.IsChecked.Value;
+            UpdateGamesUI();
+        }
+
         private void GamesButtonSearch_Click(object sender, RoutedEventArgs e)
         {
             FilterWindow window = new FilterWindow(savedState.FilterGames, rm, settings, FilterMode.Game, savedState, pathController);
@@ -514,6 +531,11 @@ namespace GameTrackerWPF
             {
                 CheckboxShowCompilations.IsChecked = true;
                 savedState.ShowCompilations = true;
+            }
+            if (savedState.FilterGames.Filters.Exists(s => s.FilterOption.Equals(new FilterOptionGameDLC()) && !s.Negate))
+            {
+                CheckboxShowDLC.IsChecked = true;
+                savedState.ShowDLC = true;
             }
             UpdateGamesUI();
             SetButtonInUse(GamesButtonSearch, savedState.FilterGames.Filters.Count > 0);
@@ -711,6 +733,7 @@ namespace GameTrackerWPF
             CheckboxShowScoreNullStatus.IsChecked = settings.ShowScoreWhenNullStatus;
             CheckboxTreatGamesAsOwned.IsChecked = settings.TreatAllGamesAsOwned;
             CheckboxUnownedFinishCount.IsChecked = settings.IncludeUnownedGamesInFinishCount;
+            CheckboxDLCStats.IsChecked = settings.IncludeDLCInStats;
             SettingsAWSButton.Content = FileHandlerAWSS3.KeyFileExists(pathController) ? "Switch back to local save files" : "Switch to remote save files with AWS";
         }
 
@@ -735,6 +758,7 @@ namespace GameTrackerWPF
             settings.ShowScoreWhenNullStatus = CheckboxShowScoreNullStatus.IsChecked.Value;
             settings.TreatAllGamesAsOwned = CheckboxTreatGamesAsOwned.IsChecked.Value;
             settings.IncludeUnownedGamesInFinishCount = CheckboxUnownedFinishCount.IsChecked.Value;
+            settings.IncludeDLCInStats = CheckboxDLCStats.IsChecked.Value;
             try
             {
                 settings.Save(rm, settings);

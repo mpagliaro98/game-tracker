@@ -78,9 +78,9 @@ namespace RatableTracker.Modules
             return GetModelObjectList<T>(filterEngine, null, settings);
         }
 
-        public IList<RankedObject> GetModelObjectList(SortEngine sortEngine, Settings settings)
+        public IList<T> GetModelObjectList<T>(SortEngine sortEngine, Settings settings) where T : RankedObject
         {
-            return GetModelObjectList<RankedObject>(null, sortEngine, settings);
+            return GetModelObjectList<T>(null, sortEngine, settings);
         }
 
         public IList<T> GetModelObjectList<T>(FilterEngine filterEngine, SortEngine sortEngine, Settings settings) where T : RankedObject

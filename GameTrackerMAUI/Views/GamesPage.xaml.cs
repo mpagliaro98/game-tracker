@@ -17,4 +17,9 @@ public partial class GamesPage : ContentPage
         base.OnAppearing();
         _viewModel.OnAppearing();
     }
+
+    private void ToolbarItem_Clicked(object sender, EventArgs e)
+    {
+        PopupGroup.Show();
+    }
 }

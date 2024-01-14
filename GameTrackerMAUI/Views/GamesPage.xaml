@@ -6,6 +6,7 @@
              xmlns:model="clr-namespace:GameTracker;assembly=GameTracker"
              xmlns:converters="clr-namespace:GameTrackerMAUI.Converters"
              xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:sfPopup="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
              x:DataType="local:GamesViewModel"
              Title="">
     <ContentPage.Resources>
@@ -18,36 +19,51 @@
     </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Group" Command="{Binding ShowCompilations}" IconImageSource="{Binding CompilationsImageName}" />
+        <ToolbarItem Text="Group" Clicked="ToolbarItem_Clicked" IconImageSource="{Binding CompilationsImageName}" />
         <ToolbarItem Text="{Binding SortDirectionButtonText}" Command="{Binding SortDirectionCommand}" IconImageSource="{Binding SortDirectionImageName}" />
         <ToolbarItem Text="Sort" Command="{Binding SortCommand}" IconImageSource="{Binding SortImageName}" />
         <ToolbarItem Text="Search" Command="{Binding SearchCommand}" IconImageSource="{Binding SearchImageName}" />
         <ToolbarItem Text="Add" Command="{Binding AddItemCommand}" IconImageSource="add" />
     </ContentPage.ToolbarItems>
 
-    <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
-        <syncfusion:SfListView ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemSize="32">
-            <syncfusion:SfListView.ItemTemplate>
+    <Grid>
+        <RefreshView Command="{Binding LoadItemsCommand}" IsRefreshing="{Binding IsBusy, Mode=TwoWay}">
+            <syncfusion:SfListView ItemsSource="{Binding Items}" SelectionMode="Single" SelectedItem="{Binding SelectedItem}" ItemSize="32">
+                <syncfusion:SfListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="5" x:DataType="model:GameObject" Opacity="{Binding IsNotOwned, Converter={StaticResource notOwnedOpacityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4" />
+                                <ColumnDefinition Width="1*" />
+                                <ColumnDefinition Width="20" />
+                                <ColumnDefinition Width="40" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="22" />
+                            </Grid.RowDefinitions>
+                            <!--must use Label Background instead of Rectangle Background - MAUI bug where Rectangle Background in a list uses the wrong value-->
+                            <Label Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
+                            <Polygon Points="0,0 20,0, 20,20" Grid.Column="1" Stroke="DarkGoldenrod" Fill="Yellow" StrokeThickness="2" HorizontalOptions="End" VerticalOptions="Start" ZIndex="1" IsVisible="{Binding IsDLC}" />
+                            <Label Text="{Binding DisplayName}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" FontAttributes="{Binding IsNotOwned, Converter={StaticResource notOwnedFontAttributesConverter}}" />
+                            <Label Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
+                            <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
+                            <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}" Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}" FontAttributes="Bold" HorizontalTextAlignment="Center" IsVisible="{Binding ShowScore}"/>
+                        </Grid>
+                    </DataTemplate>
+                </syncfusion:SfListView.ItemTemplate>
+            </syncfusion:SfListView>
+        </RefreshView>
+        <sfPopup:SfPopup x:Name="PopupGroup" HeaderTitle="List Options" AutoSizeMode="Height" AppearanceMode="OneButton" ShowCloseButton="True" ShowFooter="True" AcceptButtonText="Confirm" AcceptCommand="{Binding SaveStateAndLoad}">
+            <sfPopup:SfPopup.ContentTemplate>
                 <DataTemplate>
-                    <Grid Padding="5" x:DataType="model:GameObject" Opacity="{Binding IsNotOwned, Converter={StaticResource notOwnedOpacityConverter}}">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4" />
-                            <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="20" />
-                            <ColumnDefinition Width="40" />
-                        </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="22" />
-                        </Grid.RowDefinitions>
-                        <!--must use Label Background instead of Rectangle Background - MAUI bug where Rectangle Background in a list uses the wrong value-->
-                        <Label Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
-                        <Label Text="{Binding Name}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" FontAttributes="{Binding IsNotOwned, Converter={StaticResource notOwnedFontAttributesConverter}}" />
-                        <Label Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
-                        <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
-                        <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}" Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}" FontAttributes="Bold" HorizontalTextAlignment="Center" IsVisible="{Binding ShowScore}"/>
-                    </Grid>
+                    <VerticalStackLayout Padding="20">
+                        <Label Text="Show compilations in the list:" FontSize="Small" />
+                        <CheckBox IsChecked="{Binding ShowCompilations}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                        <Label Text="Show DLC in the list:" FontSize="Small" />
+                        <CheckBox IsChecked="{Binding ShowDLC}" Margin="0,0,0,10" HorizontalOptions="Start" />
+                    </VerticalStackLayout>
                 </DataTemplate>
-            </syncfusion:SfListView.ItemTemplate>
-        </syncfusion:SfListView>
-    </RefreshView>
+            </sfPopup:SfPopup.ContentTemplate>
+        </sfPopup:SfPopup>
+    </Grid>
 </ContentPage>

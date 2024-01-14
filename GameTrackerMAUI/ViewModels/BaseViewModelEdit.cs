@@ -116,5 +116,10 @@ namespace GameTrackerMAUI.ViewModels
         {
 
         }
+
+        protected void ModifyItem(T item)
+        {
+            _item = item;
+        }
     }
 }

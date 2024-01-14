@@ -18,6 +18,8 @@ namespace GameTrackerMAUI.ViewModels
     {
         public Command CompilationCommand { get; }
         public Command OriginalGameCommand { get; }
+        public Command BaseGameCommand { get; }
+        public Command<GameObject> ItemTapped { get; }
 
         public StatusGame CompletionStatus
         {
@@ -59,6 +61,19 @@ namespace GameTrackerMAUI.ViewModels
             get => Item.IsRemaster;
         }
 
+        public bool ShowStaticDLCText => Item.IsDLC && !HasBaseGame;
+
+        public string BaseGameName
+        {
+            get
+            {
+                if (Item.IsDLC && (Item as GameDLC).HasBaseGame)
+                    return (Item as GameDLC).BaseGame.NameAndPlatform;
+                else
+                    return "";
+            }
+        }
+
         public bool ShowStaticRemasterText
         {
             get => IsRemaster && !HasOriginalGame;
@@ -79,6 +94,8 @@ namespace GameTrackerMAUI.ViewModels
         {
             get => Item.OriginalGame != null;
         }
+
+        public bool HasBaseGame => Item.IsDLC ? (Item as GameDLC).HasBaseGame : false;
 
         public GameCompilation Compilation
         {
@@ -148,12 +165,28 @@ namespace GameTrackerMAUI.ViewModels
             get => Item.IsUnfinishable ? "Played On:" : "Started On:";
         }
 
+        public string DontOwnText => "You do not own this " + (Item.IsDLC ? "DLC" : "game");
+
+        public bool HasDLC => DLCList.Any();
+
+        public IEnumerable<GameObject> DLCList
+        {
+            get
+            {
+                if (Item.Name == "")
+                    return new List<GameObject>();
+                return Item.GetDLC().OrderBy(game => game.Name.CleanForSorting()).ToList();
+            }
+        }
+
         public double ScoreInterval => (Settings.MaxScore - Settings.MinScore) / 10;
 
         public GameDetailViewModel(IServiceProvider provider) : base(provider)
         {
             CompilationCommand = new Command(OnCompilation);
             OriginalGameCommand = new Command(OnOriginalGame);
+            BaseGameCommand = new Command(OnBaseGame);
+            ItemTapped = new Command<GameObject>(OnItemSelected);
         }
 
         protected override GameObject CreateNewObject()
@@ -183,6 +216,12 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(FinishedOn));
             OnPropertyChanged(nameof(StartedOnName));
             OnPropertyChanged(nameof(ShowStaticNotOwnedText));
+            OnPropertyChanged(nameof(DontOwnText));
+            OnPropertyChanged(nameof(HasBaseGame));
+            OnPropertyChanged(nameof(ShowStaticDLCText));
+            OnPropertyChanged(nameof(BaseGameName));
+            OnPropertyChanged(nameof(DLCList));
+            OnPropertyChanged(nameof(HasDLC));
         }
 
         protected override IList<GameObject> GetObjectList()
@@ -203,6 +242,19 @@ namespace GameTrackerMAUI.ViewModels
         async void OnOriginalGame()
         {
             await Shell.Current.GoToAsync($"../{nameof(GameDetailPage)}?{nameof(ItemId)}={Item.OriginalGame.UniqueID}");
+        }
+
+        async void OnBaseGame()
+        {
+            await Shell.Current.GoToAsync($"../{nameof(GameDetailPage)}?{nameof(ItemId)}={(Item as GameDLC).BaseGame.UniqueID}");
+        }
+
+        async void OnItemSelected(GameObject item)
+        {
+            if (item == null)
+                return;
+
+            await Shell.Current.GoToAsync($"../{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={item.UniqueID}");
         }
     }
 }

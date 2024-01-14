@@ -40,10 +40,12 @@ namespace GameTracker
         [Savable(SaveOnly = true)] public virtual bool IsCompilation { get { return false; } }
         [Savable] public virtual bool IsUnfinishable { get; set; } = false;
         [Savable] public virtual bool IsNotOwned { get; set; } = false;
+        [Savable(SaveOnly = true)] public virtual bool IsDLC { get { return false; } }
 
         public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
         public string NameAndPlatform => Name + (PlatformEffective == null ? "" : " (" + (string.IsNullOrWhiteSpace(PlatformEffective.Abbreviation) ? PlatformEffective.Name : PlatformEffective.Abbreviation) + ")");
+        public virtual string DisplayName => Name;
 
         public override double Score
         {
@@ -100,7 +102,7 @@ namespace GameTracker
         }
 
         [Savable("Platform")] private UniqueID _platform = UniqueID.BlankID();
-        public Platform Platform
+        public virtual Platform Platform
         {
             get
             {
@@ -114,7 +116,7 @@ namespace GameTracker
         }
 
         [Savable("PlatformPlayedOn")] private UniqueID _platformPlayedOn = UniqueID.BlankID();
-        public Platform PlatformPlayedOn
+        public virtual Platform PlatformPlayedOn
         {
             get
             {
@@ -131,7 +133,7 @@ namespace GameTracker
         public Platform PlatformPlayedOnEffective => PlatformPlayedOn ?? Platform;
 
         [Savable("OriginalGame")] private UniqueID _originalGame = UniqueID.BlankID();
-        public GameObject OriginalGame
+        public virtual GameObject OriginalGame
         {
             get
             {
@@ -323,16 +325,25 @@ namespace GameTracker
                 return base.Score;
         }
 
+        public IList<GameDLC> GetDLC()
+        {
+            return Module.GetModelObjectList(Settings)
+                .OfType<GameObject>()
+                .Where(o => o.IsDLC && (o as GameDLC).HasBaseGame && (o as GameDLC).BaseGame.Equals(this))
+                .Cast<GameDLC>()
+                .ToList();
+        }
+
         private IList<Tuple<GameObject, int>> FindGamesWithSimilarName(int maxNumGames)
         {
-            if (Name.Length <= 0) return new List<Tuple<GameObject, int>>();
+            if (GetNameForSimilarNameCheck().Length <= 0) return new List<Tuple<GameObject, int>>();
             var similarNames = new List<Tuple<GameObject, int>>();
             var games = Module.GetGamesIncludeInStats(Settings);
             foreach (var game in games)
             {
                 if (game.Equals(this)) continue;
-                int dist = Util.LevenshteinDistance(Name.ToLower(), game.Name.ToLower());
-                int threshold = Convert.ToInt32(Math.Floor(Math.Max(Name.Length, game.Name.Length) * 0.65)); // skip if names are more than 65% different
+                int dist = Util.LevenshteinDistance(GetNameForSimilarNameCheck().ToLower(), game.GetNameForSimilarNameCheck().ToLower());
+                int threshold = Convert.ToInt32(Math.Floor(Math.Max(GetNameForSimilarNameCheck().Length, game.GetNameForSimilarNameCheck().Length) * 0.65)); // skip if names are more than 65% different
                 if (dist >= threshold) continue;
                 similarNames.Add(Tuple.Create(game, dist));
             }
@@ -340,12 +351,12 @@ namespace GameTracker
             // if a large gap doesn't exist, default to something like 65%
             var result = similarNames.OrderBy(t => t.Item2).ToList();
 #if DEBUG
-            Debug.WriteLine("\nAll games under threshold for " + Name + " (" + Name.Length.ToString() + ")");
+            Debug.WriteLine("\nAll games under threshold for " + GetNameForSimilarNameCheck() + " (" + GetNameForSimilarNameCheck().Length.ToString() + ")");
             for (int i = 0; i < maxNumGames; i++)
             {
                 if (i >= result.Count) break;
                 var t = result[i];
-                Debug.WriteLine("\t==> " + t.Item1.Name + " (" + t.Item1.Name.Length.ToString() + ")" + " - " + t.Item2.ToString() + " (threshold: " + Convert.ToInt32(Math.Floor(Math.Max(Name.Length, t.Item1.Name.Length) * 0.65)).ToString() + ")");
+                Debug.WriteLine("\t==> " + t.Item1.GetNameForSimilarNameCheck() + " (" + t.Item1.GetNameForSimilarNameCheck().Length.ToString() + ")" + " - " + t.Item2.ToString() + " (threshold: " + Convert.ToInt32(Math.Floor(Math.Max(GetNameForSimilarNameCheck().Length, t.Item1.GetNameForSimilarNameCheck().Length) * 0.65)).ToString() + ")");
             }
 #endif
             return result.Take(maxNumGames).ToList();
@@ -356,12 +367,12 @@ namespace GameTracker
             var similarNames = FindGamesWithSimilarName(999);
             var matches = similarNames.OrderBy(g => (g.Item2 * 0.3) + Math.Abs(compareScore - (category == null ? g.Item1.ScoreDisplay : g.Item1.CategoryExtension.ScoreOfCategoryDisplay(category)))).Take(maxNumGames).ToList();
 #if DEBUG
-            Debug.WriteLine("Closest score matches for " + Name + " (" + compareScore.ToString() + ")");
+            Debug.WriteLine("Closest score matches for " + GetNameForSimilarNameCheck() + " (" + compareScore.ToString() + ")");
             for (int i = 0; i < maxNumGames; i++)
             {
                 if (i >= matches.Count) break;
                 var g = matches[i].Item1;
-                Debug.WriteLine("\t==> " + g.Name + " (" + (category == null ? g.ScoreDisplay : g.CategoryExtension.ScoreOfCategoryDisplay(category)).ToString() + ")" + " - " + Math.Abs(compareScore - (category == null ? g.ScoreDisplay : g.CategoryExtension.ScoreOfCategoryDisplay(category))).ToString() + "+" + (matches[i].Item2 * 0.3).ToString());
+                Debug.WriteLine("\t==> " + g.GetNameForSimilarNameCheck() + " (" + (category == null ? g.ScoreDisplay : g.CategoryExtension.ScoreOfCategoryDisplay(category)).ToString() + ")" + " - " + Math.Abs(compareScore - (category == null ? g.ScoreDisplay : g.CategoryExtension.ScoreOfCategoryDisplay(category))).ToString() + "+" + (matches[i].Item2 * 0.3).ToString());
             }
             Debug.WriteLine("");
 #endif
@@ -413,9 +424,14 @@ namespace GameTracker
             var outputLines = new List<Tuple<string, GameObject>>();
             foreach (var game in scoreList.OrderByDescending(t => t.Item2))
             {
-                outputLines.Add(Tuple.Create(game.Item1.Name + " - " + game.Item2.ToString("0.##"), game.Item1));
+                outputLines.Add(Tuple.Create(game.Item1.GetNameForSimilarNameCheck() + " - " + game.Item2.ToString("0.##"), game.Item1));
             }
             return outputLines;
+        }
+
+        protected virtual string GetNameForSimilarNameCheck()
+        {
+            return Name;
         }
     }
 }

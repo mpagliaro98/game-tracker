@@ -10,7 +10,7 @@
     <ApplicationIcon>icon-new.ico</ApplicationIcon>
     <Title>Game Tracker</Title>
     <PackageId>GameTrackerWPF</PackageId>
-    <Version>1.3.0</Version>
+    <Version>1.4.0</Version>
     <Authors>mpagliaro98</Authors>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/mpagliaro98/game-tracker</RepositoryUrl>

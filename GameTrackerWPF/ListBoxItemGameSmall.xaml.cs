@@ -38,7 +38,8 @@ namespace GameTrackerWPF
             var completionStatus = rg.StatusExtension.Status;
 
             GridMain.Opacity = rg.IsNotOwned ? 0.7 : 1.0;
-            LabelName.Content = rg.Name;
+            DLCIndicator.Visibility = rg.IsDLC ? Visibility.Visible : Visibility.Collapsed;
+            LabelName.Content = rg.DisplayName;
             LabelName.FontStyle = rg.IsNotOwned ? FontStyles.Italic : FontStyles.Normal;
             LabelPlatform.Content = platform != null ? platform.Name : "";
             LabelStatus.Content = completionStatus != null ? completionStatus.Name : "";

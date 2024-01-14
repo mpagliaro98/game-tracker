@@ -39,7 +39,9 @@ namespace GameTrackerWPF
             var completionStatus = rg.StatusExtension.Status;
 
             GridMain.Opacity = rg.IsNotOwned ? 0.7 : 1.0;
-            TextBlockName.Text = rg.Name;
+            DLCText.Visibility = rg.IsDLC ? Visibility.Visible : Visibility.Collapsed;
+            DLCIndicator.Visibility = rg.IsDLC ? Visibility.Visible : Visibility.Collapsed;
+            TextBlockName.Text = rg.DisplayName;
             TextBlockName.FontStyle = rg.IsNotOwned ? FontStyles.Italic : FontStyles.Normal;
             TextBlockPlatform.Text = platform != null ? platform.Name : "";
             TextBlockPlayedOn.Text = playedOn != null ? "Played on: " + playedOn.Name : "";

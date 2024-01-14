@@ -24,6 +24,9 @@ namespace GameTracker
                 case "gamecompilation":
                     obj = new GameCompilation((SettingsGame)settings, (GameModule)module);
                     break;
+                case "gamedlc":
+                    obj = new GameDLC((SettingsGame)settings, (GameModule)module);
+                    break;
             }
             return obj;
         }

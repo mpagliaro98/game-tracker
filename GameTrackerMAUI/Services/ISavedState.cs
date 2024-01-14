@@ -19,6 +19,7 @@ namespace GameTrackerMAUI.Services
         List<FilterEngine> GameSavedSearches { get; set; }
         List<FilterEngine> PlatformSavedSearches { get; set; }
         bool ShowCompilations { get; set; }
+        bool ShowDLC { get; set; }
         bool Loaded { get; set; }
         void Load(IPathController pathController, ILogger logger, GameModule module, SettingsGame settings);
         void Save(IPathController pathController);

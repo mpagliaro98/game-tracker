@@ -17,6 +17,15 @@
                 <ColumnDefinition Width="0.8*" />
                 <ColumnDefinition Width="1.4*" />
             </Grid.ColumnDefinitions>
+            <Label x:Name="DLCText" Content="DLC" Panel.ZIndex="2" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="8pt" FontWeight="Bold">
+                <Label.LayoutTransform>
+                    <RotateTransform Angle="-45" />
+                </Label.LayoutTransform>
+                <Label.RenderTransform>
+                    <TranslateTransform X="-9" Y="-7" />
+                </Label.RenderTransform>
+            </Label>
+            <Polygon x:Name="DLCIndicator" Points="0,2 0,32, 30,2" Grid.Column="1" Stroke="DarkGoldenrod" Fill="Yellow" StrokeThickness="1" Panel.ZIndex="1" HorizontalAlignment="Left" VerticalAlignment="Top" />
             <TextBlock x:Name="TextBlockName" Grid.Column="1" TextWrapping="Wrap" MaxHeight="90" VerticalAlignment="Center" Margin="5" />
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>

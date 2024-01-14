@@ -12,6 +12,7 @@ namespace GameTracker
     {
         [Savable] public bool TreatAllGamesAsOwned { get; set; } = false;
         [Savable] public bool IncludeUnownedGamesInFinishCount { get; set; } = false;
+        [Savable] public bool IncludeDLCInStats { get; set; } = false;
 
         public SettingsGame() : base() { }
     }

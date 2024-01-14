@@ -16,7 +16,7 @@
         <LinearGradientBrush x:Key="StatusColorStyle" />
         <LinearGradientBrush x:Key="ThoughtsSummaryStyle" StartPoint="0.5,0" EndPoint="0.5,1">
             <GradientStop Color="White" Offset="1" />
-            <GradientStop Color="Transparent" Offset="0.5" />
+            <GradientStop Color="Transparent" Offset="0.99" /> <!-- offset used to be 0.5 -->
         </LinearGradientBrush>
     </Window.Resources>
     <mah:MetroWindow.LeftWindowCommands>
@@ -29,75 +29,95 @@
     <mah:MetroAnimatedTabControl x:Name="TabList" SelectionChanged="TabList_SelectionChanged">
         <mah:MetroTabItem Header="Summary">
             <!-- name, platform, status, final score, dates, remaster, compilation link, thoughts -->
-            <Grid VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <TextBlock x:Name="SummaryName" FontSize="26pt" FontWeight="Bold" TextWrapping="Wrap" Padding="5">
-                    <TextBlock.Style>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="Background" Value="{DynamicResource PlatformColorStyle}" />
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>
-                <Label x:Name="SummaryPlatform" FontSize="14pt" Grid.Row="1" />
-                <Label x:Name="SummaryStatus" FontSize="20pt" Grid.Row="2">
-                    <Label.Style>
-                        <Style TargetType="Label">
-                            <Setter Property="Background" Value="{DynamicResource StatusColorStyle}" />
-                        </Style>
-                    </Label.Style>
-                </Label>
-                <StackPanel x:Name="SummaryScoreContainer" HorizontalAlignment="Stretch" Grid.Row="3" Margin="0,10">
-                    <Label Content="Score" HorizontalAlignment="Center" />
-                    <Label x:Name="SummaryScore" FontSize="30pt" FontWeight="Bold" HorizontalAlignment="Center" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Grid.Row="4">
-                    <StackPanel x:Name="SummaryReleaseContainer">
-                        <Label Content="Release Date:" />
-                        <Label x:Name="SummaryRelease" FontSize="14pt" FontWeight="Bold" />
+            <ScrollViewer VerticalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <Grid VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition MinHeight="100" />
+                    </Grid.RowDefinitions>
+                    <local:DLCIndicator x:Name="DLCIndicator" Panel.ZIndex="1" />
+                    <TextBlock x:Name="SummaryName" FontSize="26pt" FontWeight="Bold" TextWrapping="Wrap" Padding="5">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Background" Value="{DynamicResource PlatformColorStyle}" />
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <Label x:Name="SummaryPlatform" FontSize="14pt" Grid.Row="1" />
+                    <Label x:Name="SummaryStatus" FontSize="20pt" Grid.Row="2">
+                        <Label.Style>
+                            <Style TargetType="Label">
+                                <Setter Property="Background" Value="{DynamicResource StatusColorStyle}" />
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <StackPanel x:Name="SummaryScoreContainer" HorizontalAlignment="Stretch" Grid.Row="3" Margin="0,10">
+                        <Label Content="Score" HorizontalAlignment="Center" />
+                        <Label x:Name="SummaryScore" FontSize="30pt" FontWeight="Bold" HorizontalAlignment="Center" />
                     </StackPanel>
-                    <StackPanel x:Name="SummaryAcquiredContainer">
-                        <Label Content="Acquired On:" />
-                        <Label x:Name="SummaryAcquired" FontSize="14pt" FontWeight="Bold" />
+                    <StackPanel Orientation="Horizontal" Grid.Row="4">
+                        <StackPanel x:Name="SummaryReleaseContainer">
+                            <Label Content="Release Date:" />
+                            <Label x:Name="SummaryRelease" FontSize="14pt" FontWeight="Bold" />
+                        </StackPanel>
+                        <StackPanel x:Name="SummaryAcquiredContainer">
+                            <Label Content="Acquired On:" />
+                            <Label x:Name="SummaryAcquired" FontSize="14pt" FontWeight="Bold" />
+                        </StackPanel>
+                        <StackPanel x:Name="SummaryStartedContainer">
+                            <Label x:Name="SummaryStartedLabel" Content="Started On:" />
+                            <Label x:Name="SummaryStarted" FontSize="14pt" FontWeight="Bold" />
+                        </StackPanel>
+                        <StackPanel x:Name="SummaryFinishedContainer">
+                            <Label Content="Finished On:" />
+                            <Label x:Name="SummaryFinished" FontSize="14pt" FontWeight="Bold" />
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel x:Name="SummaryStartedContainer">
-                        <Label x:Name="SummaryStartedLabel" Content="Started On:" />
-                        <Label x:Name="SummaryStarted" FontSize="14pt" FontWeight="Bold" />
+                    <Label x:Name="SummaryDLC" Grid.Row="5" FontSize="12pt" FontStyle="Italic" />
+                    <Label x:Name="SummaryRemaster" Grid.Row="5" FontSize="12pt" FontStyle="Italic" />
+                    <StackPanel x:Name="SummaryCompilationContainer" Grid.Row="6" Orientation="Horizontal">
+                        <Label x:Name="SummaryCompilation" FontSize="12pt" FontStyle="Italic" />
+                        <Button x:Name="ButtonCompilationLink" Height="20" Width="20" Visibility="Hidden" Click="ButtonCompilationLink_Click" VerticalAlignment="Center" Style="{DynamicResource MahApps.Styles.Button.Circle}">
+                            <icons:PackIconMaterial Kind="ArrowRightBold" VerticalAlignment="Top" HorizontalAlignment="Left" Height="12" Width="12" />
+                        </Button>
                     </StackPanel>
-                    <StackPanel x:Name="SummaryFinishedContainer">
-                        <Label Content="Finished On:" />
-                        <Label x:Name="SummaryFinished" FontSize="14pt" FontWeight="Bold" />
-                    </StackPanel>
-                </StackPanel>
-                <Label x:Name="SummaryRemaster" Grid.Row="5" FontSize="12pt" FontStyle="Italic" />
-                <StackPanel x:Name="SummaryCompilationContainer" Grid.Row="6" Orientation="Horizontal">
-                    <Label x:Name="SummaryCompilation" FontSize="12pt" FontStyle="Italic" />
-                    <Button x:Name="ButtonCompilationLink" Height="20" Width="20" Visibility="Hidden" Click="ButtonCompilationLink_Click" VerticalAlignment="Center" Style="{DynamicResource MahApps.Styles.Button.Circle}">
-                        <icons:PackIconMaterial Kind="ArrowRightBold" VerticalAlignment="Top" HorizontalAlignment="Left" Height="12" Width="12" />
-                    </Button>
-                </StackPanel>
-                <TextBlock x:Name="SummaryThoughts" Grid.Row="7" TextWrapping="Wrap" Padding="5" />
-                <Rectangle Grid.Row="7">
-                    <Rectangle.Style>
-                        <Style TargetType="Rectangle">
-                            <Setter Property="Fill" Value="{DynamicResource ThoughtsSummaryStyle}" />
-                        </Style>
-                    </Rectangle.Style>
-                </Rectangle>
-            </Grid>
+                    <Grid x:Name="GridRelated" Grid.Row="7">
+                        <Border BorderBrush="LightGray" BorderThickness="2" CornerRadius="5" Margin="5">
+                            <DockPanel x:Name="PanelRelatedDLC">
+                                <Label Content="DLC:" DockPanel.Dock="Top" FontWeight="Bold" />
+                                <ListBox x:Name="DLCListBoxWrap" Margin="5" DockPanel.Dock="Bottom">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                </ListBox>
+                            </DockPanel>
+                        </Border>
+                    </Grid>
+                    <TextBlock x:Name="SummaryThoughts" Grid.Row="8" TextWrapping="Wrap" Padding="5" />
+                    <Rectangle Grid.Row="8">
+                        <Rectangle.Style>
+                            <Style TargetType="Rectangle">
+                                <Setter Property="Fill" Value="{DynamicResource ThoughtsSummaryStyle}" />
+                            </Style>
+                        </Rectangle.Style>
+                    </Rectangle>
+                </Grid>
+            </ScrollViewer>
         </mah:MetroTabItem>
         <mah:MetroTabItem Header="Game">
             <!-- name, platform, platform played on, release date, has start/end, remaster and original game, compilation info -->
             <Grid VerticalAlignment="Top">
                 <Grid.RowDefinitions>
+                    <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
@@ -128,18 +148,22 @@
                     <DatePicker x:Name="DatePickerRelease" Margin="5,0" />
                 </StackPanel>
                 <CheckBox x:Name="CheckboxUnfinishable" Content="Doesn't have a start/end" Margin="5,10,5,0" VerticalAlignment="Center" Grid.Row="3" />
-                <StackPanel Grid.Row="4" VerticalAlignment="Top">
+                <StackPanel x:Name="StackPanelRemaster" Grid.Row="5" VerticalAlignment="Top">
                     <CheckBox x:Name="CheckboxRemaster" Content="Remaster/Re-release" VerticalAlignment="Center" Margin="5,10,5,0" />
-                    <ComboBox x:Name="ComboboxOriginalGame" Grid.Row="5" DisplayMemberPath="NameAndPlatform" VerticalAlignment="Center" Margin="5" />
+                    <ComboBox x:Name="ComboboxOriginalGame" DisplayMemberPath="NameAndPlatform" VerticalAlignment="Center" Margin="5" />
                 </StackPanel>
-                <StackPanel Grid.Row="5">
+                <StackPanel x:Name="StackPanelComp" Grid.Row="6">
                     <CheckBox x:Name="CheckboxCompilation" Content="Part of a compilation" VerticalAlignment="Center" Margin="5,10,5,0" />
-                    <Grid Margin="5">
+                    <Grid x:Name="GridComp" Margin="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <local:AutoCompleteBox x:Name="TextboxComp" ToolTip="Name of the compilation" VerticalAlignment="Center" ItemsSource="{Binding Path=CompNames}" />
                     </Grid>
+                </StackPanel>
+                <StackPanel Grid.Row="4">
+                    <CheckBox x:Name="CheckboxDLC" Content="This is DLC" Margin="5,10,5,0" VerticalAlignment="Center" />
+                    <ComboBox x:Name="ComboboxBaseGame" DisplayMemberPath="NameAndPlatform" VerticalAlignment="Center" Margin="5" />
                 </StackPanel>
             </Grid>
         </mah:MetroTabItem>

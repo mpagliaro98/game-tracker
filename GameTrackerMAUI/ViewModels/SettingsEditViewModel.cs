@@ -22,6 +22,7 @@ namespace GameTrackerMAUI.ViewModels
         private bool showScoreNullStatus;
         private bool treatAllGamesAsOwned;
         private bool unownedFinishCount;
+        private bool includeDLCInStats;
         private string awsButtonText = "Switch to remote save files with AWS";
 
         public string MinScore
@@ -54,6 +55,12 @@ namespace GameTrackerMAUI.ViewModels
             set => SetProperty(ref unownedFinishCount, value);
         }
 
+        public bool IncludeDLCInStats
+        {
+            get => includeDLCInStats;
+            set => SetProperty(ref includeDLCInStats, value);
+        }
+
         public string AWSButtonText
         {
             get => awsButtonText;
@@ -84,6 +91,7 @@ namespace GameTrackerMAUI.ViewModels
             ShowScoreNullStatus = Settings.ShowScoreWhenNullStatus;
             TreatAllGamesAsOwned = Settings.TreatAllGamesAsOwned;
             UnownedFinishCount = Settings.IncludeUnownedGamesInFinishCount;
+            IncludeDLCInStats = Settings.IncludeDLCInStats;
             UpdateAWSButtonText();
         }
 
@@ -113,6 +121,7 @@ namespace GameTrackerMAUI.ViewModels
             Settings.ShowScoreWhenNullStatus = ShowScoreNullStatus;
             Settings.TreatAllGamesAsOwned = TreatAllGamesAsOwned;
             Settings.IncludeUnownedGamesInFinishCount = UnownedFinishCount;
+            Settings.IncludeDLCInStats = IncludeDLCInStats;
             try
             {
                 Settings.Save(Module, Settings);

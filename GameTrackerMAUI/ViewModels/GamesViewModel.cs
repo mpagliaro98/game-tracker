@@ -21,7 +21,10 @@ namespace GameTrackerMAUI.ViewModels
 {
     public class GamesViewModel : BaseViewModelListSortSearch<GameObject>, IQueryAttributable
     {
-        public Command ShowCompilations { get; }
+        public Command SaveStateAndLoad { get; }
+
+        public bool ShowCompilations { get; set; } = false;
+        public bool ShowDLC { get; set; } = false;
 
         private string _compilationsImageName = "compilations";
         public string CompilationsImageName
@@ -37,7 +40,9 @@ namespace GameTrackerMAUI.ViewModels
 
         public GamesViewModel(IServiceProvider provider) : base(provider)
         {
-            ShowCompilations = new Command(OnShowCompilations);
+            SaveStateAndLoad = new Command(async () => await OnSaveStateAndLoad());
+            ShowCompilations = SavedState.ShowCompilations;
+            ShowDLC = SavedState.ShowDLC;
         }
 
         public override void OnAppearing()
@@ -46,9 +51,19 @@ namespace GameTrackerMAUI.ViewModels
             SetCompilationsButton();
         }
 
+        public Task OnSaveStateAndLoad()
+        {
+            SavedState.ShowCompilations = ShowCompilations;
+            SavedState.ShowDLC = ShowDLC;
+            SavedState.Save(PathController);
+            IsBusy = true;
+            SetCompilationsButton();
+            return ExecuteLoadItemsCommand();
+        }
+
         protected override bool SkipItemOnLoadList(GameObject item)
         {
-            return (SavedState.ShowCompilations && !item.IsCompilation && item.IsPartOfCompilation) || (!SavedState.ShowCompilations && item.IsCompilation);
+            return (!SavedState.ShowDLC && item.IsDLC) || (SavedState.ShowCompilations && !item.IsCompilation && item.IsPartOfCompilation) || (!SavedState.ShowCompilations && item.IsCompilation);
         }
 
         protected override IList<GameObject> GetObjectList()
@@ -67,16 +82,6 @@ namespace GameTrackerMAUI.ViewModels
                 await Shell.Current.GoToAsync($"{nameof(CompilationDetailPage)}?{nameof(CompilationDetailViewModel.ItemId)}={item.UniqueID}");
             else
                 await Shell.Current.GoToAsync($"{nameof(GameDetailPage)}?{nameof(GameDetailViewModel.ItemId)}={item.UniqueID}");
-        }
-
-        async void OnShowCompilations()
-        {
-            SavedState.ShowCompilations = !SavedState.ShowCompilations;
-            SavedState.Save(PathController);
-            IsBusy = true;
-            SetCompilationsButton();
-            string msg = SavedState.ShowCompilations ? "Now showing compilations" : "Compilations are now hidden";
-            await ToastService.ShowToastAsync(msg);
         }
 
         private void SetCompilationsButton()

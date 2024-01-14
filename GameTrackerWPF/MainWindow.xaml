@@ -72,6 +72,7 @@
                                 <icons:PackIconMaterial Kind="Plus" VerticalAlignment="Center" HorizontalAlignment="Center" />
                             </Button>
                             <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Grid.Column="1" Margin="0,0,5,0">
+                                <CheckBox x:Name="CheckboxShowDLC" Content="Show DLC in the list" VerticalAlignment="Center" Margin="0,0,20,0" Checked="CheckboxShowDLC_Checked" Unchecked="CheckboxShowDLC_Checked" />
                                 <CheckBox x:Name="CheckboxShowCompilations" Content="Show compilations in the list" VerticalAlignment="Center" Margin="0,0,20,0" Checked="CheckboxShowCompilations_Checked" Unchecked="CheckboxShowCompilations_Checked" />
                                 <Button x:Name="GamesButtonList" ToolTip="List" Width="25" Height="25" Click="GamesButtonList_Click" Style="{DynamicResource MahApps.Styles.Button.Circle}">
                                     <icons:PackIconMaterial Kind="FormatListBulleted" VerticalAlignment="Center" HorizontalAlignment="Center" />
@@ -223,6 +224,7 @@
                             <CheckBox x:Name="CheckboxShowScoreNullStatus" Content="Show score for games with no status" Margin="5,10,0,0" />
                             <CheckBox x:Name="CheckboxTreatGamesAsOwned" Content="Treat all games as owned" Margin="5,10,0,0" />
                             <CheckBox x:Name="CheckboxUnownedFinishCount" Content="Include un-owned games in # finished games" Margin="5,10,0,0" />
+                            <CheckBox x:Name="CheckboxDLCStats" Content="Include DLC in game statistics &amp; counts" Margin="5,10,0,0" />
                             <Button x:Name="SettingsButtonSave" Content="Save Settings" Click="SettingsGridButtonSave_Click" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0" IsEnabled="False" />
                             <Expander Header="Advanced" Margin="0,20,0,0">
                                 <StackPanel>

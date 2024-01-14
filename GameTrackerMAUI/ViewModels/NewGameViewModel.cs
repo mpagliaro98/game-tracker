@@ -7,6 +7,7 @@ using RatableTracker.Exceptions;
 using RatableTracker.ListManipulation.Sorting;
 using RatableTracker.ObjAddOns;
 using RatableTracker.Util;
+using Syncfusion.Maui.ListView;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,6 +27,7 @@ namespace GameTrackerMAUI.ViewModels
         private string _compNameOriginal = "";
         private string _compName = "";
 
+        private bool isDLC;
         private bool isPartOfCompilation;
         private bool showScoreFlag;
         private BindingList<CategoryValueContainer> vals = new BindingList<CategoryValueContainer>();
@@ -155,7 +157,7 @@ namespace GameTrackerMAUI.ViewModels
 
         public bool ShowScoreFlag
         {
-            get => showScoreFlag;
+            get => showScoreFlag && !IsDLC;
             set => SetProperty(ref showScoreFlag, value);
         }
 
@@ -248,6 +250,11 @@ namespace GameTrackerMAUI.ViewModels
             get => Item.IsUnfinishable ? "Played On:" : "Started On:";
         }
 
+        public string DontOwnName
+        {
+            get => "I Don't Own This " + (Item.IsDLC ? "DLC:" : "Game:");
+        }
+
         public bool IsUsingOriginalGameScore
         {
             get => IsRemaster && OriginalGame != null && UseOriginalGameScore;
@@ -262,6 +269,45 @@ namespace GameTrackerMAUI.ViewModels
             }
         }
 
+        public bool IsDLC
+        {
+            get => isDLC;
+            set
+            {
+                SetProperty(ref isDLC, value);
+                if (isDLC && !Item.IsDLC)
+                {
+                    ModifyItem(new GameDLC(Item));
+                    OnPropertyChanged(nameof(BaseGame));
+                }
+                else if (!isDLC && Item.IsDLC)
+                {
+                    ModifyItem(new GameObject(Item));
+                }
+                OnPropertyChanged(nameof(CanEditPlatform));
+                OnPropertyChanged(nameof(Platform));
+                OnPropertyChanged(nameof(PlatformPlayedOn));
+                OnPropertyChanged(nameof(ShowScoreFlag));
+                OnPropertyChanged(nameof(DontOwnName));
+                OnPropertyChanged(nameof(IsUsingOriginalGameScore));
+            }
+        }
+
+        public GameObject BaseGame
+        {
+            get => Item.IsDLC ? (Item as GameDLC).BaseGame : null;
+            set
+            {
+                if (!IsDLC) return;
+                SetProperty((Item as GameDLC).BaseGame, value, () => (Item as GameDLC).BaseGame = value);
+                OnPropertyChanged(nameof(CanEditPlatform));
+                OnPropertyChanged(nameof(Platform));
+                OnPropertyChanged(nameof(PlatformPlayedOn));
+            }
+        }
+
+        public bool CanEditPlatform => !(Item.IsDLC && (Item as GameDLC).HasBaseGame);
+
         public IEnumerable<GameTracker.Platform> Platforms
         {
             get => Module.GetPlatformList(new SortEngine() { SortOption = new SortOptionPlatformName() }, Settings);
@@ -271,7 +317,7 @@ namespace GameTrackerMAUI.ViewModels
         {
             get
             {
-                var lst = Module.GetModelObjectList(new SortEngine() { SortOption = new SortOptionModelName() }, Settings).OfType<GameObject>().ToList();
+                var lst = Module.GetModelObjectList<GameObject>(new SortEngine() { SortOption = new SortOptionGameName() }, Settings).OfType<GameObject>().Where(o => !o.IsDLC).ToList();
                 lst.Remove(Item);
                 return lst;
             }
@@ -303,6 +349,7 @@ namespace GameTrackerMAUI.ViewModels
         public Command ClearPlatformCommand { get; }
         public Command ClearPlatformPlayedOnCommand { get; }
         public Command ClearOriginalGameCommand { get; }
+        public Command ClearBaseGameCommand { get; }
         public Command ClearReleaseDateCommand { get; }
         public Command ClearAcquiredOnCommand { get; }
         public Command ClearStartedOnCommand { get; }
@@ -314,6 +361,7 @@ namespace GameTrackerMAUI.ViewModels
             ClearPlatformCommand = new Command(OnClearPlatform);
             ClearPlatformPlayedOnCommand = new Command(OnClearPlatformPlayedOn);
             ClearOriginalGameCommand = new Command(OnClearOriginalGame);
+            ClearBaseGameCommand = new Command(OnClearBaseGame);
             ClearReleaseDateCommand = new Command(OnClearReleaseDate);
             ClearAcquiredOnCommand = new Command(OnClearAcquiredOn);
             ClearStartedOnCommand = new Command(OnClearStartedOn);
@@ -332,7 +380,10 @@ namespace GameTrackerMAUI.ViewModels
 
         protected override GameObject CreateCopyObject(GameObject item)
         {
-            return new GameObject(item);
+            if (item.IsDLC)
+                return new GameDLC(item as GameDLC);
+            else
+                return new GameObject(item);
         }
 
         protected override void UpdatePropertiesOnLoad()
@@ -367,6 +418,8 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(Status));
             OnPropertyChanged(nameof(IsNotOwned));
             OnPropertyChanged(nameof(ShowFinishedOn));
+            IsDLC = Item.IsDLC;
+            OnPropertyChanged(nameof(BaseGame));
         }
 
         protected override IList<GameObject> GetObjectList()
@@ -482,6 +535,11 @@ namespace GameTrackerMAUI.ViewModels
         private void OnClearOriginalGame()
         {
             OriginalGame = null;
+        }
+
+        private void OnClearBaseGame()
+        {
+            BaseGame = null;
         }
 
         private void OnClearReleaseDate()
