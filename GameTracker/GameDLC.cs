@@ -9,6 +9,7 @@ public class GameDLC : GameObject
     public override bool IsDLC => true;
 
     // disable all these features of regular games since they don't apply to DLC
+    public override bool HasOriginalGame => false;
     public override bool IsRemaster { get => false; set => base.IsRemaster = false; }
     public override bool UseOriginalGameScore { get => false; set => base.UseOriginalGameScore = false; }
     public override GameObject OriginalGame { get => null; set => base.OriginalGame = null; }

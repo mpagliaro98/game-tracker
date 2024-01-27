@@ -42,7 +42,7 @@ namespace GameTracker
         [Savable] public virtual bool IsNotOwned { get; set; } = false;
         [Savable(SaveOnly = true)] public virtual bool IsDLC { get { return false; } }
 
-        public bool HasOriginalGame { get { return _originalGame.HasValue(); } }
+        public virtual bool HasOriginalGame { get { return _originalGame.HasValue(); } }
         public virtual bool IsUsingOriginalGameScore { get { return IsRemaster && HasOriginalGame && UseOriginalGameScore; } }
         public string NameAndPlatform => Name + (PlatformEffective == null ? "" : " (" + (string.IsNullOrWhiteSpace(PlatformEffective.Abbreviation) ? PlatformEffective.Name : PlatformEffective.Abbreviation) + ")");
         public virtual string DisplayName => Name;
@@ -332,6 +332,21 @@ namespace GameTracker
                 .Where(o => o.IsDLC && (o as GameDLC).HasBaseGame && (o as GameDLC).BaseGame.Equals(this))
                 .Cast<GameDLC>()
                 .ToList();
+        }
+
+        public IList<GameObject> GetRemasters()
+        {
+            var remasters = Module.GetModelObjectList(Settings)
+                .OfType<GameObject>()
+                .Where(o => o.HasOriginalGame && o.OriginalGame.Equals(this))
+                .ToList();
+            List<GameObject> recursiveResults = [];
+            foreach (var game in remasters)
+            {
+                recursiveResults.AddRange(game.GetRemasters());
+            }
+            remasters.AddRange(recursiveResults);
+            return remasters.Distinct().ToList();
         }
 
         private IList<Tuple<GameObject, int>> FindGamesWithSimilarName(int maxNumGames)

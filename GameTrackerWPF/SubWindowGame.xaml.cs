@@ -123,7 +123,9 @@ namespace GameTrackerWPF
             // fill related game lists
             int numLists = 0;
             bool hasDLC = FillDLC();
-            if (hasDLC) numLists += 1;
+            if (hasDLC) numLists++;
+            bool hasRemasters = FillRemasters();
+            if (hasRemasters) numLists++;
             GridRelated.ColumnDefinitions.Clear();
             GridRelated.RowDefinitions.Clear();
             for (int i = 0; i < numLists; i++)
@@ -132,11 +134,12 @@ namespace GameTrackerWPF
             }
             if (numLists > 0) GridRelated.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(265) });
             int currentCol = 0;
+            PanelRelatedDLC.Visibility = hasDLC ? Visibility.Visible : Visibility.Collapsed;
             if (hasDLC)
-            {
-                Grid.SetColumn(PanelRelatedDLC, currentCol);
-                currentCol += 1;
-            }
+                Grid.SetColumn(PanelRelatedDLC, currentCol++);
+            PanelRelatedRemasters.Visibility = hasRemasters ? Visibility.Visible : Visibility.Collapsed;
+            if (hasRemasters)
+                Grid.SetColumn(PanelRelatedRemasters, currentCol++);
             GridRelated.Visibility = numLists > 0 ? Visibility.Visible : Visibility.Collapsed;
 
             // set event handlers
@@ -307,6 +310,18 @@ namespace GameTrackerWPF
             {
                 IListBoxItemGame item = new ListBoxItemGameBox(rm, game, shortDLCName: true);
                 DLCListBoxWrap.Items.Add(item);
+            }
+            return games.Count > 0;
+        }
+
+        private bool FillRemasters()
+        {
+            var games = orig.GetRemasters();
+            RemasterListBoxWrap.Items.Clear();
+            foreach (var game in games)
+            {
+                IListBoxItemGame item = new ListBoxItemGameBox(rm, game);
+                RemasterListBoxWrap.Items.Add(item);
             }
             return games.Count > 0;
         }

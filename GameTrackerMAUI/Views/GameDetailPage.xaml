@@ -189,6 +189,40 @@
                 </VerticalStackLayout>
             </VerticalStackLayout>
 
+            <VerticalStackLayout IsVisible="{Binding HasRemasters}">
+                <Label Text="Remasters/Re-releases:" FontSize="Small" />
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding RemasterList}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5" x:DataType="gametracker:GameObject" Opacity="{Binding IsNotOwned, Converter={StaticResource notOwnedOpacityConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition Width="40" />
+                                </Grid.ColumnDefinitions>
+                                <Label Background="{Binding PlatformEffective, Converter={StaticResource colorContainerConverter}}" />
+                                <Polygon Points="0,0 20,0, 20,20" Grid.Column="1" Stroke="DarkGoldenrod" Fill="Yellow" StrokeThickness="2" HorizontalOptions="End" VerticalOptions="Start" ZIndex="1" IsVisible="{Binding IsDLC}" />
+                                <Label Text="{Binding DisplayName}" Grid.Column="1" LineBreakMode="TailTruncation" Style="{DynamicResource ListItemTextStyle}" FontSize="16" FontAttributes="{Binding IsNotOwned, Converter={StaticResource notOwnedFontAttributesConverter}}" />
+                                <Label Grid.Column="2" Background="{Binding StatusExtension.Status, Converter={StaticResource colorContainerConverter}}" />
+                                <Image Grid.Column="2" Source="checkmark" IsVisible="{Binding IsFinished}" />
+                                <Label Grid.Column="3" Text="{Binding ScoreDisplay, StringFormat='{0:0.##}'}"
+                                   Background="{Binding ScoreRangeDisplay, Converter={StaticResource colorContainerConverter}}"
+                                   FontAttributes="Bold" HorizontalTextAlignment="Center"
+                                   IsVisible="{Binding ShowScore}"/>
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        NumberOfTapsRequired="1"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type local:GameDetailViewModel}}, Path=ItemTapped}"		
+                                        CommandParameter="{Binding .}">
+                                    </TapGestureRecognizer>
+                                </Grid.GestureRecognizers>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+
             <StackLayout Margin="0,0,0,10" IsVisible="{Binding Item.CompletionCriteria, Converter={StaticResource stringEmptyConverter}}">
                 <Label Text="Completion Criteria:" FontSize="Small" />
                 <Label Text="{Binding Item.CompletionCriteria}" FontSize="Medium" LineBreakMode="WordWrap" />

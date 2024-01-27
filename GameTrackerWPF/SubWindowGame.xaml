@@ -89,10 +89,22 @@
                         </Button>
                     </StackPanel>
                     <Grid x:Name="GridRelated" Grid.Row="7">
-                        <Border BorderBrush="LightGray" BorderThickness="2" CornerRadius="5" Margin="5">
-                            <DockPanel x:Name="PanelRelatedDLC">
+                        <Border x:Name="PanelRelatedDLC" BorderBrush="LightGray" BorderThickness="2" CornerRadius="5" Margin="5">
+                            <DockPanel>
                                 <Label Content="DLC:" DockPanel.Dock="Top" FontWeight="Bold" />
                                 <ListBox x:Name="DLCListBoxWrap" Margin="5" DockPanel.Dock="Bottom">
+                                    <ListBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal" />
+                                        </ItemsPanelTemplate>
+                                    </ListBox.ItemsPanel>
+                                </ListBox>
+                            </DockPanel>
+                        </Border>
+                        <Border x:Name="PanelRelatedRemasters" BorderBrush="LightGray" BorderThickness="2" CornerRadius="5" Margin="5">
+                            <DockPanel>
+                                <Label Content="Remasters/Re-releases:" DockPanel.Dock="Top" FontWeight="Bold" />
+                                <ListBox x:Name="RemasterListBoxWrap" Margin="5" DockPanel.Dock="Bottom">
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel Orientation="Horizontal" />

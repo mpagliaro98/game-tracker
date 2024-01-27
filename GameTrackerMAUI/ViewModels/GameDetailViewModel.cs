@@ -179,6 +179,18 @@ namespace GameTrackerMAUI.ViewModels
             }
         }
 
+        public bool HasRemasters => RemasterList.Any();
+
+        public IEnumerable<GameObject> RemasterList
+        {
+            get
+            {
+                if (Item.Name == "")
+                    return new List<GameObject>();
+                return Item.GetRemasters().OrderBy(game => game.Name.CleanForSorting()).ToList();
+            }
+        }
+
         public double ScoreInterval => (Settings.MaxScore - Settings.MinScore) / 10;
 
         public GameDetailViewModel(IServiceProvider provider) : base(provider)
@@ -222,6 +234,8 @@ namespace GameTrackerMAUI.ViewModels
             OnPropertyChanged(nameof(BaseGameName));
             OnPropertyChanged(nameof(DLCList));
             OnPropertyChanged(nameof(HasDLC));
+            OnPropertyChanged(nameof(RemasterList));
+            OnPropertyChanged(nameof(HasRemasters));
         }
 
         protected override IList<GameObject> GetObjectList()
